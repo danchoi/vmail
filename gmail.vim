@@ -3,8 +3,9 @@
 let s:messagebufnr = -1
 
 function! s:CreateWindowA()
-  let l:res = system("mysql -uroot gmail_development -e 'select label from mailboxes'") 
+  let l:res = system("ruby bin/mailboxes.rb") 
   put =res
+  1delete
   setlocal bufhidden=delete
   setlocal buftype=nofile
   setlocal nomodifiable
@@ -61,12 +62,12 @@ vertical resize 20
 function! s:ListMessages()
   " load mailbox TOC
   1 wincmd w
-  let s:currentMailboxDir = s:dataDir . "/" . getline(".") 
-  let s:currentMailboxToc = s:currentMailboxDir . "/" . "TOC"
+  let s:selected_mailbox = getline(".") 
   2 wincmd w  " window 2 is the List
   1,$delete
 
-  let l:res = system("mysql -uroot gmail_development -e 'select subject from messages'") 
+  " fetch data
+  let l:res = system("ruby bin/messages.rb " . shellescape(s:selected_mailbox))
   put =res
 
   1delete
@@ -85,12 +86,11 @@ function! s:ShowMessage()
     return
   end
   let s:uid = l:uid
-  let l:mailFile = s:currentMailboxDir . "/mail/" . s:uid . ".txt"
+
   3 wincmd w
   1,$delete
-  for line in readfile(l:mailFile)
-    put =line
-  endfor
+  " READFILE TODO
+  "
   1delete
   normal 1
   normal jk
