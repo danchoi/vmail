@@ -81,7 +81,7 @@ autocmd CursorMoved <buffer> call <SID>ListMessages()
 function! s:ShowMessage()
   " assume we're in window 2
   let line = getline(line("."))
-  let l:uid = matchstr(line, '\d\+$')
+  let l:uid = matchstr(line, '^\d\+')
   if exists('s:uid') && s:uid == l:uid
     return
   end
@@ -89,8 +89,10 @@ function! s:ShowMessage()
 
   3 wincmd w
   1,$delete
-  " READFILE TODO
-  "
+  " fetch data
+  let l:res = system("ruby bin/message.rb " . shellescape(s:uid))
+  put =res
+
   1delete
   normal 1
   normal jk
