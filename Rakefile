@@ -26,7 +26,7 @@ end
 
 desc "Update from Gmail"
 task :update => :environment do
-  label = ENV['MAILBOX']
+  label = ENV['BOX'] || ENV['MAILBOX']
   mailbox = Mailbox.find_by_label label
   raise "Can't find mailbox" unless mailbox
   mailbox.update_from_gmail
