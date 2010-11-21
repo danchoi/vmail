@@ -1,21 +1,24 @@
-#!/usr/bin/ruby 
-# install these gems
-# dbd-mysql
-require "dbi"
+#!/usr/bin/env ruby 
 
-DBI.connect("DBI:Mysql:gmail_development", "root", "") do |handler|
+def quote_string(v)
+  v.to_s.gsub(/\\/, '\&\&').gsub(/'/, "''")
+end
 
-  sql = <<-END
+arg = quote_string(ARGV.first)
+
+sql = <<-END
 select uid, sender, subject from messages 
 inner join mailboxes_messages mm on messages.id = mm.message_id
 inner join mailboxes on mm.mailbox_id = mailboxes.id
-where mailboxes.label = ? 
-  END
+where mailboxes.label = "#{arg}"
+END
 
-  handler.select_all(sql, ARGV.first) do | row |
-    uid, sender, subject = *row
-    p "%.30s %s %s" % [sender.ljust(30), subject, uid]
-  end
+cmd = "mysql -uroot gmail_development -e '#{sql}'"
+res = `#{cmd}`
 
+if res.size > 1 
+  res = res.split("\n")[1..-1].join("\n") # remove mysql header line
+  puts res
+  
 end
 
