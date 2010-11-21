@@ -3,6 +3,8 @@
 let s:messagebufnr = -1
 
 function! s:CreateWindowA()
+  let l:res = system("mysql -uroot gmail_development -e 'select label from mailboxes'") 
+  put =res
   setlocal bufhidden=delete
   setlocal buftype=nofile
   setlocal nomodifiable
@@ -66,7 +68,6 @@ function! s:ListMessages()
 
   let l:res = system("mysql -uroot gmail_development -e 'select subject from messages'") 
   put =res
-  
 
   1delete
   normal G
