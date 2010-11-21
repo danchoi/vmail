@@ -16,7 +16,7 @@ END
 cmd = "mysql -uroot gmail_development -e '#{sql}'"
 res = `#{cmd}`
 
-if res.size > 1 
+if res.split("\n").size > 1 
   res = res.split("\n")[1..-1].join("\n") # remove mysql header line
   puts res
   
