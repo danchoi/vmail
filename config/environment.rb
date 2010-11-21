@@ -3,6 +3,7 @@ require 'active_record'
 require 'logger'
 require 'yaml'
 require 'net/imap'
+require 'mail'
 $LOAD_PATH.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 
 config_file = File.join(File.dirname(__FILE__), 'database.yml')

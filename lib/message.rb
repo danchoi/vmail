@@ -2,7 +2,7 @@ class Message < ActiveRecord::Base
   validates_uniqueness_of :uid
   has_and_belongs_to_many :mailboxes
 
-  def cache_text_body
+  def cache_text
     mail = Mail.new(self.eml)
     body =  mail.parts.detect {|part| part.mime_type == 'text/plain'}
     if body.nil?
@@ -28,7 +28,7 @@ Reply-To: #{mail[:reply_to]}
 #{output_body}
 
 END
-    update_attribute :text_body, out
+    update_attribute :text, out
   end
 end
 

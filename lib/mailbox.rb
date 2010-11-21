@@ -17,7 +17,27 @@ class Mailbox < ActiveRecord::Base
     end
   end
 
-  def update_from_gmail
+  def update_from_gmail(opts = {})
+    opts = {:mailbox => self.label, :query => ["ALL"], :num_messages => 10}.update(opts)
+
+    $gmail.fetch(opts) do |imap, uid|
+      message = Message.find_by_uid(uid)
+      if message.nil?
+        email = imap.uid_fetch(uid, "RFC822")[0].attr["RFC822"]
+        mail = Mail.new(email)
+        from = mail.from[0]
+        message = Message.create!(:uid => uid, 
+                                  :sender => from,
+                                  :subject => mail[:subject],
+                                  :date => mail.date,
+                                  :eml => mail.to_s)
+        message.cache_text
+      end
+      if ! self.messages.find_by_uid(uid)
+        self.messages << message
+      end
+      puts "#{message.uid} #{message.sender} #{message.subject}"
+    end
   end
 end
 

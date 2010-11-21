@@ -13,11 +13,22 @@ namespace :db do
   end
 end
 
-namespace :gmail do
 
-  desc "Load and create Mailboxes from Gmail account"
-  task :mailboxes => :environment do
-    Mailbox.create_from_gmail
-  end
-
+desc "Load and create Mailboxes from Gmail account"
+task :make_mailboxes => :environment do
+  Mailbox.create_from_gmail
 end
+
+desc "List Mailboxes"
+task :list_mailboxes => :environment do
+  Mailbox.all.each {|x| puts "- #{x.label}"}
+end
+
+desc "Update from Gmail"
+task :update => :environment do
+  label = ENV['MAILBOX']
+  mailbox = Mailbox.find_by_label label
+  raise "Can't find mailbox" unless mailbox
+  mailbox.update_from_gmail
+end
+
