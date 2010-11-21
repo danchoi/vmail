@@ -30,5 +30,6 @@ Reply-To: #{mail[:reply_to]}
 END
     update_attribute :text, out
   end
+
 end
 

@@ -39,6 +39,16 @@ class Mailbox < ActiveRecord::Base
       puts "#{message.uid} #{message.sender} #{message.subject}"
     end
   end
+
+  def label_message(message_uid, gmail_label)
+    $gmail.mailbox(self.label) do |imap|
+      begin
+        imap.uid_copy(message_uid, gmail_label)
+      rescue Net::IMAP::NoResponseError
+        raise "No label `#{label}' exists!"
+      end
+    end
+  end
 end
 
 

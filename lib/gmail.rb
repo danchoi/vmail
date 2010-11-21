@@ -37,6 +37,15 @@ class Gmail
     end
   end
 
+  # generic mailbox operations
+  def mailbox(label)
+    open do |imap|
+      imap.select(label)
+      yield imap
+    end
+  end
+
+
 end
 
 
