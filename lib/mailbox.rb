@@ -1,5 +1,5 @@
 class Mailbox < ActiveRecord::Base
-  has_and_belongs_to_many :messages
+  has_many :messages
 
   def self.create_from_gmail
     found = []
@@ -27,7 +27,7 @@ class Mailbox < ActiveRecord::Base
           email = imap.uid_fetch(uid, "RFC822")[0].attr["RFC822"]
           mail = Mail.new(email)
           from = mail.from[0]
-          message = Message.create!(:uid => uid, 
+          message = self.messages.create!(:uid => uid, 
                                     :sender => from,
                                     :subject => mail[:subject],
                                     :date => mail.date,

@@ -8,13 +8,12 @@ arg = quote_string(ARGV.first)
 
 sql = <<-END
 select uid, date, RPAD(sender, 30, " "), subject from messages 
-inner join mailboxes_messages mm on messages.id = mm.message_id
-inner join mailboxes on mm.mailbox_id = mailboxes.id
+inner join mailboxes on messages.mailbox_id = mailboxes.id
 where mailboxes.label = "#{arg}"
 order by uid asc
 END
 
-cmd = "mysql -uroot gmail_development -e '#{sql}'"
+cmd = "mysql -uroot gmail -e '#{sql}'"
 res = `#{cmd}`
 
 if res.split("\n").size > 1 

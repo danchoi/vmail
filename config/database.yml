@@ -4,7 +4,7 @@ defaults: &defaults
   username: root
 
 development:
-  database: gmail_development
+  database: gmail
   password: 
   <<: *defaults
 
