@@ -108,7 +108,6 @@ function! s:refresh_message_list()
   1delete
   setlocal nomodifiable
   normal G
-  wincmd p
 endfunction
 
 function! s:show_next_message()
