@@ -30,7 +30,9 @@ class Gmail
     query = opts[:query] || ["ALL"]
     open do |imap|
       imap.select(mailbox_label)
-      uids = imap.uid_search(query)[-num_messages..-1] || []
+      all_uids = imap.uid_search(query)
+      puts "#{all_uids.size} UIDS TOTAL"
+      uids = all_uids[-num_messages..-1] || []
       uids.each do |uid|
         yield imap, uid
       end

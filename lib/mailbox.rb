@@ -21,23 +21,31 @@ class Mailbox < ActiveRecord::Base
     opts = {:mailbox => self.label, :query => ["ALL"], :num_messages => 10}.update(opts)
 
     $gmail.fetch(opts) do |imap, uid|
-      message = Message.find_by_uid(uid)
-      if message.nil?
-        email = imap.uid_fetch(uid, "RFC822")[0].attr["RFC822"]
-        mail = Mail.new(email)
-        from = mail.from[0]
-        message = Message.create!(:uid => uid, 
-                                  :sender => from,
-                                  :subject => mail[:subject],
-                                  :date => mail.date,
-                                  :eml => mail.to_s)
-        message.cache_text
+      begin
+        message = Message.find_by_uid(uid)
+        if message.nil?
+          email = imap.uid_fetch(uid, "RFC822")[0].attr["RFC822"]
+          mail = Mail.new(email)
+          from = mail.from[0]
+          message = Message.create!(:uid => uid, 
+                                    :sender => from,
+                                    :subject => mail[:subject],
+                                    :date => mail.date,
+                                    :eml => mail.to_s)
+          message.cache_text
+        end
+        if ! self.messages.find_by_uid(uid)
+          self.messages << message
+        end
+        puts "#{self.label}: #{message.uid} #{message.date.to_s} #{message.sender} #{message.subject.to_s[0,20]}"
+      rescue
+        puts "ERROR"
+        puts "Raw email from #{from}"
+        puts $!
       end
-      if ! self.messages.find_by_uid(uid)
-        self.messages << message
-      end
-      puts "#{self.label}: #{message.uid} #{message.date.to_s} #{message.sender} #{message.subject.to_s[0,20]}"
+
     end
+    puts "#{self.label}: Done update"
   end
 
   def label_message(message_uid, gmail_label)
