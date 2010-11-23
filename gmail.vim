@@ -103,7 +103,7 @@ endfunction
 
 function! s:UpdateMailbox() 
   echo "Updating ". s:selected_mailbox
-  let res =  system("ruby bin/update.rb " . shellescape(s:selected_mailbox) . " > update.log 2>&1 &")
+  let res =  system("ruby bin/update.rb " . shellescape(s:selected_mailbox) . " >> update.log 2>&1 &")
 endfunction
 
 
@@ -119,6 +119,7 @@ noremap <silent> <buffer> u :call <SID>UpdateMailbox()<CR>
 
 1 wincmd w
 autocmd CursorMoved <buffer> call <SID>ListMessages()
+noremap <silent> <buffer> u :call <SID>UpdateMailbox()<CR> 
 
 
 finish

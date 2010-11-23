@@ -36,7 +36,7 @@ class Mailbox < ActiveRecord::Base
       if ! self.messages.find_by_uid(uid)
         self.messages << message
       end
-      puts "#{message.uid} #{message.sender} #{message.subject}"
+      puts "#{self.label}: #{message.uid} #{message.date.to_s} #{message.sender} #{message.subject.to_s[0,20]}"
     end
   end
 
