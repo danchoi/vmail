@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby 
 
-
 sql = <<-END
 select text from messages where uid = #{ARGV.first}
 END

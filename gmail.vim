@@ -76,8 +76,6 @@ function! s:ListMessages()
   1 wincmd w
 endfunction
 
-1 wincmd w
-autocmd CursorMoved <buffer> call <SID>ListMessages()
 
 function! s:ShowMessage()
   " assume we're in window 2
@@ -100,9 +98,13 @@ function! s:ShowMessage()
   wincmd p
 endfunction
 
-2 wincmd w
-autocmd CursorMoved <buffer> call <SID>ShowMessage()
 1 wincmd w
+
+
+function! s:UpdateMailbox() 
+  echo "Updating ". s:selected_mailbox
+  let res =  system("ruby bin/update.rb " . shellescape(s:selected_mailbox) . " > update.log 2>&1 &")
+endfunction
 
 
 " can map number keys to focus windows and also to alter layout
@@ -110,6 +112,14 @@ autocmd CursorMoved <buffer> call <SID>ShowMessage()
 noremap <Leader>1 :execute "1wincmd w"<CR>
 noremap <Leader>2 :execute "2wincmd w"<CR>
 noremap <Leader>3 :execute "3wincmd w"<CR>
+
+2 wincmd w
+autocmd CursorMoved <buffer> call <SID>ShowMessage()
+noremap <silent> <buffer> u :call <SID>UpdateMailbox()<CR> 
+
+1 wincmd w
+autocmd CursorMoved <buffer> call <SID>ListMessages()
+
 
 finish
 
