@@ -75,15 +75,13 @@ function! s:ShowMessage()
   " assume we're in window 2
   let line = getline(line("."))
   let l:uid = matchstr(line, '^\d\+')
-  if exists('s:uid') && s:uid == l:uid
-    return
-  end
+
   let s:uid = l:uid
 
   3 wincmd w
   1,$delete
   " fetch data
-  let l:res = system("ruby bin/message.rb " . shellescape(s:uid))
+  let l:res = system("ruby bin/message.rb " . shellescape(s:selected_mailbox) . " " . shellescape(s:uid))
   put =res
 
   1delete
@@ -102,6 +100,7 @@ endfunction
 
 function! s:refresh_message_list() 
   " assume we're in the message list window
+  2 wincmd w
   let l:res = system("ruby bin/messages.rb " . shellescape(s:selected_mailbox))
   setlocal modifiable
   1,$delete
@@ -109,6 +108,7 @@ function! s:refresh_message_list()
   1delete
   setlocal nomodifiable
   normal G
+  wincmd p
 endfunction
 
 
@@ -126,7 +126,7 @@ noremap <silent> <buffer> r :call <SID>refresh_message_list()<CR>
 1 wincmd w
 autocmd CursorMoved <buffer> call <SID>ListMessages()
 noremap <silent> <buffer> u :call <SID>UpdateMailbox()<CR> 
-
+noremap <silent> <buffer> r :call <SID>refresh_message_list()<CR> 
 
 finish
 

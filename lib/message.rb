@@ -1,5 +1,5 @@
 class Message < ActiveRecord::Base
-  validates_uniqueness_of :uid
+  validates_uniqueness_of :uid, :scope => :mailbox_id
   belongs_to :mailboxes
 
   def cache_text

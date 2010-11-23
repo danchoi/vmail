@@ -22,7 +22,7 @@ class Mailbox < ActiveRecord::Base
 
     $gmail.fetch(opts) do |imap, uid|
       begin
-        message = Message.find_by_uid(uid)
+        message = self.messages.find_by_uid(uid)
         if message.nil?
           email = imap.uid_fetch(uid, "RFC822")[0].attr["RFC822"]
           mail = Mail.new(email)
@@ -33,11 +33,8 @@ class Mailbox < ActiveRecord::Base
                                     :date => mail.date,
                                     :eml => mail.to_s)
           message.cache_text
+          puts "#{self.label}: #{message.uid} #{message.date.to_s} #{message.sender} #{message.subject.to_s[0,20]}"
         end
-        if ! self.messages.find_by_uid(uid)
-          self.messages << message
-        end
-        puts "#{self.label}: #{message.uid} #{message.date.to_s} #{message.sender} #{message.subject.to_s[0,20]}"
       rescue
         puts "ERROR"
         puts "Raw email from #{from}"
