@@ -73,7 +73,7 @@ function! s:ListMessages()
   1delete
   setlocal nomodifiable
   normal G
-  1 wincmd w
+"  1 wincmd w " stay in this window
 endfunction
 
 1 wincmd w
