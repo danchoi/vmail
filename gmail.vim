@@ -77,7 +77,9 @@ function! s:ListMessages()
 endfunction
 
 1 wincmd w
-autocmd CursorMoved <buffer> call <SID>ListMessages()
+" autocmd CursorMoved <buffer> call <SID>ListMessages()
+noremap <silent> <buffer> <CR> :call <SID>ListMessages()<CR> 
+
 
 function! s:ShowMessage()
   " assume we're in window 2
@@ -101,7 +103,8 @@ function! s:ShowMessage()
 endfunction
 
 2 wincmd w
-autocmd CursorMoved <buffer> call <SID>ShowMessage()
+" autocmd CursorMoved <buffer> call <SID>ShowMessage() " too slow
+noremap <silent> <buffer> <CR> :call <SID>ShowMessage()<CR> 
 1 wincmd w
 
 
