@@ -31,6 +31,7 @@ function! s:CreateWindowB()
   setlocal buftype=nofile
   " setlocal nomodifiable
   setlocal noswapfile
+  setlocal nomodifiable
   setlocal nowrap
   setlocal nonumber
   setlocal foldcolumn=0
@@ -64,13 +65,13 @@ function! s:ListMessages()
   1 wincmd w
   let s:selected_mailbox = getline(".") 
   2 wincmd w  " window 2 is the List
-  1,$delete
-
   " fetch data
   let l:res = system("ruby bin/messages.rb " . shellescape(s:selected_mailbox))
+  setlocal modifiable
+  1,$delete
   put =res
-
   1delete
+  setlocal nomodifiable
   normal G
   1 wincmd w
 endfunction
