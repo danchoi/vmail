@@ -111,6 +111,23 @@ function! s:refresh_message_list()
   wincmd p
 endfunction
 
+function! s:show_next_message()
+  2 wincmd w
+  normal j
+endfunction
+
+function! s:page_message_down()
+  3wincmd w
+  " check if we're already showing the bottom
+  if line('w$') == line('$')
+    " show next message
+    call s:show_next_message()
+  else
+    exe "normal \<c-f>"
+  endif
+endfunction
+
+
 
 " can map number keys to focus windows and also to alter layout
 
@@ -118,10 +135,14 @@ noremap <Leader>1 :execute "1wincmd w"<CR>
 noremap <Leader>2 :execute "2wincmd w"<CR>
 noremap <Leader>3 :execute "3wincmd w"<CR>
 
+3 wincmd w
+noremap <silent> <buffer> <space> :call <SID>page_message_down()<CR> 
+
 2 wincmd w
 autocmd CursorMoved <buffer> call <SID>ShowMessage()
 noremap <silent> <buffer> u :call <SID>UpdateMailbox()<CR> 
 noremap <silent> <buffer> r :call <SID>refresh_message_list()<CR> 
+noremap <silent> <buffer> <space> :call <SID>page_message_down()<CR> 
 
 1 wincmd w
 autocmd CursorMoved <buffer> call <SID>ListMessages()
@@ -143,15 +164,8 @@ function! s:GotoMessageWindow()
     call s:CreateWindowC()
   end
 endfunction
-function! s:GmailVimPageMessageDown()
-  call s:GotoMessageWindow()
-  exe "normal \<c-f>"
-
-endfunction
-
 noremap <silent> <buffer> <CR> :call <SID>GmailVimShowMessage()<CR> 
 
 
-noremap <silent> <buffer> <space> :call <SID>GmailVimPageMessageDown()<CR> 
 
 
