@@ -32,7 +32,8 @@ class Gmail
       imap.select(mailbox_label)
       all_uids = imap.uid_search(query)
       puts "#{all_uids.size} UIDS TOTAL"
-      uids = all_uids[-num_messages..-1] || []
+      uids = all_uids[-([num_messages, all_uids.size].min)..-1] || []
+      puts "imap process uids #{uids.inspect}"
       uids.each do |uid|
         yield imap, uid
       end

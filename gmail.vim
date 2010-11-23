@@ -66,13 +66,7 @@ function! s:ListMessages()
   let s:selected_mailbox = getline(".") 
   2 wincmd w  " window 2 is the List
   " fetch data
-  let l:res = system("ruby bin/messages.rb " . shellescape(s:selected_mailbox))
-  setlocal modifiable
-  1,$delete
-  put =res
-  1delete
-  setlocal nomodifiable
-  normal G
+  call s:refresh_message_list()
   1 wincmd w
 endfunction
 
@@ -106,6 +100,17 @@ function! s:UpdateMailbox()
   let res =  system("ruby bin/update.rb " . shellescape(s:selected_mailbox) . " >> update.log 2>&1 &")
 endfunction
 
+function! s:refresh_message_list() 
+  " assume we're in the message list window
+  let l:res = system("ruby bin/messages.rb " . shellescape(s:selected_mailbox))
+  setlocal modifiable
+  1,$delete
+  put =res
+  1delete
+  setlocal nomodifiable
+  normal G
+endfunction
+
 
 " can map number keys to focus windows and also to alter layout
 
@@ -116,6 +121,7 @@ noremap <Leader>3 :execute "3wincmd w"<CR>
 2 wincmd w
 autocmd CursorMoved <buffer> call <SID>ShowMessage()
 noremap <silent> <buffer> u :call <SID>UpdateMailbox()<CR> 
+noremap <silent> <buffer> r :call <SID>refresh_message_list()<CR> 
 
 1 wincmd w
 autocmd CursorMoved <buffer> call <SID>ListMessages()
