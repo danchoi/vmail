@@ -73,13 +73,11 @@ function! s:ListMessages()
   1delete
   setlocal nomodifiable
   normal G
-"  1 wincmd w " stay in this window
+  1 wincmd w
 endfunction
 
 1 wincmd w
-" autocmd CursorMoved <buffer> call <SID>ListMessages()
-noremap <silent> <buffer> <CR> :call <SID>ListMessages()<CR> 
-
+autocmd CursorMoved <buffer> call <SID>ListMessages()
 
 function! s:ShowMessage()
   " assume we're in window 2
@@ -103,8 +101,7 @@ function! s:ShowMessage()
 endfunction
 
 2 wincmd w
-" autocmd CursorMoved <buffer> call <SID>ShowMessage() " too slow
-noremap <silent> <buffer> <CR> :call <SID>ShowMessage()<CR> 
+autocmd CursorMoved <buffer> call <SID>ShowMessage()
 1 wincmd w
 
 
