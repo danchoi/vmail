@@ -10,10 +10,10 @@ END
 puts sql
 
 cmd = "mysql -uroot gmail -e '#{sql} \\G'"
-res = `#{cmd}`
+res = `#{cmd} | sed -n -e '2,$p'`
 
 begin
-  puts res.split("\n")[1..-1].join("\n").sub(/text:\s/, '')
+  puts res.sub(/text:\s/, '')
 rescue ArgumentError
   puts res
 end
