@@ -131,7 +131,6 @@ function! s:page_message_down()
 endfunction
 
 function! s:search_mailbox()
-  2 wincmd w  
   let query = inputdialog('search:')
   let s:res = system("ruby bin/search.rb " . shellescape(s:selected_mailbox) . " " . shellescape(query))
   " fetch data
