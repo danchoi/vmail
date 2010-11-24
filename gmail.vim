@@ -101,7 +101,7 @@ endfunction
 function! s:refresh_message_list() 
   " assume we're in the message list window
   2 wincmd w
-  let l:res = system("ruby bin/messages.rb " . shellescape(s:selected_mailbox))
+  let l:res = system("ruby bin/messages.rb " . shellescape(s:selected_mailbox) . " | sed -n -e '2,$p'")
   setlocal modifiable
   1,$delete
   put =res

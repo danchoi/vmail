@@ -15,10 +15,11 @@ END
 
 cmd = "mysql -uroot gmail -e '#{sql}'"
 res = `#{cmd}`
+puts res
+exit
 
 if res.split("\n").size > 1 
   res = res.split("\n")[1..-1].join("\n") # remove mysql header line
   puts res
-  
 end
 
