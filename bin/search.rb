@@ -15,7 +15,6 @@ and (messages.subject LIKE "%#{query}%" or messages.sender LIKE "%#{query}%")
 order by uid asc
 END
 
-puts sql
 cmd = "mysql -uroot gmail -e '#{sql}'" # | sed -n -e '2,$p'"
 res = `#{cmd}`
 puts res
