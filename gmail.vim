@@ -98,16 +98,20 @@ function! s:UpdateMailbox()
   let res =  system("ruby bin/update.rb " . shellescape(s:selected_mailbox) . " >> update.log 2>&1 &")
 endfunction
 
-function! s:refresh_message_list() 
-  " assume we're in the message list window
-  2 wincmd w
-  let l:res = system("ruby bin/messages.rb " . shellescape(s:selected_mailbox))
+function! s:reprint_message_list()
   setlocal modifiable
   1,$delete
-  put =res
+  put =s:res
   1delete
   setlocal nomodifiable
   normal G
+endfunction
+
+function! s:refresh_message_list() 
+  " assume we're in the message list window
+  2 wincmd w
+  let s:res = system("ruby bin/messages.rb " . shellescape(s:selected_mailbox))
+  call s:reprint_message_list()
 endfunction
 
 function! s:show_next_message()
@@ -126,7 +130,13 @@ function! s:page_message_down()
   endif
 endfunction
 
-
+function! s:search_mailbox()
+  2 wincmd w  
+  let query = inputdialog('search:')
+  let s:res = system("ruby bin/search.rb " . shellescape(s:selected_mailbox) . " " . shellescape(query))
+  " fetch data
+  call s:reprint_message_list()
+endfunction
 
 " can map number keys to focus windows and also to alter layout
 
@@ -142,6 +152,7 @@ autocmd CursorMoved <buffer> call <SID>ShowMessage()
 noremap <silent> <buffer> u :call <SID>UpdateMailbox()<CR> 
 noremap <silent> <buffer> r :call <SID>refresh_message_list()<CR> 
 noremap <silent> <buffer> <space> :call <SID>page_message_down()<CR> 
+noremap <silent> <buffer> s :call <SID>search_mailbox()<CR> 
 
 1 wincmd w
 autocmd CursorMoved <buffer> call <SID>ListMessages()
