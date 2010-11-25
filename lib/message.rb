@@ -1,6 +1,9 @@
 class Message < ActiveRecord::Base
-  validates_uniqueness_of :uid, :scope => :mailbox_id
-  belongs_to :mailboxes
+  has_many :message_refs
+  belongs_to :sender, :class_name => "Contact"
+  has_many :receipts
+  has_many :copyings
+  validates_uniqueness_of :sha
 
   def cache_text
     mail = Mail.new(self.eml)
