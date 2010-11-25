@@ -131,7 +131,7 @@ function! s:page_message_down()
 endfunction
 
 function! s:search_mailbox()
-  let query = inputdialog('search:')
+  let query = input("search:")
   let s:res = system("ruby bin/search.rb " . shellescape(s:selected_mailbox) . " " . shellescape(query))
   " fetch data
   call s:reprint_message_list()
