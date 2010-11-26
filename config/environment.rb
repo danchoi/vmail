@@ -9,8 +9,6 @@ $LOAD_PATH.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 config_file = File.join(File.dirname(__FILE__), 'database.yml')
 config = YAML::load(File.read(config_file))['development']
 ActiveRecord::Base.establish_connection config
-require 'mailbox'
-require 'message'
 
 gmail_config_file = File.join(File.dirname(__FILE__), 'gmail.yml')
 gmail_config = YAML::load(File.read(gmail_config_file))

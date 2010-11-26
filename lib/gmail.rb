@@ -18,19 +18,21 @@ class Gmail
     end
   end
 
+  # lists mailboxes
   def mailboxes
     open do |imap|
       imap.list("[Gmail]/", "%") + imap.list("", "%")
     end
   end
 
+  # selects the mailbox and returns self
   def mailbox(x)
     @mailbox = x
     # allow chaining
     return self 
   end
 
-  def fetch(opts)
+  def fetch(opts = {})
     num_messages = opts[:num_messages] || 10
     mailbox_label = opts[:mailbox] || @mailbox || 'inbox'
     query = opts[:query] || ["ALL"]
@@ -53,5 +55,4 @@ class Gmail
   end
 
 end
-
 

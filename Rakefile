@@ -21,23 +21,21 @@ namespace :db do
   end
 end
 
-
-desc "Load and create Mailboxes from Gmail account"
-task :make_mailboxes => :environment do
-  Mailbox.create_from_gmail
-end
-
 desc "List Mailboxes"
 task :list_mailboxes => :environment do
-  Mailbox.all.each {|x| puts "- #{x.label}"}
+  $gmail.mailboxes.each {|x| puts "- #{x}"}
 end
 
 desc "Update from Gmail"
 task :update => :environment do
-  label = ENV['BOX'] || ENV['MAILBOX']
-  mailbox = Mailbox.find_by_label label
-  raise "Can't find mailbox" unless mailbox
-  mailbox.update_from_gmail
+  mailbox = ENV['BOX'] || ENV['MAILBOX'] || 'inbox'
+  puts "using #{mailbox}" 
+  $gmail.mailbox(mailbox).fetch do |imap, uids|
+    uids.each do |uid|
+      email = imap.uid_fetch(uid, "RFC822")[0].attr["RFC822"]
+      puts email.to_s
+    end
+  end
 end
 
 desc "Run tests"
@@ -47,3 +45,4 @@ task :test => :environment do
 end
 
 task :default => :test
+
