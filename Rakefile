@@ -38,3 +38,5 @@ task :test => :environment do
   $:.unshift File.expand_path("test")
   require 'test_helper'
 end
+
+task :default => :test

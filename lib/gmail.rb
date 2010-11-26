@@ -24,9 +24,15 @@ class Gmail
     end
   end
 
+  def mailbox(x)
+    @mailbox = x
+    # allow chaining
+    return self 
+  end
+
   def fetch(opts)
     num_messages = opts[:num_messages] || 10
-    mailbox_label = opts[:mailbox] || 'inbox'
+    mailbox_label = opts[:mailbox] || @mailbox || 'inbox'
     query = opts[:query] || ["ALL"]
     open do |imap|
       imap.select(mailbox_label)
@@ -39,13 +45,12 @@ class Gmail
   end
 
   # generic mailbox operations
-  def mailbox(label)
+  def imap
     open do |imap|
-      imap.select(label)
+      imap.select((@mailbox || 'inbox'))
       yield imap
     end
   end
-
 
 end
 
