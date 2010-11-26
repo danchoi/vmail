@@ -1,4 +1,5 @@
 require 'rake'
+require 'rake/testtask'
 
 task :environment do
   require(File.join(File.dirname(__FILE__), 'config', 'environment'))
@@ -32,3 +33,8 @@ task :update => :environment do
   mailbox.update_from_gmail
 end
 
+desc "Run tests"
+task :test => :environment do 
+  $:.unshift File.expand_path("test")
+  require 'test_helper'
+end

@@ -34,9 +34,7 @@ class Gmail
       puts "#{all_uids.size} UIDS TOTAL"
       uids = all_uids[-([num_messages, all_uids.size].min)..-1] || []
       puts "imap process uids #{uids.inspect}"
-      uids.each do |uid|
-        yield imap, uid
-      end
+      yield imap, uids
     end
   end
 
