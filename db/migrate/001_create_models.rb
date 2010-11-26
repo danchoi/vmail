@@ -14,7 +14,7 @@ class CreateModels < ActiveRecord::Migration
       t.integer :uid
       t.integer :message_id
     end
-    add_index :refs, [:mailbox, :uid]
+    add_index :message_refs, [:mailbox, :uid]
 
     create_table :receipts do |t|
       t.integer :message_id
@@ -42,7 +42,7 @@ class CreateModels < ActiveRecord::Migration
 
     drop_table :receipts
 
-    remove_index :refs, :column => [:mailbox, :uid]
+    remove_index :message_refs, :column => [:mailbox, :uid]
     drop_table :message_refs
 
     remove_index :messages, :column => :sha

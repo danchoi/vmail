@@ -12,6 +12,13 @@ namespace :db do
     ActiveRecord::Migration.verbose = true
     ActiveRecord::Migrator.migrate("db/migrate")
   end
+
+  desc "drop and recreate db"
+  task :recreate do 
+    system "mysqladmin -uroot drop gmail"
+    system  "mysqladmin -uroot create gmail"
+    Rake::Task['db:migrate'].invoke
+  end
 end
 
 
