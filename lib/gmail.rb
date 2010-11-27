@@ -76,6 +76,7 @@ def search
   num_messages = ARGV.shift.to_i 
   #query = ["BODY", "politics"]
   query = ARGV
+  puts mailbox
   $gmail.mailbox(mailbox).fetch(:num_messages => num_messages, :query => query) do |imap,uids|
     uids.each do |uid|
       res = imap.uid_fetch(uid, ["FLAGS", "BODY", "ENVELOPE", "RFC822.HEADER"])[0]
@@ -121,6 +122,8 @@ def lookup(raw=false)
       }
       if part
         puts "PART"
+        puts part.header["Content-Type"]
+        puts part.charset
         puts part.body.decoded
       end
     end

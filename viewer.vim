@@ -26,16 +26,18 @@ function! s:CreateDetailWindow()
   let s:messagebufnr = bufnr('%')
 endfunction
 
+let s:lookup_command = "ruby lib/client.rb "
+
 function! s:ShowMessage(raw)
   " TODO change me
-  let s:selected_mailbox = "INBOX"
   2 wincmd w  
+  let s:selected_mailbox = getline(1) 
   let line = getline(line("."))
   let message_uid = matchstr(line, '^\d\+')
   if a:raw
-    let command = "ruby lib/gmail.rb " . shellescape(s:selected_mailbox) . " " . message_uid . " raw"
+    let command = s:lookup_command . message_uid . " raw"
   else
-    let command = "ruby lib/gmail.rb " . shellescape(s:selected_mailbox) . " " . message_uid
+    let command = s:lookup_command . message_uid
   endif
   echo command
   let res = system(command)
