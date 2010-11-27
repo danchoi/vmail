@@ -65,20 +65,17 @@ if __FILE__ == $0
   config = YAML::load(File.read(File.expand_path("../../config/gmail.yml", __FILE__)))
   gmail = Gmail.new(config['login'], config['password'])
   mailbox = 'inbox'
-  query = ["BODY", "politics"]
+  #query = ["BODY", "politics"]
+  query = ARGV
   gmail.mailbox(mailbox).fetch(:num_messages => 30, :query => query) do |imap,uids|
     uids.each do |uid|
       res = imap.uid_fetch(uid, ["FLAGS", "BODY", "ENVELOPE", "RFC822.HEADER"])[0]
       #puts res.inspect
-      envelope = res.attr["ENVELOPE"]
-      puts envelope.date
-      puts envelope.subject
-      puts [envelope.from.first.mailbox, envelope.from.first.host ].join('@')
       #puts res
       header = res.attr["RFC822.HEADER"]
-      puts Mail.new(header).from
-
-      puts
+      mail = Mail.new(header)
+      mail_id = "#{uid}:#{mailbox}"
+      puts "#{mail.date.to_s} #{mail.sender} #{mail.subject.to_s[0,20]} #{mail_id}"
       #puts envelope.inspect
       next
       mail = Mail.new(res)
