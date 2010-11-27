@@ -29,22 +29,24 @@ class GmailServer
       return res
     end
     mail =  Mail.new(res)
+    out = nil
     if mail.parts.empty?
-      return [ mail.header["Content-Type"], 
-      mail.body.charset,
-      mail.body.decoded ].join("\n")
+      out = [ mail.header["Content-Type"], 
+        mail.body.charset,
+        mail.body.decoded ].join("\n")
     else
       part = mail.parts.detect {|part| 
         (part.header["Content-Type"].to_s =~ /text\/plain/)
       }
       if part
-        return [  mail.parts.inspect,
+        out = [  mail.parts.inspect,
         "PART",
         part.header["Content-Type"],
         part.charset,
         part.body.decoded].join("\n")
       end
     end
+    out.gsub("\r", '')
   end
 end
 
