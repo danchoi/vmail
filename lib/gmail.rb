@@ -74,8 +74,8 @@ if __FILE__ == $0
       #puts res
       header = res.attr["RFC822.HEADER"]
       mail = Mail.new(header)
-      mail_id = "#{uid}:#{mailbox}"
-      puts "#{mail.date.to_s} #{mail.sender} #{mail.subject.to_s[0,20]} #{mail_id}"
+      mail_id = "#{mailbox}:#{uid}"
+      puts "#{mail.date.to_s} #{mail.from[0][0,30].ljust(30)} #{mail.subject.to_s[0,60].ljust(60)} #{mail_id}"
       #puts envelope.inspect
       next
       mail = Mail.new(res)
