@@ -3,6 +3,15 @@ require 'drb'
 require 'yaml'
 require 'mail'
 require 'net/imap'
+require 'time'
+
+
+class String
+  def col(width)
+    self[0,width].ljust(width)
+  end
+end
+
 
 class GmailServer
   def initialize(config)
@@ -21,6 +30,22 @@ class GmailServer
 
   def select(mailbox)
     @imap.select(mailbox)
+  end
+
+  def search(num_messages, query)
+    all_uids = @imap.uid_search(query)
+    uids = all_uids[-([num_messages.to_i, all_uids.size].min)..-1] || []
+    lines = uids.map do |uid|
+      res = @imap.uid_fetch(uid, ["FLAGS", "BODY", "ENVELOPE", "RFC822.HEADER"])[0]
+
+      header = res.attr["RFC822.HEADER"]
+      mail = Mail.new(header)
+      mail_id = uid
+      flags = res.attr["FLAGS"]
+
+      "#{mail_id} #{format_time(mail.date.to_s)} #{mail.from[0][0,30].ljust(30)} #{mail.subject.to_s[0,70].ljust(70)} #{flags.inspect.col(30)}"
+    end
+    return lines.join("\n")
   end
 
   def lookup(uid, raw=false)
@@ -48,6 +73,12 @@ class GmailServer
     end
     out.gsub("\r", '')
   end
+
+  def format_time(x)
+    Time.parse(x.to_s).localtime.strftime "%D %I:%M%P"
+  end
+
+
 end
 
 config = YAML::load(File.read(File.expand_path("../../config/gmail.yml", __FILE__)))
