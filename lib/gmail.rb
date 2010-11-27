@@ -66,7 +66,7 @@ class String
 end
 
 def format_time(x)
-  Time.parse(x.to_s).localtime.strftime "%D %H:%M %Z"
+  Time.parse(x.to_s).localtime.strftime "%D %I:%M%P"
 end
 
 require 'time'
