@@ -26,13 +26,17 @@ function! s:CreateDetailWindow()
   let s:messagebufnr = bufnr('%')
 endfunction
 
-function! s:ShowMessage()
+function! s:ShowMessage(raw)
   " TODO change me
   let s:selected_mailbox = "INBOX"
   2 wincmd w  
   let line = getline(line("."))
   let message_uid = matchstr(line, '^\d\+')
-  let command = "ruby lib/gmail.rb " . shellescape(s:selected_mailbox) . " " . message_uid
+  if a:raw
+    let command = "ruby lib/gmail.rb " . shellescape(s:selected_mailbox) . " " . message_uid . " raw"
+  else
+    let command = "ruby lib/gmail.rb " . shellescape(s:selected_mailbox) . " " . message_uid
+  endif
   echo command
   let res = system(command)
   1 wincmd w
@@ -51,7 +55,8 @@ call s:CreateListWindow()
 call s:CreateDetailWindow()
 
 2 wincmd w " to go list window
-noremap <silent> <buffer> <cr> :call <SID>ShowMessage()<CR> 
+noremap <silent> <buffer> <cr> :call <SID>ShowMessage(0)<CR> 
+noremap <silent> <buffer> r :call <SID>ShowMessage(1)<CR> 
 
 "autocmd CursorMoved <buffer> call <SID>ShowMessage()
 

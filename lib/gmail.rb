@@ -101,12 +101,18 @@ def search
   end
 end
 
-def lookup
+def lookup(raw=false)
   mailbox, uid = *ARGV[0,2]
   $gmail.mailbox(mailbox).imap do |imap|
     res = imap.uid_fetch(uid.to_i, ["FLAGS", "RFC822"])[0].attr["RFC822"]
+    if raw
+      puts res
+      return
+    end
     mail =  Mail.new(res)
     if mail.parts.empty?
+      puts mail.header["Content-Type"]
+      puts mail.body.charset
       puts mail.body.decoded 
     else
       puts mail.parts.inspect
@@ -128,6 +134,8 @@ if __FILE__ == $0
   $gmail = Gmail.new(config['login'], config['password'])
   if ARGV.length == 2
     lookup
+  elsif ARGV[2] == 'raw'
+    lookup(raw=true)
   else
     search
   end
