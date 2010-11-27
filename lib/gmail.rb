@@ -59,26 +59,36 @@ class Gmail
 end
 
 
-if __FILE__ == $0
-  require 'yaml'
-  require 'mail'
-  config = YAML::load(File.read(File.expand_path("../../config/gmail.yml", __FILE__)))
-  gmail = Gmail.new(config['login'], config['password'])
-  mailbox = 'inbox'
+class String
+  def col(width)
+    self[0,width].ljust(width)
+  end
+end
+
+def format_time(x)
+  Time.parse(x.to_s).localtime.strftime "%D %H:%M %Z"
+end
+
+require 'time'
+
+def search
+  mailbox = ARGV.shift 
+  num_messages = ARGV.shift.to_i 
   #query = ["BODY", "politics"]
   query = ARGV
-  gmail.mailbox(mailbox).fetch(:num_messages => 30, :query => query) do |imap,uids|
+  $gmail.mailbox(mailbox).fetch(:num_messages => num_messages, :query => query) do |imap,uids|
     uids.each do |uid|
       res = imap.uid_fetch(uid, ["FLAGS", "BODY", "ENVELOPE", "RFC822.HEADER"])[0]
       #puts res.inspect
       #puts res
       header = res.attr["RFC822.HEADER"]
       mail = Mail.new(header)
-      mail_id = "#{mailbox}:#{uid}"
+      mail_id = uid
       flags = res.attr["FLAGS"]
-      puts "#{mail.date.to_s} #{mail.from[0][0,30].ljust(30)} #{mail.subject.to_s[0,70].ljust(70)} #{mail_id} #{flags.inspect}"
-      #puts envelope.inspect
+      puts "#{mail_id} #{format_time(mail.date.to_s)} #{mail.from[0][0,30].ljust(30)} #{mail.subject.to_s[0,70].ljust(70)} #{flags.inspect.col(30)}"
+
       next
+
       mail = Mail.new(res)
       foldline = [mail[:from], mail[:date], mail[:subject]].join(" ")
       puts foldline + " {{{1"
@@ -88,5 +98,37 @@ if __FILE__ == $0
         puts mail.parts.inspect
       end
     end
+  end
+end
+
+def lookup
+  mailbox, uid = *ARGV[0,2]
+  $gmail.mailbox(mailbox).imap do |imap|
+    res = imap.uid_fetch(uid.to_i, ["FLAGS", "RFC822"])[0].attr["RFC822"]
+    mail =  Mail.new(res)
+    if mail.parts.empty?
+      puts mail.body.decoded 
+    else
+      puts mail.parts.inspect
+      part = mail.parts.detect {|part| 
+        (part.header["Content-Type"].to_s =~ /text\/plain/)
+      }
+      if part
+        puts "PART"
+        puts part.body.decoded
+      end
+    end
+  end
+end
+
+if __FILE__ == $0
+  require 'yaml'
+  require 'mail'
+  config = YAML::load(File.read(File.expand_path("../../config/gmail.yml", __FILE__)))
+  $gmail = Gmail.new(config['login'], config['password'])
+  if ARGV.length == 2
+    lookup
+  else
+    search
   end
 end
