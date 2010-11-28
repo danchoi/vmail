@@ -16,6 +16,7 @@ end
 class GmailServer
   def initialize(config)
     @username, @password = config['login'], config['password']
+    @mailbox = nil
   end
 
   def open
@@ -29,8 +30,12 @@ class GmailServer
   end
 
   def select_mailbox(mailbox)
+    if mailbox == @mailbox 
+      return
+    end
     puts "selecting mailbox #{mailbox}"
     @imap.select(mailbox)
+    @mailbox = mailbox
     return "OK"
   end
 
