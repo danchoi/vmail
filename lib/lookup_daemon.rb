@@ -38,20 +38,28 @@ class GmailServer
     all_uids = @imap.uid_search(query)
     uids = all_uids[-([num_messages.to_i, all_uids.size].min)..-1] || []
 
+    lines = []
     threads = []
-    uids.each do |a_uid|
-      threads << Thread.new(a_uid) do |uid|
-        this_thread = Thread.current
-        res = @imap.uid_fetch(uid, ["FLAGS", "BODY", "ENVELOPE", "RFC822.HEADER"])[0]
-        header = res.attr["RFC822.HEADER"]
-        mail = Mail.new(header)
-        mail_id = uid
-        flags = res.attr["FLAGS"]
-        this_thread[:result] = "#{mail_id} #{format_time(mail.date.to_s)} #{mail.from[0][0,30].ljust(30)} #{mail.subject.to_s[0,70].ljust(70)} #{flags.inspect.col(30)}"
-      end
+    uids.each do |uid|
+
+        sleep 0.1
+        threads << Thread.new(uid) do |thread_uid|
+          this_thread = Thread.current
+          begin
+            res = @imap.uid_fetch(thread_uid, ["FLAGS", "BODY", "ENVELOPE", "RFC822.HEADER"])[0]
+          rescue
+            puts "Error: #{thread_uid} RES: #{res.inspect}"
+          end
+          header = res.attr["RFC822.HEADER"]
+          mail = Mail.new(header)
+          mail_id = thread_uid
+          flags = res.attr["FLAGS"]
+          puts "got data for #{thread_uid}"
+          "#{mail_id} #{format_time(mail.date.to_s)} #{mail.from[0][0,30].ljust(30)} #{mail.subject.to_s[0,70].ljust(70)} #{flags.inspect.col(30)}"
+        end
+
     end
-    threads.each {|t| t.join}
-    lines = threads.map {|t| t[:result]}
+      threads.each {|t| lines << t.value}
     return lines.join("\n")
   end
 
