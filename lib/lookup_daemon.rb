@@ -39,7 +39,8 @@ class GmailServer
     return "OK"
   end
 
-  def search(num_messages, query)
+  def search(num_messages, *query)
+    query = query.join(' ')
     all_uids = @imap.uid_search(query)
     uids = all_uids[-([num_messages.to_i, all_uids.size].min)..-1] || []
 
