@@ -38,6 +38,7 @@ class GmailServer
     all_uids = @imap.uid_search(query)
     uids = all_uids[-([num_messages.to_i, all_uids.size].min)..-1] || []
     lines = uids.map do |uid|
+      puts "looking up #{uid}"
       res = @imap.uid_fetch(uid, ["FLAGS", "BODY", "ENVELOPE", "RFC822.HEADER"])[0]
 
       header = res.attr["RFC822.HEADER"]
@@ -47,7 +48,6 @@ class GmailServer
 
       "#{mail_id} #{format_time(mail.date.to_s)} #{mail.from[0][0,30].ljust(30)} #{mail.subject.to_s[0,70].ljust(70)} #{flags.inspect.col(30)}"
     end
-    puts "search result: #{lines.join("\n")}"
     return lines.join("\n")
   end
 
