@@ -31,12 +31,12 @@ function! s:CreateListWindow()
   let s:listbufnr = bufnr('%')
 endfunction
 
-
 " the message display buffer window
 function! s:CreateMessageWindow() 
   split Message
   setlocal buftype=nofile
   setlocal noswapfile
+  setlocal nobuflisted
   let s:message_window_bufnr = bufnr('%')
 endfunction
 
@@ -68,8 +68,12 @@ function! s:focus_list_window()
 endfunction
 
 function! s:focus_message_window()
-  let window_nr = bufwinnr(s:message_window_bufnr)
-  exec window_nr . "wincmd w"
+  let winnr = bufwinnr(s:message_window_bufnr)
+  if winnr == -1
+    echo "no window"
+    return
+  endif
+  exec winnr . "wincmd w"
 endfunction
 
 
