@@ -99,6 +99,29 @@ class GmailServer
     out.gsub("\r", '')
   end
 
+  def flag(uid, flg)
+    puts "Flagging #{uid}: #{flg}"
+    # #<struct Net::IMAP::FetchData seqno=17423, attr={"FLAGS"=>[:Seen, "Flagged"], "UID"=>83113}>
+    res = @imap.uid_store(uid.to_i, "+FLAGS", [flg.to_sym])
+    return res[0].attr["FLAGS"].inspect
+  end
+
+  def unflag(uid, flg)
+    res = @imap.uid_store(uid.to_i, "-FLAGS", [flg.to_sym])
+    return res[0].attr["FLAGS"].inspect
+  end
+
+  def star(uid)
+    flag uid, :Flagged
+  end
+
+  def unstar(uid)
+    unflag uid, :Flagged
+  end
+
+  private
+
+
   def format_time(x)
     Time.parse(x.to_s).localtime.strftime "%D %I:%M%P"
   end
@@ -130,5 +153,6 @@ GmailServer.daemon
 __END__
 GmailServer.start
 $gmail.select_mailbox("inbox")
-puts $gmail.search(ARGV.shift, ARGV.shift)
 
+puts $gmail.flag(83113, "Flagged")
+$gmail.close

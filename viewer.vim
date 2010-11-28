@@ -5,6 +5,7 @@ let s:query = ''
 let s:lookup_command = "ruby lib/client.rb lookup "
 let s:select_mailbox_command = "ruby lib/client.rb select_mailbox "
 let s:search_command = "ruby lib/client.rb search "
+let s:star_command = "ruby lib/client.rb star "
 let s:message_bufname = "MessageWindow"
 
 function! s:SetParameters() 
@@ -88,7 +89,6 @@ function! s:focus_message_window()
   exec winnr . "wincmd w"
 endfunction
 
-
 function! s:GetMessages()
   call s:focus_list_window()
   call s:SetParameters()
@@ -105,6 +105,14 @@ function! s:GetMessages()
 endfunction
 
 
+function! s:StarMessage()
+  let line = getline(line("."))
+  let message_uid = matchstr(line, '^\d\+')
+  let command = s:star_command . message_uid 
+  echo command
+  echo system(command)
+endfunction
+
 call s:CreateListWindow()
 
 " Detail Window is on top, to buck the trend!
@@ -116,6 +124,8 @@ noremap <silent> <buffer> <cr> :call <SID>ShowMessage(0)<CR>
 noremap <silent> <buffer> r :call <SID>ShowMessage(1)<CR> 
 noremap <silent> <buffer> f :call <SID>GetMessages()<CR> 
 noremap <silent> q :qal!<cr>
+
+noremap <silent> <buffer> s :call <SID>StarMessage()<CR>
 
 "open a link browser (os x)
 noremap <silent> o yE :!open <C-R>"<CR>
