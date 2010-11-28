@@ -115,6 +115,7 @@ call s:focus_list_window() " to go list window
 noremap <silent> <buffer> <cr> :call <SID>ShowMessage(0)<CR> 
 noremap <silent> <buffer> r :call <SID>ShowMessage(1)<CR> 
 noremap <silent> <buffer> f :call <SID>GetMessages()<CR> 
+noremap <silent> q :qal!<cr>
 
 "autocmd CursorMoved <buffer> call <SID>ShowMessage()
 
