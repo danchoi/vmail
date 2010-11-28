@@ -39,6 +39,16 @@ class GmailServer
     return "OK"
   end
 
+  def fetch_header(uid)
+    results = @imap.uid_fetch(uid, ["FLAGS", "BODY", "ENVELOPE", "RFC822.HEADER"])
+    res = results[0]
+    header = res.attr["RFC822.HEADER"]
+    mail = Mail.new(header)
+    flags = res.attr["FLAGS"]
+    puts "got data for #{uid}"
+    "#{uid} #{format_time(mail.date.to_s)} #{mail.from[0][0,30].ljust(30)} #{mail.subject.to_s[0,70].ljust(70)} #{flags.inspect.col(30)}"
+  end
+
   def search(num_messages, *query)
     query = query.join(' ')
     all_uids = @imap.uid_search(query)
@@ -99,16 +109,18 @@ class GmailServer
     out.gsub("\r", '')
   end
 
+
+
   def flag(uid, flg)
     puts "Flagging #{uid}: #{flg}"
     # #<struct Net::IMAP::FetchData seqno=17423, attr={"FLAGS"=>[:Seen, "Flagged"], "UID"=>83113}>
     res = @imap.uid_store(uid.to_i, "+FLAGS", [flg.to_sym])
-    return res[0].attr["FLAGS"].inspect
+    return fetch_header(uid.to_i)
   end
 
   def unflag(uid, flg)
     res = @imap.uid_store(uid.to_i, "-FLAGS", [flg.to_sym])
-    return res[0].attr["FLAGS"].inspect
+    return fetch_header(uid.to_i)
   end
 
   def star(uid)

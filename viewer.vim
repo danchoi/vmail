@@ -110,13 +110,19 @@ function! s:star_message()
   let line = getline(line("."))
   let message_uid = matchstr(line, '^\d\+')
   " check if starred already
-  if match(line, ":Flagged")
+  if (match(line, ":Flagged") != -1)
     let command = s:unstar_command . message_uid 
   else
     let command = s:star_command . message_uid 
   endif
   echo command
-  echo system(command)
+  " replace the line with the returned result
+  let res = system(command)
+  setlocal modifiable
+  exec line(".") . "d"
+  normal k
+  put =res
+  setlocal nomodifiable
 endfunction
 
 call s:CreateListWindow()
