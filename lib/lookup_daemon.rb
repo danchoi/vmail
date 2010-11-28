@@ -64,7 +64,7 @@ class GmailServer
         end
 
     end
-      threads.each {|t| lines << t.value}
+    threads.each {|t| lines << t.value}
     return lines.join("\n")
   end
 
@@ -88,6 +88,8 @@ class GmailServer
         part.header["Content-Type"],
         part.charset,
         part.body.decoded].join("\n")
+      else 
+        out = mail.parts.map {|part| part.inspect}.join("\n")
       end
     end
     out.gsub("\r", '')
