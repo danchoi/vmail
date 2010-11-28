@@ -6,6 +6,7 @@ let s:lookup_command = "ruby lib/client.rb lookup "
 let s:select_mailbox_command = "ruby lib/client.rb select_mailbox "
 let s:search_command = "ruby lib/client.rb search "
 let s:star_command = "ruby lib/client.rb star "
+let s:unstar_command = "ruby lib/client.rb unstar "
 let s:message_bufname = "MessageWindow"
 
 function! s:SetParameters() 
@@ -105,10 +106,15 @@ function! s:GetMessages()
 endfunction
 
 
-function! s:StarMessage()
+function! s:star_message()
   let line = getline(line("."))
   let message_uid = matchstr(line, '^\d\+')
-  let command = s:star_command . message_uid 
+  " check if starred already
+  if match(line, ":Flagged")
+    let command = s:unstar_command . message_uid 
+  else
+    let command = s:star_command . message_uid 
+  endif
   echo command
   echo system(command)
 endfunction
@@ -125,7 +131,7 @@ noremap <silent> <buffer> r :call <SID>ShowMessage(1)<CR>
 noremap <silent> <buffer> f :call <SID>GetMessages()<CR> 
 noremap <silent> q :qal!<cr>
 
-noremap <silent> <buffer> s :call <SID>StarMessage()<CR>
+noremap <silent> <buffer> s :call <SID>star_message()<CR>
 
 "open a link browser (os x)
 noremap <silent> o yE :!open <C-R>"<CR>
