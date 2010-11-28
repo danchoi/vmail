@@ -23,7 +23,7 @@ function! s:CreateListWindow()
   setlocal nonumber
   setlocal foldcolumn=0
   setlocal nospell
-  setlocal nobuflisted
+  " setlocal nobuflisted
   setlocal textwidth=0
   setlocal noreadonly
   " hi CursorLine cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white 
