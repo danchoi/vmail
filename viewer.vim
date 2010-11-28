@@ -16,7 +16,7 @@ endfunction
 function! s:CreateListWindow()
   "setlocal bufhidden=delete
   "setlocal buftype=nofile
-  " setlocal nomodifiable
+  setlocal nomodifiable
   setlocal noswapfile
   "setlocal nomodifiable
   setlocal nowrap
@@ -28,7 +28,18 @@ function! s:CreateListWindow()
   setlocal noreadonly
   " hi CursorLine cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white 
   setlocal cursorline
+  " we need the bufnr to find the window later
   let s:listbufnr = bufnr('%')
+
+  " set up syntax highlighting
+  if has("syntax")
+    syn clear
+"    syn match BufferNormal /.*/
+    syn match BufferFlagged /^.*:Flagged.*$/hs=s
+"    hi def BufferNormal ctermfg=black ctermbg=white
+    hi def BufferFlagged ctermfg=white ctermbg=black
+  endif
+
 endfunction
 
 " the message display buffer window
