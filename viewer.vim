@@ -119,9 +119,10 @@ function! s:star_message()
   " replace the line with the returned result
   let res = system(command)
   setlocal modifiable
-  exec line(".") . "d"
-  normal k
-  put =res
+  
+  exec line(".") . "put! =res"
+  exec (line(".") + 1) . "delete"
+  "exec line(".") . "d"
   setlocal nomodifiable
 endfunction
 
