@@ -38,6 +38,7 @@ function! s:CreateMessageWindow()
   setlocal noswapfile
   setlocal nobuflisted
   let s:message_window_bufnr = bufnr('%')
+  close
 endfunction
 
 function! s:ShowMessage(raw)
