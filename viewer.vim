@@ -5,7 +5,7 @@ let s:query = ''
 let s:lookup_command = "ruby lib/client.rb lookup "
 let s:select_mailbox_command = "ruby lib/client.rb select_mailbox "
 let s:search_command = "ruby lib/client.rb search "
-
+let s:message_bufname = "MessageWindow"
 
 function! s:SetParameters() 
   let s:mailbox = getline(1)
@@ -33,7 +33,7 @@ endfunction
 
 " the message display buffer window
 function! s:CreateMessageWindow() 
-  split Message
+  exec "split " . s:message_bufname
   setlocal buftype=nofile
   setlocal noswapfile
   setlocal nobuflisted
@@ -70,12 +70,11 @@ endfunction
 function! s:focus_message_window()
   let winnr = bufwinnr(s:message_window_bufnr)
   if winnr == -1
-    echo "no window"
-    return
+    " create window
+    exec "split " . s:message_bufname
   endif
   exec winnr . "wincmd w"
 endfunction
-
 
 
 function! s:GetMessages()
