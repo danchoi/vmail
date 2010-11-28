@@ -45,11 +45,11 @@ class GmailServer
         sleep 0.1
         threads << Thread.new(uid) do |thread_uid|
           this_thread = Thread.current
-          begin
-            res = @imap.uid_fetch(thread_uid, ["FLAGS", "BODY", "ENVELOPE", "RFC822.HEADER"])[0]
-          rescue
-            puts "Error: #{thread_uid} RES: #{res.inspect}"
+          results = nil
+          while results.nil?
+            results = @imap.uid_fetch(thread_uid, ["FLAGS", "BODY", "ENVELOPE", "RFC822.HEADER"])
           end
+          res = results[0]
           header = res.attr["RFC822.HEADER"]
           mail = Mail.new(header)
           mail_id = thread_uid
@@ -115,7 +115,8 @@ trap("INT") {
   exit
 }
 
-#GmailServer.daemon
+GmailServer.daemon
+__END__
 GmailServer.start
 $gmail.select_mailbox("inbox")
 puts $gmail.search(ARGV.shift, ARGV.shift)
