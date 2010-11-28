@@ -67,6 +67,9 @@ class GmailServer
     end
     threads.each {|t| lines << t.value}
     return lines.join("\n")
+  rescue IOError
+    open
+    search(num_messages, query)
   end
 
   def lookup(uid, raw=false)

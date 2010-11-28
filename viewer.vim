@@ -117,5 +117,7 @@ noremap <silent> <buffer> r :call <SID>ShowMessage(1)<CR>
 noremap <silent> <buffer> f :call <SID>GetMessages()<CR> 
 noremap <silent> q :qal!<cr>
 
+"open a link browser (os x)
+noremap <silent> o yE :!open <C-R>"<CR>
 "autocmd CursorMoved <buffer> call <SID>ShowMessage()
 
