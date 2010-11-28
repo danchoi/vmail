@@ -37,17 +37,21 @@ class GmailServer
   def search(num_messages, query)
     all_uids = @imap.uid_search(query)
     uids = all_uids[-([num_messages.to_i, all_uids.size].min)..-1] || []
-    lines = uids.map do |uid|
-      puts "looking up #{uid}"
-      res = @imap.uid_fetch(uid, ["FLAGS", "BODY", "ENVELOPE", "RFC822.HEADER"])[0]
 
-      header = res.attr["RFC822.HEADER"]
-      mail = Mail.new(header)
-      mail_id = uid
-      flags = res.attr["FLAGS"]
-
-      "#{mail_id} #{format_time(mail.date.to_s)} #{mail.from[0][0,30].ljust(30)} #{mail.subject.to_s[0,70].ljust(70)} #{flags.inspect.col(30)}"
+    threads = []
+    uids.each do |a_uid|
+      threads << Thread.new(a_uid) do |uid|
+        this_thread = Thread.current
+        res = @imap.uid_fetch(uid, ["FLAGS", "BODY", "ENVELOPE", "RFC822.HEADER"])[0]
+        header = res.attr["RFC822.HEADER"]
+        mail = Mail.new(header)
+        mail_id = uid
+        flags = res.attr["FLAGS"]
+        this_thread[:result] = "#{mail_id} #{format_time(mail.date.to_s)} #{mail.from[0][0,30].ljust(30)} #{mail.subject.to_s[0,70].ljust(70)} #{flags.inspect.col(30)}"
+      end
     end
+    threads.each {|t| t.join}
+    lines = threads.map {|t| t[:result]}
     return lines.join("\n")
   end
 
@@ -80,21 +84,31 @@ class GmailServer
     Time.parse(x.to_s).localtime.strftime "%D %I:%M%P"
   end
 
+  def self.start
+    config = YAML::load(File.read(File.expand_path("../../config/gmail.yml", __FILE__)))
+    $gmail = GmailServer.new config
+    $gmail.open
+  end
 
+  def self.daemon
+    self.start
+    $gmail.select_mailbox "inbox"
+
+    url = "druby://127.0.0.1:61676"
+    puts "starting gmail service at #{url}"
+    DRb.start_service(url, $gmail)
+    DRb.thread.join
+  end
 end
 
-config = YAML::load(File.read(File.expand_path("../../config/gmail.yml", __FILE__)))
-gmail = GmailServer.new config
-gmail.open
-gmail.select_mailbox "inbox"
-
-url = "druby://127.0.0.1:61676"
-puts "starting gmail service at #{url}"
-DRb.start_service(url, gmail)
 trap("INT") { 
   puts "closing connection"  
-  gmail.close
+  $gmail.close
   exit
 }
-DRb.thread.join
+
+#GmailServer.daemon
+GmailServer.start
+$gmail.select_mailbox("inbox")
+puts $gmail.search(ARGV.shift, ARGV.shift)
 
