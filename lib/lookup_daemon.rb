@@ -28,8 +28,10 @@ class GmailServer
     @imap.disconnect
   end
 
-  def select(mailbox)
+  def select_mailbox(mailbox)
+    puts "selecting mailbox #{mailbox}"
     @imap.select(mailbox)
+    return "OK"
   end
 
   def search(num_messages, query)
@@ -45,20 +47,20 @@ class GmailServer
 
       "#{mail_id} #{format_time(mail.date.to_s)} #{mail.from[0][0,30].ljust(30)} #{mail.subject.to_s[0,70].ljust(70)} #{flags.inspect.col(30)}"
     end
+    puts "search result: #{lines.join("\n")}"
     return lines.join("\n")
   end
 
   def lookup(uid, raw=false)
+    puts "fetching #{uid.inspect}"
     res = @imap.uid_fetch(uid.to_i, ["FLAGS", "RFC822"])[0].attr["RFC822"]
     if raw
       return res
     end
-    mail =  Mail.new(res)
+    mail = Mail.new(res)
     out = nil
     if mail.parts.empty?
-      out = [ mail.header["Content-Type"], 
-        mail.body.charset,
-        mail.body.decoded ].join("\n")
+      out = [mail.header["Content-Type"], mail.body.charset, mail.body.decoded].join("\n")
     else
       part = mail.parts.detect {|part| 
         (part.header["Content-Type"].to_s =~ /text\/plain/)
@@ -84,7 +86,7 @@ end
 config = YAML::load(File.read(File.expand_path("../../config/gmail.yml", __FILE__)))
 gmail = GmailServer.new config
 gmail.open
-gmail.select "inbox"
+gmail.select_mailbox "inbox"
 
 url = "druby://127.0.0.1:61676"
 puts "starting gmail service at #{url}"

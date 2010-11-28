@@ -3,7 +3,7 @@ let s:num_msgs = 0 " number of messages
 let s:query = ''
 
 let s:lookup_command = "ruby lib/client.rb lookup "
-let s:select_mailbox_command = "ruby lib/client.rb select "
+let s:select_mailbox_command = "ruby lib/client.rb select_mailbox "
 let s:search_command = "ruby lib/client.rb search "
 
 function! s:SetParameters() 
@@ -43,7 +43,6 @@ endfunction
 function! s:ShowMessage(raw)
   " TODO change me
   2 wincmd w  
-  let s:selected_mailbox = getline(1) 
   let line = getline(line("."))
   let message_uid = matchstr(line, '^\d\+')
   if a:raw
@@ -67,10 +66,9 @@ endfunction
 function! s:GetMessages()
   2 wincmd w
   call s:SetParameters()
-  let command = s:select_mailbox_command . s:mailbox
+  let command = s:select_mailbox_command .  shellescape(s:mailbox) 
   echo command
   call system(command)
-
   let command = s:search_command . s:num_msgs . " " . shellescape(s:query) 
   echo command
   let res =  system(command)
