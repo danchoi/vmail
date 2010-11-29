@@ -14,6 +14,15 @@ end
 
 
 class GmailServer
+
+  MailboxAliases = { 'sent' => '[Gmail]/Sent Mail',
+    'all' => '[Gmail]/All Mail',
+    'starred' => '[Gmail]/Starred',
+    'important' => '[Gmail]/Important',
+    'spam' => '[Gmail]/Spam',
+    'trash' => '[Gmail]/Trash'
+  }
+
   def initialize(config)
     @username, @password = config['login'], config['password']
     @mailbox = nil
@@ -30,6 +39,9 @@ class GmailServer
   end
 
   def select_mailbox(mailbox)
+    if MailboxAliases[mailbox]
+      mailbox = MailboxAliases[mailbox]
+    end
     if mailbox == @mailbox 
       return
     end
