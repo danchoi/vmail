@@ -141,6 +141,7 @@ noremap <silent> q :qal!<cr>
 
 noremap <silent> <buffer> s :call <SID>toggle_flag("Flagged")<CR>
 noremap <silent> <buffer> d :call <SID>toggle_flag("Deleted")<CR>
+noremap <silent> <buffer> ! :call <SID>toggle_flag("[Gmail]/Spam")<CR>
 
 "open a link browser (os x)
 noremap <silent> o yE :!open <C-R>"<CR>

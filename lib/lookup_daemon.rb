@@ -126,6 +126,10 @@ class GmailServer
       @imap.uid_copy(uid.to_i, "[Gmail]/Trash")
       res = @imap.uid_store(uid.to_i, action, [flg.to_sym])
       "#{uid} deleted"
+    elsif flg == '[Gmail]/Spam'
+      @imap.uid_copy(uid.to_i, "[Gmail]/Spam")
+      res = @imap.uid_store(uid.to_i, action, [:Deleted])
+      "#{uid} deleted"
     else
       res = @imap.uid_store(uid.to_i, action, [flg.to_sym])
       fetch_header(uid.to_i)
