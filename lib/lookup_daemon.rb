@@ -125,13 +125,19 @@ class GmailServer
   def flag(uid, action, flg)
     # #<struct Net::IMAP::FetchData seqno=17423, attr={"FLAGS"=>[:Seen, "Flagged"], "UID"=>83113}>
     puts "flag #{uid} #{flg} #{action}"
-    res = @imap.uid_store(uid.to_i, action, [flg.to_sym])
     if flg == 'Deleted'
+      @imap.uid_copy(uid.to_i, "[Gmail]/Trash")
+      res = @imap.uid_store(uid.to_i, action, [flg.to_sym])
       "#{uid} deleted"
     else
+      res = @imap.uid_store(uid.to_i, action, [flg.to_sym])
       fetch_header(uid.to_i)
     end
   end
+
+  # TODO copy to a different mailbox
+
+  # TODO mark spam
 
   private
 
