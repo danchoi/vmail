@@ -119,8 +119,12 @@ function! s:toggle_flag(flag)
   " replace the line with the returned result
   let res = system(command)
   setlocal modifiable
-  exec line(".") . "put! =res"
-  exec (line(".") + 1) . "delete"
+  if match(res, '^\d\+ deleted') != -1
+    exec line('.') . 'delete'
+  else
+    exec line(".") . "put! =res"
+    exec (line(".") + 1) . "delete"
+  end
   setlocal nomodifiable
 endfunction
 
@@ -137,6 +141,7 @@ noremap <silent> <buffer> f :call <SID>GetMessages()<CR>
 noremap <silent> q :qal!<cr>
 
 noremap <silent> <buffer> s :call <SID>toggle_flag("Flagged")<CR>
+noremap <silent> <buffer> d :call <SID>toggle_flag("Deleted")<CR>
 
 "open a link browser (os x)
 noremap <silent> o yE :!open <C-R>"<CR>

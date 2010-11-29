@@ -114,7 +114,11 @@ class GmailServer
     # #<struct Net::IMAP::FetchData seqno=17423, attr={"FLAGS"=>[:Seen, "Flagged"], "UID"=>83113}>
     puts "flag #{uid} #{flg} #{action}"
     res = @imap.uid_store(uid.to_i, action, [flg.to_sym])
-    return fetch_header(uid.to_i)
+    if flg == 'Deleted'
+      "#{uid} deleted"
+    else
+      fetch_header(uid.to_i)
+    end
   end
 
   private
