@@ -105,14 +105,15 @@ function! s:GetMessages()
 endfunction
 
 
-function! s:star_message()
+function! s:toggle_flag(flag)
   let line = getline(line("."))
   let message_uid = matchstr(line, '^\d\+')
   " check if starred already
-  if (match(line, ":Flagged") != -1)
-    let command = s:flag_command . message_uid . " -FLAGS Flagged"
+  let flag_symbol = ":" . a:flag
+  if (match(line, flag_symbol) != -1)
+    let command = s:flag_command . message_uid . " -FLAGS " . a:flag
   else
-    let command = s:flag_command . message_uid . " +FLAGS Flagged"
+    let command = s:flag_command . message_uid . " +FLAGS " . a:flag
   endif
   echo command
   " replace the line with the returned result
@@ -135,7 +136,7 @@ noremap <silent> <buffer> r :call <SID>ShowMessage(1)<CR>
 noremap <silent> <buffer> f :call <SID>GetMessages()<CR> 
 noremap <silent> q :qal!<cr>
 
-noremap <silent> <buffer> s :call <SID>star_message()<CR>
+noremap <silent> <buffer> s :call <SID>toggle_flag("Flagged")<CR>
 
 "open a link browser (os x)
 noremap <silent> o yE :!open <C-R>"<CR>
