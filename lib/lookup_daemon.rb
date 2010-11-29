@@ -110,25 +110,11 @@ class GmailServer
   end
 
 
-
-  def flag(uid, flg)
-    puts "Flagging #{uid}: #{flg}"
+  def flag(uid, action, flg)
     # #<struct Net::IMAP::FetchData seqno=17423, attr={"FLAGS"=>[:Seen, "Flagged"], "UID"=>83113}>
-    res = @imap.uid_store(uid.to_i, "+FLAGS", [flg.to_sym])
+    puts "flag #{uid} #{flg} #{action}"
+    res = @imap.uid_store(uid.to_i, action, [flg.to_sym])
     return fetch_header(uid.to_i)
-  end
-
-  def unflag(uid, flg)
-    res = @imap.uid_store(uid.to_i, "-FLAGS", [flg.to_sym])
-    return fetch_header(uid.to_i)
-  end
-
-  def star(uid)
-    flag uid, :Flagged
-  end
-
-  def unstar(uid)
-    unflag uid, :Flagged
   end
 
   private

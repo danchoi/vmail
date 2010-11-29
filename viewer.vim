@@ -5,8 +5,7 @@ let s:query = ''
 let s:lookup_command = "ruby lib/client.rb lookup "
 let s:select_mailbox_command = "ruby lib/client.rb select_mailbox "
 let s:search_command = "ruby lib/client.rb search "
-let s:star_command = "ruby lib/client.rb star "
-let s:unstar_command = "ruby lib/client.rb unstar "
+let s:flag_command = "ruby lib/client.rb flag "
 let s:message_bufname = "MessageWindow"
 
 function! s:SetParameters() 
@@ -111,18 +110,16 @@ function! s:star_message()
   let message_uid = matchstr(line, '^\d\+')
   " check if starred already
   if (match(line, ":Flagged") != -1)
-    let command = s:unstar_command . message_uid 
+    let command = s:flag_command . message_uid . " -FLAGS Flagged"
   else
-    let command = s:star_command . message_uid 
+    let command = s:flag_command . message_uid . " +FLAGS Flagged"
   endif
   echo command
   " replace the line with the returned result
   let res = system(command)
   setlocal modifiable
-  
   exec line(".") . "put! =res"
   exec (line(".") + 1) . "delete"
-  "exec line(".") . "d"
   setlocal nomodifiable
 endfunction
 
