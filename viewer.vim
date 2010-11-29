@@ -137,7 +137,6 @@ call s:focus_list_window() " to go list window
 
 noremap <silent> <buffer> <cr> :call <SID>ShowMessage(0)<CR> 
 noremap <silent> <buffer> r :call <SID>ShowMessage(1)<CR> 
-noremap <silent> <buffer> f :call <SID>GetMessages()<CR> 
 noremap <silent> q :qal!<cr>
 
 noremap <silent> <buffer> s :call <SID>toggle_flag("Flagged")<CR>
@@ -146,4 +145,6 @@ noremap <silent> <buffer> d :call <SID>toggle_flag("Deleted")<CR>
 "open a link browser (os x)
 noremap <silent> o yE :!open <C-R>"<CR>
 "autocmd CursorMoved <buffer> call <SID>ShowMessage()
+
+" noremap <silent> <buffer> f :call <SID>GetMessages()<CR> 
 
