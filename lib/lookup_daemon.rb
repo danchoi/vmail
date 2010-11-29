@@ -142,11 +142,6 @@ class GmailServer
   private
 
 
-  def puts(string)
-    return # silent
-
-  end
-
   def format_time(x)
     Time.parse(x.to_s).localtime.strftime "%D %I:%M%P"
   end
@@ -174,7 +169,7 @@ trap("INT") {
   exit
 }
 
-#GmailServer.daemon
+GmailServer.daemon
 __END__
 GmailServer.start
 $gmail.select_mailbox("inbox")
