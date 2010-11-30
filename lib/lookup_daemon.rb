@@ -81,6 +81,8 @@ class GmailServer
   end
 
   def update
+    # i don't know why, but we have to fetch one uid first to be able to get new uids
+    fetch_headers(@all_uids[-1])
     uids = @imap.uid_search(@query)
     new_uids = uids - @all_uids
     puts "uids last: #{@all_uids[-1]}"
