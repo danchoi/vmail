@@ -175,15 +175,19 @@ function! s:toggle_flag(flag) range
   setlocal nomodifiable
 endfunction
 
-function! s:list_mailboxes()
+function! s:get_mailbox_list()
   let command = s:list_mailboxes_command
   redraw
   echo command
   let res = system(command)
-  return res
+  let s:mailboxes = split(res, "\n", '')
 endfunction
 
+
 function! CompleteMailbox(findstart, base)
+  if !exists("s:mailboxes")
+    call s:get_mailbox_list()
+  endif
   if a:findstart
     " locate the start of the word
     let line = getline('.')
@@ -195,7 +199,7 @@ function! CompleteMailbox(findstart, base)
   else
     " find months matching with "a:base"
     let res = []
-    for m in split("Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec")
+    for m in s:mailboxes
       if m =~ '^' . a:base
         call add(res, m)
       endif
@@ -206,10 +210,21 @@ endfun
 
 function! s:select_mailbox()
   topleft split SelectMailbox
+  setlocal buftype=nofile
+  setlocal noswapfile
   resize 1
   set modifiable
+  inoremap <silent> <buffer> <cr> <Esc>:call <SID>close_mailbox_list()<CR> 
+  " autocmd CursorMovedI <buffer>  call feedkeys("i\<c-x>\<c-u>")
   set completefunc=CompleteMailbox
   call feedkeys("i\<c-x>\<c-u>")
+endfunction
+
+function! s:close_mailbox_list()
+  let selection = getline(line('.'))
+  bdelete
+  redraw
+  echo selection
 endfunction
 
 call s:create_list_window()
