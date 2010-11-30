@@ -100,7 +100,7 @@ function! s:get_messages()
     let s:offset = (line('w$') - 1) - s:limit
   endif
   let command = s:search_command . s:limit . " " . s:offset . " " . shellescape(s:query) 
-  " echo command
+  echo command
   let res =  system(command)
   set modifiable
   let lines =  split(res, "\n")
@@ -141,7 +141,6 @@ call s:create_message_window()
 
 call s:focus_list_window() " to go list window
 
-call s:get_messages()
 
 noremap <silent> <buffer> <cr> :call <SID>show_message(0)<CR> 
 noremap <silent> <buffer> r :call <SID>show_message(1)<CR> 
@@ -159,3 +158,5 @@ noremap <silent> <buffer> f :call <SID>get_messages()<CR><PageUp>
 
 " noremap <silent> <buffer> f :call <SID>get_messages()<CR> 
 
+" get messages
+normal f 
