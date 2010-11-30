@@ -98,7 +98,8 @@ class GmailServer
         mail_id = thread_uid
         flags = res.attr["FLAGS"]
         puts "got data for #{thread_uid}"
-        "#{mail_id} #{format_time(mail.date.to_s)} #{mail.from[0][0,30].ljust(30)} #{mail.subject.to_s[0,70].ljust(70)} #{flags.inspect.col(30)}"
+        address = @mailbox == '[Gmail]/Sent Mail' ? mail.to : mail.from
+        "#{mail_id} #{format_time(mail.date.to_s)} #{address[0][0,30].ljust(30)} #{mail.subject.to_s[0,70].ljust(70)} #{flags.inspect.col(30)}"
       end
     end
     threads.each {|t| lines << t.value}
