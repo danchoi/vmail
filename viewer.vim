@@ -6,6 +6,7 @@ let s:drb_uri = getline(1)
 
 let s:client_script = "ruby lib/client.rb " . s:drb_uri . " "
 let s:lookup_command = s:client_script . "lookup "
+let s:update_command = s:client_script . "update"
 let s:fetch_headers_command = s:client_script . "fetch_headers "
 let s:select_mailbox_command = s:client_script . "select_mailbox "
 let s:search_command = s:client_script . "search "
@@ -123,6 +124,21 @@ function! s:get_messages()
   let s:offset = s:offset - s:limit
 endfunction
 
+" gets new messages since last update
+function! s:update()
+  let command = s:update_command
+  echo command
+  let res = system(command)
+  if match(res, '^\d\+') != -1
+    set modifiable
+    $put =res
+    set nomodifiable
+    echo "new message(s)"
+  else
+    echo "no new messages"
+  end
+endfunction
+
 function! s:toggle_flag(flag) range
   let lnum = a:firstline
   let n = 0
@@ -174,7 +190,8 @@ noremap <silent> <buffer> ! :call <SID>toggle_flag("[Gmail]/Spam")<CR>
 noremap <silent> o yE :!open <C-R>"<CR><CR>
 "autocmd CursorMoved <buffer> call <SID>show_message()
 
-noremap <silent> <buffer> f :call <SID>get_messages()<CR><PageUp>
+"noremap <silent> <buffer> f :call <SID>get_messages()<CR><PageUp>
+noremap <silent> <buffer> u :call <SID>update()<CR>
 
 " noremap <silent> <buffer> f :call <SID>get_messages()<CR> 
 

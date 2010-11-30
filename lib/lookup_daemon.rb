@@ -77,11 +77,24 @@ class GmailServer
       puts "uid_search #@query"
       @all_uids = @imap.uid_search(@query)
     end
-    page_results(limit)
+    get_headers(limit)
   end
 
-  def page_results(limit)
-    uids = @all_uids[-([limit.to_i, @all_uids.size].min)..-1] || []
+  def update
+    uids = @imap.uid_search(@query)
+    new_uids = uids - @all_uids
+    puts "uids last: #{@all_uids[-1]}"
+    puts "new uids last: #{new_uids[-1]}"
+    puts "UPDATE: NEW UIDS: #{new_uids.inspect}"
+    if !new_uids.empty?
+      res = get_headers(1000, new_uids)
+      @all_uids = uids
+      res
+    end
+  end
+
+  def get_headers(limit, uids = @all_uids)
+    uids = uids[-([limit.to_i, uids.size].min)..-1] || []
     lines = []
     threads = []
     uids.each do |uid|
@@ -103,9 +116,8 @@ class GmailServer
       end
     end
     threads.each {|t| lines << t.value}
-    return lines.join("\n")
+    lines.join("\n")
   end
-
 
   def lookup(uid, raw=false)
     puts "fetching #{uid.inspect}"
