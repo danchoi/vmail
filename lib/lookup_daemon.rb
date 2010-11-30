@@ -37,6 +37,7 @@ class GmailServer
   end
 
   def close
+    puts "closing connection"
     @imap.close rescue Net::IMAP::BadResponseError
     @imap.disconnect
   end
@@ -171,7 +172,7 @@ class GmailServer
     url = "druby://127.0.0.1:61676"
     puts "starting gmail service at #{url}"
     DRb.start_service(url, $gmail)
-    DRb.thread.join
+    #DRb.thread.join
   end
 end
 
@@ -181,7 +182,7 @@ trap("INT") {
   exit
 }
 
-GmailServer.daemon
+
 __END__
 GmailServer.start
 $gmail.select_mailbox("inbox")
