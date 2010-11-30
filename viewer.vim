@@ -5,6 +5,7 @@ let s:query = ''
 let s:drb_uri = getline(1)
 
 let s:client_script = "ruby lib/client.rb " . s:drb_uri . " "
+let s:list_mailboxes_command = s:client_script . "list_mailboxes "
 let s:lookup_command = s:client_script . "lookup "
 let s:update_command = s:client_script . "update"
 let s:fetch_headers_command = s:client_script . "fetch_headers "
@@ -174,6 +175,43 @@ function! s:toggle_flag(flag) range
   setlocal nomodifiable
 endfunction
 
+function! s:list_mailboxes()
+  let command = s:list_mailboxes_command
+  redraw
+  echo command
+  let res = system(command)
+  return res
+endfunction
+
+function! CompleteMailbox(findstart, base)
+  if a:findstart
+    " locate the start of the word
+    let line = getline('.')
+    let start = col('.') - 1
+    while start > 0 && line[start - 1] =~ '\a'
+      let start -= 1
+    endwhile
+    return start
+  else
+    " find months matching with "a:base"
+    let res = []
+    for m in split("Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec")
+      if m =~ '^' . a:base
+        call add(res, m)
+      endif
+    endfor
+    return res
+  endif
+endfun
+
+function! s:select_mailbox()
+  topleft split SelectMailbox
+  resize 1
+  set modifiable
+  set completefunc=CompleteMailbox
+  call feedkeys("i\<c-x>\<c-u>")
+endfunction
+
 call s:create_list_window()
 
 " Detail Window is on top, to buck the trend!
@@ -196,6 +234,7 @@ noremap <silent> o yE :!open <C-R>"<CR><CR>
 
 "noremap <silent> <buffer> f :call <SID>get_messages()<CR><PageUp>
 noremap <silent> <buffer> u :call <SID>update()<CR>
+noremap <silent> <buffer> <Leader>m :call <SID>select_mailbox()<CR>
 
 " noremap <silent> <buffer> f :call <SID>get_messages()<CR> 
 

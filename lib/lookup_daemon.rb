@@ -57,6 +57,15 @@ class GmailServer
     puts $!
   end
 
+  def list_mailboxes
+    @mailboxes ||= (@imap.list("[Gmail]/", "%") + @imap.list("", "%")).
+      select {|struct| struct.attr.none? {|a| a == :Noselect} }.
+      map {|struct| struct.name}.
+      join("\n")
+  rescue
+    puts $!
+  end
+
   def fetch_headers(uid_set)
     if uid_set.is_a?(String)
       uid_set = uid_set.split(",").map(&:to_i)
