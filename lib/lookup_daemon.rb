@@ -56,6 +56,9 @@ class GmailServer
   end
 
   def fetch_headers(uid_set)
+    if uid_set.is_a?(String)
+      uid_set = uid_set.split(",").map(&:to_i)
+    end
     results = @imap.uid_fetch(uid_set, ["FLAGS", "BODY", "ENVELOPE", "RFC822.HEADER"])
     lines = results.map do |res|
       header = res.attr["RFC822.HEADER"]

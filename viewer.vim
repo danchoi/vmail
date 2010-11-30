@@ -6,6 +6,7 @@ let s:drb_uri = getline(1)
 
 let s:client_script = "ruby lib/client.rb " . s:drb_uri . " "
 let s:lookup_command = s:client_script . "lookup "
+let s:fetch_headers_command = s:client_script . "fetch_headers "
 let s:select_mailbox_command = s:client_script . "select_mailbox "
 let s:search_command = s:client_script . "search "
 let s:flag_command = s:client_script . "flag "
@@ -74,6 +75,14 @@ function! s:show_message(raw)
   normal 1
   normal jk
   wincmd p
+  " flag as seen; simply refresh the line
+  let update_cmd = s:fetch_headers_command . message_uid
+  let res = system(update_cmd)
+  let line = getline(line('.'))
+  let newline = substitute(line, "[]\.*$", "[:Seen]", '')
+  set modifiable
+  call setline(line('.'), newline)
+  set nomodifiable
   " call s:focus_message_window()
 endfunction
 
@@ -177,3 +186,6 @@ set modifiable
 1delete
 w
 set nomodifiable
+
+" go to bottom
+normal G
