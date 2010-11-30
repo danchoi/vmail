@@ -117,22 +117,32 @@ class GmailServer
     if mail.parts.empty?
       out = [mail.header["Content-Type"], mail.body.charset, mail.body.decoded].join("\n")
     else
-      part = mail.parts.detect {|part| 
-        (part.header["Content-Type"].to_s =~ /text\/plain/)
-      }
+      part = find_text_part(mail.parts)
       if part
-        out = [  mail.parts.inspect,
-        "PART",
+        out = [mail.parts.inspect,
         part.header["Content-Type"],
         part.charset,
         part.body.decoded].join("\n")
-      else 
+      else
         out = mail.parts.map {|part| part.inspect}.join("\n")
       end
     end
     out.gsub("\r", '')
   end
 
+  def find_text_part(parts)
+    part = parts.detect {|part| part.multipart?}
+    if part
+      find_text_part(part.parts)
+    else
+      part = parts.detect {|part| (part.header["Content-Type"].to_s =~ /text\/plain/) }
+      if part
+        return part
+      else
+        return "no text part"
+      end
+    end
+  end
 
   def flag(uid_set, action, flg)
     uid_set = uid_set.split(",").map(&:to_i)
