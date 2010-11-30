@@ -134,8 +134,11 @@ function! s:update()
     set modifiable
     $put =res
     set nomodifiable
-    echo "you have new message(s)!"
+    let num = len(split(res, '\n', ''))
+    redraw
+    echo "you have " . num . " new message(s)!"
   else
+    redraw
     echo "no new messages"
   end
 endfunction
