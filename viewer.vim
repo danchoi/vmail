@@ -57,7 +57,6 @@ function! s:create_message_window()
 endfunction
 
 function! s:show_message(raw)
-  " TODO change me
   call s:focus_list_window()  
   let line = getline(line("."))
   let message_uid = matchstr(line, '^\d\+')
@@ -67,17 +66,17 @@ function! s:show_message(raw)
     let command = s:lookup_command . message_uid
   endif
   echo command
-  let res = system(command)
+
   call s:focus_message_window()
   1,$delete
+
+  let res = system(command)
   put =res
   1delete
   normal 1
   normal jk
   wincmd p
-  " flag as seen; simply refresh the line
-  let update_cmd = s:fetch_headers_command . message_uid
-  let res = system(update_cmd)
+  " flag as seen
   let line = getline(line('.'))
   let newline = substitute(line, "[]\.*$", "[:Seen]", '')
   set modifiable
