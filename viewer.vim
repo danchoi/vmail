@@ -137,15 +137,11 @@ function! s:toggle_flag(flag) range
   echo command
   " replace the lines with the returned results
   let res = system(command)
-  echo res
-  return
 
   setlocal modifiable
-  if match(res, '^\d\+ deleted') != -1
-    exec line('.') . 'delete'
-  else
-    exec line(".") . "put! =res"
-    exec (line(".") + 1) . "delete"
+  exec a:firstline . "," . a:lastline . "delete"
+  if a:flag != "Deleted"
+    exec a:firstline . "put! =res"
   end
   setlocal nomodifiable
 endfunction
