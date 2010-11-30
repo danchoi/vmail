@@ -62,34 +62,40 @@ class GmailServer
   end
 
   def search(limit, offset, *query)
-    query = query.join(' ')
-    all_uids = @imap.uid_search(query)
-    uids = all_uids[offset.to_i, [limit.to_i, all_uids.size].min] || []
+    if @query != query.join(' ')
+      @query = query.join(' ')
+      puts "uid_search #@query"
+      @all_uids = @imap.uid_search(@query)
+    end
+    page_results(limit, offset)
+  end
 
+  def page_results(limit, offset)
+    puts "page_results #{limit}, #{offset}"
+    uids = @all_uids[offset.to_i, [limit.to_i, @all_uids.size].min] || []
     lines = []
     threads = []
     uids.each do |uid|
-
-        sleep 0.1
-        threads << Thread.new(uid) do |thread_uid|
-          this_thread = Thread.current
-          results = nil
-          while results.nil?
-            results = @imap.uid_fetch(thread_uid, ["FLAGS", "BODY", "ENVELOPE", "RFC822.HEADER"])
-          end
-          res = results[0]
-          header = res.attr["RFC822.HEADER"]
-          mail = Mail.new(header)
-          mail_id = thread_uid
-          flags = res.attr["FLAGS"]
-          puts "got data for #{thread_uid}"
-          "#{mail_id} #{format_time(mail.date.to_s)} #{mail.from[0][0,30].ljust(30)} #{mail.subject.to_s[0,70].ljust(70)} #{flags.inspect.col(30)}"
+      sleep 0.1
+      threads << Thread.new(uid) do |thread_uid|
+        this_thread = Thread.current
+        results = nil
+        while results.nil?
+          results = @imap.uid_fetch(thread_uid, ["FLAGS", "BODY", "ENVELOPE", "RFC822.HEADER"])
         end
-
+        res = results[0]
+        header = res.attr["RFC822.HEADER"]
+        mail = Mail.new(header)
+        mail_id = thread_uid
+        flags = res.attr["FLAGS"]
+        puts "got data for #{thread_uid}"
+        "#{mail_id} #{format_time(mail.date.to_s)} #{mail.from[0][0,30].ljust(30)} #{mail.subject.to_s[0,70].ljust(70)} #{flags.inspect.col(30)}"
+      end
     end
     threads.each {|t| lines << t.value}
     return lines.join("\n")
   end
+
 
   def lookup(uid, raw=false)
     puts "fetching #{uid.inspect}"

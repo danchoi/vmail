@@ -92,19 +92,23 @@ function! s:get_messages()
   call s:focus_list_window()
   call s:set_parameters()
   let command = s:select_mailbox_command .  shellescape(s:mailbox) 
-  echo command
+  " echo command
   call system(command)
   " get window height
-  let limit = winheight(bufwinnr(s:listbufnr)) 
-  let offset = (line('w$') - 1) - limit
-  let command = s:search_command . limit . " " . offset . " " . shellescape(s:query) 
-  echo command
+  let s:limit = winheight(bufwinnr(s:listbufnr)) 
+  if !exists('s:offset')
+    let s:offset = (line('w$') - 1) - s:limit
+  endif
+  let command = s:search_command . s:limit . " " . s:offset . " " . shellescape(s:query) 
+  " echo command
   let res =  system(command)
   set modifiable
   let lines =  split(res, "\n")
   call append(0, lines)
-  execute "normal Gdd\<c-y>" 
+  " execute "normal Gdd\<c-y>" 
   set nomodifiable
+  " move offset back
+  let s:offset = s:offset - s:limit
 endfunction
 
 function! s:toggle_flag(flag)
@@ -144,12 +148,14 @@ noremap <silent> <buffer> r :call <SID>show_message(1)<CR>
 noremap <silent> q :qal!<cr>
 
 noremap <silent> <buffer> s :call <SID>toggle_flag("Flagged")<CR>
-noremap <silent> <buffer> d :call <SID>toggle_flag("Deleted")<CR>
+noremap <silent> <buffer> D :call <SID>toggle_flag("Deleted")<CR>
 noremap <silent> <buffer> ! :call <SID>toggle_flag("[Gmail]/Spam")<CR>
 
 "open a link browser (os x)
 noremap <silent> o yE :!open <C-R>"<CR>
 "autocmd CursorMoved <buffer> call <SID>show_message()
+
+noremap <silent> <buffer> f :call <SID>get_messages()<CR><PageUp>
 
 " noremap <silent> <buffer> f :call <SID>get_messages()<CR> 
 
