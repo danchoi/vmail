@@ -88,6 +88,7 @@ function! s:focus_message_window()
   exec winnr . "wincmd w"
 endfunction
 
+" don't use this yet
 function! s:get_messages()
   call s:focus_list_window()
   call s:set_parameters()
@@ -159,4 +160,4 @@ noremap <silent> <buffer> f :call <SID>get_messages()<CR><PageUp>
 " noremap <silent> <buffer> f :call <SID>get_messages()<CR> 
 
 " get messages
-normal f 
+

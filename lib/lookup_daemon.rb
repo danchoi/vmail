@@ -4,6 +4,7 @@ require 'yaml'
 require 'mail'
 require 'net/imap'
 require 'time'
+require 'logger'
 
 
 class String
@@ -26,6 +27,8 @@ class GmailServer
   def initialize(config)
     @username, @password = config['login'], config['password']
     @mailbox = nil
+    @logger = Logger.new("gmail.log")
+    @logger.level = Logger::DEBUG
   end
 
   def open
@@ -61,18 +64,17 @@ class GmailServer
     "#{uid} #{format_time(mail.date.to_s)} #{mail.from[0][0,30].ljust(30)} #{mail.subject.to_s[0,70].ljust(70)} #{flags.inspect.col(30)}"
   end
 
-  def search(limit, offset, *query)
+  def search(limit, *query)
     if @query != query.join(' ')
       @query = query.join(' ')
       puts "uid_search #@query"
       @all_uids = @imap.uid_search(@query)
     end
-    page_results(limit, offset)
+    page_results(limit)
   end
 
-  def page_results(limit, offset)
-    puts "page_results #{limit}, #{offset}"
-    uids = @all_uids[offset.to_i, [limit.to_i, @all_uids.size].min] || []
+  def page_results(limit)
+    uids = @all_uids[-([limit.to_i, @all_uids.size].min)..-1] || []
     lines = []
     threads = []
     uids.each do |uid|
@@ -148,6 +150,9 @@ class GmailServer
 
   private
 
+  def puts(string)
+    @logger.debug string
+  end
 
   def format_time(x)
     Time.parse(x.to_s).localtime.strftime "%D %I:%M%P"
