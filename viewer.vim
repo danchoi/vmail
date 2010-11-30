@@ -2,10 +2,13 @@ let s:mailbox = ''
 let s:num_msgs = 0 " number of messages
 let s:query = ''
 
-let s:lookup_command = "ruby lib/client.rb lookup "
-let s:select_mailbox_command = "ruby lib/client.rb select_mailbox "
-let s:search_command = "ruby lib/client.rb search "
-let s:flag_command = "ruby lib/client.rb flag "
+let s:drb_uri = getline(1)
+
+let s:client_script = "ruby lib/client.rb " . s:drb_uri . " "
+let s:lookup_command = s:client_script . "lookup "
+let s:select_mailbox_command = s:client_script . "select_mailbox "
+let s:search_command = s:client_script . "search "
+let s:flag_command = s:client_script . "flag "
 let s:message_bufname = "MessageWindow"
 
 function! s:set_parameters() 
@@ -112,19 +115,31 @@ function! s:get_messages()
   let s:offset = s:offset - s:limit
 endfunction
 
-function! s:toggle_flag(flag)
-  let line = getline(line("."))
-  let message_uid = matchstr(line, '^\d\+')
+function! s:toggle_flag(flag) range
+  let lnum = a:firstline
+  let n = 0
+  let uids = []
+  while lnum <= a:lastline
+    let line =  getline(lnum)
+    let message_uid = matchstr(line, '^\d\+')
+    call add(uids, message_uid)
+    let lnum = lnum + 1
+  endwhile
+  let uid_set = join(uids, ",")
+
   " check if starred already
   let flag_symbol = ":" . a:flag
   if (match(line, flag_symbol) != -1)
-    let command = s:flag_command . message_uid . " -FLAGS " . a:flag
+    let command = s:flag_command . uid_set . " -FLAGS " . a:flag
   else
-    let command = s:flag_command . message_uid . " +FLAGS " . a:flag
+    let command = s:flag_command . uid_set . " +FLAGS " . a:flag
   endif
   echo command
-  " replace the line with the returned result
+  " replace the lines with the returned results
   let res = system(command)
+  echo res
+  return
+
   setlocal modifiable
   if match(res, '^\d\+ deleted') != -1
     exec line('.') . 'delete'
@@ -161,3 +176,8 @@ noremap <silent> <buffer> f :call <SID>get_messages()<CR><PageUp>
 
 " get messages
 
+" delete the drb url line
+set modifiable
+1delete
+w
+set nomodifiable

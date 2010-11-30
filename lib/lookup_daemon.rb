@@ -55,14 +55,19 @@ class GmailServer
     return "OK"
   end
 
-  def fetch_header(uid)
-    results = @imap.uid_fetch(uid, ["FLAGS", "BODY", "ENVELOPE", "RFC822.HEADER"])
-    res = results[0]
-    header = res.attr["RFC822.HEADER"]
-    mail = Mail.new(header)
-    flags = res.attr["FLAGS"]
-    puts "got data for #{uid}"
-    "#{uid} #{format_time(mail.date.to_s)} #{mail.from[0][0,30].ljust(30)} #{mail.subject.to_s[0,70].ljust(70)} #{flags.inspect.col(30)}"
+  def fetch_headers(uid_set)
+    results = @imap.uid_fetch(uid_set, ["FLAGS", "BODY", "ENVELOPE", "RFC822.HEADER"])
+    puts results
+
+    lines = results.map do |res|
+      header = res.attr["RFC822.HEADER"]
+      mail = Mail.new(header)
+      flags = res.attr["FLAGS"]
+      uid = res.attr["UID"]
+      "#{uid} #{format_time(mail.date.to_s)} #{mail.from[0][0,30].ljust(30)} #{mail.subject.to_s[0,70].ljust(70)} #{flags.inspect.col(30)}"
+    end
+    puts "got data for #{uid_set}"
+    return lines.join("\n")
   end
 
   def search(limit, *query)
@@ -128,20 +133,23 @@ class GmailServer
   end
 
 
-  def flag(uid, action, flg)
+  def flag(uid_set, action, flg)
+    uid_set = uid_set.split(",").map(&:to_i)
     # #<struct Net::IMAP::FetchData seqno=17423, attr={"FLAGS"=>[:Seen, "Flagged"], "UID"=>83113}>
-    puts "flag #{uid} #{flg} #{action}"
+    puts "flag #{uid_set} #{flg} #{action}"
     if flg == 'Deleted'
-      @imap.uid_copy(uid.to_i, "[Gmail]/Trash")
-      res = @imap.uid_store(uid.to_i, action, [flg.to_sym])
+      @imap.uid_copy(uid_set, "[Gmail]/Trash")
+      res = @imap.uid_store(uid_set, action, [flg.to_sym])
       "#{uid} deleted"
     elsif flg == '[Gmail]/Spam'
-      @imap.uid_copy(uid.to_i, "[Gmail]/Spam")
-      res = @imap.uid_store(uid.to_i, action, [:Deleted])
+      @imap.uid_copy(uid_set, "[Gmail]/Spam")
+      res = @imap.uid_store(uid_set, action, [:Deleted])
       "#{uid} deleted"
     else
-      res = @imap.uid_store(uid.to_i, action, [flg.to_sym])
-      fetch_header(uid.to_i)
+      puts "Flagging"
+      res = @imap.uid_store(uid_set, action, [flg.to_sym])
+      # puts res.inspect
+      fetch_headers(uid_set)
     end
   end
 
@@ -169,9 +177,10 @@ class GmailServer
     self.start
     $gmail.select_mailbox "inbox"
 
-    url = "druby://127.0.0.1:61676"
-    puts "starting gmail service at #{url}"
-    DRb.start_service(url, $gmail)
+    DRb.start_service(nil, $gmail)
+    uri = DRb.uri
+    puts "starting gmail service at #{uri}"
+    uri
     #DRb.thread.join
   end
 end
