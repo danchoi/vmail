@@ -172,7 +172,7 @@ noremap <silent> <buffer> D :call <SID>toggle_flag("Deleted")<CR>
 noremap <silent> <buffer> ! :call <SID>toggle_flag("[Gmail]/Spam")<CR>
 
 "open a link browser (os x)
-noremap <silent> o yE :!open <C-R>"<CR>
+noremap <silent> o yE :!open <C-R>"<CR><CR>
 "autocmd CursorMoved <buffer> call <SID>show_message()
 
 noremap <silent> <buffer> f :call <SID>get_messages()<CR><PageUp>
