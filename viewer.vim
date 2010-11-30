@@ -133,7 +133,7 @@ function! s:update()
     set modifiable
     $put =res
     set nomodifiable
-    echo "new message(s)"
+    echo "you have new message(s)!"
   else
     echo "no new messages"
   end
