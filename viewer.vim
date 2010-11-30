@@ -9,9 +9,9 @@ let s:flag_command = "ruby lib/client.rb flag "
 let s:message_bufname = "MessageWindow"
 
 function! s:set_parameters() 
-  let s:mailbox = getline(1)
-  let s:num_msgs = getline(2)
-  let s:query = getline(3)
+  " TODO
+  let s:mailbox = "INBOX" 
+  let s:query = "all"
 endfunction
 
 function! s:create_list_window()
@@ -40,7 +40,6 @@ function! s:create_list_window()
 "    hi def BufferNormal ctermfg=black ctermbg=white
     hi def BufferFlagged ctermfg=white ctermbg=black
   endif
-
 endfunction
 
 " the message display buffer window
@@ -95,15 +94,18 @@ function! s:get_messages()
   let command = s:select_mailbox_command .  shellescape(s:mailbox) 
   echo command
   call system(command)
-  let command = s:search_command . s:num_msgs . " " . shellescape(s:query) 
+  " get window height
+  let limit = winheight(bufwinnr(s:listbufnr)) 
+  let offset = (line('w$') - 1) - limit
+  let command = s:search_command . limit . " " . offset . " " . shellescape(s:query) 
   echo command
   let res =  system(command)
-  4,$delete
-  put =res
-  normal 4
-  normal jk
+  set modifiable
+  let lines =  split(res, "\n")
+  call append(0, lines)
+  execute "normal Gdd\<c-y>" 
+  set nomodifiable
 endfunction
-
 
 function! s:toggle_flag(flag)
   let line = getline(line("."))
@@ -134,6 +136,8 @@ call s:create_list_window()
 call s:create_message_window()
 
 call s:focus_list_window() " to go list window
+
+call s:get_messages()
 
 noremap <silent> <buffer> <cr> :call <SID>show_message(0)<CR> 
 noremap <silent> <buffer> r :call <SID>show_message(1)<CR> 

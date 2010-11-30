@@ -61,10 +61,10 @@ class GmailServer
     "#{uid} #{format_time(mail.date.to_s)} #{mail.from[0][0,30].ljust(30)} #{mail.subject.to_s[0,70].ljust(70)} #{flags.inspect.col(30)}"
   end
 
-  def search(num_messages, *query)
+  def search(limit, offset, *query)
     query = query.join(' ')
     all_uids = @imap.uid_search(query)
-    uids = all_uids[-([num_messages.to_i, all_uids.size].min)..-1] || []
+    uids = all_uids[offset.to_i, [limit.to_i, all_uids.size].min] || []
 
     lines = []
     threads = []
