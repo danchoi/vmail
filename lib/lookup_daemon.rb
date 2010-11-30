@@ -53,6 +53,8 @@ class GmailServer
     @imap.select(mailbox)
     @mailbox = mailbox
     return "OK"
+  rescue
+    puts $!
   end
 
   def fetch_headers(uid_set)
@@ -69,6 +71,8 @@ class GmailServer
     end
     puts "got data for #{uid_set}"
     return lines.join("\n")
+  rescue
+    puts $!
   end
 
   def search(limit, *query)
@@ -78,6 +82,8 @@ class GmailServer
       @all_uids = @imap.uid_search(@query)
     end
     get_headers(limit)
+  rescue
+    puts $!
   end
 
   def update
@@ -91,6 +97,8 @@ class GmailServer
       @all_uids = uids
       res
     end
+  rescue
+    puts $!
   end
 
   def get_headers(limit, uids = @all_uids)
@@ -147,6 +155,8 @@ Reply-To: #{mail.reply_to }
 #{out}
 END
     message.gsub("\r", '')
+  rescue
+    puts $!
   end
 
   def list_parts(parts)
