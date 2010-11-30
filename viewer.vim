@@ -141,7 +141,7 @@ function! s:toggle_flag(flag) range
   setlocal modifiable
   exec a:firstline . "," . a:lastline . "delete"
   if a:flag != "Deleted"
-    exec a:firstline . "put! =res"
+    exec (a:firstline - 1). "put =res"
   end
   setlocal nomodifiable
 endfunction

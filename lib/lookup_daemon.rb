@@ -57,8 +57,6 @@ class GmailServer
 
   def fetch_headers(uid_set)
     results = @imap.uid_fetch(uid_set, ["FLAGS", "BODY", "ENVELOPE", "RFC822.HEADER"])
-    puts results
-
     lines = results.map do |res|
       header = res.attr["RFC822.HEADER"]
       mail = Mail.new(header)
