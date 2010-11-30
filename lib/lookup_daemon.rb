@@ -128,10 +128,10 @@ class GmailServer
     mail = Mail.new(res)
     part = mail.parts.empty? ? mail : find_text_part(mail.parts)
     out = if part
-      [mail.parts.inspect, part.header["Content-Type"], part.charset, "=====", "BODY:", part.body.decoded].join("\n")
-    else
-      "NO TEXT:\n" + mail.parts.map {|part| part.inspect}.join("\n")
-    end
+            part.body.decoded 
+          else 
+            "NO TEXT" 
+          end
     message = <<-END
 From: #{mail.from }
 Date: #{mail.date}
@@ -140,9 +140,28 @@ Cc: #{mail.cc}
 Subject: #{mail.subject}
 Reply-To: #{mail.reply_to }
 
+#{list_parts(mail.parts)}
+
+-- body --
+
 #{out}
 END
     message.gsub("\r", '')
+  end
+
+  def list_parts(parts)
+    if parts.empty?
+      return nil
+    end
+    lines = parts.map do |part|
+      if part.multipart?
+        list_parts(part.parts)
+      else
+        # part.charset could be used
+        "- #{part.content_type}"
+      end
+    end
+    lines.join("\n")
   end
 
   def find_text_part(parts)
