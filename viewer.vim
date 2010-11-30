@@ -69,6 +69,7 @@ function! s:show_message(raw)
   echo command
 
   call s:focus_message_window()
+  set modifiable
   1,$delete
 
   let res = system(command)
