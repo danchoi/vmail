@@ -140,7 +140,7 @@ Cc: #{mail.cc}
 Subject: #{mail.subject}
 Reply-To: #{mail.reply_to }
 
-#{list_parts(mail.parts)}
+#{list_parts(mail.parts.empty? ? [mail] : mail.parts)}
 
 -- body --
 
