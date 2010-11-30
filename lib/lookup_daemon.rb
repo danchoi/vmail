@@ -85,8 +85,6 @@ class GmailServer
     fetch_headers(@all_uids[-1])
     uids = @imap.uid_search(@query)
     new_uids = uids - @all_uids
-    puts "uids last: #{@all_uids[-1]}"
-    puts "new uids last: #{new_uids[-1]}"
     puts "UPDATE: NEW UIDS: #{new_uids.inspect}"
     if !new_uids.empty?
       res = get_headers(1000, new_uids)
