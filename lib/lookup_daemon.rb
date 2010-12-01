@@ -149,14 +149,21 @@ class GmailServer
           else 
             "NO TEXT" 
           end
-    message = <<-END
-From: #{mail.from }
-Date: #{mail.date}
-To: #{mail.to} 
-Cc: #{mail.cc}
-Subject: #{mail.subject}
-Reply-To: #{mail.reply_to }
+    headers = {'from' => mail.from.first.to_s,
+      'date' => mail.date,
+      'to' => mail.to.size == 1 ? mail.to[0].to_s : mail.to.map(&:to_s),
+      'subject' => mail.subject
+    }
+    if !mail.cc.nil?
+      headers['cc'] = mail.cc.size == 1 ? mail.cc.cc_s : mail.cc.map(&:cc_s)
+    end
+    if !mail.reply_to.nil?
+      headers['reply_to'] = mail.reply_to.size == 1 ? mail.reply_to[0].to_s : mail.reply_to.map(&:reply_to_s)
+    end
 
+    message = <<-END
+#{headers.to_yaml}
+#
 #{list_parts(mail.parts.empty? ? [mail] : mail.parts)}
 
 -- body --
