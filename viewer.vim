@@ -15,6 +15,7 @@ let s:flag_command = s:client_script . "flag "
 let s:message_template_command = s:client_script . "message_template "
 let s:deliver_command = s:client_script . "deliver "
 let s:message_bufname = "MessageWindow"
+let s:list_bufname = "MessageListWindow"
 
 function! s:set_parameters() 
   " TODO
@@ -24,7 +25,7 @@ endfunction
 
 function! s:create_list_window()
   "setlocal bufhidden=delete
-  "setlocal buftype=nofile
+  setlocal buftype=nofile
   setlocal nomodifiable
   setlocal noswapfile
   "setlocal nomodifiable
@@ -57,17 +58,27 @@ function! s:create_message_window()
   setlocal noswapfile
   setlocal nobuflisted
   let s:message_window_bufnr = bufnr('%')
+  " message window bindings
+  noremap <silent> <buffer> <cr> :call <SID>focus_list_window()<CR> 
+
   close
 endfunction
 
 function! s:show_message(raw)
   call s:focus_list_window()  
   let line = getline(line("."))
-  let message_uid = matchstr(line, '^\d\+')
+  let selected_uid = matchstr(line, '^\d\+')
+  if exists('s:current_uid') && s:current_uid == selected_uid && bufwinnr(s:message_window_bufnr) != -1
+    " message is already visible, so this will close the list window and
+    " go full-screen with the message
+    call s:full_screen_message()
+    return
+  end
+  let s:current_uid = selected_uid
   if a:raw
-    let command = s:lookup_command . message_uid . " raw"
+    let command = s:lookup_command . s:current_uid . " raw"
   else
-    let command = s:lookup_command . message_uid
+    let command = s:lookup_command . s:current_uid
   endif
   echo command
 
@@ -91,8 +102,13 @@ function! s:show_message(raw)
 endfunction
 
 function! s:focus_list_window()
-  let window_nr = bufwinnr(s:listbufnr) 
-  exec window_nr . "wincmd w"
+  let winnr = bufwinnr(s:listbufnr) 
+  if winnr == -1
+    " create window
+    let bufname = bufname(s:listbufnr)
+    exec "split " . bufname
+  end
+  exec winnr . "wincmd w"
 endfunction
 
 function! s:focus_message_window()
@@ -102,6 +118,11 @@ function! s:focus_message_window()
     exec "split " . s:message_bufname
   endif
   exec winnr . "wincmd w"
+endfunction
+
+function! s:full_screen_message()
+  call s:focus_message_window()
+  only
 endfunction
 
 " don't use this yet
@@ -253,12 +274,11 @@ endfunction
 
 call s:create_list_window()
 
-" Detail Window is on top, to buck the trend!
 call s:create_message_window()
 
+
 call s:focus_list_window() " to go list window
-
-
+" this are list window bindings
 noremap <silent> <buffer> <cr> :call <SID>show_message(0)<CR> 
 noremap <silent> <buffer> r :call <SID>show_message(1)<CR> 
 noremap <silent> q :qal!<cr>
@@ -279,7 +299,8 @@ noremap <silent> <buffer> <Leader>c :call <SID>compose_message()<CR><cr>
 
 " noremap <silent> <buffer> f :call <SID>get_messages()<CR> 
 
-" get messages
+" press double return in list view to go full screen on a message; then
+" return? again to restore the list view
 
 " go to bottom
 normal G
