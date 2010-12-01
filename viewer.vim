@@ -2,7 +2,7 @@ let s:mailbox = ''
 let s:num_msgs = 0 " number of messages
 let s:query = ''
 
-let s:drb_uri = getline(1)
+let s:drb_uri = $DRB_URI
 
 let s:client_script = "ruby lib/client.rb " . s:drb_uri . " "
 let s:list_mailboxes_command = s:client_script . "list_mailboxes "
@@ -280,12 +280,6 @@ noremap <silent> <buffer> <Leader>c :call <SID>compose_message()<CR><cr>
 " noremap <silent> <buffer> f :call <SID>get_messages()<CR> 
 
 " get messages
-
-" delete the drb url line
-set modifiable
-1delete
-w
-set nomodifiable
 
 " go to bottom
 normal G
