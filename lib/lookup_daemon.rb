@@ -197,14 +197,18 @@ END
   end
 
   def reply_template(uid)
-    res = @imap.uid_fetch(uid.to_i, ["FLAGS", "BODY", "ENVELOPE", "RFC822.HEADER"])[0]
-    header = res.attr["RFC822.HEADER"]
-    mail = Mail.new(header)
+    res = @imap.uid_fetch(uid.to_i, ["FLAGS", "RFC822"])[0].attr["RFC822"]
+    mail = Mail.new(res)
     formatter = MessageFormatter.new(mail)
     headers = formatter.extract_headers
     reply_to = headers['reply_to'] || headers['from']
-    reply_headers = { 'to' => reply_to, 'subject' => headers['subject'] }
-    reply_headers.to_yaml + "\n\n"
+    subject = headers['subject']
+    if subject !~ /Re: /
+      subject = "Re: #{subject}"
+    end
+    body = formatter.process_body.gsub(/^/, "> ")
+    reply_headers = { 'from' => @username, 'to' => reply_to, 'subject' => headers['subject'] }
+    reply_headers.to_yaml + "\n\n" + body
   rescue
     handle_error $!
   end
@@ -218,7 +222,7 @@ END
     raw_headers, body = *text.split(/\n\n/)
     headers = YAML::load(raw_headers)
     log "delivering: #{headers.inspect}"
-    mail.from = headers['from']
+    mail.from = headers['from'] || @username
     mail.to = headers['to'].split(/,\s+/)
     mail.subject = headers['subject']
     mail.delivery_method(*smtp_settings)
