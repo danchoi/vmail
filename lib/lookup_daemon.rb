@@ -72,9 +72,11 @@ class GmailServer
     lines = results.map do |res|
       header = res.attr["RFC822.HEADER"]
       mail = Mail.new(header)
+      formatter = MessageFormatter.new(mail)
       flags = res.attr["FLAGS"]
       uid = res.attr["UID"]
-      "#{uid} #{format_time(mail.date.to_s)} #{mail.from[0][0,30].ljust(30)} #{mail.subject.to_s[0,70].ljust(70)} #{flags.inspect.col(30)}"
+      address_method = @mailbox == '[Gmail]/Sent Mail' ? :to : :from
+      formatter.summary(uid, flags, address_method)
     end
     log "got data for #{uid_set}"
     return lines.join("\n")
@@ -125,10 +127,11 @@ class GmailServer
         log "got data for #{thread_uid}"
 
         mail = Mail.new(header)
-        mail_id = thread_uid
+        formatter = MessageFormatter.new(mail)
         flags = res.attr["FLAGS"]
-        address = @mailbox == '[Gmail]/Sent Mail' ? mail.to : mail.from
-        "#{mail_id} #{format_time(mail.date.to_s)} #{address[0][0,30].ljust(30)} #{mail.subject.to_s[0,70].ljust(70)} #{flags.inspect.col(30)}"
+        uid = res.attr["UID"]
+        address_method = @mailbox == '[Gmail]/Sent Mail' ? :to : :from
+        formatter.summary(uid, flags, address_method)
       end
     end
     threads.each {|t| lines << t.value}
