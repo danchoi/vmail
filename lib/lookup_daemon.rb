@@ -5,14 +5,13 @@ require 'mail'
 require 'net/imap'
 require 'time'
 require 'logger'
-
+require 'nokogiri'
 
 class String
   def col(width)
     self[0,width].ljust(width)
   end
 end
-
 
 class GmailServer
 
@@ -145,25 +144,13 @@ class GmailServer
     mail = Mail.new(res)
     part = mail.parts.empty? ? mail : find_text_part(mail.parts)
     out = if part
-            part.body.decoded 
+            format_body(part.body) 
           else 
             "NO TEXT" 
           end
-    headers = {'from' => mail.from.first.to_s,
-      'date' => mail.date,
-      'to' => mail.to.size == 1 ? mail.to[0].to_s : mail.to.map(&:to_s),
-      'subject' => mail.subject
-    }
-    if !mail.cc.nil?
-      headers['cc'] = mail.cc.size == 1 ? mail.cc.cc_s : mail.cc.map(&:cc_s)
-    end
-    if !mail.reply_to.nil?
-      headers['reply_to'] = mail.reply_to.size == 1 ? mail.reply_to[0].to_s : mail.reply_to.map(&:reply_to_s)
-    end
-
     message = <<-END
-#{headers.to_yaml}
-#
+#{extract_headers(mail).to_yaml}
+
 #{list_parts(mail.parts.empty? ? [mail] : mail.parts)}
 
 -- body --
@@ -230,18 +217,6 @@ END
 
   # TODO mark spam
 
-#    gmail.deliver do
-#      to "email@example.com"
-#      subject "Having fun in Puerto Rico!"
-#      text_part do
-#        body "Text of plaintext message."
-#      end
-#      html_part do
-#        body "<p>Text of <em>html</em> message.</p>"
-#      end
-#      add_file "/path/to/some_image.jpg"
-#    end
-
   def message_template
     headers = {'from' => @username,
       'to' => 'dhchoi@gmail.com',
@@ -269,8 +244,6 @@ END
     "SENT"
   end
  
-private
-
   def smtp_settings
     [:smtp, {:address => "smtp.gmail.com",
     :port => 587,
@@ -293,6 +266,25 @@ private
     end
   end
 
+  def extract_headers(mail)
+    headers = {'from' => mail.from.first.to_s,
+      'date' => mail.date,
+      'to' => mail.to.size == 1 ? mail.to[0].to_s : mail.to.map(&:to_s),
+      'subject' => mail.subject
+    }
+    if !mail.cc.nil?
+      headers['cc'] = mail.cc.size == 1 ? mail.cc.cc_s : mail.cc.map(&:cc_s)
+    end
+    if !mail.reply_to.nil?
+      headers['reply_to'] = mail.reply_to.size == 1 ? mail.reply_to[0].to_s : mail.reply_to.map(&:reply_to_s)
+    end
+    headers
+  end
+
+  def format_body(body)
+    body.decoded
+  end
+
   def format_time(x)
     Time.parse(x.to_s).localtime.strftime "%D %I:%M%P"
   end
@@ -313,6 +305,7 @@ private
     uri
     #DRb.thread.join
   end
+
 end
 
 trap("INT") { 
