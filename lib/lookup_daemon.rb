@@ -206,7 +206,9 @@ END
     if subject !~ /Re: /
       subject = "Re: #{subject}"
     end
-    body = formatter.process_body.gsub(/^/, "> ")
+    # orig message info e.g.
+    # On Wed, Dec 1, 2010 at 3:30 PM, Matt MacDonald (JIRA) <do-not-reply@prx.org> wrote:
+    body = formatter.process_body.gsub(/^(?=>)/, ">").gsub(/^(?!>)/, "> ")
     reply_headers = { 'from' => @username, 'to' => reply_to, 'subject' => headers['subject'] }
     reply_headers.to_yaml + "\n\n" + body
   rescue
