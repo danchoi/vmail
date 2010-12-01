@@ -37,7 +37,7 @@ class GmailServer
   end
 
   def close
-    puts "closing connection"
+    log "closing connection"
     @imap.close rescue Net::IMAP::BadResponseError
     @imap.disconnect
   end
@@ -49,12 +49,12 @@ class GmailServer
     if mailbox == @mailbox 
       return
     end
-    puts "selecting mailbox #{mailbox}"
+    log "selecting mailbox #{mailbox}"
     @imap.select(mailbox)
     @mailbox = mailbox
     return "OK"
   rescue
-    puts $!
+    handle_error $!
   end
 
   def list_mailboxes
@@ -63,7 +63,7 @@ class GmailServer
       map {|struct| struct.name}.
       join("\n")
   rescue
-    puts $!
+    handle_error $!
   end
 
   def fetch_headers(uid_set)
@@ -78,21 +78,21 @@ class GmailServer
       uid = res.attr["UID"]
       "#{uid} #{format_time(mail.date.to_s)} #{mail.from[0][0,30].ljust(30)} #{mail.subject.to_s[0,70].ljust(70)} #{flags.inspect.col(30)}"
     end
-    puts "got data for #{uid_set}"
+    log "got data for #{uid_set}"
     return lines.join("\n")
   rescue
-    puts $!
+    handle_error $!
   end
 
   def search(limit, *query)
     if @query != query.join(' ')
       @query = query.join(' ')
-      puts "uid_search #@query"
+      log "uid_search #@query"
       @all_uids = @imap.uid_search(@query)
     end
     get_headers(limit)
   rescue
-    puts $!
+    handle_error $!
   end
 
   def update
@@ -100,14 +100,14 @@ class GmailServer
     fetch_headers(@all_uids[-1])
     uids = @imap.uid_search(@query)
     new_uids = uids - @all_uids
-    puts "UPDATE: NEW UIDS: #{new_uids.inspect}"
+    log "UPDATE: NEW UIDS: #{new_uids.inspect}"
     if !new_uids.empty?
       res = get_headers(1000, new_uids)
       @all_uids = uids
       res
     end
   rescue
-    puts $!
+    handle_error $!
   end
 
   def get_headers(limit, uids = @all_uids)
@@ -127,7 +127,7 @@ class GmailServer
         mail = Mail.new(header)
         mail_id = thread_uid
         flags = res.attr["FLAGS"]
-        puts "got data for #{thread_uid}"
+        log "got data for #{thread_uid}"
         address = @mailbox == '[Gmail]/Sent Mail' ? mail.to : mail.from
         "#{mail_id} #{format_time(mail.date.to_s)} #{address[0][0,30].ljust(30)} #{mail.subject.to_s[0,70].ljust(70)} #{flags.inspect.col(30)}"
       end
@@ -137,7 +137,7 @@ class GmailServer
   end
 
   def lookup(uid, raw=false)
-    puts "fetching #{uid.inspect}"
+    log "fetching #{uid.inspect}"
     res = @imap.uid_fetch(uid.to_i, ["FLAGS", "RFC822"])[0].attr["RFC822"]
     if raw
       return res
@@ -172,7 +172,7 @@ class GmailServer
 END
     message.gsub("\r", '')
   rescue
-    puts $!
+    handle_error $!
   end
 
   def list_parts(parts)
@@ -207,7 +207,7 @@ END
   def flag(uid_set, action, flg)
     uid_set = uid_set.split(",").map(&:to_i)
     # #<struct Net::IMAP::FetchData seqno=17423, attr={"FLAGS"=>[:Seen, "Flagged"], "UID"=>83113}>
-    puts "flag #{uid_set} #{flg} #{action}"
+    log "flag #{uid_set} #{flg} #{action}"
     if flg == 'Deleted'
       # for delete, do in a separate thread because deletions are slow
       Thread.new do 
@@ -219,9 +219,9 @@ END
       res = @imap.uid_store(uid_set, action, [:Deleted])
       "#{uid} deleted"
     else
-      puts "Flagging"
+      log "Flagging"
       res = @imap.uid_store(uid_set, action, [flg.to_sym])
-      # puts res.inspect
+      # log res.inspect
       fetch_headers(uid_set)
     end
   end
@@ -258,7 +258,7 @@ END
     mail = Mail.new
     raw_headers, body = *text.split(/\n\n/)
     headers = YAML::load(raw_headers)
-    puts "delivering: #{headers.inspect}"
+    log "delivering: #{headers.inspect}"
     mail.from = headers['from']
     mail.to = headers['to'].split(/,\s+/)
     mail.subject = headers['subject']
@@ -269,20 +269,28 @@ END
     "SENT"
   end
  
-  private
+private
 
-    def smtp_settings
-      [:smtp, {:address => "smtp.gmail.com",
-      :port => 587,
-      :domain => 'gmail.com',
-      :user_name => @username,
-      :password => @password,
-      :authentication => 'plain',
-      :enable_starttls_auto => true}]
-    end
+  def smtp_settings
+    [:smtp, {:address => "smtp.gmail.com",
+    :port => 587,
+    :domain => 'gmail.com',
+    :user_name => @username,
+    :password => @password,
+    :authentication => 'plain',
+    :enable_starttls_auto => true}]
+  end
 
-  def puts(string)
+  def log(string)
     @logger.debug string
+  end
+
+  def handle_error(error)
+    log error
+    if error.is_a?(IOError) && error.message =~ /closed stream/
+      log "Trying to reconnect"
+      log open
+    end
   end
 
   def format_time(x)
@@ -318,5 +326,5 @@ __END__
 GmailServer.start
 $gmail.select_mailbox("inbox")
 
-puts $gmail.flag(83113, "Flagged")
+log $gmail.flag(83113, "Flagged")
 $gmail.close
