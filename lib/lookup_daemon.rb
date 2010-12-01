@@ -223,7 +223,39 @@ END
 
   # TODO mark spam
 
+#    gmail.deliver do
+#      to "email@example.com"
+#      subject "Having fun in Puerto Rico!"
+#      text_part do
+#        body "Text of plaintext message."
+#      end
+#      html_part do
+#        body "<p>Text of <em>html</em> message.</p>"
+#      end
+#      add_file "/path/to/some_image.jpg"
+#    end
+
+  def deliver(mail=nil, &block)
+    require 'net/smtp'
+    require 'smtp_tls'
+    require 'mail'
+    mail = Mail.new(&block) if block_given?
+    mail.delivery_method(*smtp_settings)
+    mail.from = meta.username unless mail.from
+    mail.deliver!
+  end
+ 
   private
+
+    def smtp_settings
+      [:smtp, {:address => "smtp.gmail.com",
+      :port => 587,
+      :domain => 'gmail.com',
+      :user_name => @username,
+      :password => @password,
+      :authentication => 'plain',
+      :enable_starttls_auto => true}]
+    end
 
   def puts(string)
     @logger.debug string
