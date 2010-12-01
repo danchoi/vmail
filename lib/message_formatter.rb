@@ -56,7 +56,7 @@ class MessageFormatter
   end
 
   def format_text_body(body)
-    body.decoded
+    body.decoded.gsub("\r", '')
   end
 
   # depend on lynx

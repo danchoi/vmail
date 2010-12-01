@@ -158,7 +158,6 @@ class GmailServer
 
 #{out}
 END
-    message.gsub("\r", '')
   rescue
     handle_error $!
   end

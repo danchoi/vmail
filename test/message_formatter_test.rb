@@ -8,7 +8,6 @@ describe MessageFormatter do
       @mail = Mail.new(@raw)
       @formatter = MessageFormatter.new(@mail)
     end
-
     it "should return the text body" do
       @formatter.process_body.wont_be_nil
       @formatter.process_body.must_match /Friday the 13th/
@@ -21,9 +20,8 @@ describe MessageFormatter do
       @mail = Mail.new(@raw)
       @formatter = MessageFormatter.new(@mail)
     end
-
     it "should turn the body into readable text" do
-      @formatter.process_body.must_match /\n   Web 1 new result for instantwatcher.com netflix/
+      @formatter.process_body.must_match %r{\n   Web 1 new result for instantwatcher.com netflix}
     end
   end
 
@@ -33,16 +31,25 @@ describe MessageFormatter do
       @mail = Mail.new(@raw)
       @formatter = MessageFormatter.new(@mail)
     end
-
     it "should know its encoding" do
       @mail.header.charset.must_equal 'euc-kr'
     end
-
     it "should format the subject line in UTF-8" do
-      expected = "123 12/01/10 09:43am with@filecity.co.kr            독특닷컴과 함께하는 12월 무료장착 이벤트!                                               [:Seen]                       "
-      @formatter.summary(123, [:Seen], "from").must_equal expected
+      match = "독특닷컴과"
+      @formatter.summary(123, [:Seen], "from").must_match match
     end
   end
 
+  describe "when message has only an HTML body and no encoding info" do
+    before do 
+      @raw = File.read(File.expand_path('../fixtures/moleskine-html.eml', __FILE__))
+      @mail = Mail.new(@raw)
+      @formatter = MessageFormatter.new(@mail)
+    end
+    it "should process body" do
+      skip
+      #puts @formatter.process_body
+    end
+  end
 end
 
