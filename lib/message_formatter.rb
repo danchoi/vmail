@@ -29,6 +29,8 @@ class MessageFormatter
         format_text_body(part.body) 
       elsif part.header["Content-Type"].to_s =~ /text\/html/
         format_html_body(part.body) 
+      else
+        format_text_body(part.body) 
       end
     else 
       "NO BODY" 

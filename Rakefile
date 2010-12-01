@@ -42,6 +42,9 @@ desc "Run tests"
 task :test => :environment do 
   $:.unshift File.expand_path("test")
   require 'test_helper'
+  require 'time_format_test'
+  require 'message_formatter_test'
+  MiniTest::Unit.autorun
 end
 
 task :default => :test

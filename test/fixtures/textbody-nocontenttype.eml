@@ -1,0 +1,118 @@
+Delivered-To: dhchoi@gmail.com
+Received: by 10.213.9.14 with SMTP id j14cs451758ebj;
+        Wed, 1 Dec 2010 01:38:13 -0800 (PST)
+Received: by 10.100.57.12 with SMTP id f12mr6087714ana.261.1291196289582;
+        Wed, 01 Dec 2010 01:38:09 -0800 (PST)
+Return-Path: <zoe2@instantwatcher.com>
+Received: from ubuntu (li33-165.members.linode.com [207.192.71.165])
+        by mx.google.com with ESMTP id r3si17607346qcs.94.2010.12.01.01.38.09;
+        Wed, 01 Dec 2010 01:38:09 -0800 (PST)
+Received-SPF: neutral (google.com: 207.192.71.165 is neither permitted nor denied by best guess record for domain of zoe2@instantwatcher.com) client-ip=207.192.71.165;
+Authentication-Results: mx.google.com; spf=neutral (google.com: 207.192.71.165 is neither permitted nor denied by best guess record for domain of zoe2@instantwatcher.com) smtp.mail=zoe2@instantwatcher.com
+Received: by ubuntu (Postfix, from userid 1000)
+	id 05FDDC9C6; Wed,  1 Dec 2010 04:38:09 -0500 (EST)
+To: dhchoi@gmail.com
+Subject: result of bin/confirm_valid run
+Message-Id: <20101201093809.05FDDC9C6@ubuntu>
+Date: Wed,  1 Dec 2010 04:38:09 -0500 (EST)
+From: zoe2@instantwatcher.com
+
+Friday the 13th,http://api.netflix.com/catalog/titles/movies/525111,1291190400,1300258800,1290016457,http://www.netflix.com/Movie/Friday_the_13th/525111
+Friday the 13th: Part 2,http://api.netflix.com/catalog/titles/movies/525119,1291190400,1300258800,1290016457,http://www.netflix.com/Movie/Friday_the_13th_Part_2/525119
+Top Gun,http://api.netflix.com/catalog/titles/movies/1056189,1291190400,1298966400,1290016457,http://www.netflix.com/Movie/Top_Gun/1056189
+Hamburger Hill,http://api.netflix.com/catalog/titles/movies/569355,1291190400,1310799600,1288085283,http://www.netflix.com/Movie/Hamburger_Hill/569355
+Friends & Lovers,http://api.netflix.com/catalog/titles/movies/21871853,1291190400,1306825200,1287046718,http://www.netflix.com/Movie/Friends_Lovers/21871853
+The War,http://api.netflix.com/catalog/titles/movies/1102978,1291190400,1385884800,1287386462,http://www.netflix.com/Movie/The_War/1102978
+Volcano,http://api.netflix.com/catalog/titles/movies/1153506,1291190400,1322726400,1272481858,http://www.netflix.com/Movie/Volcano/1153506
+Rock Star,http://api.netflix.com/catalog/titles/movies/60004466,1291190400,1306911600,1289673593,http://www.netflix.com/Movie/Rock_Star/60004466
+The Pledge,http://api.netflix.com/catalog/titles/movies/60004419,1291190400,1306911600,1288029756,http://www.netflix.com/Movie/The_Pledge/60004419
+Henry V,http://api.netflix.com/catalog/titles/movies/60001265,1291190400,1301641200,1289301838,http://www.netflix.com/Movie/Henry_V/60001265
+Friday the 13th: Part 3,http://api.netflix.com/catalog/titles/movies/60002389,1291190400,1300258800,1290016457,http://www.netflix.com/Movie/Friday_the_13th_Part_3/60002389
+Snow Falling on Cedars,http://api.netflix.com/catalog/titles/movies/60000439,1291190400,1372662000,1290622147,http://www.netflix.com/Movie/Snow_Falling_on_Cedars/60000439
+The Killing Fields,http://api.netflix.com/catalog/titles/movies/671140,1291190400,1306911600,1278443172,http://www.netflix.com/Movie/The_Killing_Fields/671140
+Friday the 13th: Part 4: The Final Chapter,http://api.netflix.com/catalog/titles/movies/60002390,1291190400,1300258800,1290016457,http://www.netflix.com/Movie/Friday_the_13th_Part_4_The_Final_Chapter/60002390
+The Beach,http://api.netflix.com/catalog/titles/movies/60000199,1291190400,1322726400,1291053415,http://www.netflix.com/Movie/The_Beach/60000199
+Joe's Apartment,http://api.netflix.com/catalog/titles/movies/655167,1291190400,1306911600,1280530574,http://www.netflix.com/Movie/Joe_s_Apartment/655167
+Colors,http://api.netflix.com/catalog/titles/movies/60020957,1291190400,1293868800,1288403263,http://www.netflix.com/Movie/Colors/60020957
+Date With an Angel,http://api.netflix.com/catalog/titles/movies/60024242,1291190400,1393660800,1290245274,http://www.netflix.com/Movie/Date_With_an_Angel/60024242
+What's Cooking?,http://api.netflix.com/catalog/titles/movies/60020580,1291190400,1306911600,1287004378,http://www.netflix.com/Movie/What_s_Cooking/60020580
+Death to Smoochy,http://api.netflix.com/catalog/titles/movies/60022713,1291190400,1306911600,1287606237,http://www.netflix.com/Movie/Death_to_Smoochy/60022713
+All the Queen's Men,http://api.netflix.com/catalog/titles/movies/60024995,1291190400,1306911600,1287690387,http://www.netflix.com/Movie/All_the_Queen_s_Men/60024995
+Rookie of the Year,http://api.netflix.com/catalog/titles/movies/60021965,1291190400,1322726400,1277017646,http://www.netflix.com/Movie/Rookie_of_the_Year/60021965
+The Corporation,http://api.netflix.com/catalog/titles/movies/60034810,1291190400,1354348800,1288739577,http://www.netflix.com/Movie/The_Corporation/60034810
+Mr. Jealousy,http://api.netflix.com/catalog/titles/movies/1180866,1291190400,1306825200,1288370361,http://www.netflix.com/Movie/Mr._Jealousy/1180866
+The Rains Came,http://api.netflix.com/catalog/titles/movies/60011319,1291190400,1325318400,1273554667,http://www.netflix.com/Movie/The_Rains_Came/60011319
+Guilty Conscience,http://api.netflix.com/catalog/titles/movies/60032630,1291190400,1322726400,1289002820,http://www.netflix.com/Movie/Guilty_Conscience/60032630
+Rocky III,http://api.netflix.com/catalog/titles/movies/60010836,1291190400,1293868800,1287004378,http://www.netflix.com/Movie/Rocky_III/60010836
+The Indian Runner,http://api.netflix.com/catalog/titles/movies/60021490,1291190400,1293868800,1287536604,http://www.netflix.com/Movie/The_Indian_Runner/60021490
+Fruit of the Vine,http://api.netflix.com/catalog/titles/movies/60026024,1291190400,1322726400,1290277785,http://www.netflix.com/Movie/Fruit_of_the_Vine/60026024
+All the Little Animals,http://api.netflix.com/catalog/titles/movies/60029926,1291190400,1306825200,1287127636,http://www.netflix.com/Movie/All_the_Little_Animals/60029926
+Rocky V,http://api.netflix.com/catalog/titles/movies/60025674,1291190400,1293868800,1287004378,http://www.netflix.com/Movie/Rocky_V/60025674
+Mayor of the Sunset Strip,http://api.netflix.com/catalog/titles/movies/60037221,1291190400,1322726400,1290035376,http://www.netflix.com/Movie/Mayor_of_the_Sunset_Strip/60037221
+Police Academy: Special Edition,http://api.netflix.com/catalog/titles/movies/60035683,1291190400,1306911600,1289238890,http://www.netflix.com/Movie/Police_Academy_Special_Edition/60035683
+Murder By Numbers,http://api.netflix.com/catalog/titles/movies/60022942,1291190400,1306911600,1290675384,http://www.netflix.com/Movie/Murder_By_Numbers/60022942
+Friday the 13th: Part 8: Jason Takes Manhattan,http://api.netflix.com/catalog/titles/movies/60024025,1291190400,1300258800,1289029485,http://www.netflix.com/Movie/Friday_the_13th_Part_8_Jason_Takes_Manhattan/60024025
+Running Scared,http://api.netflix.com/catalog/titles/movies/60020963,1291190400,1298966400,1287004378,http://www.netflix.com/Movie/Running_Scared/60020963
+Roger & Me,http://api.netflix.com/catalog/titles/movies/60028925,1291190400,1306911600,1278443172,http://www.netflix.com/Movie/Roger_Me/60028925
+Friday the 13th: Part 6: Jason Lives,http://api.netflix.com/catalog/titles/movies/60020926,1291190400,1300258800,1290016457,http://www.netflix.com/Movie/Friday_the_13th_Part_6_Jason_Lives/60020926
+Frankie and Johnny,http://api.netflix.com/catalog/titles/movies/60021512,1291190400,1298966400,1290675384,http://www.netflix.com/Movie/Frankie_and_Johnny/60021512
+Friday the 13th: Part 5: A New Beginning,http://api.netflix.com/catalog/titles/movies/60020915,1291190400,1300258800,1290016457,http://www.netflix.com/Movie/Friday_the_13th_Part_5_A_New_Beginning/60020915
+Friday the 13th: Part 7: The New Blood,http://api.netflix.com/catalog/titles/movies/60024024,1291190400,1300258800,1289029332,http://www.netflix.com/Movie/Friday_the_13th_Part_7_The_New_Blood/60024024
+Rain Man,http://api.netflix.com/catalog/titles/movies/60029369,1291190400,1298966400,1287004378,http://www.netflix.com/Movie/Rain_Man/60029369
+Desperate Hours,http://api.netflix.com/catalog/titles/movies/60022336,1291190400,1298966400,1287004378,http://www.netflix.com/Movie/Desperate_Hours/60022336
+Beat,http://api.netflix.com/catalog/titles/movies/60024149,1291190400,1306825200,1287128967,http://www.netflix.com/Movie/Beat/60024149
+Lord of Illusions,http://api.netflix.com/catalog/titles/movies/712990,1291190400,1301641200,1287084613,http://www.netflix.com/Movie/Lord_of_Illusions/712990
+Full Clip,http://api.netflix.com/catalog/titles/movies/70001905,1291190400,1306825200,1287390319,http://www.netflix.com/Movie/Full_Clip/70001905
+True Confessions,http://api.netflix.com/catalog/titles/movies/70004085,1291190400,1301641200,1290018529,http://www.netflix.com/Movie/True_Confessions/70004085
+Easy Money,http://api.netflix.com/catalog/titles/movies/70018000,1291190400,1309503600,1288913508,http://www.netflix.com/Movie/Easy_Money/70018000
+The Big Blue,http://api.netflix.com/catalog/titles/movies/303952,1291190400,1300258800,1287571129,http://www.netflix.com/Movie/The_Big_Blue/303952
+Batman Forever,http://api.netflix.com/catalog/titles/movies/287348,1291190400,1306911600,1283540560,http://www.netflix.com/Movie/Batman_Forever/287348
+Care Bears: Big Wish Movie,http://api.netflix.com/catalog/titles/movies/70039024,1291190400,1354348800,1289385222,http://www.netflix.com/Movie/Care_Bears_Big_Wish_Movie/70039024
+Box of Moonlight,http://api.netflix.com/catalog/titles/movies/327306,1291190400,1301641200,1287004378,http://www.netflix.com/Movie/Box_of_Moonlight/327306
+The Bonfire of the Vanities,http://api.netflix.com/catalog/titles/movies/323077,1291190400,1306911600,1291053415,http://www.netflix.com/Movie/The_Bonfire_of_the_Vanities/323077
+The Deadly Companions,http://api.netflix.com/catalog/titles/movies/70021682,1291190400,1322726400,1288142052,http://www.netflix.com/Movie/The_Deadly_Companions/70021682
+Outbreak,http://api.netflix.com/catalog/titles/movies/834585,1291190400,1306911600,1285348464,http://www.netflix.com/Movie/Outbreak/834585
+Sabah: A Love Story,http://api.netflix.com/catalog/titles/movies/70070392,1291190400,1354348800,1289648240,http://www.netflix.com/Movie/Sabah_A_Love_Story/70070392
+Any Wednesday,http://api.netflix.com/catalog/titles/movies/70060389,1291190400,1306911600,1288370462,http://www.netflix.com/Movie/Any_Wednesday/70060389
+The Vice Guide to Travel,http://api.netflix.com/catalog/titles/series/70055589,1291190400,1322726400,1285718252,http://www.netflix.com/Movie/The_Vice_Guide_to_Travel/70055589
+Attack of the 50 Ft. Woman,http://api.netflix.com/catalog/titles/movies/70068950,1291190400,1306911600,1287606022,http://www.netflix.com/Movie/Attack_of_the_50_Ft._Woman/70068950
+The Parallax View,http://api.netflix.com/catalog/titles/movies/841836,1291190400,1310799600,1290798754,http://www.netflix.com/Movie/The_Parallax_View/841836
+American Dragon,http://api.netflix.com/catalog/titles/movies/70064129,1291190400,1314860400,1287004378,http://www.netflix.com/Movie/American_Dragon/70064129
+Short Order,http://api.netflix.com/catalog/titles/movies/70080728,1291190400,1322726400,1290034752,http://www.netflix.com/Movie/Short_Order/70080728
+The Pope's Toilet,http://api.netflix.com/catalog/titles/movies/70110977,1291190400,1354348800,1279577596,http://www.netflix.com/Movie/The_Pope_s_Toilet/70110977
+Kiss the Bride,http://api.netflix.com/catalog/titles/movies/70098574,1291190400,1293868800,1289381293,http://www.netflix.com/Movie/Kiss_the_Bride/70098574
+Stone of Destiny,http://api.netflix.com/catalog/titles/movies/70105937,1291190400,1354348800,1289386617,http://www.netflix.com/Movie/Stone_of_Destiny/70105937
+The Universe of Keith Haring,http://api.netflix.com/catalog/titles/movies/70105985,1291190400,1354348800,1290033939,http://www.netflix.com/Movie/The_Universe_of_Keith_Haring/70105985
+Insidious,http://api.netflix.com/catalog/titles/movies/70099607,1291190400,1322726400,1288396528,http://www.netflix.com/Movie/Insidious/70099607
+The Year of the Nail,http://api.netflix.com/catalog/titles/movies/70084334,1291190400,1322726400,1290277729,http://www.netflix.com/Movie/The_Year_of_the_Nail/70084334
+Richard III,http://api.netflix.com/catalog/titles/movies/26587474,1291190400,1330588800,1290245274,http://www.netflix.com/Movie/Richard_III/26587474
+From Within,http://api.netflix.com/catalog/titles/movies/70109688,1291190400,1298966400,1287650476,http://www.netflix.com/Movie/From_Within/70109688
+Slaughter,http://api.netflix.com/catalog/titles/movies/70113444,1291190400,1298966400,1287476216,http://www.netflix.com/Movie/Slaughter/70113444
+Sixty Six,http://api.netflix.com/catalog/titles/movies/70102774,1291190400,1385884800,1290105993,http://www.netflix.com/Movie/Sixty_Six/70102774
+Message in a Bottle,http://api.netflix.com/catalog/titles/movies/18179651,1291190400,1306911600,1290622147,http://www.netflix.com/Movie/Message_in_a_Bottle/18179651
+The Presidio,http://api.netflix.com/catalog/titles/movies/871916,1291190400,1298966400,1288340319,http://www.netflix.com/Movie/The_Presidio/871916
+Up the Yangtze,http://api.netflix.com/catalog/titles/movies/70084172,1291190400,1354348800,1290034617,http://www.netflix.com/Movie/Up_the_Yangtze/70084172
+Milton Glaser: To Inform and Delight,http://api.netflix.com/catalog/titles/movies/70119814,1291190400,1338534000,1290034055,http://www.netflix.com/Movie/Milton_Glaser_To_Inform_and_Delight/70119814
+Blood Into Wine,http://api.netflix.com/catalog/titles/movies/70132337,1291190400,1338534000,1291053415,http://www.netflix.com/Movie/Blood_Into_Wine/70132337
+Shut Up and Kiss Me,http://api.netflix.com/catalog/titles/movies/70140311,1291190400,1322726400,1287528634,http://www.netflix.com/Movie/Shut_Up_and_Kiss_Me/70140311
+3 Américas,http://api.netflix.com/catalog/titles/movies/70128015,1291190400,1322726400,1288393805,http://www.netflix.com/Movie/3_Americas/70128015
+Mo,http://api.netflix.com/catalog/titles/movies/70123078,1291190400,1322726400,1288396567,http://www.netflix.com/Movie/Mo/70123078
+The Strawberry Shortcake Movie: Sky's the Limit,http://api.netflix.com/catalog/titles/movies/70121400,1291190400,1354348800,1288912337,http://www.netflix.com/Movie/The_Strawberry_Shortcake_Movie_Sky_s_the_Limit/70121400
+Rocky IV,http://api.netflix.com/catalog/titles/movies/916061,1291190400,1293868800,1287004378,http://www.netflix.com/Movie/Rocky_IV/916061
+Blind Spot,http://api.netflix.com/catalog/titles/movies/70122177,1291190400,1322726400,1288394029,http://www.netflix.com/Movie/Blind_Spot/70122177
+The Bounty Hunter,http://api.netflix.com/catalog/titles/movies/70128696,1291190400,1321516800,1290557849,http://www.netflix.com/Movie/The_Bounty_Hunter/70128696
+Collapse,http://api.netflix.com/catalog/titles/movies/70123600,1291190400,1338534000,1288396384,http://www.netflix.com/Movie/Collapse/70123600
+Rumble in the Bronx,http://api.netflix.com/catalog/titles/movies/923574,1291190400,1306911600,1288026146,http://www.netflix.com/Movie/Rumble_in_the_Bronx/923574
+Right to Exit: Kevorkian,http://api.netflix.com/catalog/titles/movies/70123281,1291190400,1322726400,1290034594,http://www.netflix.com/Movie/Right_to_Exit_Kevorkian/70123281
+Twice Upon a Yesterday,http://api.netflix.com/catalog/titles/movies/21676106,1291190400,1306825200,1287004378,http://www.netflix.com/Movie/Twice_Upon_a_Yesterday/21676106
+Running on Empty,http://api.netflix.com/catalog/titles/movies/924755,1291190400,1306911600,1279148746,http://www.netflix.com/Movie/Running_on_Empty/924755
+The Crush,http://api.netflix.com/catalog/titles/movies/409583,1291190400,1306911600,1287084871,http://www.netflix.com/Movie/The_Crush/409583
+Our City Dreams,http://api.netflix.com/catalog/titles/movies/70114084,1291190400,1354348800,1288128446,http://www.netflix.com/Movie/Our_City_Dreams/70114084
+Rocky II,http://api.netflix.com/catalog/titles/movies/916043,1291190400,1293868800,1287004378,http://www.netflix.com/Movie/Rocky_II/916043
+Dancing Across Borders,http://api.netflix.com/catalog/titles/movies/70119678,1291190400,1385884800,1290759166,http://www.netflix.com/Movie/Dancing_Across_Borders/70119678
+The Hit,http://api.netflix.com/catalog/titles/movies/70116594,1291190400,1322726400,1288396695,http://www.netflix.com/Movie/The_Hit/70116594
+Private,http://api.netflix.com/catalog/titles/movies/70140485,1291190400,1338534000,1290034257,http://www.netflix.com/Movie/Private/70140485
+Who Is KK Downey?,http://api.netflix.com/catalog/titles/movies/70125479,1291190400,1322726400,1288396878,http://www.netflix.com/Movie/Who_Is_KK_Downey/70125479
+Dolores Claiborne,http://api.netflix.com/catalog/titles/movies/451465,1291190400,1338534000,1290245274,http://www.netflix.com/Movie/Dolores_Claiborne/451465
+Undercover Boss: Season 1,http://api.netflix.com/catalog/titles/series/70154507/seasons/70154507,1291190400,1322726400,1291112170,http://www.netflix.com/Movie/Undercover_Boss_Season_1/70154507
+The Shining,http://api.netflix.com/catalog/titles/movies/959008,1291190400,1306911600,1288803329,http://www.netflix.com/Movie/The_Shining/959008
