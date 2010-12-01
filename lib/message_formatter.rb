@@ -72,7 +72,7 @@ class MessageFormatter
       'subject' => mail.subject
     }
     if !mail.cc.nil?
-      headers['cc'] = mail.cc.size == 1 ? mail.cc.cc_s : mail.cc.map(&:cc_s)
+      headers['cc'] = mail.cc.size == 1 ? mail.cc.to_s : mail.cc.map(&:to_s)
     end
     if !mail.reply_to.nil?
       headers['reply_to'] = mail.reply_to.size == 1 ? mail.reply_to[0].to_s : mail.reply_to.map(&:reply_to_s)
