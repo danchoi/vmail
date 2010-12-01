@@ -2,7 +2,7 @@ require 'mail'
 require 'open3'
 
 class MessageFormatter
-  # initialize with a raw email
+  # initialize with a Mail object
   def initialize(mail)
     @mail = mail
   end
@@ -72,11 +72,26 @@ class MessageFormatter
       'subject' => mail.subject
     }
     if !mail.cc.nil?
-      headers['cc'] = mail.cc.size == 1 ? mail.cc.to_s : mail.cc.map(&:to_s)
+      headers['cc'] = mail.cc.size == 1 ? mail.cc[0].to_s : mail.cc.map(&:to_s)
     end
     if !mail.reply_to.nil?
       headers['reply_to'] = mail.reply_to.size == 1 ? mail.reply_to[0].to_s : mail.reply_to.map(&:reply_to_s)
     end
     headers
   end
+
+  def encoding
+    @mail.encoding
+  end
+
+  # address method could be 'to' for sent messages
+  def summary(uid, flags, address_method = 'from') 
+    address = @mail.send(address_method) 
+    "#{@mail_id} #{format_time(@mail.date.to_s)} #{address[0][0,30].ljust(30)} #{@mail.subject.to_s[0,70].ljust(70)} #{flags.inspect.col(30)}"
+  end
+
+  def format_time(x)
+    Time.parse(x.to_s).localtime.strftime "%D %I:%M%P"
+  end
+
 end

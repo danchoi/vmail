@@ -122,10 +122,11 @@ class GmailServer
         end
         res = results[0]
         header = res.attr["RFC822.HEADER"]
+        log "got data for #{thread_uid}"
+
         mail = Mail.new(header)
         mail_id = thread_uid
         flags = res.attr["FLAGS"]
-        log "got data for #{thread_uid}"
         address = @mailbox == '[Gmail]/Sent Mail' ? mail.to : mail.from
         "#{mail_id} #{format_time(mail.date.to_s)} #{address[0][0,30].ljust(30)} #{mail.subject.to_s[0,70].ljust(70)} #{flags.inspect.col(30)}"
       end
