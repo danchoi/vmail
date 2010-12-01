@@ -8,5 +8,5 @@ server.select_mailbox ARGV.shift
 File.open("mailbox.txt", "w") do |file|
   file.puts server.search(*ARGV)
 end
-puts system("DRB_URI='#{uri}' vim -S viewer.vim mailbox.txt")
+system("DRB_URI='#{uri}' vim -S viewer.vim mailbox.txt")
 server.close
