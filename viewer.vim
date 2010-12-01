@@ -13,7 +13,7 @@ let s:select_mailbox_command = s:client_script . "select_mailbox "
 let s:search_command = s:client_script . "search "
 let s:flag_command = s:client_script . "flag "
 let s:message_template_command = s:client_script . "message_template "
-let s:deliver_command = s:client_script . "deliver"
+let s:deliver_command = s:client_script . "deliver "
 let s:message_bufname = "MessageWindow"
 
 function! s:set_parameters() 
@@ -243,10 +243,12 @@ function! s:compose_message()
 endfunction
 
 function! s:deliver_message()
+  w
   let mail = join(getline(1,'$'), "\n")
-  let res = system(s:deliver_command, mail)
+  exec ":!" . s:deliver_command . " < ComposeMessage" 
+  "call system(s:deliver_command, mail)
   redraw
-  echo res
+"  echo res
 endfunction
 
 call s:create_list_window()

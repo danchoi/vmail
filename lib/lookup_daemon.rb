@@ -244,10 +244,10 @@ END
 
   def message_template
     headers = {'from' => @username,
-      'to' => nil,
-      'subject' => nil
+      'to' => 'dhchoi@gmail.com',
+      'subject' => "test #{rand(90)}"
     }
-    headers.to_yaml
+    headers.to_yaml + "\n\n"
   end
 
   def deliver(text)
@@ -256,13 +256,15 @@ END
     require 'smtp_tls'
     require 'mail'
     mail = Mail.new
-    headers = YAML::load(text.split(/\n\n/)[0])
+    raw_headers, body = *text.split(/\n\n/)
+    headers = YAML::load(raw_headers)
     puts "delivering: #{headers.inspect}"
     mail.from = headers['from']
     mail.to = headers['to'].split(/,\s+/)
     mail.subject = headers['subject']
     mail.delivery_method(*smtp_settings)
     mail.from ||= @username
+    mail.body = body
     mail.deliver!
     "SENT"
   end
