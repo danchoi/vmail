@@ -261,8 +261,11 @@ END
 end
 
 trap("INT") { 
+  require 'timeout'
   puts "closing connection"  
-  $gmail.close
+  Timeout::timeout(5) do 
+    $gmail.close
+  end
   exit
 }
 
