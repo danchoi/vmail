@@ -242,14 +242,29 @@ END
 #      add_file "/path/to/some_image.jpg"
 #    end
 
-  def deliver(mail=nil, &block)
+  def message_template
+    headers = {'from' => @username,
+      'to' => nil,
+      'subject' => nil
+    }
+    headers.to_yaml
+  end
+
+  def deliver(text)
+    # parse the text. The headers are yaml. The rest is text body.
     require 'net/smtp'
     require 'smtp_tls'
     require 'mail'
-    mail = Mail.new(&block) if block_given?
+    mail = Mail.new
+    headers = YAML::load(text.split(/\n\n/)[0])
+    puts "delivering: #{headers.inspect}"
+    mail.from = headers['from']
+    mail.to = headers['to'].split(/,\s+/)
+    mail.subject = headers['subject']
     mail.delivery_method(*smtp_settings)
-    mail.from = meta.username unless mail.from
+    mail.from ||= @username
     mail.deliver!
+    "SENT"
   end
  
   private

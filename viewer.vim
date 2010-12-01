@@ -12,6 +12,8 @@ let s:fetch_headers_command = s:client_script . "fetch_headers "
 let s:select_mailbox_command = s:client_script . "select_mailbox "
 let s:search_command = s:client_script . "search "
 let s:flag_command = s:client_script . "flag "
+let s:message_template_command = s:client_script . "message_template "
+let s:deliver_command = s:client_script . "deliver"
 let s:message_bufname = "MessageWindow"
 
 function! s:set_parameters() 
@@ -227,6 +229,26 @@ function! s:close_mailbox_list()
   echo selection
 endfunction
 
+function! s:compose_message()
+  " create a new window and close all others
+  let command = s:message_template_command
+  redraw
+  echo command
+  let res = system(command)
+  topleft split ComposeMessage
+  set modifiable
+  1,$delete
+  put! =res
+  noremap <silent> <buffer> <Leader>d :call <SID>deliver_message()<CR>
+endfunction
+
+function! s:deliver_message()
+  let mail = join(getline(1,'$'), "\n")
+  let res = system(s:deliver_command, mail)
+  redraw
+  echo res
+endfunction
+
 call s:create_list_window()
 
 " Detail Window is on top, to buck the trend!
@@ -250,6 +272,8 @@ noremap <silent> o yE :!open <C-R>"<CR><CR>
 "noremap <silent> <buffer> f :call <SID>get_messages()<CR><PageUp>
 noremap <silent> <buffer> u :call <SID>update()<CR>
 noremap <silent> <buffer> <Leader>m :call <SID>select_mailbox()<CR>
+
+noremap <silent> <buffer> <Leader>c :call <SID>compose_message()<CR><cr>
 
 " noremap <silent> <buffer> f :call <SID>get_messages()<CR> 
 
