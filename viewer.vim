@@ -292,8 +292,8 @@ call s:create_message_window()
 
 call s:focus_list_window() " to go list window
 " this are list window bindings
+noremap <silent> <buffer> <leader>R :call <SID>show_message(1)<CR> 
 noremap <silent> <buffer> <cr> :call <SID>show_message(0)<CR> 
-noremap <silent> <buffer> R :call <SID>show_message(1)<CR> 
 noremap <silent> q :qal!<cr>
 
 noremap <silent> <buffer> s :call <SID>toggle_flag("Flagged")<CR>
