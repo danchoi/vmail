@@ -269,6 +269,7 @@ function! s:compose_message(isreply)
   set modifiable
   1,$delete
   put! =res
+  normal 1G
   noremap <silent> <buffer> <Leader>d :call <SID>deliver_message()<CR>
 endfunction
 
