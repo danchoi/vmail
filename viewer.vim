@@ -62,11 +62,12 @@ function! s:create_message_window()
   " message window bindings
   noremap <silent> <buffer> <cr> :call <SID>focus_list_window()<CR> 
   noremap <silent> <buffer> <Leader>r :call <SID>compose_message(1)<CR><cr>
+  noremap <silent> <buffer> <Leader>R :call <SID>show_raw()<cr>
 
   close
 endfunction
 
-function! s:show_message(raw)
+function! s:show_message()
   call s:focus_list_window()  
   let line = getline(line("."))
   let selected_uid = matchstr(line, '^\d\+')
@@ -77,11 +78,7 @@ function! s:show_message(raw)
     return
   end
   let s:current_uid = selected_uid
-  if a:raw
-    let command = s:lookup_command . s:current_uid . " raw"
-  else
-    let command = s:lookup_command . s:current_uid
-  endif
+  let command = s:lookup_command . s:current_uid
   echo command
 
   call s:focus_message_window()
@@ -102,6 +99,20 @@ function! s:show_message(raw)
   set nomodifiable
   " call s:focus_message_window()
 endfunction
+
+" invoked from withint message window
+function! s:show_raw()
+  let command = s:lookup_command . s:current_uid . ' raw'
+  echo command
+  set modifiable
+  1,$delete
+  let res = system(command)
+  put =res
+  1delete
+  normal 1G
+  set nomodifiable
+endfunction
+
 
 function! s:focus_list_window()
   let winnr = bufwinnr(s:listbufnr) 
@@ -292,8 +303,11 @@ call s:create_message_window()
 
 call s:focus_list_window() " to go list window
 " this are list window bindings
-noremap <silent> <buffer> <leader>R :call <SID>show_message(1)<CR> 
-noremap <silent> <buffer> <cr> :call <SID>show_message(0)<CR> 
+" TODO redo this so it only happens inside the message window
+noremap <silent> <buffer> <leader>R :call <SID>show_message()<CR> 
+
+
+noremap <silent> <buffer> <cr> :call <SID>show_message()<CR> 
 noremap <silent> q :qal!<cr>
 
 noremap <silent> <buffer> s :call <SID>toggle_flag("Flagged")<CR>
