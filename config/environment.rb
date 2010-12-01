@@ -15,3 +15,4 @@ gmail_config = YAML::load(File.read(gmail_config_file))
 require 'gmail'
 $gmail = Gmail.new gmail_config['login'], gmail_config['password']
 
+require 'message_formatter'
