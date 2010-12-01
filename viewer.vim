@@ -13,6 +13,7 @@ let s:select_mailbox_command = s:client_script . "select_mailbox "
 let s:search_command = s:client_script . "search "
 let s:flag_command = s:client_script . "flag "
 let s:message_template_command = s:client_script . "message_template "
+let s:reply_template_command = s:client_script . "reply_template "
 let s:deliver_command = s:client_script . "deliver "
 let s:message_bufname = "MessageWindow"
 let s:list_bufname = "MessageListWindow"
@@ -60,6 +61,7 @@ function! s:create_message_window()
   let s:message_window_bufnr = bufnr('%')
   " message window bindings
   noremap <silent> <buffer> <cr> :call <SID>focus_list_window()<CR> 
+  noremap <silent> <buffer> <Leader>r :call <SID>compose_message(1)<CR><cr>
 
   close
 endfunction
@@ -252,18 +254,24 @@ function! s:close_mailbox_list()
   echo selection
 endfunction
 
-function! s:compose_message()
+function! s:compose_message(isreply)
   " create a new window and close all others
-  let command = s:message_template_command
+  if a:isreply 
+    let command = s:reply_template_command . s:current_uid
+  else
+    let command = s:message_template_command
+  end
   redraw
   echo command
   let res = system(command)
+  only " make one pane first
   topleft split ComposeMessage
   set modifiable
   1,$delete
   put! =res
   noremap <silent> <buffer> <Leader>d :call <SID>deliver_message()<CR>
 endfunction
+
 
 function! s:deliver_message()
   w
@@ -282,7 +290,7 @@ call s:create_message_window()
 call s:focus_list_window() " to go list window
 " this are list window bindings
 noremap <silent> <buffer> <cr> :call <SID>show_message(0)<CR> 
-noremap <silent> <buffer> r :call <SID>show_message(1)<CR> 
+noremap <silent> <buffer> R :call <SID>show_message(1)<CR> 
 noremap <silent> q :qal!<cr>
 
 noremap <silent> <buffer> s :call <SID>toggle_flag("Flagged")<CR>
@@ -297,7 +305,7 @@ noremap <silent> o yE :!open <C-R>"<CR><CR>
 noremap <silent> <buffer> u :call <SID>update()<CR>
 noremap <silent> <buffer> <Leader>m :call <SID>select_mailbox()<CR>
 
-noremap <silent> <buffer> <Leader>c :call <SID>compose_message()<CR><cr>
+noremap <silent> <buffer> <Leader>c :call <SID>compose_message(0)<CR><cr>
 
 " noremap <silent> <buffer> f :call <SID>get_messages()<CR> 
 

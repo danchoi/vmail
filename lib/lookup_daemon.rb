@@ -196,6 +196,19 @@ END
     headers.to_yaml + "\n\n"
   end
 
+  def reply_template(uid)
+    res = @imap.uid_fetch(uid.to_i, ["FLAGS", "BODY", "ENVELOPE", "RFC822.HEADER"])[0]
+    header = res.attr["RFC822.HEADER"]
+    mail = Mail.new(header)
+    formatter = MessageFormatter.new(mail)
+    headers = formatter.extract_headers
+    reply_to = headers['reply_to'] || headers['from']
+    reply_headers = { 'to' => reply_to, 'subject' => headers['subject'] }
+    reply_headers.to_yaml + "\n\n"
+  rescue
+    handle_error $!
+  end
+
   def deliver(text)
     # parse the text. The headers are yaml. The rest is text body.
     require 'net/smtp'
