@@ -1,11 +1,10 @@
 require 'drb'
-#require File.expand_path("../gmail", __FILE__)
+require File.expand_path("../message_formatter", __FILE__)
 require 'yaml'
 require 'mail'
 require 'net/imap'
 require 'time'
 require 'logger'
-require 'nokogiri'
 
 class String
   def col(width)
@@ -142,16 +141,14 @@ class GmailServer
       return res
     end
     mail = Mail.new(res)
-    part = mail.parts.empty? ? mail : find_text_part(mail.parts)
-    out = if part
-            format_body(part.body) 
-          else 
-            "NO TEXT" 
-          end
-    message = <<-END
-#{extract_headers(mail).to_yaml}
+    formatter = MessageFormatter.new(mail)
+    part = formatter.find_text_part
 
-#{list_parts(mail.parts.empty? ? [mail] : mail.parts)}
+    out = formatter.process_body 
+    message = <<-END
+#{formatter.extract_headers.to_yaml}
+
+#{formatter.list_parts}
 
 -- body --
 
@@ -160,35 +157,6 @@ END
     message.gsub("\r", '')
   rescue
     handle_error $!
-  end
-
-  def list_parts(parts)
-    if parts.empty?
-      return nil
-    end
-    lines = parts.map do |part|
-      if part.multipart?
-        list_parts(part.parts)
-      else
-        # part.charset could be used
-        "- #{part.content_type}"
-      end
-    end
-    lines.join("\n")
-  end
-
-  def find_text_part(parts)
-    part = parts.detect {|part| part.multipart?}
-    if part
-      find_text_part(part.parts)
-    else
-      part = parts.detect {|part| (part.header["Content-Type"].to_s =~ /text\/plain/) }
-      if part
-        return part
-      else
-        return "no text part"
-      end
-    end
   end
 
   def flag(uid_set, action, flg)
@@ -264,25 +232,6 @@ END
       log "Trying to reconnect"
       log open
     end
-  end
-
-  def extract_headers(mail)
-    headers = {'from' => mail.from.first.to_s,
-      'date' => mail.date,
-      'to' => mail.to.size == 1 ? mail.to[0].to_s : mail.to.map(&:to_s),
-      'subject' => mail.subject
-    }
-    if !mail.cc.nil?
-      headers['cc'] = mail.cc.size == 1 ? mail.cc.cc_s : mail.cc.map(&:cc_s)
-    end
-    if !mail.reply_to.nil?
-      headers['reply_to'] = mail.reply_to.size == 1 ? mail.reply_to[0].to_s : mail.reply_to.map(&:reply_to_s)
-    end
-    headers
-  end
-
-  def format_body(body)
-    body.decoded
   end
 
   def format_time(x)
