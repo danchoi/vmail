@@ -265,12 +265,14 @@ function! s:compose_message(isreply)
   echo command
   let res = system(command)
   only " make one pane first
-  topleft split ComposeMessage
+  vertical botright split ComposeMessage
+
   set modifiable
   1,$delete
   put! =res
   normal 1G
   noremap <silent> <buffer> <Leader>d :call <SID>deliver_message()<CR>
+  nnoremap <silent> <buffer> q :q!<cr>:call <SID>focus_list_window()<cr>
 endfunction
 
 
