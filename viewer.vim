@@ -105,10 +105,11 @@ function! s:focus_list_window()
   let winnr = bufwinnr(s:listbufnr) 
   if winnr == -1
     " create window
-    let bufname = bufname(s:listbufnr)
-    exec "split " . bufname
+    split
+    exec "buffer" . s:listbufnr
+  else
+    exec winnr . "wincmd w"
   end
-  exec winnr . "wincmd w"
 endfunction
 
 function! s:focus_message_window()
@@ -116,8 +117,9 @@ function! s:focus_message_window()
   if winnr == -1
     " create window
     exec "split " . s:message_bufname
+  else
+    exec winnr . "wincmd w"
   endif
-  exec winnr . "wincmd w"
 endfunction
 
 function! s:full_screen_message()
