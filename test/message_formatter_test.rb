@@ -2,6 +2,21 @@
 require 'test_helper'
 
 describe MessageFormatter do
+  describe "message with email addresses along with names" do
+    before do
+      @raw = File.read(File.expand_path('../fixtures/google-affiliate.eml', __FILE__))
+      @mail = Mail.new(@raw)
+      @formatter = MessageFormatter.new(@mail)
+    end
+
+    it "should extract name along with email address" do
+      expected = '"Google Affiliate Network" <affiliatenetwork@google.com>'
+      @formatter.extract_headers['from'].must_equal 'Google Affiliate Network <affiliatenetwork@google.com>'
+      @formatter.extract_headers['to'].must_match 'Dan Choi <dhchoi@gmail.com>'
+      @formatter.extract_headers['cc'].must_match 'Steve Jobs <steve@apple.com>'
+    end
+  end
+
   describe "message has a text body but no Content-Type" do
     before do 
       @raw = File.read(File.expand_path('../fixtures/textbody-nocontenttype.eml', __FILE__))
@@ -47,9 +62,9 @@ describe MessageFormatter do
       @formatter = MessageFormatter.new(@mail)
     end
     it "should process body" do
-      skip
-      #puts @formatter.process_body
+      @formatter.process_body.wont_be_nil
     end
   end
+
 end
 

@@ -68,16 +68,16 @@ class MessageFormatter
   end
 
   def extract_headers(mail = @mail)
-    headers = {'from' => mail.from.first.to_s,
+    headers = {'from' => mail['from'].decoded,
       'date' => mail.date,
-      'to' => mail.to.size == 1 ? mail.to[0].to_s : mail.to.map(&:to_s),
+      'to' => mail['to'].decoded,
       'subject' => mail.subject
     }
     if !mail.cc.nil?
-      headers['cc'] = mail.cc.size == 1 ? mail.cc[0].to_s : mail.cc.map(&:to_s)
+      headers['cc'] = mail['cc'].decoded.to_s
     end
     if !mail.reply_to.nil?
-      headers['reply_to'] = mail.reply_to.size == 1 ? mail.reply_to[0].to_s : mail.reply_to.map(&:reply_to_s)
+      headers['reply_to'] = mail['reply_to'].decoded
     end
     headers
   end

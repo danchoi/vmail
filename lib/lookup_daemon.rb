@@ -257,7 +257,7 @@ END
 
   def handle_error(error)
     log error
-    if error.is_a?(IOError) && error.message =~ /closed stream/
+    if error.is_a?(IOError) || error.is_a?(Errno::EADDRNOTAVAIL)
       log "Trying to reconnect"
       log open
     end
