@@ -96,8 +96,11 @@ class GmailServer
   end
 
   def update
-    # i don't know why, but we have to fetch one uid first to be able to get new uids
-    fetch_headers(@all_uids[-1])
+    # if this times out, we know the connection is stale while the user is trying to update
+    Timeout::timeout(9) do
+      # i don't know why, but we have to fetch one uid first to be able to get new uids
+      fetch_headers(@all_uids[-1])
+    end 
     uids = @imap.uid_search(@query)
     new_uids = uids - @all_uids
     log "UPDATE: NEW UIDS: #{new_uids.inspect}"
@@ -120,6 +123,7 @@ class GmailServer
         this_thread = Thread.current
         results = nil
         while results.nil?
+          sleep 0.1
           results = @imap.uid_fetch(thread_uid, ["FLAGS", "BODY", "ENVELOPE", "RFC822.HEADER"])
         end
         res = results[0]
