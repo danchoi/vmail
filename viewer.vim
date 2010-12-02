@@ -41,15 +41,6 @@ function! s:create_list_window()
   setlocal cursorline
   " we need the bufnr to find the window later
   let s:listbufnr = bufnr('%')
-
-  " set up syntax highlighting
-  if has("syntax")
-    syn clear
-"    syn match BufferNormal /.*/
-    syn match BufferFlagged /^.*:Flagged.*$/hs=s
-"    hi def BufferNormal ctermfg=black ctermbg=white
-    hi def BufferFlagged ctermfg=white ctermbg=black
-  endif
 endfunction
 
 " the message display buffer window
@@ -82,7 +73,7 @@ function! s:show_message()
   echo command
 
   call s:focus_message_window()
-  set modifiable
+  setlocal modifiable
   1,$delete
 
   let res = system(command)
@@ -94,9 +85,9 @@ function! s:show_message()
   " flag as seen
   let line = getline(line('.'))
   let newline = substitute(line, "[]\.*$", "[:Seen]", '')
-  set modifiable
+  setlocal modifiable
   call setline(line('.'), newline)
-  set nomodifiable
+  setlocal nomodifiable
   " call s:focus_message_window()
 endfunction
 
@@ -104,13 +95,13 @@ endfunction
 function! s:show_raw()
   let command = s:lookup_command . s:current_uid . ' raw'
   echo command
-  set modifiable
+  setlocal modifiable
   1,$delete
   let res = system(command)
   put =res
   1delete
   normal 1G
-  set nomodifiable
+  setlocal nomodifiable
 endfunction
 
 
@@ -123,6 +114,14 @@ function! s:focus_list_window()
   else
     exec winnr . "wincmd w"
   end
+  " set up syntax highlighting
+  if has("syntax")
+    syn clear
+"    syn match BufferNormal /.*/
+    syn match BufferFlagged /^.*:Flagged.*$/hs=s
+"    hi def BufferNormal ctermfg=black ctermbg=white
+    hi def BufferFlagged ctermfg=white ctermbg=black
+  endif
 endfunction
 
 function! s:focus_message_window()
@@ -157,11 +156,11 @@ function! s:get_messages()
   let command = s:search_command . s:limit . " " . s:offset . " " . shellescape(s:query) 
   echo command
   let res =  system(command)
-  set modifiable
+  setlocal modifiable
   let lines =  split(res, "\n")
   call append(0, lines)
   " execute "normal Gdd\<c-y>" 
-  set nomodifiable
+  setlocal nomodifiable
   " move offset back
   let s:offset = s:offset - s:limit
 endfunction
@@ -172,9 +171,9 @@ function! s:update()
   echo command
   let res = system(command)
   if match(res, '^\d\+') != -1
-    set modifiable
+    setlocal modifiable
     $put =res
-    set nomodifiable
+    setlocal nomodifiable
     let num = len(split(res, '\n', ''))
     redraw
     echo "you have " . num . " new message(s)!"
@@ -253,7 +252,7 @@ function! s:select_mailbox()
   setlocal buftype=nofile
   setlocal noswapfile
   resize 1
-  set modifiable
+  setlocal modifiable
   inoremap <silent> <buffer> <cr> <Esc>:call <SID>close_mailbox_list()<CR> 
   " autocmd CursorMovedI <buffer>  call feedkeys("i\<c-x>\<c-u>")
   set completefunc=CompleteMailbox
@@ -280,7 +279,7 @@ function! s:compose_message(isreply)
   only " make one pane first
   vertical botright split ComposeMessage
 
-  set modifiable
+  setlocal modifiable
   1,$delete
   put! =res
   normal 1G
