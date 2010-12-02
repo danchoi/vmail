@@ -216,7 +216,7 @@ END
 
     body = quote_header + formatter.process_body.gsub(/^(?=>)/, ">").gsub(/^(?!>)/, "> ")
 
-    reply_headers = { 'from' => @username, 'to' => reply_to, 'subject' => headers['subject'] }
+    reply_headers = { 'from' => @username, 'to' => reply_to, 'cc' => headers['cc'], 'subject' => headers['subject'] }
     reply_headers.to_yaml + "\n\n" + body
   rescue
     handle_error $!
@@ -233,6 +233,7 @@ END
     log "delivering: #{headers.inspect}"
     mail.from = headers['from'] || @username
     mail.to = headers['to'].split(/,\s+/)
+    mail.cc = headers['cc'].split(/,\s+/)
     mail.subject = headers['subject']
     mail.delivery_method(*smtp_settings)
     mail.from ||= @username
