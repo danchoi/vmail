@@ -104,11 +104,9 @@ class GmailServer
   end
 
   def update
-    # if this times out, we know the connection is stale while the user is trying to update
-    Timeout::timeout(9) do
-      # i don't know why, but we have to fetch one uid first to be able to get new uids
+    reconnect_if_necessary do 
       fetch_headers(@all_uids[-1])
-    end 
+    end
     uids = @imap.uid_search(@query)
     new_uids = uids - @all_uids
     log "UPDATE: NEW UIDS: #{new_uids.inspect}"
@@ -293,6 +291,19 @@ END
       log "Trying to reconnect"
       log(revive_connection)
     end
+  end
+
+  def reconnect_if_necessary(timeout = 9, &block)
+    # if this times out, we know the connection is stale while the user is trying to update
+    Timeout::timeout(timeout) do
+      block.call
+    end
+  rescue IOError, Errno::EADDRNOTAVAIL
+    log "error: #{$!}"
+    log "attempting to reconnect"
+    log(revive_connection)
+    # try just once
+    block.call
   end
 
   def format_time(x)

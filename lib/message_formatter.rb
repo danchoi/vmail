@@ -70,7 +70,7 @@ class MessageFormatter
   def extract_headers(mail = @mail)
     headers = {'from' => mail['from'].decoded,
       'date' => mail.date,
-      'to' => mail['to'].nil? ? '' : mail['to'].decoded,
+      'to' => mail['to'].nil? ? nil : mail['to'].decoded,
       'subject' => mail.subject
     }
     if !mail.cc.nil?
