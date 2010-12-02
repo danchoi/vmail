@@ -26,7 +26,7 @@ endfunction
 
 function! s:create_list_window()
   "setlocal bufhidden=delete
-  setlocal buftype=nofile
+  "setlocal buftype=nofile
   setlocal nomodifiable
   setlocal noswapfile
   "setlocal nomodifiable
@@ -56,8 +56,8 @@ endfunction
 function! s:create_message_window() 
   exec "botright split " . s:message_bufname
   setlocal buftype=nofile
-  setlocal noswapfile
-  setlocal nobuflisted
+  " setlocal noswapfile
+  " setlocal nobuflisted
   let s:message_window_bufnr = bufnr('%')
   " message window bindings
   noremap <silent> <buffer> <cr> :call <SID>focus_list_window()<CR> 
@@ -136,6 +136,8 @@ function! s:focus_message_window()
 endfunction
 
 function! s:full_screen_message()
+  call s:focus_list_window()
+  write
   call s:focus_message_window()
   only
 endfunction

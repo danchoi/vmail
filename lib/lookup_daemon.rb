@@ -244,6 +244,7 @@ END
     date = headers['date']
     quote_header = "On #{date}, #{sender} wrote:\n"
 
+    # TODO fix the character encoding, making sure it is valid UTF8 and encoded as such 
     body = quote_header + formatter.process_body.gsub(/^(?=>)/, ">").gsub(/^(?!>)/, "> ")
 
     reply_headers = { 'from' => @username, 'to' => reply_to, 'cc' => headers['cc'], 'subject' => headers['subject'] }
