@@ -50,9 +50,17 @@ class GmailServer
     log "selecting mailbox #{mailbox}"
     @imap.select(mailbox)
     @mailbox = mailbox
+    @bad_uids = []
     return "OK"
   rescue
     handle_error $!
+  end
+
+  def revive_connection
+    log "reviving connection"
+    open
+    log "reselecting mailbox #@mailbox"
+    @imap.select(@mailbox)
   end
 
   def list_mailboxes
@@ -120,11 +128,22 @@ class GmailServer
     uids.each do |uid|
       sleep 0.1
       threads << Thread.new(uid) do |thread_uid|
+        if @bad_uids.include?(thread_uid)
+          next "#{thread_uid} IMAP Error: could not parse message"
+        end
         this_thread = Thread.current
         results = nil
-        while results.nil?
-          sleep 0.1
-          results = @imap.uid_fetch(thread_uid, ["FLAGS", "BODY", "ENVELOPE", "RFC822.HEADER"])
+        begin
+          while results.nil?
+            sleep 0.1
+            results = @imap.uid_fetch(thread_uid, ["FLAGS", "BODY", "ENVELOPE", "RFC822.HEADER"])
+          end
+        rescue Net::IMAP::ResponseParseError, Net::IMAP::BadResponseError
+          log "error fetching uid #{thread_uid}"
+          log $!
+          log "adding #{thread_uid} to @bad_uids"
+          @bad_uids << thread_uid
+          this_thread.kill
         end
         res = results[0]
         header = res.attr["RFC822.HEADER"]
@@ -140,6 +159,13 @@ class GmailServer
     end
     threads.each {|t| lines << t.value}
     lines.join("\n")
+  rescue IOError
+    log "trying again"
+    log revive_connection
+    get_headers(limit, uids)
+  rescue
+    handle_error $!
+
   end
 
   def lookup(uid, raw=false)
@@ -264,7 +290,7 @@ END
     log error
     if error.is_a?(IOError) || error.is_a?(Errno::EADDRNOTAVAIL)
       log "Trying to reconnect"
-      log open
+      log(revive_connection)
     end
   end
 
