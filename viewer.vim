@@ -149,6 +149,8 @@ function! s:focus_list_window()
   if winnr("$") > 1
     only
   end
+  " vertically center the cursor line
+  normal z.
 endfunction
 
 function! s:focus_message_window()
