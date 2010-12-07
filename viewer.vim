@@ -282,7 +282,7 @@ function! s:compose_message(isreply)
   let res = system(command)
   only " make one pane first
   vertical botright split ComposeMessage
-
+  only
   setlocal modifiable
   1,$delete
   put! =res
@@ -290,7 +290,6 @@ function! s:compose_message(isreply)
   noremap <silent> <buffer> <Leader>d :call <SID>deliver_message()<CR>
   nnoremap <silent> <buffer> q :q!<cr>:call <SID>focus_list_window()<cr>
 endfunction
-
 
 function! s:deliver_message()
   w
