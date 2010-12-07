@@ -95,6 +95,7 @@ class GmailServer
     envelope = fetch_data.attr["ENVELOPE"]
     flags = fetch_data.attr["FLAGS"]
     address_struct = (@mailbox == '[Gmail]/Sent Mail' ? envelope.to.first : envelope.from.first)
+    # TODO use this data
     if address_struct.name
       log "address name: #{address_struct.name}"
     end
@@ -106,7 +107,9 @@ class GmailServer
   def search(limit, *query)
     @query = query.join(' ')
     log "uid_search #@query"
-    @all_uids = @imap.uid_search(@query)
+    @all_uids = reconnect_if_necessary do
+      @imap.uid_search(@query)
+    end
     uids = @all_uids[-([limit.to_i, @all_uids.size].min)..-1] || []
     fetch_headers(uids)
   end
