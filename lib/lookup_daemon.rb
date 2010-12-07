@@ -48,12 +48,12 @@ class GmailServer
       return
     end
     log "selecting mailbox #{mailbox}"
-    @imap.select(mailbox)
+    reconnect_if_necessary do 
+      @imap.select(mailbox)
+    end
     @mailbox = mailbox
     @bad_uids = []
     return "OK"
-  rescue
-    handle_error $!
   end
 
   def revive_connection
@@ -68,8 +68,6 @@ class GmailServer
       select {|struct| struct.attr.none? {|a| a == :Noselect} }.
       map {|struct| struct.name}.
       join("\n")
-  rescue
-    handle_error $!
   end
 
   def fetch_headers(uid_set)
@@ -80,16 +78,13 @@ class GmailServer
     lines = results.map do |res|
       header = res.attr["RFC822.HEADER"]
       mail = Mail.new(header)
-      formatter = MessageFormatter.new(mail)
+      formatter = MessageFormatter.new(mail, res.attr["UID"])
       flags = res.attr["FLAGS"]
-      uid = res.attr["UID"]
       address_method = @mailbox == '[Gmail]/Sent Mail' ? :to : :from
-      formatter.summary(uid, flags, address_method)
+      formatter.summary(flags, address_method)
     end
     log "got data for #{uid_set}"
     return lines.join("\n")
-  rescue
-    handle_error $!
   end
 
   def search(limit, *query)
@@ -99,12 +94,12 @@ class GmailServer
       @all_uids = @imap.uid_search(@query)
     end
     get_headers(limit)
-  rescue
-    handle_error $!
   end
 
   def update
     reconnect_if_necessary do 
+      # this is just to prime the IMAP connection
+      # It's necessary for some reason.
       fetch_headers(@all_uids[-1])
     end
     uids = @imap.uid_search(@query)
@@ -115,8 +110,6 @@ class GmailServer
       @all_uids = uids
       res
     end
-  rescue
-    handle_error $!
   end
 
   def get_headers(limit, uids = @all_uids)
@@ -148,22 +141,14 @@ class GmailServer
         log "got data for #{thread_uid}"
 
         mail = Mail.new(header)
-        formatter = MessageFormatter.new(mail)
+        formatter = MessageFormatter.new(mail, res.attr["UID"])
         flags = res.attr["FLAGS"]
-        uid = res.attr["UID"]
         address_method = @mailbox == '[Gmail]/Sent Mail' ? :to : :from
-        formatter.summary(uid, flags, address_method)
+        formatter.summary(flags, address_method)
       end
     end
     threads.each {|t| lines << t.value}
     lines.join("\n")
-  rescue IOError
-    log "trying again"
-    log revive_connection
-    get_headers(limit, uids)
-  rescue
-    handle_error $!
-
   end
 
   def lookup(uid, raw=false)
@@ -186,8 +171,6 @@ class GmailServer
 
 #{out}
 END
-  rescue
-    handle_error $!
   end
 
   def flag(uid_set, action, flg)
@@ -247,8 +230,6 @@ END
 
     reply_headers = { 'from' => @username, 'to' => reply_to, 'cc' => headers['cc'], 'subject' => headers['subject'] }
     reply_headers.to_yaml + "\n\n" + body
-  rescue
-    handle_error $!
   end
 
   def deliver(text)
@@ -287,18 +268,14 @@ END
 
   def handle_error(error)
     log error
-    if error.is_a?(IOError) || error.is_a?(Errno::EADDRNOTAVAIL)
-      log "Trying to reconnect"
-      log(revive_connection)
-    end
   end
 
-  def reconnect_if_necessary(timeout = 9, &block)
+  def reconnect_if_necessary(timeout = 10, &block)
     # if this times out, we know the connection is stale while the user is trying to update
     Timeout::timeout(timeout) do
       block.call
     end
-  rescue IOError, Errno::EADDRNOTAVAIL
+  rescue IOError, Errno::EADDRNOTAVAIL, Timeout::Error
     log "error: #{$!}"
     log "attempting to reconnect"
     log(revive_connection)
@@ -332,8 +309,12 @@ end
 trap("INT") { 
   require 'timeout'
   puts "closing connection"  
-  Timeout::timeout(5) do 
-    $gmail.close
+  begin
+    Timeout::timeout(5) do 
+      $gmail.close
+    end
+  rescue Timeout::Error
+    put "close connection attempt timed out"
   end
   exit
 }
