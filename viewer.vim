@@ -144,30 +144,6 @@ function! s:full_screen_message()
   only
 endfunction
 
-" don't use this yet
-function! s:get_messages()
-  call s:focus_list_window()
-  call s:set_parameters()
-  let command = s:select_mailbox_command .  shellescape(s:mailbox) 
-  " echo command
-  call system(command)
-  " get window height
-  let s:limit = winheight(bufwinnr(s:listbufnr)) 
-  if !exists('s:offset')
-    let s:offset = (line('w$') - 1) - s:limit
-  endif
-  let command = s:search_command . s:limit . " " . s:offset . " " . shellescape(s:query) 
-  echo command
-  let res =  system(command)
-  setlocal modifiable
-  let lines =  split(res, "\n")
-  call append(0, lines)
-  " execute "normal Gdd\<c-y>" 
-  setlocal nomodifiable
-  " move offset back
-  let s:offset = s:offset - s:limit
-endfunction
-
 " gets new messages since last update
 function! s:update()
   let command = s:update_command
@@ -257,14 +233,13 @@ function! s:search_window()
   setlocal modifiable
   inoremap <silent> <buffer> <cr> <Esc>:call <SID>do_search()<CR> 
   set completefunc=CompleteMailbox
-  call feedkeys("i")
-
+  call feedkeys("$i")
 endfunction
 
 function! s:do_search()
-  let query = getline(line('.'))
+  let s:query = getline(line('.'))
   bdelete
-  let command = s:parsed_search_command . query
+  let command = s:parsed_search_command . shellescape(s:query)
   echo command
   call s:focus_list_window()  
   let res = system(command)

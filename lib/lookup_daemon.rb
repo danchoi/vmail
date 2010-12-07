@@ -49,7 +49,7 @@ class GmailServer
     if mailbox == @mailbox 
       return
     end
-    log "selecting mailbox #{mailbox}"
+    log "selecting mailbox #{mailbox.inspect}"
     reconnect_if_necessary do 
       @imap.select(mailbox)
     end
@@ -114,6 +114,20 @@ class GmailServer
     end
     uids = @all_uids[-([limit.to_i, @all_uids.size].min)..-1] || []
     res = fetch_headers(uids)
+  end
+
+  def parsed_search(query)
+    query = query.split(/\s+/)
+    log "parsed_search #{query.inspect}"
+    mailbox = query.shift
+    while !query.empty? && query.first !~ /^\d+$/
+      mailbox += " #{query.shift}"
+    end
+    select_mailbox mailbox
+    if query.empty?
+      query = [25, 'ALL']
+    end
+    search *query
   end
 
   def update
