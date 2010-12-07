@@ -279,6 +279,7 @@ endfunction
 function! s:do_search()
   let s:query = getline(line('.'))
   close
+  " TODO should we really hardcode 100 as the quantity?
   let command = s:search_command . "100 " . shellescape(s:query)
   echo command
   call s:focus_list_window()  
