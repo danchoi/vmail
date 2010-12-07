@@ -65,20 +65,12 @@ function! s:show_message()
   call s:focus_list_window()  
   let line = getline(line("."))
   let selected_uid = matchstr(line, '^\d\+')
-  if exists('s:current_uid') && s:current_uid == selected_uid && bufwinnr(s:message_window_bufnr) != -1
-    " message is already visible, so this will close the list window and
-    " go full-screen with the message
-    call s:full_screen_message()
-    return
-  end
   let s:current_uid = selected_uid
   let command = s:lookup_command . s:current_uid
   echo command
-
   call s:focus_message_window()
   setlocal modifiable
   1,$delete
-
   let res = system(command)
   put =res
   1delete
@@ -91,7 +83,10 @@ function! s:show_message()
   setlocal modifiable
   call setline(line('.'), newline)
   setlocal nomodifiable
-  " call s:focus_message_window()
+  write
+  call feedkeys("<cr>")
+  call s:focus_message_window()
+  only
 endfunction
 
 " invoked from withint message window
@@ -125,6 +120,9 @@ function! s:focus_list_window()
 "    hi def BufferNormal ctermfg=black ctermbg=white
     hi def BufferFlagged ctermfg=white ctermbg=black
   endif
+  if winnr("$") > 1
+    only
+  endif
 endfunction
 
 function! s:focus_message_window()
@@ -135,13 +133,6 @@ function! s:focus_message_window()
   else
     exec winnr . "wincmd w"
   endif
-endfunction
-
-function! s:full_screen_message()
-  call s:focus_list_window()
-  write
-  call s:focus_message_window()
-  only
 endfunction
 
 " gets new messages since last update
@@ -314,14 +305,10 @@ call s:create_list_window()
 
 call s:create_message_window()
 
-
 call s:focus_list_window() " to go list window
 " this are list window bindings
-" TODO redo this so it only happens inside the message window
-noremap <silent> <buffer> <leader>R :call <SID>show_message()<CR> 
 
-
-noremap <silent> <buffer> <cr> :call <SID>show_message()<CR> 
+noremap <silent> <buffer> <cr> :call <SID>show_message()<CR>
 noremap <silent> q :qal!<cr>
 
 noremap <silent> <buffer> s :call <SID>toggle_flag("Flagged")<CR>

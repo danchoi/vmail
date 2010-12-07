@@ -235,7 +235,7 @@ END
     require 'smtp_tls'
     require 'mail'
     mail = Mail.new
-    raw_headers, body = *text.split(/\n\n/)
+    raw_headers, body = *text.split(/\n\n/, 2)
     headers = YAML::load(raw_headers)
     log "delivering: #{headers.inspect}"
     mail.from = headers['from'] || @username
