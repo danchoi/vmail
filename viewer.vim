@@ -136,8 +136,12 @@ function! s:focus_list_window()
     " hi def BufferFlagged ctermfg=white ctermbg=black
   endif
   if winnr("$") > 1
-    only
+    wincmd p
+    close!
   endif
+  if winnr("$") > 1
+    only
+  end
 endfunction
 
 function! s:focus_message_window()
@@ -304,7 +308,12 @@ function! s:compose_message(isreply)
   put! =res
   normal 1G
   noremap <silent> <buffer> <Leader>d :call <SID>deliver_message()<CR>
-  nnoremap <silent> <buffer> q :q!<cr>:call <SID>focus_list_window()<cr>
+  nnoremap <silent> <buffer> q :call <SID>cancel_compose()<cr>
+  nnoremap <silent> <buffer> <leader>q :call <SID>cancel_compose()<cr>
+endfunction
+
+function! s:cancel_compose()
+  call s:focus_list_window()
 endfunction
 
 function! s:deliver_message()
