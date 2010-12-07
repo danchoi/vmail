@@ -105,13 +105,15 @@ class GmailServer
   end
 
   def search(limit, *query)
+    limit = 25 if limit.to_s !~ /^\d+$/
+    query = ['ALL'] if query.empty?
     @query = query.join(' ')
-    log "uid_search #@query"
+    log "uid_search #@query #{limit}"
     @all_uids = reconnect_if_necessary do
       @imap.uid_search(@query)
     end
     uids = @all_uids[-([limit.to_i, @all_uids.size].min)..-1] || []
-    fetch_headers(uids)
+    res = fetch_headers(uids)
   end
 
   def update
@@ -132,7 +134,9 @@ class GmailServer
 
   def lookup(uid, raw=false)
     log "fetching #{uid.inspect}"
-    res = @imap.uid_fetch(uid.to_i, ["FLAGS", "RFC822"])[0].attr["RFC822"]
+    res = reconnect_if_necessary do 
+      @imap.uid_fetch(uid.to_i, ["FLAGS", "RFC822"])[0].attr["RFC822"]
+    end
     if raw
       return res
     end
@@ -249,7 +253,7 @@ END
     log error
   end
 
-  def reconnect_if_necessary(timeout = 20, &block)
+  def reconnect_if_necessary(timeout = 60, &block)
     # if this times out, we know the connection is stale while the user is trying to update
     Timeout::timeout(timeout) do
       block.call

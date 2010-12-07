@@ -11,6 +11,7 @@ let s:update_command = s:client_script . "update"
 let s:fetch_headers_command = s:client_script . "fetch_headers "
 let s:select_mailbox_command = s:client_script . "select_mailbox "
 let s:search_command = s:client_script . "search "
+let s:parsed_search_command = s:client_script . "parsed_search "
 let s:flag_command = s:client_script . "flag "
 let s:message_template_command = s:client_script . "message_template "
 let s:reply_template_command = s:client_script . "reply_template "
@@ -224,7 +225,6 @@ function! s:get_mailbox_list()
   let s:mailboxes = split(res, "\n", '')
 endfunction
 
-
 function! CompleteMailbox(findstart, base)
   if !exists("s:mailboxes")
     call s:get_mailbox_list()
@@ -249,23 +249,31 @@ function! CompleteMailbox(findstart, base)
   endif
 endfun
 
-function! s:select_mailbox()
-  topleft split SelectMailbox
+function! s:search_window()
+  topleft split SearchWindow
   setlocal buftype=nofile
   setlocal noswapfile
   resize 1
   setlocal modifiable
-  inoremap <silent> <buffer> <cr> <Esc>:call <SID>close_mailbox_list()<CR> 
-  " autocmd CursorMovedI <buffer>  call feedkeys("i\<c-x>\<c-u>")
+  inoremap <silent> <buffer> <cr> <Esc>:call <SID>do_search()<CR> 
   set completefunc=CompleteMailbox
-  call feedkeys("i\<c-x>\<c-u>")
+  call feedkeys("i")
+
 endfunction
 
-function! s:close_mailbox_list()
-  let selection = getline(line('.'))
+function! s:do_search()
+  let query = getline(line('.'))
   bdelete
-  redraw
-  echo selection
+  let command = s:parsed_search_command . query
+  echo command
+  call s:focus_list_window()  
+  let res = system(command)
+  set modifiable
+  1,$delete
+  put! =res
+  execute "normal Gdd\<c-y>" 
+  normal G
+  set nomodifiable
 endfunction
 
 function! s:compose_message(isreply)
@@ -320,13 +328,11 @@ noremap <silent> <buffer> ! :call <SID>toggle_flag("[Gmail]/Spam")<CR>
 "open a link browser (os x)
 "autocmd CursorMoved <buffer> call <SID>show_message()
 
-"noremap <silent> <buffer> f :call <SID>get_messages()<CR><PageUp>
 noremap <silent> <buffer> u :call <SID>update()<CR>
-noremap <silent> <buffer> <Leader>m :call <SID>select_mailbox()<CR>
+noremap <silent> <buffer> <Leader>s :call <SID>search_window()<CR>
 
 noremap <silent> <buffer> <Leader>c :call <SID>compose_message(0)<CR><cr>
 
-" noremap <silent> <buffer> f :call <SID>get_messages()<CR> 
 
 " press double return in list view to go full screen on a message; then
 " return? again to restore the list view
