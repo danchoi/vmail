@@ -116,9 +116,9 @@ function! s:focus_list_window()
   if has("syntax")
     syn clear
 "    syn match BufferNormal /.*/
-    syn match BufferFlagged /^.*:Flagged.*$/hs=s
+    " syn match BufferFlagged /^.*:Flagged.*$/hs=s
 "    hi def BufferNormal ctermfg=black ctermbg=white
-    hi def BufferFlagged ctermfg=white ctermbg=black
+    " hi def BufferFlagged ctermfg=white ctermbg=black
   endif
   if winnr("$") > 1
     only
@@ -235,7 +235,7 @@ function! s:select_mailbox()
   call s:focus_list_window()  
   set modifiable
   let command = s:search_command . "100 all"
-  echo command
+  echo "Please wait. Loading messages..."
   let res = system(command)
   1,$delete
   put! =res
