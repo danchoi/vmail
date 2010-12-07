@@ -64,7 +64,7 @@ endfunction
 
 function! s:show_message()
   let line = getline(line("."))
-  if matchstr(line, '^> Load') != -1
+  if match(line, '^> Load') != -1
     setlocal modifiable
     delete
     call s:more_messages()
