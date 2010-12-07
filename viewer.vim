@@ -54,6 +54,8 @@ function! s:create_message_window()
   noremap <silent> <buffer> <cr> :call <SID>focus_list_window()<CR> 
   noremap <silent> <buffer> <Leader>r :call <SID>compose_message(1)<CR><cr>
   noremap <silent> <buffer> <Leader>R :call <SID>show_raw()<cr>
+  " TODO improve this
+  noremap <silent> <buffer> <Leader>o yE :!open <C-R>"<CR><CR>
 
   close
 endfunction
@@ -316,7 +318,6 @@ noremap <silent> <buffer> D :call <SID>toggle_flag("Deleted")<CR>
 noremap <silent> <buffer> ! :call <SID>toggle_flag("[Gmail]/Spam")<CR>
 
 "open a link browser (os x)
-noremap <silent> o yE :!open <C-R>"<CR><CR>
 "autocmd CursorMoved <buffer> call <SID>show_message()
 
 "noremap <silent> <buffer> f :call <SID>get_messages()<CR><PageUp>

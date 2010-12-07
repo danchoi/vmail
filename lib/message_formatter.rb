@@ -90,7 +90,7 @@ class MessageFormatter
   # address method could be 'to' for sent messages
   def summary(flags, address_method = 'from') 
     address = @mail.send(address_method)
-    address = address.size == 1 ? address[0].to_s.encode('utf-8') : address.map {|a| a.to_s.encode('utf-8')} 
+    address = address.size == 1 ? address[0].to_s.encode('utf-8') : address.map {|a| a.to_s.encode('utf-8')}.join(',') 
     "#{@uid} #{format_time(@mail.date.to_s)} #{address[0,30].ljust(30)} #{@mail.subject.encode('utf-8')[0,70].ljust(70)} #{flags.inspect.col(30)}"
   end
 

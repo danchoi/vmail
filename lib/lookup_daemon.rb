@@ -114,7 +114,6 @@ class GmailServer
     end
   end
 
-
   def lookup(uid, raw=false)
     log "fetching #{uid.inspect}"
     res = @imap.uid_fetch(uid.to_i, ["FLAGS", "RFC822"])[0].attr["RFC822"]
@@ -207,7 +206,7 @@ END
     log "delivering: #{headers.inspect}"
     mail.from = headers['from'] || @username
     mail.to = headers['to'].split(/,\s+/)
-    mail.cc = headers['cc'].split(/,\s+/)
+    mail.cc = headers['cc'] && headers['cc'].split(/,\s+/)
     mail.subject = headers['subject']
     mail.delivery_method(*smtp_settings)
     mail.from ||= @username
@@ -245,10 +244,6 @@ END
     log(revive_connection)
     # try just once
     block.call
-  end
-
-  def format_time(x)
-    Time.parse(x.to_s).localtime.strftime "%D %I:%M%P"
   end
 
   def self.start
