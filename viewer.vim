@@ -220,6 +220,39 @@ function! CompleteMailbox(findstart, base)
   endif
 endfun
 
+function! s:mailbox_window()
+  if !exists("s:mailboxes")
+    call s:get_mailbox_list()
+  endif
+  vne Mailboxes
+  setlocal buftype=nofile
+  setlocal noswapfile
+  vertical resize 25
+  put! = s:mailboxes 
+  normal 1G
+  noremap <silent> <buffer> <cr> <Esc>:call <SID>select_mailbox()<CR> 
+endfunction
+
+function! s:select_mailbox()
+  let s:mailbox = getline(line('.'))
+  close
+  let command = s:select_mailbox_command . shellescape(s:mailbox)
+  echo command
+  call system(command)
+  redraw
+  " now get latest 100 messages
+  call s:focus_list_window()  
+  set modifiable
+  let command = s:search_command . "100 all"
+  echo command
+  let res = system(command)
+  1,$delete
+  put! =res
+  execute "normal Gdd\<c-y>" 
+  normal G
+  set nomodifiable
+endfunction
+
 function! s:search_window()
   topleft split SearchWindow
   setlocal buftype=nofile
@@ -300,6 +333,7 @@ noremap <silent> <buffer> ! :call <SID>toggle_flag("[Gmail]/Spam")<CR>
 
 noremap <silent> <buffer> u :call <SID>update()<CR>
 noremap <silent> <buffer> <Leader>s :call <SID>search_window()<CR>
+noremap <silent> <buffer> <Leader>m :call <SID>mailbox_window()<CR><CR>
 
 noremap <silent> <buffer> <Leader>c :call <SID>compose_message(0)<CR><cr>
 
