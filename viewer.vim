@@ -207,12 +207,7 @@ function! CompleteMailbox(findstart, base)
   endif
   if a:findstart
     " locate the start of the word
-    let line = getline('.')
-    let start = col('.') - 1
-    while start > 0 && line[start - 1] =~ '\a'
-      let start -= 1
-    endwhile
-    return start
+    return 0
   else
     " find months matching with "a:base"
     let res = []
@@ -238,7 +233,7 @@ endfunction
 
 function! s:do_search()
   let s:query = getline(line('.'))
-  bdelete
+  close
   let command = s:parsed_search_command . shellescape(s:query)
   echo command
   call s:focus_list_window()  
