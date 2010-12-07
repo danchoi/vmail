@@ -125,6 +125,7 @@ class GmailServer
     end
     uids = @all_uids[-([limit.to_i, @all_uids.size].min)..-1] || []
     res = fetch_headers(uids)
+    add_more_message_line(res, uids)
   end
 
   def update
@@ -150,6 +151,16 @@ class GmailServer
     y = [@all_uids.index(uid) - 1, 0].max
     uids = @all_uids[x..y]
     res = fetch_headers(uids)
+    add_more_message_line(res, uids)
+  end
+
+  def add_more_message_line(res, uids)
+    start_index = @all_uids.index(uids[0])
+    if start_index > 0
+      remaining = start_index + 1
+      res = "> Load 100 more messages. #{remaining} remaining.\n" + res
+    end
+    res 
   end
 
   def lookup(uid, raw=false)

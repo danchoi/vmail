@@ -63,8 +63,13 @@ function! s:create_message_window()
 endfunction
 
 function! s:show_message()
-  call s:focus_list_window()  
   let line = getline(line("."))
+  if matchstr(line, '^> Load') != -1
+    setlocal modifiable
+    delete
+    call s:more_messages()
+    return
+  endif
   " remove the unread flag  [+]
   let newline = substitute(line, "\\[+\]\\s*", "", '')
   setlocal modifiable
