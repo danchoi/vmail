@@ -56,7 +56,8 @@ function! s:create_message_window()
   noremap <silent> <buffer> <Leader>R :call <SID>show_raw()<cr>
   " TODO improve this
   noremap <silent> <buffer> <Leader>o yE :!open <C-R>"<CR><CR>
-
+  noremap <silent> <buffer> <leader>j <Esc>:call <SID>show_next_message()<CR> 
+  noremap <silent> <buffer> <leader>k <Esc>:call <SID>show_previous_message()<CR> 
   close
 endfunction
 
@@ -86,6 +87,22 @@ function! s:show_message()
   call feedkeys("<cr>")
   call s:focus_message_window()
   only
+endfunction
+
+function! s:show_next_message()
+  call s:focus_list_window()
+  execute "normal j"
+  if line('$') != line('.')
+    execute "normal \<cr>"
+  endif
+endfunction
+
+function! s:show_previous_message()
+  call s:focus_list_window()
+ execute "normal k" 
+ if line('.') != 1
+   execute "normal \<cr>"
+ endif
 endfunction
 
 " invoked from withint message window
