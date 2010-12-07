@@ -22,10 +22,12 @@ class GmailServer
     'trash' => '[Gmail]/Trash'
   }
 
+  attr_accessor :drb_uri
   def initialize(config)
     @username, @password = config['login'], config['password']
+    @drb_uri = config['drb_uri']
     @mailbox = nil
-    @logger = Logger.new("gmail.log")
+    @logger = Logger.new(STDERR)
     @logger.level = Logger::DEBUG
   end
 
@@ -74,7 +76,10 @@ class GmailServer
     if uid_set.is_a?(String)
       uid_set = uid_set.split(",").map(&:to_i)
     end
-    results = @imap.uid_fetch(uid_set, ["FLAGS", "BODY", "ENVELOPE", "RFC822.HEADER"])
+    results = reconnect_if_necessary do 
+      @imap.uid_fetch(uid_set, ["FLAGS", "BODY", "ENVELOPE", "RFC822.HEADER"])
+    end
+    log "got headers for #{uid_set.inspect}"
     lines = results.map do |res|
       header = res.attr["RFC822.HEADER"]
       mail = Mail.new(header)
@@ -83,7 +88,7 @@ class GmailServer
       address_method = @mailbox == '[Gmail]/Sent Mail' ? :to : :from
       formatter.summary(flags, address_method)
     end
-    log "got data for #{uid_set}"
+    log "extracted headers for #{uid_set}"
     return lines.join("\n")
   end
 
@@ -233,7 +238,7 @@ END
     log error
   end
 
-  def reconnect_if_necessary(timeout = 10, &block)
+  def reconnect_if_necessary(timeout = 20, &block)
     # if this times out, we know the connection is stale while the user is trying to update
     Timeout::timeout(timeout) do
       block.call
@@ -254,13 +259,11 @@ END
 
   def self.daemon
     self.start
-    $gmail.select_mailbox "inbox"
-
-    DRb.start_service(nil, $gmail)
+    puts DRb.start_service($gmail.drb_uri, $gmail)
     uri = DRb.uri
     puts "starting gmail service at #{uri}"
     uri
-    #DRb.thread.join
+    DRb.thread.join
   end
 
 end
@@ -278,10 +281,7 @@ trap("INT") {
   exit
 }
 
-
-__END__
-GmailServer.start
-$gmail.select_mailbox("inbox")
-
-log $gmail.flag(83113, "Flagged")
-$gmail.close
+if __FILE__ == $0
+  puts "starting gmail server"
+  GmailServer.daemon
+end
