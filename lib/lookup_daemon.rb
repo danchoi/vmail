@@ -93,7 +93,9 @@ class GmailServer
       log "uid_search #@query"
       @all_uids = @imap.uid_search(@query)
     end
-    get_headers(limit)
+    uids = @all_uids[-([limit.to_i, @all_uids.size].min)..-1] || []
+    log "fetch headers for #{uids.inspect}"
+    fetch_headers(uids)
   end
 
   def update
@@ -106,50 +108,12 @@ class GmailServer
     new_uids = uids - @all_uids
     log "UPDATE: NEW UIDS: #{new_uids.inspect}"
     if !new_uids.empty?
-      res = get_headers(1000, new_uids)
+      res = fetch_headers(new_uids)
       @all_uids = uids
       res
     end
   end
 
-  def get_headers(limit, uids = @all_uids)
-    uids = uids[-([limit.to_i, uids.size].min)..-1] || []
-    lines = []
-    threads = []
-    uids.each do |uid|
-      sleep 0.1
-      threads << Thread.new(uid) do |thread_uid|
-        if @bad_uids.include?(thread_uid)
-          next "#{thread_uid} IMAP Error: could not parse message"
-        end
-        this_thread = Thread.current
-        results = nil
-        begin
-          while results.nil?
-            sleep 0.1
-            results = @imap.uid_fetch(thread_uid, ["FLAGS", "BODY", "ENVELOPE", "RFC822.HEADER"])
-          end
-        rescue Net::IMAP::ResponseParseError, Net::IMAP::BadResponseError
-          log "error fetching uid #{thread_uid}"
-          log $!
-          log "adding #{thread_uid} to @bad_uids"
-          @bad_uids << thread_uid
-          this_thread.kill
-        end
-        res = results[0]
-        header = res.attr["RFC822.HEADER"]
-        log "got data for #{thread_uid}"
-
-        mail = Mail.new(header)
-        formatter = MessageFormatter.new(mail, res.attr["UID"])
-        flags = res.attr["FLAGS"]
-        address_method = @mailbox == '[Gmail]/Sent Mail' ? :to : :from
-        formatter.summary(flags, address_method)
-      end
-    end
-    threads.each {|t| lines << t.value}
-    lines.join("\n")
-  end
 
   def lookup(uid, raw=false)
     log "fetching #{uid.inspect}"
