@@ -152,7 +152,7 @@ class GmailServer
 
     out = formatter.process_body 
     message = <<-END
-#{formatter.extract_headers.to_yaml}
+#{format_headers(formatter.extract_headers)}
 
 #{formatter.list_parts}
 
@@ -193,7 +193,18 @@ END
       'to' => 'dhchoi@gmail.com',
       'subject' => "test #{rand(90)}"
     }
-    headers.to_yaml + "\n\n"
+    format_headers(headers) + "\n\n"
+  end
+
+  def format_headers(hash)
+    lines = []
+    hash.each_pair do |key, value|
+      if value.is_a?(Array)
+        value = value.join(", ")
+      end
+      lines << "#{key}: #{value}"
+    end
+    lines.join("\n")
   end
 
   def reply_template(uid)
@@ -218,7 +229,7 @@ END
     body = quote_header + formatter.process_body.gsub(/^(?=>)/, ">").gsub(/^(?!>)/, "> ")
 
     reply_headers = { 'from' => @username, 'to' => reply_to, 'cc' => headers['cc'], 'subject' => headers['subject'] }
-    reply_headers.to_yaml + "\n\n" + body
+    format_headers(reply_headers) + "\n\n" + body
   end
 
   def deliver(text)
@@ -228,11 +239,17 @@ END
     require 'mail'
     mail = Mail.new
     raw_headers, body = *text.split(/\n\n/, 2)
-    headers = YAML::load(raw_headers)
+    headers = {}
+    raw_headers.split("\n").each do |line|
+      key, value = *line.split(':', 2)
+      headers[key] = value
+    end
+    log "headers: #{headers.inspect}"
     log "delivering: #{headers.inspect}"
     mail.from = headers['from'] || @username
-    mail.to = headers['to'].split(/,\s+/)
-    mail.cc = headers['cc'] && headers['cc'].split(/,\s+/)
+    mail.to = headers['to'] #.split(/,\s+/)
+    mail.cc = headers['cc'] #&& headers['cc'].split(/,\s+/)
+    mail.bcc = headers['bcc'] #&& headers['cc'].split(/,\s+/)
     mail.subject = headers['subject']
     mail.delivery_method(*smtp_settings)
     mail.from ||= @username
