@@ -54,6 +54,7 @@ class GmailServer
       @imap.select(mailbox)
     end
     @mailbox = mailbox
+    @all_uids = []
     @bad_uids = []
     return "OK"
   end
@@ -79,7 +80,10 @@ class GmailServer
     results = reconnect_if_necessary do 
       @imap.uid_fetch(uid_set, ["FLAGS", "BODY", "ENVELOPE", "RFC822.HEADER"])
     end
-    log "got headers for #{uid_set.inspect}"
+    if results.nil?
+      log "nil results (mailbox #{@mailbox})"
+      return
+    end
     lines = results.map do |res|
       header = res.attr["RFC822.HEADER"]
       mail = Mail.new(header)
@@ -88,16 +92,13 @@ class GmailServer
       address_method = @mailbox == '[Gmail]/Sent Mail' ? :to : :from
       formatter.summary(flags, address_method)
     end
-    log "extracted headers for #{uid_set}"
     return lines.join("\n")
   end
 
   def search(limit, *query)
-    if @query != query.join(' ')
-      @query = query.join(' ')
-      log "uid_search #@query"
-      @all_uids = @imap.uid_search(@query)
-    end
+    @query = query.join(' ')
+    log "uid_search #@query"
+    @all_uids = @imap.uid_search(@query)
     uids = @all_uids[-([limit.to_i, @all_uids.size].min)..-1] || []
     log "fetch headers for #{uids.inspect}"
     fetch_headers(uids)
