@@ -128,6 +128,11 @@ class GmailServer
   end
 
   def update
+    reconnect_if_necessary do 
+      # this is just to prime the IMAP connection
+      # It's necessary for some reason.
+      fetch_headers(@all_uids[-1])
+    end
     uids = reconnect_if_necessary { @imap.uid_search(@query) }
     new_uids = uids - @all_uids
     log "UPDATE: NEW UIDS: #{new_uids.inspect}"
