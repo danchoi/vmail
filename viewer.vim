@@ -77,7 +77,7 @@ function! s:show_message()
   call s:focus_message_window()
   setlocal modifiable
   1,$delete
-  echo command
+  echo "Loading message. Please wait..."
   let res = system(command)
   put =res
   " critical: don't call execute 'normal \<cr>'
@@ -87,6 +87,7 @@ function! s:show_message()
   normal jk
   only
   setlocal nomodifiable
+  redraw
 endfunction
 
 function! s:show_next_message()
