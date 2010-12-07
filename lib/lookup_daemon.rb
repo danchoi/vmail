@@ -77,22 +77,30 @@ class GmailServer
     if uid_set.is_a?(String)
       uid_set = uid_set.split(",").map(&:to_i)
     end
+    log "fetch headers for #{uid_set.inspect}"
     results = reconnect_if_necessary do 
-      @imap.uid_fetch(uid_set, ["FLAGS", "BODY", "ENVELOPE", "RFC822.HEADER"])
+      #@imap.uid_fetch(uid_set, ["FLAGS", "ENVELOPE", "RFC822.HEADER"])
+      @imap.uid_fetch(uid_set, ["FLAGS", "ENVELOPE"])
     end
-    if results.nil?
-      log "nil results (mailbox #{@mailbox})"
-      return
-    end
+    log "extracting headers"
     lines = results.map do |res|
-      header = res.attr["RFC822.HEADER"]
-      mail = Mail.new(header)
-      formatter = MessageFormatter.new(mail, res.attr["UID"])
-      flags = res.attr["FLAGS"]
-      address_method = @mailbox == '[Gmail]/Sent Mail' ? :to : :from
-      formatter.summary(flags, address_method)
+      format_header(res)
     end
+    log "returning result" 
     return lines.join("\n")
+  end
+
+  def format_header(fetch_data)
+    uid = fetch_data.attr["UID"]
+    envelope = fetch_data.attr["ENVELOPE"]
+    flags = fetch_data.attr["FLAGS"]
+    address_struct = (@mailbox == '[Gmail]/Sent Mail' ? envelope.to.first : envelope.from.first)
+    if address_struct.name
+      log "address name: #{address_struct.name}"
+    end
+    address = [address_struct.mailbox, address_struct.host].join('@') 
+    date = Time.parse(envelope.date).localtime.strftime "%D %I:%M%P"
+    "#{uid} #{date} #{address[0,30].ljust(30)} #{(envelope.subject || '').encode('utf-8')[0,70].ljust(70)} #{flags.inspect.col(30)}"
   end
 
   def search(limit, *query)
@@ -100,7 +108,6 @@ class GmailServer
     log "uid_search #@query"
     @all_uids = @imap.uid_search(@query)
     uids = @all_uids[-([limit.to_i, @all_uids.size].min)..-1] || []
-    log "fetch headers for #{uids.inspect}"
     fetch_headers(uids)
   end
 
