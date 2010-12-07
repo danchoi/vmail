@@ -11,6 +11,7 @@ let s:update_command = s:client_script . "update"
 let s:fetch_headers_command = s:client_script . "fetch_headers "
 let s:select_mailbox_command = s:client_script . "select_mailbox "
 let s:search_command = s:client_script . "search "
+let s:more_messages_command = s:client_script . "more_messages "
 let s:flag_command = s:client_script . "flag "
 let s:message_template_command = s:client_script . "message_template "
 let s:reply_template_command = s:client_script . "reply_template "
@@ -290,6 +291,20 @@ function! s:do_search()
   set nomodifiable
 endfunction
 
+function! s:more_messages()
+  let line = getline(line('.'))
+  let uid = matchstr(line, '^\d\+')
+  let command = s:more_messages_command . uid
+  echo command
+  let res = system(command)
+  setlocal modifiable
+  let lines =  split(res, "\n")
+  call append(0, lines)
+  " execute "normal Gdd\<c-y>" 
+  setlocal nomodifiable
+
+endfunction
+
 function! s:compose_message(isreply)
   " create a new window and close all others
   if a:isreply 
@@ -345,6 +360,7 @@ noremap <silent> <buffer> ! :call <SID>toggle_flag("[Gmail]/Spam")<CR>
 noremap <silent> <buffer> u :call <SID>update()<CR>
 noremap <silent> <buffer> <Leader>s :call <SID>search_window()<CR>
 noremap <silent> <buffer> <Leader>m :call <SID>mailbox_window()<CR><CR>
+noremap <silent> <buffer> <Leader>p :call <SID>more_messages()<CR>
 
 noremap <silent> <buffer> <Leader>c :call <SID>compose_message(0)<CR><cr>
 

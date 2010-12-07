@@ -143,6 +143,15 @@ class GmailServer
     end
   end
 
+  # gets 100 messages prior to uid
+  def more_messages(uid, limit=100)
+    uid = uid.to_i
+    x = [(@all_uids.index(uid) - limit), 0].max
+    y = [@all_uids.index(uid) - 1, 0].max
+    uids = @all_uids[x..y]
+    res = fetch_headers(uids)
+  end
+
   def lookup(uid, raw=false)
     log "fetching #{uid.inspect}"
     res = reconnect_if_necessary do 
