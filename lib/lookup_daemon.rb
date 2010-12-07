@@ -100,8 +100,8 @@ class GmailServer
       log "address name: #{address_struct.name}"
     end
     address = [address_struct.mailbox, address_struct.host].join('@') 
-    date = Time.parse(envelope.date).localtime.strftime "%D %I:%M%P"
-    "#{uid} #{date} #{address[0,30].ljust(30)} #{(envelope.subject || '').encode('utf-8')[0,70].ljust(70)} #{flags.inspect.col(30)}"
+    date = Time.parse(envelope.date).localtime.strftime "%D %I:%M%P" rescue envelope.date.to_s 
+    "#{uid} #{(date || '').ljust(16)} #{address[0,30].ljust(30)} #{(envelope.subject || '').encode('utf-8')[0,70].ljust(70)} #{flags.inspect.col(30)}"
   end
 
   def search(limit, *query)
