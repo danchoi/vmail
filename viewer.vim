@@ -64,29 +64,28 @@ endfunction
 function! s:show_message()
   call s:focus_list_window()  
   let line = getline(line("."))
-  let selected_uid = matchstr(line, '^\d\+')
-  let s:current_uid = selected_uid
-  let command = s:lookup_command . s:current_uid
-  echo command
-  call s:focus_message_window()
-  setlocal modifiable
-  1,$delete
-  let res = system(command)
-  put =res
-  1delete
-  normal 1
-  normal jk
-  wincmd p
-  " flag as seen
-  let line = getline(line('.'))
-  let newline = substitute(line, "[]\.*$", "[:Seen]", '')
+  " remove the unread flag 
+  let newline = substitute(line, "+\s\*$", "", '')
   setlocal modifiable
   call setline(line('.'), newline)
   setlocal nomodifiable
   write
-  call feedkeys("<cr>")
+  let selected_uid = matchstr(line, '^\d\+')
+  let s:current_uid = selected_uid
+  let command = s:lookup_command . s:current_uid
   call s:focus_message_window()
+  setlocal modifiable
+  1,$delete
+  echo command
+  let res = system(command)
+  put =res
+  " critical: don't call execute 'normal \<cr>'
+  call feedkeys("<cr>")
+  1delete
+  normal 1
+  normal jk
   only
+  setlocal nomodifiable
 endfunction
 
 function! s:show_next_message()

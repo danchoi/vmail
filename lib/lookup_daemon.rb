@@ -101,7 +101,18 @@ class GmailServer
     end
     address = [address_struct.mailbox, address_struct.host].join('@') 
     date = Time.parse(envelope.date).localtime.strftime "%D %I:%M%P" rescue envelope.date.to_s 
-    "#{uid} #{(date || '').ljust(16)} #{address[0,30].ljust(30)} #{(envelope.subject || '').encode('utf-8')[0,70].ljust(70)} #{flags.inspect.col(30)}"
+    flags = format_flags(flags)
+    "#{uid} #{(date || '').ljust(16)} #{address[0,30].ljust(30)} #{(envelope.subject || '').encode('utf-8')[0,70].ljust(70)} #{flags.col(30)}"
+  end
+
+  FLAGMAP = {:Flagged => '*'}
+  # flags is an array like [:Flagged, :Seen]
+  def format_flags(flags)
+    flags = flags.map {|flag| FLAGMAP[flag] || flag}
+    if flags.delete(:Seen).nil?
+      flags << '+' # unread
+    end
+    flags.join('')
   end
 
   def search(limit, *query)
