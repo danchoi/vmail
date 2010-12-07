@@ -64,8 +64,8 @@ endfunction
 function! s:show_message()
   call s:focus_list_window()  
   let line = getline(line("."))
-  " remove the unread flag 
-  let newline = substitute(line, "+\s\*$", "", '')
+  " remove the unread flag  [+]
+  let newline = substitute(line, "\\[+\]\\s*", "", '')
   setlocal modifiable
   call setline(line('.'), newline)
   setlocal nomodifiable
@@ -179,9 +179,11 @@ function! s:toggle_flag(flag) range
     let lnum = lnum + 1
   endwhile
   let uid_set = join(uids, ",")
-
   " check if starred already
-  let flag_symbol = ":" . a:flag
+  let flag_symbol = ''
+  if a:flag == "Flagged"
+    let flag_symbol = "[*]"
+  end
   if (match(line, flag_symbol) != -1)
     let command = s:flag_command . uid_set . " -FLAGS " . a:flag
   else
@@ -190,7 +192,6 @@ function! s:toggle_flag(flag) range
   echo command
   " replace the lines with the returned results
   let res = system(command)
-
   setlocal modifiable
   exec a:firstline . "," . a:lastline . "delete"
   if a:flag != "Deleted"

@@ -105,12 +105,12 @@ class GmailServer
     "#{uid} #{(date || '').ljust(16)} #{address[0,30].ljust(30)} #{(envelope.subject || '').encode('utf-8')[0,70].ljust(70)} #{flags.col(30)}"
   end
 
-  FLAGMAP = {:Flagged => '*'}
+  FLAGMAP = {:Flagged => '[*]'}
   # flags is an array like [:Flagged, :Seen]
   def format_flags(flags)
     flags = flags.map {|flag| FLAGMAP[flag] || flag}
     if flags.delete(:Seen).nil?
-      flags << '+' # unread
+      flags << '[+]' # unread
     end
     flags.join('')
   end
