@@ -11,7 +11,6 @@ let s:update_command = s:client_script . "update"
 let s:fetch_headers_command = s:client_script . "fetch_headers "
 let s:select_mailbox_command = s:client_script . "select_mailbox "
 let s:search_command = s:client_script . "search "
-let s:parsed_search_command = s:client_script . "parsed_search "
 let s:flag_command = s:client_script . "flag "
 let s:message_template_command = s:client_script . "message_template "
 let s:reply_template_command = s:client_script . "reply_template "
@@ -258,7 +257,7 @@ endfunction
 function! s:do_search()
   let s:query = getline(line('.'))
   close
-  let command = s:parsed_search_command . shellescape(s:query)
+  let command = s:search_command . "100 " . shellescape(s:query)
   echo command
   call s:focus_list_window()  
   let res = system(command)
