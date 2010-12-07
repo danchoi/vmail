@@ -157,8 +157,8 @@ class GmailServer
   def add_more_message_line(res, uids)
     start_index = @all_uids.index(uids[0])
     if start_index > 0
-      remaining = start_index + 1
-      res = "> Load 100 more messages. #{remaining} remaining.\n" + res
+      remaining = start_index 
+      res = "> Load #{[100, remaining].min} more messages. #{remaining} remaining.\n" + res
     end
     res 
   end
