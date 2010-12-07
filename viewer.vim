@@ -367,7 +367,6 @@ noremap <silent> <buffer> ! :call <SID>toggle_flag("[Gmail]/Spam")<CR>
 noremap <silent> <buffer> u :call <SID>update()<CR>
 noremap <silent> <buffer> <Leader>s :call <SID>search_window()<CR>
 noremap <silent> <buffer> <Leader>m :call <SID>mailbox_window()<CR><CR>
-noremap <silent> <buffer> <Leader>p :call <SID>more_messages()<CR>
 
 noremap <silent> <buffer> <Leader>c :call <SID>compose_message(0)<CR><cr>
 
