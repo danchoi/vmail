@@ -80,9 +80,12 @@ class GmailServer
   def fetch_headers(uid_set)
     if uid_set.is_a?(String)
       uid_set = uid_set.split(",").map(&:to_i)
+    elsif uid_set.is_a?(Integer)
+      uid_set = [uid_set]
     end
     log "fetch headers for #{uid_set.inspect}"
     if uid_set.empty?
+      log "empty set"
       return ""
     end
     results = reconnect_if_necessary do 
@@ -139,8 +142,12 @@ class GmailServer
       # this is just to prime the IMAP connection
       # It's necessary for some reason.
       fetch_headers(@all_uids[-1])
+      log "test"
     end
-    uids = reconnect_if_necessary { @imap.uid_search(@query) }
+    uids = reconnect_if_necessary { 
+      log "uid_search #@query"
+      @imap.uid_search(@query) 
+    }
     new_uids = uids - @all_uids
     log "UPDATE: NEW UIDS: #{new_uids.inspect}"
     if !new_uids.empty?
@@ -204,6 +211,7 @@ END
         @imap.uid_copy(uid_set, "[Gmail]/Trash")
         res = @imap.uid_store(uid_set, action, [flg.to_sym])
       end
+      uid_set.each { |uid| @all_uids.delete(uid) }
     elsif flg == '[Gmail]/Spam'
       @imap.uid_copy(uid_set, "[Gmail]/Spam")
       res = @imap.uid_store(uid_set, action, [:Deleted])
