@@ -55,7 +55,9 @@ function! s:create_message_window()
   noremap <silent> <buffer> <cr> :call <SID>focus_list_window()<CR> 
   noremap <silent> <buffer> q :call <SID>focus_list_window()<CR> 
   noremap <silent> <buffer> <Leader>r :call <SID>compose_message(1)<CR><cr>
+  noremap <silent> <buffer> r :call <SID>compose_message(1)<CR><cr>
   noremap <silent> <buffer> <Leader>R :call <SID>show_raw()<cr>
+  noremap <silent> <buffer> R :call <SID>show_raw()<cr>
   " TODO improve this
   noremap <silent> <buffer> <Leader>o yE :!open <C-R>"<CR><CR>
   noremap <silent> <buffer> <leader>j <Esc>:call <SID>show_next_message()<CR> 

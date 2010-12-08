@@ -250,6 +250,7 @@ END
     if subject !~ /Re: /
       subject = "Re: #{subject}"
     end
+    cc = (headers['cc'] && headers['cc'].decoded
     # orig message info e.g.
     # On Wed, Dec 1, 2010 at 3:30 PM, Matt MacDonald (JIRA) <do-not-reply@prx.org> wrote:
     # quoting
@@ -261,7 +262,7 @@ END
     # TODO fix the character encoding, making sure it is valid UTF8 and encoded as such 
     body = quote_header + formatter.process_body.gsub(/^(?=>)/, ">").gsub(/^(?!>)/, "> ")
 
-    reply_headers = { 'from' => @username, 'to' => reply_to, 'cc' => headers['cc'], 'subject' => headers['subject'] }
+    reply_headers = { 'from' => @username, 'to' => reply_to, 'cc' => cc, 'subject' => headers['subject'] }
     format_headers(reply_headers) + "\n\n" + body
   end
 
