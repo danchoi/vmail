@@ -78,6 +78,9 @@ class GmailServer
       uid_set = uid_set.split(",").map(&:to_i)
     end
     log "fetch headers for #{uid_set.inspect}"
+    if uid_set.empty?
+      return ""
+    end
     results = reconnect_if_necessary do 
       #@imap.uid_fetch(uid_set, ["FLAGS", "ENVELOPE", "RFC822.HEADER"])
       @imap.uid_fetch(uid_set, ["FLAGS", "ENVELOPE"])
@@ -155,6 +158,7 @@ class GmailServer
   end
 
   def add_more_message_line(res, uids)
+    return res if uids.empty?
     start_index = @all_uids.index(uids[0])
     if start_index > 0
       remaining = start_index 
