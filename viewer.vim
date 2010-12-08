@@ -276,6 +276,7 @@ function! s:select_mailbox()
   execute "normal Gdd\<c-y>" 
   normal G
   setlocal nomodifiable
+  normal z-
 endfunction
 
 function! s:search_window()
