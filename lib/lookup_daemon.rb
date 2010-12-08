@@ -18,6 +18,7 @@ class GmailServer
     'all' => '[Gmail]/All Mail',
     'starred' => '[Gmail]/Starred',
     'important' => '[Gmail]/Important',
+    'drafts' => '[Gmail]/Drafts',
     'spam' => '[Gmail]/Spam',
     'trash' => '[Gmail]/Trash'
   }
@@ -70,7 +71,10 @@ class GmailServer
     @mailboxes ||= (@imap.list("[Gmail]/", "%") + @imap.list("", "%")).
       select {|struct| struct.attr.none? {|a| a == :Noselect} }.
       map {|struct| struct.name}.
-      join("\n")
+      map {|name| MailboxAliases.invert[name] || name}
+    @mailboxes.delete("INBOX")
+    @mailboxes.unshift("INBOX")
+    @mailboxes.join("\n")
   end
 
   def fetch_headers(uid_set)
