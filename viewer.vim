@@ -249,15 +249,14 @@ function! s:mailbox_window()
   if !exists("s:mailboxes")
     call s:get_mailbox_list()
   endif
-  vne Mailboxes
+  topleft split MailboxSelect
   setlocal buftype=nofile
   setlocal noswapfile
   setlocal modifiable
-  vertical resize 25
-  put! = s:mailboxes 
-  setlocal nomodifiable
-  normal 1G
+  resize 1
   noremap <silent> <buffer> <cr> <Esc>:call <SID>select_mailbox()<CR> 
+  set completefunc=CompleteMailbox
+  call feedkeys("i\<c-x>\<c-u>", 't')
 endfunction
 
 function! s:select_mailbox()
@@ -287,8 +286,7 @@ function! s:search_window()
   resize 1
   setlocal modifiable
   inoremap <silent> <buffer> <cr> <Esc>:call <SID>do_search()<CR> 
-  set completefunc=CompleteMailbox
-  call feedkeys("$i")
+  call feedkeys("i")
 endfunction
 
 function! s:do_search()
