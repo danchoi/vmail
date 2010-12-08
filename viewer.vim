@@ -46,7 +46,7 @@ endfunction
 
 " the message display buffer window
 function! s:create_message_window() 
-  exec "botright split " . s:message_bufname
+  exec "split " . s:message_bufname
   setlocal buftype=nofile
   " setlocal noswapfile
   " setlocal nobuflisted
@@ -158,7 +158,7 @@ function! s:focus_message_window()
   let winnr = bufwinnr(s:message_window_bufnr)
   if winnr == -1
     " create window
-    exec "botright split " . s:message_bufname
+    exec "split " . s:message_bufname
   else
     exec winnr . "wincmd w"
   endif
@@ -331,7 +331,7 @@ function! s:compose_reply(all)
   echo command
   let res = system(command)
   only " make one pane first
-  vertical botright split ComposeMessage
+  vertical split ComposeMessage
   only
   setlocal modifiable
   1,$delete
@@ -348,7 +348,7 @@ function! s:compose_message()
   echo command
   let res = system(command)
   only " make one pane first
-  vertical botright split ComposeMessage
+  vertical split ComposeMessage
   only
   setlocal modifiable
   1,$delete
