@@ -254,7 +254,7 @@ function! s:mailbox_window()
   setlocal noswapfile
   setlocal modifiable
   resize 1
-  noremap <silent> <buffer> <cr> <Esc>:call <SID>select_mailbox()<CR> 
+  inoremap <silent> <buffer> <cr> <Esc>:call <SID>select_mailbox()<CR> 
   set completefunc=CompleteMailbox
   call feedkeys("i\<c-x>\<c-u>", 't')
 endfunction
