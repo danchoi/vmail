@@ -247,7 +247,7 @@ END
     lines.join("\n")
   end
 
-  def reply_template(uid)
+  def reply_template(uid, replyall=false)
     res = @imap.uid_fetch(uid.to_i, ["FLAGS", "RFC822"])[0].attr["RFC822"]
     mail = Mail.new(res)
     formatter = MessageFormatter.new(mail)
@@ -258,8 +258,8 @@ END
     if subject !~ /Re: /
       subject = "Re: #{subject}"
     end
-    cc = headers['cc'] || ''
-    cc = [cc, headers['to']].join(', ')
+    cc = replyall ? mail['cc'] : nil
+    #cc = [cc, headers['to']].join(', ')
     # orig message info e.g.
     # On Wed, Dec 1, 2010 at 3:30 PM, Matt MacDonald (JIRA) <do-not-reply@prx.org> wrote:
     # quoting

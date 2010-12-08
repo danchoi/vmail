@@ -54,8 +54,10 @@ function! s:create_message_window()
   " message window bindings
   noremap <silent> <buffer> <cr> :call <SID>focus_list_window()<CR> 
   noremap <silent> <buffer> q :call <SID>focus_list_window()<CR> 
-  noremap <silent> <buffer> <Leader>r :call <SID>compose_message(1)<CR><cr>
-  noremap <silent> <buffer> r :call <SID>compose_message(1)<CR><cr>
+  noremap <silent> <buffer> <Leader>r :call <SID>compose_reply(0)<CR><cr>
+  noremap <silent> <buffer> r :call <SID>compose_reply(0)<CR><cr>
+  noremap <silent> <buffer> <Leader>a :call <SID>compose_reply(1)<CR><cr>
+  noremap <silent> <buffer> a :call <SID>compose_reply(1)<CR><cr>
   noremap <silent> <buffer> <Leader>R :call <SID>show_raw()<cr>
   noremap <silent> <buffer> R :call <SID>show_raw()<cr>
   " TODO improve this
@@ -319,13 +321,30 @@ function! s:more_messages()
 
 endfunction
 
-function! s:compose_message(isreply)
+function! s:compose_reply(all)
   " create a new window and close all others
-  if a:isreply 
-    let command = s:reply_template_command . s:current_uid
+  if a:all
+    let command = s:reply_template_command . s:current_uid . ' 1'
   else
-    let command = s:message_template_command
+    let command = s:reply_template_command . s:current_uid
   end
+  redraw
+  echo command
+  let res = system(command)
+  only " make one pane first
+  vertical botright split ComposeMessage
+  only
+  setlocal modifiable
+  1,$delete
+  put! =res
+  normal 1G
+  noremap <silent> <buffer> <Leader>d :call <SID>deliver_message()<CR>
+  nnoremap <silent> <buffer> q :call <SID>cancel_compose()<cr>
+  nnoremap <silent> <buffer> <leader>q :call <SID>cancel_compose()<cr>
+endfunction
+
+function! s:compose_message()
+  let command = s:message_template_command
   redraw
   echo command
   let res = system(command)
@@ -375,7 +394,7 @@ noremap <silent> <buffer> u :call <SID>update()<CR>
 noremap <silent> <buffer> <Leader>s :call <SID>search_window()<CR>
 noremap <silent> <buffer> <Leader>m :call <SID>mailbox_window()<CR><CR>
 
-noremap <silent> <buffer> <Leader>c :call <SID>compose_message(0)<CR><cr>
+noremap <silent> <buffer> <Leader>c :call <SID>compose_message()<CR><cr>
 
 
 " press double return in list view to go full screen on a message; then
