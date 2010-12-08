@@ -247,8 +247,10 @@ function! s:mailbox_window()
   vne Mailboxes
   setlocal buftype=nofile
   setlocal noswapfile
+  setlocal modifiable
   vertical resize 25
   put! = s:mailboxes 
+  setlocal nomodifiable
   normal 1G
   noremap <silent> <buffer> <cr> <Esc>:call <SID>select_mailbox()<CR> 
 endfunction
@@ -262,7 +264,7 @@ function! s:select_mailbox()
   redraw
   " now get latest 100 messages
   call s:focus_list_window()  
-  set modifiable
+  setlocal modifiable
   let command = s:search_command . "100 all"
   echo "Please wait. Loading messages..."
   let res = system(command)
@@ -270,7 +272,7 @@ function! s:select_mailbox()
   put! =res
   execute "normal Gdd\<c-y>" 
   normal G
-  set nomodifiable
+  setlocal nomodifiable
 endfunction
 
 function! s:search_window()
@@ -292,12 +294,12 @@ function! s:do_search()
   echo command
   call s:focus_list_window()  
   let res = system(command)
-  set modifiable
+  setlocal modifiable
   1,$delete
   put! =res
   execute "normal Gdd\<c-y>" 
   normal G
-  set nomodifiable
+  setlocal nomodifiable
 endfunction
 
 function! s:more_messages()
