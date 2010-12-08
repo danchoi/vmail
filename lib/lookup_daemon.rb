@@ -86,7 +86,6 @@ class GmailServer
       return ""
     end
     results = reconnect_if_necessary do 
-      #@imap.uid_fetch(uid_set, ["FLAGS", "ENVELOPE", "RFC822.HEADER"])
       @imap.uid_fetch(uid_set, ["FLAGS", "ENVELOPE"])
     end
     log "extracting headers"
