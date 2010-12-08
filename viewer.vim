@@ -53,6 +53,7 @@ function! s:create_message_window()
   let s:message_window_bufnr = bufnr('%')
   " message window bindings
   noremap <silent> <buffer> <cr> :call <SID>focus_list_window()<CR> 
+  noremap <silent> <buffer> q :call <SID>focus_list_window()<CR> 
   noremap <silent> <buffer> <Leader>r :call <SID>compose_message(1)<CR><cr>
   noremap <silent> <buffer> <Leader>R :call <SID>show_raw()<cr>
   " TODO improve this
@@ -359,7 +360,7 @@ call s:focus_list_window() " to go list window
 " this are list window bindings
 
 noremap <silent> <buffer> <cr> :call <SID>show_message()<CR>
-noremap <silent> q :qal!<cr>
+noremap <silent> <buffer> q :qal!<cr>
 
 noremap <silent> <buffer> s :call <SID>toggle_flag("Flagged")<CR>
 noremap <silent> <buffer> D :call <SID>toggle_flag("Deleted")<CR>
