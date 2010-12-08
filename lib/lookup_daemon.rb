@@ -254,8 +254,9 @@ END
     # On Wed, Dec 1, 2010 at 3:30 PM, Matt MacDonald (JIRA) <do-not-reply@prx.org> wrote:
     # quoting
     # quote header
+    #date = Time.parse(headers['date'].to_s)
     date = headers['date']
-    quote_header = "On #{date}, #{sender} wrote:\n"
+    quote_header = "On #{date.strftime('%a, %b %d, %Y at %I:%M %p')}, #{sender} wrote:\n\n"
 
     # TODO fix the character encoding, making sure it is valid UTF8 and encoded as such 
     body = quote_header + formatter.process_body.gsub(/^(?=>)/, ">").gsub(/^(?!>)/, "> ")
