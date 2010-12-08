@@ -142,10 +142,8 @@ function! s:focus_list_window()
   " set up syntax highlighting
   if has("syntax")
     syn clear
-"    syn match BufferNormal /.*/
-    " syn match BufferFlagged /^.*:Flagged.*$/hs=s
-"    hi def BufferNormal ctermfg=black ctermbg=white
-    " hi def BufferFlagged ctermfg=white ctermbg=black
+    syn match BufferFlagged /^.*[*].*$/hs=s
+    hi def BufferFlagged ctermfg=red ctermbg=black
   endif
   if winnr("$") > 1
     wincmd p
@@ -236,6 +234,7 @@ function! CompleteMailbox(findstart, base)
   else
     " find months matching with "a:base"
     let res = []
+    call add(res, a:base)
     for m in s:mailboxes
       if m =~ '^' . a:base
         call add(res, m)
