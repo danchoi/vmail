@@ -261,6 +261,10 @@ endfunction
 function! s:select_mailbox()
   let s:mailbox = getline(line('.'))
   close
+  " check if mailbox is a real mailbox
+  if (index(s:mailboxes, s:mailbox) == -1) 
+    return
+  endif
   let command = s:select_mailbox_command . shellescape(s:mailbox)
   echo command
   call system(command)
