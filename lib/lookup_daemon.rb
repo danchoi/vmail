@@ -109,9 +109,9 @@ class GmailServer
       log "address name: #{address_struct.name}"
     end
     address = [address_struct.mailbox, address_struct.host].join('@') 
-    date = Time.parse(envelope.date).localtime.strftime "%D %I:%M%P" rescue envelope.date.to_s 
+    date = Time.parse(envelope.date).localtime.strftime "%b %d %I:%M%P" rescue envelope.date.to_s 
     flags = format_flags(flags)
-    "#{uid} #{(date || '').ljust(16)} #{address[0,30].ljust(30)} #{(envelope.subject || '').encode('utf-8')[0,70].ljust(70)} #{flags.col(30)}"
+    "#{uid} #{(date || '').ljust(14)} #{address[0,30].ljust(30)} #{(envelope.subject || '').encode('utf-8')[0,70].ljust(70)} #{flags.col(30)}"
   end
 
   FLAGMAP = {:Flagged => '[*]'}
