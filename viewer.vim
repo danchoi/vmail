@@ -95,7 +95,8 @@ function! s:show_message()
   1delete
   normal 1
   normal jk
-  only
+  wincmd p
+  close
   setlocal nomodifiable
   redraw
 endfunction
@@ -149,9 +150,6 @@ function! s:focus_list_window()
     wincmd p
     close!
   endif
-  if winnr("$") > 1
-    only
-  end
   " vertically center the cursor line
   normal z.
 endfunction

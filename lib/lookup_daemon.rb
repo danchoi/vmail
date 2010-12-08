@@ -125,6 +125,7 @@ class GmailServer
   end
 
   def search(limit, *query)
+    log "uid_search limit: #{limit} query: #{@query.inspect}"
     limit = 25 if limit.to_s !~ /^\d+$/
     query = ['ALL'] if query.empty?
     @query = query.join(' ')
