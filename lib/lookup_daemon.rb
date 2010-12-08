@@ -104,11 +104,11 @@ class GmailServer
     envelope = fetch_data.attr["ENVELOPE"]
     flags = fetch_data.attr["FLAGS"]
     address_struct = (@mailbox == '[Gmail]/Sent Mail' ? envelope.to.first : envelope.from.first)
-    # TODO use this data
-    if address_struct.name
-      log "address name: #{address_struct.name}"
-    end
+    
     address = [address_struct.mailbox, address_struct.host].join('@') 
+    if address_struct.name
+      address = "#{address_struct.name} <#{address}>"
+    end
     date = Time.parse(envelope.date).localtime.strftime "%b %d %I:%M%P" rescue envelope.date.to_s 
     flags = format_flags(flags)
     "#{uid} #{(date || '').ljust(14)} #{address[0,30].ljust(30)} #{(envelope.subject || '').encode('utf-8')[0,70].ljust(70)} #{flags.col(30)}"

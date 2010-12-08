@@ -61,7 +61,7 @@ function! s:create_message_window()
   noremap <silent> <buffer> <Leader>R :call <SID>show_raw()<cr>
   noremap <silent> <buffer> R :call <SID>show_raw()<cr>
   " TODO improve this
-  noremap <silent> <buffer> <Leader>o yE :!open <C-R>"<CR><CR>
+  noremap <silent> <buffer> <Leader>o yE :!open '<C-R>"'<CR><CR>
   noremap <silent> <buffer> <leader>j <Esc>:call <SID>show_next_message()<CR> 
   noremap <silent> <buffer> <leader>k <Esc>:call <SID>show_previous_message()<CR> 
   close
@@ -234,7 +234,6 @@ function! CompleteMailbox(findstart, base)
   else
     " find months matching with "a:base"
     let res = []
-    call add(res, a:base)
     for m in s:mailboxes
       if m =~ '^' . a:base
         call add(res, m)
