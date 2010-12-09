@@ -70,21 +70,26 @@ class MessageFormatter
   end
 
   def extract_headers(mail = @mail)
-    headers = {'from' => mail['from'].decoded,
+    headers = {'from' => utf8(mail['from'].decoded),
       'date' => mail.date,
-      'to' => mail['to'].nil? ? nil : mail['to'].decoded,
-      'subject' => mail.subject
+      'to' => mail['to'].nil? ? nil : utf8(mail['to'].decoded),
+      'subject' => utf8(mail.subject)
     }
     if !mail.cc.nil?
-      headers['cc'] = mail['cc'].decoded.to_s
+      headers['cc'] = utf8(mail['cc'].decoded.to_s)
     end
     if !mail.reply_to.nil?
-      headers['reply_to'] = mail['reply_to'].decoded
+      headers['reply_to'] = utf8(mail['reply_to'].decoded)
     end
     headers
   end
 
   def encoding
-    @mail.encoding
+    @encoding ||= @mail.header.charset || 'us-ascii'
+  end
+
+  def utf8(string)
+    string.force_encoding(encoding)
+    string.encode("UTF-8")
   end
 end

@@ -51,7 +51,7 @@ describe MessageFormatter do
     end
     it "should format the subject line in UTF-8" do
       match = "독특닷컴과"
-      @formatter.summary(123, [:Seen], "from").must_match match
+      assert_match match, @formatter.extract_headers['subject'] 
     end
   end
 
