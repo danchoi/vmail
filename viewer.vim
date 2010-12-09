@@ -20,6 +20,10 @@ let s:deliver_command = s:client_script . "deliver "
 let s:message_bufname = "MessageWindow"
 let s:list_bufname = "MessageListWindow"
 
+function! VmailStatusLine()
+  return "%<%f\ " . s:mailbox . "%r%=%-14.(%l,%c%V%)\ %P"
+endfunction
+
 function! s:create_list_window()
   "setlocal bufhidden=delete
   "setlocal buftype=nofile
@@ -470,6 +474,8 @@ noremap <silent> <buffer> <Leader>m :call <SID>mailbox_window()<CR>
 noremap <silent> <buffer> <Leader>v :call <SID>move_to_mailbox()<CR>
 
 noremap <silent> <buffer> <Leader>c :call <SID>compose_message()<CR><cr>
+
+set statusline=%!VmailStatusLine()
 
 
 " press double return in list view to go full screen on a message; then
