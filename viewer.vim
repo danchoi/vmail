@@ -252,7 +252,8 @@ function! s:mailbox_window()
   resize 1
   inoremap <silent> <buffer> <cr> <Esc>:call <SID>select_mailbox()<CR> 
   set completefunc=CompleteMailbox
-  call feedkeys("i\<c-x>\<c-u>", 't')
+  " c-p clears the line
+  call feedkeys("i\<c-x>\<c-u>\<c-p>", 't')
 endfunction
 
 function! s:select_mailbox()
@@ -383,8 +384,8 @@ noremap <silent> <buffer> <cr> :call <SID>show_message()<CR>
 noremap <silent> <buffer> q :qal!<cr>
 
 noremap <silent> <buffer> s :call <SID>toggle_flag("Flagged")<CR>
-noremap <silent> <buffer> D :call <SID>toggle_flag("Deleted")<CR>
-noremap <silent> <buffer> d :call <SID>toggle_flag("Deleted")<CR>
+noremap <silent> <buffer> <leader>D :call <SID>toggle_flag("Deleted")<CR>
+noremap <silent> <buffer> <leader>d :call <SID>toggle_flag("Deleted")<CR>
 noremap <silent> <buffer> ! :call <SID>toggle_flag("[Gmail]/Spam")<CR>
 
 "open a link browser (os x)
