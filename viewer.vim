@@ -443,7 +443,6 @@ function! s:deliver_message()
   let mail = join(getline(1,'$'), "\n")
   exec ":!" . s:deliver_command . " < ComposeMessage" 
   redraw
-  call feedkeys("<CR>")
   call s:focus_list_window()
 endfunction
 
