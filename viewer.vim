@@ -41,6 +41,7 @@ function! s:create_list_window()
   setlocal cursorline
   " we need the bufnr to find the window later
   let s:listbufnr = bufnr('%')
+  setlocal statusline=%!VmailStatusLine()
 endfunction
 
 " the message display buffer window
@@ -475,7 +476,6 @@ noremap <silent> <buffer> <Leader>v :call <SID>move_to_mailbox()<CR>
 
 noremap <silent> <buffer> <Leader>c :call <SID>compose_message()<CR><cr>
 
-set statusline=%!VmailStatusLine()
 
 
 " press double return in list view to go full screen on a message; then
