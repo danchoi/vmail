@@ -62,8 +62,8 @@ function! s:create_message_window()
   noremap <silent> <buffer> R :call <SID>show_raw()<cr>
   " TODO improve this
   noremap <silent> <buffer> <Leader>o yE :!open '<C-R>"'<CR><CR>
-  noremap <silent> <buffer> <leader>j <Esc>:call <SID>show_next_message()<CR> 
-  noremap <silent> <buffer> <leader>k <Esc>:call <SID>show_previous_message()<CR> 
+  noremap <silent> <buffer> <leader>j :call <SID>show_next_message()<CR> 
+  noremap <silent> <buffer> <leader>k :call <SID>show_previous_message()<CR> 
   close
 endfunction
 
