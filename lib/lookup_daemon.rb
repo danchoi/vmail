@@ -139,7 +139,7 @@ class GmailServer
   end
 
   def update
-    reconnect_if_necessary do 
+    reconnect_if_necessary(4) do 
       # this is just to prime the IMAP connection
       # It's necessary for some reason.
       fetch_headers(@all_uids[-1])
@@ -358,7 +358,7 @@ trap("INT") {
       $gmail.close
     end
   rescue Timeout::Error
-    put "close connection attempt timed out"
+    puts "close connection attempt timed out"
   end
   exit
 }
