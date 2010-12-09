@@ -25,7 +25,7 @@ class MessageFormatter
 
   def process_body
     part = find_text_part(@mail.parts)
-    if part
+    if part && part.respond_to?(:header)
       if part.header["Content-Type"].to_s =~ /text\/plain/
         format_text_body(part.body) 
       elsif part.header["Content-Type"].to_s =~ /text\/html/
@@ -47,11 +47,12 @@ class MessageFormatter
     if part
       find_text_part(part.parts)
     else
+      # no multipart part
       part = parts.detect {|part| (part.header["Content-Type"].to_s =~ /text\/plain/) }
       if part
         return part
       else
-        return "no text part"
+        parts.first
       end
     end
   end
