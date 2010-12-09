@@ -92,9 +92,7 @@ class GmailServer
       @imap.uid_fetch(uid_set, ["FLAGS", "ENVELOPE"])
     end
     log "extracting headers"
-    lines = results.map do |res|
-      format_header(res)
-    end
+    lines = results.sort_by {|x| Time.parse(x.attr['ENVELOPE'].date)}.map {|x| format_header(x)}
     log "returning result" 
     return lines.join("\n")
   end

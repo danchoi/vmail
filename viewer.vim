@@ -232,7 +232,7 @@ function! s:move_to_mailbox() range
   setlocal modifiable
   resize 1
   inoremap <silent> <buffer> <cr> <Esc>:call <SID>complete_move_to_mailbox()<CR> 
-  noremap <silent> <buffer> q :close<cr>
+  inoremap <silent> <buffer> <esc> <Esc>:q<cr>
   set completefunc=CompleteMoveMailbox
   " c-p clears the line
   let s:firstline = a:firstline 
@@ -310,6 +310,9 @@ function! CompleteMailbox(findstart, base)
   endif
 endfun
 
+" -------------------------------------------------------------------------------
+" select mailbox
+
 function! s:mailbox_window()
   if !exists("s:mailboxes")
     call s:get_mailbox_list()
@@ -320,6 +323,7 @@ function! s:mailbox_window()
   setlocal modifiable
   resize 1
   inoremap <silent> <buffer> <cr> <Esc>:call <SID>select_mailbox()<CR> 
+  inoremap <silent> <buffer> <esc> <Esc>:q<cr>
   set completefunc=CompleteMailbox
   " c-p clears the line
   call feedkeys("i\<c-x>\<c-u>\<c-p>", 't')
@@ -413,6 +417,7 @@ function! s:compose_reply(all)
 endfunction
 
 function! s:compose_message()
+  write
   let command = s:message_template_command
   redraw
   echo command
