@@ -25,7 +25,7 @@ class MessageFormatter
 
   def process_body
     part = find_text_part(@mail.parts)
-    if part && part.respond_to?(:header)
+    body = if part && part.respond_to?(:header)
       if part.header["Content-Type"].to_s =~ /text\/plain/
         format_text_body(part.body) 
       elsif part.header["Content-Type"].to_s =~ /text\/html/
@@ -36,6 +36,8 @@ class MessageFormatter
     else 
       "NO BODY" 
     end
+    body.force_encoding(self.encoding)
+    body.encode('utf-8', :undef => :replace, :universal_newline => true)
   end
 
   def find_text_part(parts = @mail.parts)
@@ -85,7 +87,7 @@ class MessageFormatter
   end
 
   def encoding
-    @encoding ||= @mail.header.charset || 'us-ascii'
+    @encoding ||= @mail.header.charset || 'utf-8'
   end
 
   def utf8(string)
