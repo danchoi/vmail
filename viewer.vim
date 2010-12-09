@@ -13,17 +13,12 @@ let s:select_mailbox_command = s:client_script . "select_mailbox "
 let s:search_command = s:client_script . "search "
 let s:more_messages_command = s:client_script . "more_messages "
 let s:flag_command = s:client_script . "flag "
+let s:move_to_command = s:client_script . "move_to "
 let s:message_template_command = s:client_script . "message_template "
 let s:reply_template_command = s:client_script . "reply_template "
 let s:deliver_command = s:client_script . "deliver "
 let s:message_bufname = "MessageWindow"
 let s:list_bufname = "MessageListWindow"
-
-function! s:set_parameters() 
-  " TODO
-  let s:mailbox = "INBOX" 
-  let s:query = "all"
-endfunction
 
 function! s:create_list_window()
   "setlocal bufhidden=delete
@@ -214,6 +209,79 @@ function! s:toggle_flag(flag) range
   setlocal nomodifiable
 endfunction
 
+" --------------------------------------------------------------------------------
+" move to another mailbox
+function! s:move_to_mailbox() range
+  let lnum = a:firstline
+  let n = 0
+  let uids = []
+  while lnum <= a:lastline
+    let line =  getline(lnum)
+    let message_uid = matchstr(line, '^\d\+')
+    call add(uids, message_uid)
+    let lnum = lnum + 1
+  endwhile
+  let s:uid_set = join(uids, ",")
+  " now prompt use to select mailbox
+  if !exists("s:mailboxes")
+    call s:get_mailbox_list()
+  endif
+  topleft split MailboxSelect
+  setlocal buftype=nofile
+  setlocal noswapfile
+  setlocal modifiable
+  resize 1
+  inoremap <silent> <buffer> <cr> <Esc>:call <SID>complete_move_to_mailbox()<CR> 
+  set completefunc=CompleteMoveMailbox
+  " c-p clears the line
+  call feedkeys("i\<c-x>\<c-u>\<c-p>", 't')
+  " save these in script scope to delete the lines when move completes
+  let s:firstline = a:firstline 
+  let s:lastline = a:lastline
+endfunction
+
+" Open command window to choose a mailbox to move a message to.
+" Very similar to mailbox_window() function
+function! s:complete_move_to_mailbox()
+  let mailbox = getline(line('.'))
+  close
+  " check if mailbox is a real mailbox
+  if (index(s:mailboxes, mailbox) == -1) 
+    return
+  endif
+  let command = s:move_to_command . s:uid_set . ' ' . shellescape(mailbox)
+  echo command
+  let res = system(command)
+  setlocal modifiable
+  exec s:firstline . "," . s:lastline . "delete"
+  setlocal nomodifiable
+endfunction
+
+function! CompleteMoveMailbox(findstart, base)
+  if !exists("s:mailboxes")
+    call s:get_mailbox_list()
+  endif
+  if a:findstart
+    " locate the start of the word
+    return 0
+  else
+    " find months matching with "a:base"
+    let res = []
+    for m in s:mailboxes
+      if m == s:mailbox
+        continue
+      end
+      if m =~ '^' . a:base
+        call add(res, m)
+      endif
+    endfor
+    return res
+  endif
+endfun
+" --------------------------------------------------------------------------------
+
+
+
 function! s:get_mailbox_list()
   let command = s:list_mailboxes_command
   redraw
@@ -394,6 +462,7 @@ noremap <silent> <buffer> ! :call <SID>toggle_flag("[Gmail]/Spam")<CR>
 noremap <silent> <buffer> u :call <SID>update()<CR>
 noremap <silent> <buffer> <Leader>s :call <SID>search_window()<CR>
 noremap <silent> <buffer> <Leader>m :call <SID>mailbox_window()<CR><CR>
+noremap <silent> <buffer> <Leader>v :call <SID>move_to_mailbox()<CR><CR>
 
 noremap <silent> <buffer> <Leader>c :call <SID>compose_message()<CR><cr>
 

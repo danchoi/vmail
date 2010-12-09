@@ -202,8 +202,12 @@ class GmailServer
 END
   end
 
+  # uid_set is a string comming from the vim client
+  # action is -FLAGS or +FLAGS
   def flag(uid_set, action, flg)
-    uid_set = uid_set.split(",").map(&:to_i)
+    if uid_set.is_a?(String)
+      uid_set = uid_set.split(",").map(&:to_i)
+    end
     # #<struct Net::IMAP::FetchData seqno=17423, attr={"FLAGS"=>[:Seen, "Flagged"], "UID"=>83113}>
     log "flag #{uid_set} #{flg} #{action}"
     if flg == 'Deleted'
@@ -225,7 +229,15 @@ END
     end
   end
 
-  # TODO copy to a different mailbox
+  # uid_set is a string comming from the vim client
+  def move_to(uid_set, mailbox)
+    log "move_to #{uid_set.inspect} #{mailbox}"
+    if uid_set.is_a?(String)
+      uid_set = uid_set.split(",").map(&:to_i)
+    end
+    log @imap.uid_copy(uid_set, mailbox)
+    log @imap.uid_store(uid_set, '+FLAGS', [:Deleted])
+  end
 
   # TODO mark spam
 
