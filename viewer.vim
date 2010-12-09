@@ -86,7 +86,7 @@ function! s:show_message()
   let res = system(command)
   put =res
   " critical: don't call execute 'normal \<cr>'
-  call feedkeys("<cr>")
+  " call feedkeys("<cr>") 
   1delete
   normal 1
   normal jk
@@ -232,12 +232,13 @@ function! s:move_to_mailbox() range
   setlocal modifiable
   resize 1
   inoremap <silent> <buffer> <cr> <Esc>:call <SID>complete_move_to_mailbox()<CR> 
+  noremap <silent> <buffer> q :close<cr>
   set completefunc=CompleteMoveMailbox
   " c-p clears the line
-  call feedkeys("i\<c-x>\<c-u>\<c-p>", 't')
-  " save these in script scope to delete the lines when move completes
   let s:firstline = a:firstline 
   let s:lastline = a:lastline
+  call feedkeys("i\<c-x>\<c-u>\<c-p>", 't')
+  " save these in script scope to delete the lines when move completes
 endfunction
 
 " Open command window to choose a mailbox to move a message to.
@@ -461,8 +462,8 @@ noremap <silent> <buffer> ! :call <SID>toggle_flag("[Gmail]/Spam")<CR>
 
 noremap <silent> <buffer> u :call <SID>update()<CR>
 noremap <silent> <buffer> <Leader>s :call <SID>search_window()<CR>
-noremap <silent> <buffer> <Leader>m :call <SID>mailbox_window()<CR><CR>
-noremap <silent> <buffer> <Leader>v :call <SID>move_to_mailbox()<CR><CR>
+noremap <silent> <buffer> <Leader>m :call <SID>mailbox_window()<CR>
+noremap <silent> <buffer> <Leader>v :call <SID>move_to_mailbox()<CR>
 
 noremap <silent> <buffer> <Leader>c :call <SID>compose_message()<CR><cr>
 
