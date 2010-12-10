@@ -418,14 +418,17 @@ for contacts, use dictionary file option in vim
 
 
 DONE
-- contacts, proof of conept
+- contacts, proof of concept
 - encoding issues (some at least)
 
 next:
 - get reply template recipients right
 - try attachments extraction
+- open html in browser
+- put instructions in message window
 - try auto-adjusting column widths depending on window width
-
-
+- straight to reply from list window
+- straight to switch mailbox, etc from message window
+- forwarding
 
 

@@ -261,11 +261,25 @@ END
   end
 
   def reply_template(uid, replyall=false)
-    res = @imap.uid_fetch(uid.to_i, ["FLAGS", "RFC822"])[0].attr["RFC822"]
-    mail = Mail.new(res)
+    fetch_data = @imap.uid_fetch(uid.to_i, ["FLAGS", "ENVELOPE", "RFC822"])[0]
+    envelope = fetch_data.attr['ENVELOPE']
+   
+    recipients = if replyall
+                    [envelope.to, envelope.cc, envelope.reply_to].flatten.
+                      uniq.
+                      compact.
+                      select {|x| "#{x.mailbox}@#{x.host}" != @username}.
+                      map {|x| 
+                        x.name ? "#{x.name} <#{x.mailbox}@#{x.host}>" : "#{x.mailbox}@#{x.host}"
+                      }.join(", ")
+                 else
+                   x = (envelope.reply_to || envelope.from)[0]
+                   x.name ? "#{x.name} <#{x.mailbox}@#{x.host}>" : "#{x.mailbox}@#{x.host}"
+                 end
+
+    mail = Mail.new fetch_data.attr['RFC822']
     formatter = MessageFormatter.new(mail)
     headers = formatter.extract_headers
-    reply_to = headers['reply_to'] || headers['from']
     sender = headers['from']
     subject = headers['subject']
     if subject !~ /Re: /
@@ -284,7 +298,7 @@ END
     # TODO fix the character encoding, making sure it is valid UTF8 and encoded as such 
     body = quote_header + formatter.process_body.gsub(/^(?=>)/, ">").gsub(/^(?!>)/, "> ")
 
-    reply_headers = { 'from' => @username, 'to' => reply_to, 'cc' => cc, 'subject' => headers['subject']}
+    reply_headers = { 'from' => @username, 'to' => recipients, 'cc' => cc, 'subject' => headers['subject']}
     format_headers(reply_headers) + "\n\n" + body
   end
 
