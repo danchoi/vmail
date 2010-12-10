@@ -420,15 +420,16 @@ for contacts, use dictionary file option in vim
 DONE
 - contacts, proof of concept
 - encoding issues (some at least)
+- get reply template recipients right
 
 next:
-- get reply template recipients right
+- forwarding
 - try attachments extraction
 - open html in browser
 - put instructions in message window
 - try auto-adjusting column widths depending on window width
-- straight to reply from list window
-- straight to switch mailbox, etc from message window
-- forwarding
+- mapping improvements:
+  - straight to reply from list window
+  - straight to switch mailbox, etc from message window
 
 
