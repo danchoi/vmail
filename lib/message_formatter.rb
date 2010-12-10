@@ -73,7 +73,7 @@ class MessageFormatter
 
   def extract_headers(mail = @mail)
     headers = {'from' => utf8(mail['from'].decoded),
-      'date' => mail.date,
+      'date' => (mail.date.strftime('%a, %b %d %I:%M %p %Z %Y') rescue mail.date),
       'to' => mail['to'].nil? ? nil : utf8(mail['to'].decoded),
       'subject' => utf8(mail.subject)
     }
