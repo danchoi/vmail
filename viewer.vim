@@ -16,6 +16,7 @@ let s:flag_command = s:client_script . "flag "
 let s:move_to_command = s:client_script . "move_to "
 let s:message_template_command = s:client_script . "message_template "
 let s:reply_template_command = s:client_script . "reply_template "
+let s:forward_template_command = s:client_script . "forward_template "
 let s:deliver_command = s:client_script . "deliver "
 let s:message_bufname = "MessageWindow"
 let s:list_bufname = "MessageListWindow"
@@ -53,13 +54,14 @@ function! s:create_message_window()
   let s:message_window_bufnr = bufnr('%')
   " message window bindings
   noremap <silent> <buffer> <cr> :call <SID>focus_list_window()<CR> 
-  noremap <silent> <buffer> q :call <SID>focus_list_window()<CR> 
+  noremap <silent> <buffer> <Leader>q :call <SID>focus_list_window()<CR> 
+  noremap <silent> <buffer> q <Leader>q
   noremap <silent> <buffer> <Leader>r :call <SID>compose_reply(0)<CR><cr>
-  noremap <silent> <buffer> r :call <SID>compose_reply(0)<CR><cr>
   noremap <silent> <buffer> <Leader>a :call <SID>compose_reply(1)<CR><cr>
-  noremap <silent> <buffer> a :call <SID>compose_reply(1)<CR><cr>
   noremap <silent> <buffer> <Leader>R :call <SID>show_raw()<cr>
-  noremap <silent> <buffer> R :call <SID>show_raw()<cr>
+  noremap <silent> <buffer> <Leader>R :call <SID>show_raw()<cr>
+  noremap <silent> <buffer> <Leader>f :call <SID>compose_forward()<CR><cr>
+
   " TODO improve this
   noremap <silent> <buffer> <Leader>o yE :!open '<C-R>"'<CR><CR>
   noremap <silent> <buffer> <leader>j :call <SID>show_next_message()<CR> 
@@ -400,7 +402,7 @@ function! s:more_messages()
 endfunction
 
 " --------------------------------------------------------------------------------  
-"  compose reply and compose
+"  compose reply, compose, forward
 
 function! s:compose_reply(all)
   let command = s:reply_template_command . s:current_uid
@@ -413,6 +415,12 @@ endfunction
 function! s:compose_message()
   write
   let command = s:message_template_command
+  call s:open_compose_window(command)
+endfunction
+
+function! s:compose_forward()
+  write
+  let command = s:forward_template_command . s:current_uid
   call s:open_compose_window(command)
 endfunction
 

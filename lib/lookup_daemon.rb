@@ -263,7 +263,6 @@ END
   def reply_template(uid, replyall=false)
     fetch_data = @imap.uid_fetch(uid.to_i, ["FLAGS", "ENVELOPE", "RFC822"])[0]
     envelope = fetch_data.attr['ENVELOPE']
-   
     recipients = if replyall
                     [envelope.to, envelope.cc, envelope.reply_to].flatten.
                       uniq.
@@ -276,7 +275,6 @@ END
                    x = (envelope.reply_to || envelope.from)[0]
                    x.name ? "#{x.name} <#{x.mailbox}@#{x.host}>" : "#{x.mailbox}@#{x.host}"
                  end
-
     mail = Mail.new fetch_data.attr['RFC822']
     formatter = MessageFormatter.new(mail)
     headers = formatter.extract_headers
@@ -291,6 +289,14 @@ END
     body = quote_header + formatter.process_body.gsub(/^(?=>)/, ">").gsub(/^(?!>)/, "> ")
     reply_headers = { 'from' => @username, 'to' => recipients, 'cc' => cc, 'subject' => headers['subject']}
     format_headers(reply_headers) + "\n\n" + body
+  end
+
+  # TODO, forward with attachments 
+  def forward_template(uid)
+    original_body = lookup(uid, false)
+    message_template + 
+      "\n---------- Forwarded message ----------\n" +
+      original_body
   end
 
   def deliver(text)
