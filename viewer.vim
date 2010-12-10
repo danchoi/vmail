@@ -19,6 +19,7 @@ let s:new_message_template_command = s:client_script . "new_message_template "
 let s:reply_template_command = s:client_script . "reply_template "
 let s:forward_template_command = s:client_script . "forward_template "
 let s:deliver_command = s:client_script . "deliver "
+let s:open_html_command = s:client_script . "open_html_part "
 let s:message_bufname = "MessageWindow"
 let s:list_bufname = "MessageListWindow"
 
@@ -67,6 +68,7 @@ function! s:create_message_window()
   noremap <silent> <buffer> <leader>j :call <SID>show_next_message()<CR> 
   noremap <silent> <buffer> <leader>k :call <SID>show_previous_message()<CR> 
   noremap <silent> <buffer> <Leader>c :call <SID>compose_message()<CR><cr>
+  noremap <silent> <buffer> <Leader>h :call <SID>open_html_part()<CR><cr>
   close
 endfunction
 
@@ -475,6 +477,15 @@ function! s:deliver_message()
   redraw
   call s:focus_list_window()
 endfunction
+
+" -------------------------------------------------------------------------------- 
+
+" call from inside message window with <Leader>h
+func! s:open_html_part()
+  let command = s:open_html_command . s:current_uid 
+  let outfile = system(command)
+  exec "!open " . outfile
+endfunc
 
 " -------------------------------------------------------------------------------- 
 

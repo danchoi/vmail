@@ -342,6 +342,18 @@ END
     "SENT"
   end
 
+  def open_html_part(uid)
+    log "open_html_part #{uid}"
+    fetch_data = @imap.uid_fetch(uid.to_i, ["RFC822"])[0]
+    mail = Mail.new(fetch_data.attr['RFC822'])
+    multipart = mail.parts.detect {|part| part.multipart?}
+    html_part = (multipart || mail).parts.detect {|part| part.header["Content-Type"].to_s =~ /text\/html/}
+    outfile = 'htmlpart.html'
+    File.open(outfile, 'w') {|f| f.puts(html_part.decoded)}
+    # client should handle opening the html file
+    return outfile
+  end
+
   def window_width=(width)
     log "setting window width to #{width}"
     @width = width.to_i
