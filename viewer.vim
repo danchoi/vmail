@@ -86,14 +86,18 @@ function! s:show_message()
   call setline(line('.'), newline)
   setlocal nomodifiable
   write
+  " this just clears the command line and prevents the screen from
+  " moving up when the next echo statement executes:
+  call feedkeys(":\<cr>") 
+  redraw
   let selected_uid = matchstr(line, '^\d\+')
   let s:current_uid = selected_uid
   let command = s:lookup_command . s:current_uid
+  echo "Loading message. Please wait..."
+  let res = system(command)
   call s:focus_message_window()
   setlocal modifiable
   1,$delete
-  echo "Loading message. Please wait..."
-  let res = system(command)
   put =res
   " critical: don't call execute 'normal \<cr>'
   " call feedkeys("<cr>") 
@@ -484,6 +488,7 @@ endfunction
 func! s:open_html_part()
   let command = s:open_html_command . s:current_uid 
   let outfile = system(command)
+  " todo: allow user to change open in browser command?
   exec "!open " . outfile
 endfunc
 

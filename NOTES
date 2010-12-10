@@ -425,9 +425,9 @@ DONE
 - auto-adjusting column widths depending on window width
 - for older message, replace time with year
 - signature
+- open hyperlink in browser (OS X only?)
 
 next:
-- open hyperlink in browser (OS X only?)
 - put instructions in message window; put in a top section
 - attachments extraction
 - print all selected messages into file (append)
