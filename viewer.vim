@@ -399,37 +399,28 @@ function! s:more_messages()
 
 endfunction
 
+" --------------------------------------------------------------------------------  
+"  compose reply and compose
+
 function! s:compose_reply(all)
-  " create a new window and close all others
+  let command = s:reply_template_command . s:current_uid
   if a:all
-    let command = s:reply_template_command . s:current_uid . ' 1'
-  else
-    let command = s:reply_template_command . s:current_uid
+    let command = command . ' 1'
   end
-  redraw
-  echo command
-  let res = system(command)
-  only " make one pane first
-  vertical split ComposeMessage
-  only
-  setlocal modifiable
-  1,$delete
-  put! =res
-  normal 1G
-  noremap <silent> <buffer> <Leader>d :call <SID>deliver_message()<CR>
-  nnoremap <silent> <buffer> q :call <SID>cancel_compose()<cr>
-  nnoremap <silent> <buffer> <leader>q :call <SID>cancel_compose()<cr>
+  call s:compose_window(command)
 endfunction
 
 function! s:compose_message()
   write
   let command = s:message_template_command
+  call s:compose_window(command)
+endfunction
+
+func! s:compose_window(command)
   redraw
-  echo command
-  let res = system(command)
-  only " make one pane first
+  echo a:command
+  let res = system(a:command)
   vertical split ComposeMessage
-  only
   setlocal modifiable
   1,$delete
   put! =res
@@ -437,7 +428,7 @@ function! s:compose_message()
   noremap <silent> <buffer> <Leader>d :call <SID>deliver_message()<CR>
   nnoremap <silent> <buffer> q :call <SID>cancel_compose()<cr>
   nnoremap <silent> <buffer> <leader>q :call <SID>cancel_compose()<cr>
-endfunction
+endfunc
 
 function! s:cancel_compose()
   call s:focus_list_window()
@@ -475,7 +466,6 @@ noremap <silent> <buffer> <Leader>m :call <SID>mailbox_window()<CR>
 noremap <silent> <buffer> <Leader>v :call <SID>move_to_mailbox()<CR>
 
 noremap <silent> <buffer> <Leader>c :call <SID>compose_message()<CR><cr>
-
 
 " press double return in list view to go full screen on a message; then
 " return? again to restore the list view
