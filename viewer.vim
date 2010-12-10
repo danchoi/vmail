@@ -437,17 +437,16 @@ function! CompleteContact(findstart, base)
   endif
   if a:findstart
     " locate the start of the word
-    return 0
+    let line = getline('.')
+    let start = col('.') - 1
+    while start > 0 && line[start - 1] =~ '\a'
+      let start -= 1
+    endwhile
+    return start
   else
     " find contacts matching with "a:base"
-    " TODO
-    let res = []
-    for m in s:mailboxes
-      if m =~ '^' . a:base
-        call add(res, m)
-      endif
-    endfor
-    return res
+    let matches = system("grep " . shellescape(a:base) . " contacts.txt")
+    return split(matches, "\n")
   endif
 endfun
 
