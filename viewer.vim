@@ -113,9 +113,7 @@ endfunction
 function! s:show_next_message()
   call s:focus_list_window()
   execute "normal j"
-  if line('$') != line('.')
-    execute "normal \<cr>"
-  endif
+  execute "normal \<cr>"
 endfunction
 
 function! s:show_previous_message()

@@ -155,7 +155,8 @@ class GmailServer
     reconnect_if_necessary(4) do 
       # this is just to prime the IMAP connection
       # It's necessary for some reason.
-      fetch_headers(@all_uids[-1])
+      log "priming connection for update"
+      log @imap.uid_fetch(@all_uids[-1], ["ENVELOPE"])
     end
     uids = reconnect_if_necessary { 
       log "uid_search #@query"

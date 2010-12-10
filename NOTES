@@ -14,7 +14,6 @@ last updated, etc
 This app is coming along well.
 
 
-
 Another reason to not allow a divergent offline store is that when the
 schema changes on an update, it's easier to have the user rebuild the
 locate version of the GMAIL 
@@ -291,11 +290,6 @@ Done.
 Next, in the search window, I can keep a history of previous searches.
 And just execute the command that the user hits carriage return on.
 
-
-
-
-
-
     ENVELOPE: !ruby/struct:Net::IMAP::Envelope
       date: Tue, 7 Dec 2010 11:25:47 -0500
       subject: "Error message: /titles.new"
@@ -426,16 +420,21 @@ DONE
 - for older message, replace time with year
 - signature
 - open hyperlink in browser (OS X only?)
+- open html in browser
 
 next:
+- reload after window resize
+- message threads
 - put instructions in message window; put in a top section
+- help document should just be readme? or part of it.
 - attachments extraction
 - print all selected messages into file (append)
   - can pipe through a command line tool, so we don't need to clutter
     viewer.vim with more mappings and functions
-- open html in browser
+- sometimes update doesn't work - bug
 - package gem
 - help
+- defaults for druby in config. pick up config from wherever
 - readme
 - deploy
 
