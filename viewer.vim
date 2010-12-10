@@ -5,6 +5,7 @@ let s:query = ''
 let s:drb_uri = $DRB_URI
 
 let s:client_script = "ruby lib/client.rb " . s:drb_uri . " "
+let s:window_width_command = s:client_script . "window_width= "
 let s:list_mailboxes_command = s:client_script . "list_mailboxes "
 let s:lookup_command = s:client_script . "lookup "
 let s:update_command = s:client_script . "update"
@@ -506,3 +507,7 @@ noremap <silent> <buffer> <Leader>c :call <SID>compose_message()<CR><cr>
 
 " go to bottom
 normal G
+
+" send window width
+" system(s:set_window_width_command . winwidth(1))
+

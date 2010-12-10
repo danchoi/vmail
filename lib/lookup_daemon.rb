@@ -322,6 +322,11 @@ END
     mail.deliver!
     "SENT"
   end
+
+  def window_width=(width)
+    log "setting window width to #{width}"
+    @width = width.to_i
+  end
  
   def smtp_settings
     [:smtp, {:address => "smtp.gmail.com",
