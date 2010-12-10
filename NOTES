@@ -423,14 +423,14 @@ DONE
 - get reply template recipients right
 - forwarding (not with attachments)
 - auto-adjusting column widths depending on window width
+- for older message, replace time with year
 
 next:
+- put instructions in message window; put in a top section
 - try attachments extraction
 - open html in browser
-- put instructions in message window
 - mapping improvements:
   - straight to reply from list window
   - straight to switch mailbox, etc from message window
 - allow deliver command from any buffer or window, as long as headers are at top
-- for older message, replace time with year
 

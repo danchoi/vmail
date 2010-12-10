@@ -275,7 +275,7 @@ END
     fetch_data = @imap.uid_fetch(uid.to_i, ["FLAGS", "ENVELOPE", "RFC822"])[0]
     envelope = fetch_data.attr['ENVELOPE']
     recipients = if replyall
-                    [envelope.to, envelope.cc, envelope.reply_to].flatten.
+                    [envelope.from, envelope.to, envelope.cc, envelope.reply_to].flatten.
                       uniq.
                       compact.
                       select {|x| "#{x.mailbox}@#{x.host}" != @username}.
@@ -298,7 +298,7 @@ END
     date = headers['date']
     quote_header = "On #{date.strftime('%a, %b %d, %Y at %I:%M %p')}, #{sender} wrote:\n\n"
     body = quote_header + formatter.process_body.gsub(/^(?=>)/, ">").gsub(/^(?!>)/, "> ")
-    reply_headers = { 'from' => @username, 'to' => recipients, 'cc' => cc, 'subject' => headers['subject']}
+    reply_headers = { 'from' => "#@name <#@username>", 'to' => recipients, 'cc' => cc, 'subject' => headers['subject']}
     format_headers(reply_headers) + "\n\n" + body
   end
 
