@@ -26,6 +26,7 @@ class GmailServer
   attr_accessor :drb_uri
   def initialize(config)
     @username, @password = config['login'], config['password']
+    @name = config['name']
     @drb_uri = config['drb_uri']
     @mailbox = nil
     @logger = Logger.new(STDERR)
@@ -238,10 +239,10 @@ END
 
   # TODO mark spam
 
-  def message_template
-    headers = {'from' => @username,
-      'to' => 'dhchoi@gmail.com',
-      'subject' => "test #{rand(90)}"
+  def new_message_template
+    headers = {'from' => "#{@name} <#{@username}>",
+      'to' => nil,
+      'subject' => nil
     }
     format_headers(headers) + "\n\n"
   end
@@ -291,7 +292,7 @@ END
   # TODO, forward with attachments 
   def forward_template(uid)
     original_body = lookup(uid, false, true)
-    message_template + 
+    new_message_template + 
       "\n---------- Forwarded message ----------\n" +
       original_body
   end

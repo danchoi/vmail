@@ -14,7 +14,7 @@ let s:search_command = s:client_script . "search "
 let s:more_messages_command = s:client_script . "more_messages "
 let s:flag_command = s:client_script . "flag "
 let s:move_to_command = s:client_script . "move_to "
-let s:message_template_command = s:client_script . "message_template "
+let s:new_message_template_command = s:client_script . "new_message_template "
 let s:reply_template_command = s:client_script . "reply_template "
 let s:forward_template_command = s:client_script . "forward_template "
 let s:deliver_command = s:client_script . "deliver "
@@ -65,6 +65,7 @@ function! s:create_message_window()
   noremap <silent> <buffer> <Leader>o yE :!open '<C-R>"'<CR><CR>
   noremap <silent> <buffer> <leader>j :call <SID>show_next_message()<CR> 
   noremap <silent> <buffer> <leader>k :call <SID>show_previous_message()<CR> 
+  noremap <silent> <buffer> <Leader>c :call <SID>compose_message()<CR><cr>
   close
 endfunction
 
@@ -413,7 +414,7 @@ endfunction
 
 function! s:compose_message()
   write
-  let command = s:message_template_command
+  let command = s:new_message_template_command
   call s:open_compose_window(command)
 endfunction
 

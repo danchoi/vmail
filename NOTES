@@ -421,9 +421,9 @@ DONE
 - contacts, proof of concept
 - encoding issues (some at least)
 - get reply template recipients right
+- forwarding (not with attachments)
 
 next:
-- forwarding
 - try attachments extraction
 - open html in browser
 - put instructions in message window
@@ -431,6 +431,9 @@ next:
 - mapping improvements:
   - straight to reply from list window
   - straight to switch mailbox, etc from message window
+- allow deliver command from any buffer or window, as long as headers
+  are at top
+- for older message, replace time with year
 
 
 forward message
