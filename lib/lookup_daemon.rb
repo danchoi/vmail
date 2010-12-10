@@ -141,7 +141,6 @@ class GmailServer
       # this is just to prime the IMAP connection
       # It's necessary for some reason.
       fetch_headers(@all_uids[-1])
-      log "test"
     end
     uids = reconnect_if_necessary { 
       log "uid_search #@query"

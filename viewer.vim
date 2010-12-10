@@ -477,7 +477,6 @@ noremap <silent> <buffer> <Leader>v :call <SID>move_to_mailbox()<CR>
 noremap <silent> <buffer> <Leader>c :call <SID>compose_message()<CR><cr>
 
 
-
 " press double return in list view to go full screen on a message; then
 " return? again to restore the list view
 
