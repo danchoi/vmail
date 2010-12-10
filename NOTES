@@ -422,25 +422,15 @@ DONE
 - encoding issues (some at least)
 - get reply template recipients right
 - forwarding (not with attachments)
+- auto-adjusting column widths depending on window width
 
 next:
 - try attachments extraction
 - open html in browser
 - put instructions in message window
-- try auto-adjusting column widths depending on window width
 - mapping improvements:
   - straight to reply from list window
   - straight to switch mailbox, etc from message window
-- allow deliver command from any buffer or window, as long as headers
-  are at top
+- allow deliver command from any buffer or window, as long as headers are at top
 - for older message, replace time with year
-
-
-forward message
----------- Forwarded message ----------
-From:  <dhchoi@gmail.com>
-Date: Thu, Dec 9, 2010 at 9:23 PM
-Subject: Re: friday or sunday
-To: [addresses]
-
 

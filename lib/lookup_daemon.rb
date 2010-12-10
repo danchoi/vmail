@@ -112,13 +112,18 @@ class GmailServer
     if address_struct.name
       address = "#{address_struct.name} <#{address}>"
     end
-    date = Time.parse(envelope.date).localtime.strftime "%b %d %I:%M%P" rescue envelope.date.to_s 
+    date = Time.parse(envelope.date).localtime
+    date_formatted = if date.year != Time.now.year
+                       date.strftime "%b %d %Y" rescue envelope.date.to_s 
+                     else 
+                       date.strftime "%b %d %I:%M%P" rescue envelope.date.to_s 
+                     end
     flags = format_flags(flags)
     first_col_width = @all_uids.max.to_s.length 
     mid_width = @width - (first_col_width + 14 + 2) - (10 + 2) - 2
     address_col_width = (mid_width * 0.3).ceil
     subject_col_width = (mid_width * 0.7).floor
-    "#{uid.to_s.col(first_col_width)} #{(date || '').col(14)} #{address.col(address_col_width)} #{(envelope.subject || '').encode('utf-8').col(subject_col_width)} #{flags.rcol(10)}"
+    "#{uid.to_s.col(first_col_width)} #{(date_formatted || '').col(14)} #{address.col(address_col_width)} #{(envelope.subject || '').encode('utf-8').col(subject_col_width)} #{flags.rcol(10)}"
   end
 
   FLAGMAP = {:Flagged => '[*]'}
