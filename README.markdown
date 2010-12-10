@@ -4,7 +4,7 @@ This project (soon to be documented) provides a Vim interface to Gmail.
 
 ## Open Source License
 
-The source code for OpenMBTA is governed by the MIT License, which reads as
+The source code for vmail is governed by the MIT License, which reads as
 follows:
 
     Copyright (c) 2010 Daniel Choi
