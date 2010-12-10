@@ -380,6 +380,10 @@ endfunction
 function! s:do_search()
   let s:query = getline(line('.'))
   close
+  " empty query
+  if match(s:query, '^\s*$') != -1
+    return
+  endif
   " TODO should we really hardcode 100 as the quantity?
   let command = s:search_command . "100 " . shellescape(s:query)
   echo command
