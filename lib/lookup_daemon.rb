@@ -175,7 +175,7 @@ class GmailServer
     res 
   end
 
-  def lookup(uid, raw=false)
+  def lookup(uid, raw=false, forwarded=false)
     log "fetching #{uid.inspect}"
     res = reconnect_if_necessary do 
       @imap.uid_fetch(uid.to_i, ["FLAGS", "RFC822"])[0].attr["RFC822"]
@@ -191,10 +191,7 @@ class GmailServer
     message = <<-END
 #{format_headers(formatter.extract_headers)}
 
-#{formatter.list_parts}
-
--- body --
-
+#{forwarded ? nil : formatter.list_parts}
 #{out}
 END
   end
@@ -293,7 +290,7 @@ END
 
   # TODO, forward with attachments 
   def forward_template(uid)
-    original_body = lookup(uid, false)
+    original_body = lookup(uid, false, true)
     message_template + 
       "\n---------- Forwarded message ----------\n" +
       original_body

@@ -20,7 +20,7 @@ class MessageFormatter
         "- #{part.content_type}"
       end
     end
-    lines.join("\n")
+    lines.join("\n") + "\n\n---BODY--\n\n"
   end
 
   def process_body

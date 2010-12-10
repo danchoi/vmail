@@ -61,7 +61,6 @@ function! s:create_message_window()
   noremap <silent> <buffer> <Leader>R :call <SID>show_raw()<cr>
   noremap <silent> <buffer> <Leader>R :call <SID>show_raw()<cr>
   noremap <silent> <buffer> <Leader>f :call <SID>compose_forward()<CR><cr>
-
   " TODO improve this
   noremap <silent> <buffer> <Leader>o yE :!open '<C-R>"'<CR><CR>
   noremap <silent> <buffer> <leader>j :call <SID>show_next_message()<CR> 
@@ -428,7 +427,9 @@ func! s:open_compose_window(command)
   redraw
   echo a:command
   let res = system(a:command)
-  vertical split ComposeMessage
+  split ComposeMessage
+  wincmd p 
+  close
   setlocal modifiable
   1,$delete
   put! =res
