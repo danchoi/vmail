@@ -431,6 +431,8 @@ func! s:open_compose_window(command)
   set completefunc=CompleteContact
 endfunc
 
+" contacts.txt file should be generated. 
+" grep works well, does partial matches
 function! CompleteContact(findstart, base)
   if !exists("s:mailboxes")
     call s:get_mailbox_list()

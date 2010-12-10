@@ -30,8 +30,7 @@ class ContactsExtractor
           email = [address_struct.mailbox, address_struct.host].join('@') 
           name = address_struct.name
           if name 
-            add = "#{name} <#{email}>"
-            puts add
+            puts "#{name} <#{email}>"
           else
             puts email
           end
@@ -46,5 +45,6 @@ if __FILE__ == $0
   require 'yaml'
   config = YAML::load(File.read(File.expand_path("../../config/gmail.yml", __FILE__)))
   extractor = ContactsExtractor.new(config)
+  # pipe through uniq | sort 
   extractor.extract!
 end
