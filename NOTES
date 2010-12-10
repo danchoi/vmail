@@ -428,18 +428,21 @@ DONE
 
 next:
 - put instructions in message window; put in a top section
-- try attachments extraction
-- print all selected messages into file
-- range selection from : prompt
+- attachments extraction
+- print all selected messages into file (append)
+  - can pipe through a command line tool, so we don't need to clutter
+    viewer.vim with more mappings and functions
+- open hyperlink in browser (OS X only?)
 - open html in browser
 - package gem
 - help
 - readme
 - deploy
 
-- later
+later:
 - mapping improvements:
   - straight to reply from list window
   - straight to switch mailbox, etc from message window
 - allow deliver command from any buffer or window, as long as headers are at top
+- range selection from : prompt
 
