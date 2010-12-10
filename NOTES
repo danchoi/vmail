@@ -429,7 +429,15 @@ DONE
 next:
 - put instructions in message window; put in a top section
 - try attachments extraction
+- print all selected messages into file
+- range selection from : prompt
 - open html in browser
+- package gem
+- help
+- readme
+- deploy
+
+- later
 - mapping improvements:
   - straight to reply from list window
   - straight to switch mailbox, etc from message window

@@ -489,8 +489,13 @@ noremap <silent> <buffer> <cr> :call <SID>show_message()<CR>
 noremap <silent> <buffer> q :qal!<cr>
 
 noremap <silent> <buffer> s :call <SID>toggle_flag("Flagged")<CR>
-noremap <silent> <buffer> <leader>D :call <SID>toggle_flag("Deleted")<CR>
 noremap <silent> <buffer> <leader>d :call <SID>toggle_flag("Deleted")<CR>
+
+" TODO the range doesn't quite work as expect, need <line1> <line2>
+" trying to make user defined commands that work from : prompt
+" command -buffer -range VmailDelete call s:toggle_flag("Deleted")
+" command -buffer -range VmailStar call s:toggle_flag("Flagged")
+
 noremap <silent> <buffer> ! :call <SID>toggle_flag("[Gmail]/Spam")<CR>
 
 "open a link browser (os x)
