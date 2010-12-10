@@ -10,6 +10,10 @@ class String
   def col(width)
     self[0,width].ljust(width)
   end
+
+  def rcol(width) #right justified
+    self[0,width].rjust(width)
+  end
 end
 
 class GmailServer
@@ -110,7 +114,11 @@ class GmailServer
     end
     date = Time.parse(envelope.date).localtime.strftime "%b %d %I:%M%P" rescue envelope.date.to_s 
     flags = format_flags(flags)
-    "#{uid} #{(date || '').ljust(14)} #{address[0,30].ljust(30)} #{(envelope.subject || '').encode('utf-8')[0,70].ljust(70)} #{flags.col(30)}"
+    first_col_width = @all_uids.max.to_s.length 
+    mid_width = @width - (first_col_width + 14 + 2) - (10 + 2) - 2
+    address_col_width = (mid_width * 0.3).ceil
+    subject_col_width = (mid_width * 0.7).floor
+    "#{uid.to_s.col(first_col_width)} #{(date || '').col(14)} #{address.col(address_col_width)} #{(envelope.subject || '').encode('utf-8').col(subject_col_width)} #{flags.rcol(10)}"
   end
 
   FLAGMAP = {:Flagged => '[*]'}
