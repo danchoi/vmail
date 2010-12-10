@@ -286,18 +286,9 @@ END
       subject = "Re: #{subject}"
     end
     cc = replyall ? mail['cc'] : nil
-    #cc = [cc, headers['to']].join(', ')
-    # orig message info e.g.
-    # On Wed, Dec 1, 2010 at 3:30 PM, Matt MacDonald (JIRA) <do-not-reply@prx.org> wrote:
-    # quoting
-    # quote header
-    #date = Time.parse(headers['date'].to_s)
     date = headers['date']
     quote_header = "On #{date.strftime('%a, %b %d, %Y at %I:%M %p')}, #{sender} wrote:\n\n"
-
-    # TODO fix the character encoding, making sure it is valid UTF8 and encoded as such 
     body = quote_header + formatter.process_body.gsub(/^(?=>)/, ">").gsub(/^(?!>)/, "> ")
-
     reply_headers = { 'from' => @username, 'to' => recipients, 'cc' => cc, 'subject' => headers['subject']}
     format_headers(reply_headers) + "\n\n" + body
   end
