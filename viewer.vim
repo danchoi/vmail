@@ -304,7 +304,7 @@ function! CompleteMailbox(findstart, base)
     " locate the start of the word
     return 0
   else
-    " find months matching with "a:base"
+    " find mailboxes matching with "a:base"
     let res = []
     for m in s:mailboxes
       if m =~ '^' . a:base
@@ -407,16 +407,16 @@ function! s:compose_reply(all)
   if a:all
     let command = command . ' 1'
   end
-  call s:compose_window(command)
+  call s:open_compose_window(command)
 endfunction
 
 function! s:compose_message()
   write
   let command = s:message_template_command
-  call s:compose_window(command)
+  call s:open_compose_window(command)
 endfunction
 
-func! s:compose_window(command)
+func! s:open_compose_window(command)
   redraw
   echo a:command
   let res = system(a:command)
@@ -428,19 +428,42 @@ func! s:compose_window(command)
   noremap <silent> <buffer> <Leader>d :call <SID>deliver_message()<CR>
   nnoremap <silent> <buffer> q :call <SID>cancel_compose()<cr>
   nnoremap <silent> <buffer> <leader>q :call <SID>cancel_compose()<cr>
+  set completefunc=CompleteContact
 endfunc
+
+function! CompleteContact(findstart, base)
+  if !exists("s:mailboxes")
+    call s:get_mailbox_list()
+  endif
+  if a:findstart
+    " locate the start of the word
+    return 0
+  else
+    " find contacts matching with "a:base"
+    " TODO
+    let res = []
+    for m in s:mailboxes
+      if m =~ '^' . a:base
+        call add(res, m)
+      endif
+    endfor
+    return res
+  endif
+endfun
 
 function! s:cancel_compose()
   call s:focus_list_window()
 endfunction
 
 function! s:deliver_message()
-  w
+  write
   let mail = join(getline(1,'$'), "\n")
   exec ":!" . s:deliver_command . " < ComposeMessage" 
   redraw
   call s:focus_list_window()
 endfunction
+
+" -------------------------------------------------------------------------------- 
 
 call s:create_list_window()
 
