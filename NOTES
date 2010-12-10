@@ -426,6 +426,7 @@ DONE
 - for older message, replace time with year
 
 next:
+- signature
 - put instructions in message window; put in a top section
 - try attachments extraction
 - open html in browser

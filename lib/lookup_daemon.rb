@@ -31,6 +31,7 @@ class GmailServer
   def initialize(config)
     @username, @password = config['login'], config['password']
     @name = config['name']
+    @signature = config['signature']
     @drb_uri = config['drb_uri']
     @mailbox = nil
     @logger = Logger.new(STDERR)
@@ -295,11 +296,16 @@ END
       subject = "Re: #{subject}"
     end
     cc = replyall ? mail['cc'] : nil
-    date = headers['date']
+    date = headers['date'].is_a?(String) ? Time.parse(headers['date']) : headers['date']
     quote_header = "On #{date.strftime('%a, %b %d, %Y at %I:%M %p')}, #{sender} wrote:\n\n"
     body = quote_header + formatter.process_body.gsub(/^(?=>)/, ">").gsub(/^(?!>)/, "> ")
     reply_headers = { 'from' => "#@name <#@username>", 'to' => recipients, 'cc' => cc, 'subject' => headers['subject']}
-    format_headers(reply_headers) + "\n\n" + body
+    format_headers(reply_headers) + "\n\n" + body + signature
+  end
+
+  def signature
+    return '' unless @signature
+    "\n\n#@signature"
   end
 
   # TODO, forward with attachments 
@@ -307,7 +313,7 @@ END
     original_body = lookup(uid, false, true)
     new_message_template + 
       "\n---------- Forwarded message ----------\n" +
-      original_body
+      original_body + signature
   end
 
   def deliver(text)
