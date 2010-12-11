@@ -421,13 +421,14 @@ DONE
 - signature
 - open hyperlink in browser (OS X only?)
 - open html in browser
+- when show_next_message, get message without flashing the list
+  - solved by restoring two pane view
+- when loading update, position cursor on first new message
 
 next:
+- spacebar in message window to fullscreen the message and toggle back
 - reload after window resize
-- try flashing progress in echo line
 - something is wrong with cursorline sometimes
-- when show_next_message, get message without flashing the list
-- when loading update, position cursor on first new message
 - message threads
 - put instructions in message window; put in a top section
 - help document should just be readme? or part of it.
@@ -448,6 +449,7 @@ next:
 - some lingering encoding issues
 
 later:
+- try flashing progress in echo line
 - mapping improvements:
   - straight to reply from list window
   - straight to switch mailbox, etc from message window
