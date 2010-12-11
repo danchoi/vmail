@@ -564,10 +564,10 @@ noremap <silent> <buffer> <Leader>s :call <SID>search_window()<CR>
 noremap <silent> <buffer> <Leader>m :call <SID>mailbox_window()<CR>
 noremap <silent> <buffer> <Leader>v :call <SID>move_to_mailbox()<CR>
 
-noremap <silent> <buffer> <Leader>c :call <SID>compose_message()<CR><cr>
+noremap <silent> <buffer> <Leader>c :call <SID>compose_message()<CR>
 
-noremap <silent> <buffer> <Leader>r :call <SID>show_message()<cr>:call <SID>compose_reply(0)<CR><cr>
-noremap <silent> <buffer> <Leader>a :call <SID>show_message()<cr>:call <SID>compose_reply(1)<CR><cr>
+noremap <silent> <buffer> <Leader>r :call <SID>show_message()<cr>:call <SID>compose_reply(0)<CR>
+noremap <silent> <buffer> <Leader>a :call <SID>show_message()<cr>:call <SID>compose_reply(1)<CR>
 
 " go fullscreen
 nnoremap <silent> <buffer> <Space> :call <SID>toggle_fullscreen()<cr>
