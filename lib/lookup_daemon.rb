@@ -95,7 +95,7 @@ class GmailServer
       return ""
     end
     results = reconnect_if_necessary do 
-      @imap.uid_fetch(uid_set, ["FLAGS", "ENVELOPE"])
+      @imap.uid_fetch(uid_set, ["FLAGS", "ENVELOPE", "RFC822.HEADER" ])
     end
     log "extracting headers"
     lines = results.sort_by {|x| Time.parse(x.attr['ENVELOPE'].date)}.map {|x| format_header(x)}
