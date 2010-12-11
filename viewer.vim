@@ -216,6 +216,11 @@ function! s:toggle_star() range
   exec a:firstline . "," . a:lastline . "delete"
   exec (a:firstline - 1). "put =res"
   setlocal nomodifiable
+  " if more than 2 lines change, vim forces us to look at a message.
+  " dismiss it.
+  if len(split(res, "\n")) > 2
+    call feedkeys("\<cr>")
+  endif
 endfunction
 
 " flag can be Deleted or [Gmail]/Spam
@@ -236,6 +241,11 @@ func! s:delete_messages(flag) range
   setlocal modifiable
   exec a:firstline . "," . a:lastline . "delete"
   setlocal nomodifiable
+  " if more than 2 lines change, vim forces us to look at a message.
+  " dismiss it.
+  if len(uids) > 2
+    call feedkeys("\<cr>")
+  endif
 endfunc
 
 
