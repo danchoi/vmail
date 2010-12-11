@@ -69,6 +69,9 @@ function! s:create_message_window()
   noremap <silent> <buffer> <leader>k :call <SID>show_previous_message()<CR> 
   noremap <silent> <buffer> <Leader>c :call <SID>compose_message()<CR><cr>
   noremap <silent> <buffer> <Leader>h :call <SID>open_html_part()<CR><cr>
+  nnoremap <silent> <buffer> q :close<cr>
+  " go fullscreen
+  nnoremap <silent> <buffer> <Space> :call <SID>toggle_fullscreen()<cr>
   close
 endfunction
 
@@ -306,8 +309,6 @@ function! CompleteMoveMailbox(findstart, base)
 endfun
 " --------------------------------------------------------------------------------
 
-
-
 function! s:get_mailbox_list()
   let command = s:list_mailboxes_command
   redraw
@@ -509,6 +510,15 @@ endfunc
 
 " -------------------------------------------------------------------------------- 
 
+func! s:toggle_fullscreen()
+  if winnr('$') > 1
+    only
+    normal z.
+  else
+    call feedkeys("\<cr>")
+  endif
+endfunc
+
 call s:create_list_window()
 
 call s:create_message_window()
@@ -538,6 +548,9 @@ noremap <silent> <buffer> <Leader>m :call <SID>mailbox_window()<CR>
 noremap <silent> <buffer> <Leader>v :call <SID>move_to_mailbox()<CR>
 
 noremap <silent> <buffer> <Leader>c :call <SID>compose_message()<CR><cr>
+
+" go fullscreen
+nnoremap <silent> <buffer> <Space> :call <SID>toggle_fullscreen()<cr>
 
 " press double return in list view to go full screen on a message; then
 " return? again to restore the list view
