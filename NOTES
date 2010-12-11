@@ -431,15 +431,16 @@ DONE
 - fix compose message, reply windowing
 - mapping improvements:
   - straight to reply from list window
+- fixed addresses in recipients to a reply all 
 
 next:
+- put instructions in message window; put in a top section (format
+  message show)
+- attachments extraction
 - use temp files
   - tempname()
   - system() allows a parameters that is written to tmp file and passed
     to stdin
-- put instructions in message window; put in a top section (format
-  message show)
-- attachments extraction
 - help document should just be readme? or part of it.
 - print all selected messages into file (append)
   - can pipe through a command line tool, so we don't need to clutter
@@ -449,7 +450,6 @@ next:
 - defaults for druby in config. pick up config from wherever
 - readme
 - deploy
-- too many dup addresses in recipients to reply template
 - figure out where the command runs and what files it produces
 - ,s s confusion. Star vs search
 
