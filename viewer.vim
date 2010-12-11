@@ -19,6 +19,7 @@ let s:new_message_template_command = s:client_script . "new_message_template "
 let s:reply_template_command = s:client_script . "reply_template "
 let s:forward_template_command = s:client_script . "forward_template "
 let s:deliver_command = s:client_script . "deliver "
+let s:save_draft_command = s:client_script . "save_draft "
 let s:open_html_command = s:client_script . "open_html_part "
 let s:message_bufname = "MessageWindow"
 let s:list_bufname = "MessageListWindow"
@@ -439,7 +440,7 @@ function! s:more_messages()
 endfunction
 
 " --------------------------------------------------------------------------------  
-"  compose reply, compose, forward
+"  compose reply, compose, forward, save draft
 
 function! s:compose_reply(all)
   let command = s:reply_template_command . s:current_uid
@@ -483,6 +484,7 @@ func! s:open_compose_window(command)
   noremap <silent> <buffer> <Leader>d :call <SID>deliver_message()<CR>
   nnoremap <silent> <buffer> q :call <SID>cancel_compose()<cr>
   nnoremap <silent> <buffer> <leader>q :call <SID>cancel_compose()<cr>
+  nnoremap <silent> <buffer> <Leader>s :call <SID>save_draft()<CR>
   set completefunc=CompleteContact
 endfunc
 
@@ -522,6 +524,16 @@ function! s:deliver_message()
   wincmd p
   close!
 endfunction
+
+func! s:save_draft()
+  write
+  let mail = join(getline(1,'$'), "\n")
+  exec ":!" . s:save_draft_command . " < ComposeMessage" 
+  redraw
+  call s:focus_list_window()
+  wincmd p
+  close!
+endfunc
 
 " -------------------------------------------------------------------------------- 
 

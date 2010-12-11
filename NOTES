@@ -345,6 +345,27 @@ And just execute the command that the user hits carriage return on.
 
 
 
+    # Sends a APPEND command to append the +message+ to the end of
+    # the +mailbox+. The optional +flags+ argument is an array of 
+    # flags to initially passing to the new message.  The optional
+    # +date_time+ argument specifies the creation time to assign to the 
+    # new message; it defaults to the current time.
+    # For example:
+    #
+    #   imap.append("inbox", <<EOF.gsub(/\n/, "\r\n"), [:Seen], Time.now)
+    #   Subject: hello
+    #   From: shugo@ruby-lang.org
+    #   To: shugo@ruby-lang.org
+    #   
+    #   hello world
+    #   EOF
+    #
+    # A Net::IMAP::NoResponseError is raised if the mailbox does
+    # not exist (it is not created automatically), or if the flags,
+    # date_time, or message arguments contain errors.
+
+
+
 
 Next, I think I need to restore the vertical mailbox selection mode, and
 then have the search window execute in the current mailbox.
@@ -392,6 +413,7 @@ echo winwidth(1)
 
 :set statusline=%<%f\ %h%m%r%=%-14.(%l,%c%V%)\ %P
 
+  - in .vmail/ dir?
 
 ------------------------------------------------------------------------
 Thu Dec  9 10:13:53 EST 2010
@@ -441,7 +463,13 @@ next:
 - attachments extraction
 - sending an attachment
 - forwarding attachments
-- save drafts locally somewhere
+- save drafts on server to [Gmail]/Drafts
+  - use imap.append()  - see above
+  - need to change fields
+- use IMAP.decode_utf7
+- follow mysql and use -u and -p flags on startup of server?
+  - omitting -p flag forces prompt
+  - get rid of config file
 - use temp files
   - tempname()
   - system() allows a parameters that is written to tmp file and passed

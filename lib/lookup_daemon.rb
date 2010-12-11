@@ -143,7 +143,7 @@ class GmailServer
   # borrowed from ActionView/Helpers
   def number_to_human_size(number)
     if number.to_i < 1024
-      "#{number} bytes"
+      "#{number} b"
     else
       max_exp = UNITS.size - 1
       exponent = (Math.log(number) / Math.log(1024)).to_i # Convert to base 1024
@@ -345,6 +345,21 @@ END
     # parse the text. The headers are yaml. The rest is text body.
     require 'net/smtp'
     require 'smtp_tls'
+    mail = new_mail_from_input(text)
+    mail.deliver!
+    "SENT"
+  end
+
+  def save_draft(text)
+    mail = new_mail_from_input(text)
+    log mail.to_s
+    reconnect_if_necessary do 
+      log "saving draft"
+      log @imap.append("[Gmail]/Drafts", text.gsub(/\n/, "\r\n"), [:Seen], Time.now)
+    end
+  end
+
+  def new_mail_from_input(text)
     require 'mail'
     mail = Mail.new
     raw_headers, body = *text.split(/\n\n/, 2)
@@ -360,11 +375,9 @@ END
     mail.cc = headers['cc'] #&& headers['cc'].split(/,\s+/)
     mail.bcc = headers['bcc'] #&& headers['cc'].split(/,\s+/)
     mail.subject = headers['subject']
-    mail.delivery_method(*smtp_settings)
     mail.from ||= @username
     mail.body = body
-    mail.deliver!
-    "SENT"
+    mail
   end
 
   def open_html_part(uid)
