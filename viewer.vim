@@ -511,6 +511,8 @@ function! s:deliver_message()
   exec ":!" . s:deliver_command . " < ComposeMessage" 
   redraw
   call s:focus_list_window()
+  wincmd p
+  close!
 endfunction
 
 " -------------------------------------------------------------------------------- 
