@@ -428,9 +428,9 @@ DONE
 - spam range
 - in list, show message sizes 
 - prevent the "8 more lines" and wait for enter. 2 is the threshhold
+- fix compose message, reply windowing
 
 next:
-- fix compose message, reply windowing
 - put instructions in message window; put in a top section (format
   message show)
 - attachments extraction
