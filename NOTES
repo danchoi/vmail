@@ -432,6 +432,7 @@ DONE
 - mapping improvements:
   - straight to reply from list window
 - fixed addresses in recipients to a reply all 
+- position cursor conveniently on opening compose windows
 
 next:
 - put instructions in message window; put in a top section (format

@@ -111,10 +111,13 @@ class GmailServer
     log size
     flags = fetch_data.attr["FLAGS"]
     address_struct = (@mailbox == '[Gmail]/Sent Mail' ? envelope.to.first : envelope.from.first)
-    
-    address = [address_struct.mailbox, address_struct.host].join('@') 
-    if address_struct.name
-      address = "#{address_struct.name} <#{address}>"
+    address = if address_struct.name
+                "#{address_struct.name} <#{[address_struct.mailbox, address_struct.host].join('@')}>"
+              else
+                [address_struct.mailbox, address_struct.host].join('@') 
+              end
+    if @mailbox == '[Gmail]/Sent Mail' && envelope.to.size > 1
+      address += " + #{envelope.to.size - 1}"
     end
     date = Time.parse(envelope.date).localtime
     date_formatted = if date.year != Time.now.year
