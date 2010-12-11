@@ -428,6 +428,7 @@ DONE
 next:
 - spacebar in message window to fullscreen the message and toggle back
 - reload after window resize
+- spam range
 - something is wrong with cursorline sometimes
 - message threads
 - put instructions in message window; put in a top section

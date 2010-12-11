@@ -144,7 +144,7 @@ function! s:focus_list_window()
     exec "buffer" . s:listbufnr
   else
     exec winnr . "wincmd w"
-  end
+  endif
   " set up syntax highlighting
   if has("syntax")
     syn clear
@@ -183,10 +183,10 @@ function! s:update()
   else
     redraw
     echo "no new messages"
-  end
+  endif
 endfunction
 
-function! s:toggle_flag(flag) range
+function! s:toggle_star() range
   let lnum = a:firstline
   let n = 0
   let uids = []
@@ -197,26 +197,42 @@ function! s:toggle_flag(flag) range
     let lnum = lnum + 1
   endwhile
   let uid_set = join(uids, ",")
+  let flag_symbol = "[*]"
   " check if starred already
-  let flag_symbol = ''
-  if a:flag == "Flagged"
-    let flag_symbol = "[*]"
-  end
+  let action = " +FLAGS"
   if (match(line, flag_symbol) != -1)
-    let command = s:flag_command . uid_set . " -FLAGS " . a:flag
-  else
-    let command = s:flag_command . uid_set . " +FLAGS " . a:flag
+    let action = " -FLAGS"
   endif
+  let command = s:flag_command . uid_set . action . " Flagged" 
   echo command
-  " replace the lines with the returned results
+  " toggle [*] on lines
   let res = system(command)
   setlocal modifiable
   exec a:firstline . "," . a:lastline . "delete"
-  if a:flag != "Deleted"
-    exec (a:firstline - 1). "put =res"
-  end
+  exec (a:firstline - 1). "put =res"
   setlocal nomodifiable
 endfunction
+
+" flag can be Deleted or [Gmail]/Spam
+func! s:delete_messages(flag) range
+  let lnum = a:firstline
+  let n = 0
+  let uids = []
+  while lnum <= a:lastline
+    let line =  getline(lnum)
+    let message_uid = matchstr(line, '^\d\+')
+    call add(uids, message_uid)
+    let lnum = lnum + 1
+  endwhile
+  let uid_set = join(uids, ",")
+  let command = s:flag_command . uid_set . " +FLAGS " . a:flag
+  echo command
+  let res = system(command)
+  setlocal modifiable
+  exec a:firstline . "," . a:lastline . "delete"
+  setlocal nomodifiable
+endfunc
+
 
 " --------------------------------------------------------------------------------
 " move to another mailbox
@@ -280,7 +296,7 @@ function! CompleteMoveMailbox(findstart, base)
     for m in s:mailboxes
       if m == s:mailbox
         continue
-      end
+      endif
       if m =~ '^' . a:base
         call add(res, m)
       endif
@@ -415,7 +431,7 @@ function! s:compose_reply(all)
   let command = s:reply_template_command . s:current_uid
   if a:all
     let command = command . ' 1'
-  end
+  endif
   call s:open_compose_window(command)
 endfunction
 
@@ -503,15 +519,15 @@ call s:focus_list_window() " to go list window
 noremap <silent> <buffer> <cr> :call <SID>show_message()<CR>
 noremap <silent> <buffer> q :qal!<cr>
 
-noremap <silent> <buffer> s :call <SID>toggle_flag("Flagged")<CR>
-noremap <silent> <buffer> <leader>d :call <SID>toggle_flag("Deleted")<CR>
+noremap <silent> <buffer> s :call <SID>toggle_star()<CR>
+noremap <silent> <buffer> <leader>d :call <SID>delete_messages("Deleted")<CR>
 
 " TODO the range doesn't quite work as expect, need <line1> <line2>
 " trying to make user defined commands that work from : prompt
-" command -buffer -range VmailDelete call s:toggle_flag("Deleted")
-" command -buffer -range VmailStar call s:toggle_flag("Flagged")
+" command -buffer -range VmailDelete call s:toggle_star("Deleted")
+" command -buffer -range VmailStar call s:toggle_star("Flagged")
 
-noremap <silent> <buffer> ! :call <SID>toggle_flag("[Gmail]/Spam")<CR>
+noremap <silent> <buffer> ! :call <SID>delete_messages("[Gmail]/Spam")<CR>
 
 "open a link browser (os x)
 "autocmd CursorMoved <buffer> call <SID>show_message()
