@@ -138,7 +138,7 @@ class GmailServer
       flags.rcol(7)].join(' ')
   end
 
-  UNITS = [:byte, :kb, :mb, :gb].freeze
+  UNITS = [:b, :kb, :mb, :gb].freeze
 
   # borrowed from ActionView/Helpers
   def number_to_human_size(number)

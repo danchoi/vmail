@@ -433,11 +433,15 @@ DONE
   - straight to reply from list window
 - fixed addresses in recipients to a reply all 
 - position cursor conveniently on opening compose windows
+- show num additional when in sent msg list
 
 next:
 - put instructions in message window; put in a top section (format
   message show)
 - attachments extraction
+- sending an attachment
+- forwarding attachments
+- save drafts locally somewhere
 - use temp files
   - tempname()
   - system() allows a parameters that is written to tmp file and passed
@@ -452,9 +456,9 @@ next:
 - readme
 - deploy
 - figure out where the command runs and what files it produces
-- ,s s confusion. Star vs search
 
 later:
+- ,s s confusion? Star vs search
 - if move to unknown mailbox, create the mailbox, then do the move
 - some lingering encoding issues
 - something is wrong with cursorline sometimes
