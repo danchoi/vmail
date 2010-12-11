@@ -156,6 +156,7 @@ function! s:focus_list_window()
   endif
   " vertically center the cursor line
   normal z.
+  call feedkeys("\<c-l>") " prevents screen artifacts when user presses return too fast
 endfunction
 
 function! s:focus_message_window()
