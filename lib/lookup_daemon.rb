@@ -319,7 +319,7 @@ END
     quote_header = "On #{date.strftime('%a, %b %d, %Y at %I:%M %p')}, #{recipient} wrote:\n\n"
     body = quote_header + formatter.process_body.gsub(/^(?=>)/, ">").gsub(/^(?!>)/, "> ")
     reply_headers = { 'from' => "#@name <#@username>", 'to' => recipient, 'cc' => cc, 'subject' => headers['subject']}
-    format_headers(reply_headers) + "\n\n" + body + signature
+    format_headers(reply_headers) + "\n\n\n" + body + signature
   end
 
   def address_to_string(x)

@@ -447,18 +447,26 @@ function! s:compose_reply(all)
     let command = command . ' 1'
   endif
   call s:open_compose_window(command)
+  " cursor after headers
+  normal }
+  normal o
 endfunction
 
 function! s:compose_message()
   write
   let command = s:new_message_template_command
   call s:open_compose_window(command)
+  " position cursor after to:
+  call search("^to:")
+  normal $
 endfunction
 
 function! s:compose_forward()
   write
   let command = s:forward_template_command . s:current_uid
   call s:open_compose_window(command)
+  call search("^to:")
+  normal $
 endfunction
 
 func! s:open_compose_window(command)
