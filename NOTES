@@ -459,8 +459,10 @@ DONE
 - save drafts on server to [Gmail]/Drafts
 
 next:
+- archive function (shortcut for move to all mail)
 - put instructions in message window; put in a top section (format
   message show)
+  - if html version, command to open
 - attachments extraction
 - sending an attachment
 - forwarding attachments
@@ -482,9 +484,12 @@ next:
 - readme
 - deploy
 - figure out where the command runs and what files it produces
+- ,s s confusion? Star vs search
 
 later:
-- ,s s confusion? Star vs search
+- crate to package app as a OS X app?
+  http://rubyconf2008.confreaks.com/crate-packaging-your-ruby-application.html
+  - need to bundle macvim
 - if move to unknown mailbox, create the mailbox, then do the move
 - some lingering encoding issues
 - something is wrong with cursorline sometimes
