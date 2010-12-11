@@ -431,6 +431,10 @@ DONE
 - fix compose message, reply windowing
 
 next:
+- use temp files
+  - tempname()
+  - system() allows a parameters that is written to tmp file and passed
+    to stdin
 - put instructions in message window; put in a top section (format
   message show)
 - attachments extraction
@@ -444,8 +448,10 @@ next:
 - readme
 - deploy
 - too many dup addresses in recipients to reply template
+- figure out where the command runs and what files it produces
 
 later:
+- if move to unknown mailbox, create the mailbox, then do the move
 - some lingering encoding issues
 - something is wrong with cursorline sometimes
 - try flashing progress in echo line
