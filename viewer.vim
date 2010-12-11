@@ -461,6 +461,7 @@ function! s:compose_message()
   " position cursor after to:
   call search("^to:")
   normal $
+  call feedkeys("a")
 endfunction
 
 function! s:compose_forward()
@@ -469,6 +470,7 @@ function! s:compose_forward()
   call s:open_compose_window(command)
   call search("^to:")
   normal $
+  call feedkeys("a")
 endfunction
 
 func! s:open_compose_window(command)

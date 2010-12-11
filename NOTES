@@ -456,6 +456,7 @@ DONE
 - fixed addresses in recipients to a reply all 
 - position cursor conveniently on opening compose windows
 - show num additional when in sent msg list
+- save drafts on server to [Gmail]/Drafts
 
 next:
 - put instructions in message window; put in a top section (format
@@ -463,9 +464,6 @@ next:
 - attachments extraction
 - sending an attachment
 - forwarding attachments
-- save drafts on server to [Gmail]/Drafts
-  - use imap.append()  - see above
-  - need to change fields
 - use IMAP.decode_utf7
 - follow mysql and use -u and -p flags on startup of server?
   - omitting -p flag forces prompt
