@@ -378,7 +378,7 @@ function! s:select_mailbox()
   execute "normal Gdd\<c-y>" 
   normal G
   setlocal nomodifiable
-  normal z-
+  normal z.
 endfunction
 
 function! s:search_window()
@@ -407,7 +407,7 @@ function! s:do_search()
   1,$delete
   put! =res
   execute "normal Gdd\<c-y>" 
-  normal G
+  normal z.
   setlocal nomodifiable
 endfunction
 
@@ -555,8 +555,9 @@ nnoremap <silent> <buffer> <Space> :call <SID>toggle_fullscreen()<cr>
 " press double return in list view to go full screen on a message; then
 " return? again to restore the list view
 
-" go to bottom
+" go to bottom and center cursorline
 normal G
+normal z.
 
 " send window width
 " system(s:set_window_width_command . winwidth(1))
