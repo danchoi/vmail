@@ -58,8 +58,8 @@ function! s:create_message_window()
   noremap <silent> <buffer> <cr> :call <SID>focus_list_window()<CR> 
   noremap <silent> <buffer> <Leader>q :call <SID>focus_list_window()<CR> 
   noremap <silent> <buffer> q <Leader>q
-  noremap <silent> <buffer> <Leader>r :call <SID>compose_reply(0)<CR><cr>
-  noremap <silent> <buffer> <Leader>a :call <SID>compose_reply(1)<CR><cr>
+  noremap <silent> <buffer> <Leader>r :call <SID>compose_reply(0)<CR>
+  noremap <silent> <buffer> <Leader>a :call <SID>compose_reply(1)<CR>
   noremap <silent> <buffer> <Leader>R :call <SID>show_raw()<cr>
   noremap <silent> <buffer> <Leader>R :call <SID>show_raw()<cr>
   noremap <silent> <buffer> <Leader>f :call <SID>compose_forward()<CR><cr>
@@ -67,7 +67,7 @@ function! s:create_message_window()
   noremap <silent> <buffer> <Leader>o yE :!open '<C-R>"'<CR><CR>
   noremap <silent> <buffer> <leader>j :call <SID>show_next_message()<CR> 
   noremap <silent> <buffer> <leader>k :call <SID>show_previous_message()<CR> 
-  noremap <silent> <buffer> <Leader>c :call <SID>compose_message()<CR><cr>
+  noremap <silent> <buffer> <Leader>c :call <SID>compose_message()<CR>
   noremap <silent> <buffer> <Leader>h :call <SID>open_html_part()<CR><cr>
   nnoremap <silent> <buffer> q :close<cr>
   nnoremap <silent> <buffer> <leader>d  :call <SID>focus_list_window()<cr>:call <SID>delete_messages("Deleted")<cr>
