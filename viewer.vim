@@ -104,8 +104,6 @@ function! s:show_message()
   1delete
   normal 1
   normal jk
-  wincmd p
-  close
   setlocal nomodifiable
   redraw
 endfunction
@@ -152,10 +150,6 @@ function! s:focus_list_window()
     syn clear
     syn match BufferFlagged /^.*[*].*$/hs=s
     hi def BufferFlagged ctermfg=red ctermbg=black
-  endif
-  if winnr("$") > 1
-    wincmd p
-    close!
   endif
   " vertically center the cursor line
   normal z.
