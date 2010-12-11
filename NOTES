@@ -439,7 +439,7 @@ next:
 - defaults for druby in config. pick up config from wherever
 - readme
 - deploy
-- prevent the "8 more lines" and wait for enter
+- prevent the "8 more lines" and wait for enter. 2 is the threshhold
 - too many dup addresses in recipients to reply template
 - some lingering encoding issues
 

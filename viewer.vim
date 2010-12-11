@@ -180,9 +180,9 @@ function! s:update()
     setlocal nomodifiable
     let num = len(split(res, '\n', ''))
     redraw
-    echo "you have " . num . " new message" . (num == 1 ? '' : 's') . "!" 
     call cursor(line + 1, 0)
     normal z.
+    echo "you have " . num . " new message" . (num == 1 ? '' : 's') . "!" 
   else
     redraw
     echo "no new messages"
