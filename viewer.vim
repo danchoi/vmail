@@ -178,11 +178,13 @@ function! s:update()
   let res = system(command)
   if match(res, '^\d\+') != -1
     setlocal modifiable
+    let line = line('$')
     $put =res
+    call cursor(line, 0)
     setlocal nomodifiable
     let num = len(split(res, '\n', ''))
     redraw
-    echo "you have " . num . " new message(s)!"
+    echo "you have " . num . " new message" . (num == 1 ? '' : 's') . "!" 
   else
     redraw
     echo "no new messages"

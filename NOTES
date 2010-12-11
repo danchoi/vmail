@@ -424,6 +424,10 @@ DONE
 
 next:
 - reload after window resize
+- try flashing progress in echo line
+- something is wrong with cursorline sometimes
+- when show_next_message, get message without flashing the list
+- when loading update, position cursor on first new message
 - message threads
 - put instructions in message window; put in a top section
 - help document should just be readme? or part of it.
@@ -437,6 +441,11 @@ next:
 - defaults for druby in config. pick up config from wherever
 - readme
 - deploy
+- starring 
+  - do fast action like deletes
+  - prevent the "8 more lines" and wait for enter
+- too many dup addresses in recipients to reply template
+- some lingering encoding issues
 
 later:
 - mapping improvements:
