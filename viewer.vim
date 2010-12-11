@@ -159,7 +159,7 @@ function! s:focus_message_window()
   let winnr = bufwinnr(s:message_window_bufnr)
   if winnr == -1
     " create window
-    exec "split " . s:message_bufname
+    exec "botright split " . s:message_bufname
   else
     exec winnr . "wincmd w"
   endif
