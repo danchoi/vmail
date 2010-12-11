@@ -426,11 +426,14 @@ DONE
 - when loading update, position cursor on first new message
 - spacebar in message window to fullscreen the message and toggle back
 - spam range
+- in list, show message sizes 
 
 next:
-- put instructions in message window; put in a top section
-- help document should just be readme? or part of it.
+- fix compose message, reply windowing
+- put instructions in message window; put in a top section (format
+  message show)
 - attachments extraction
+- help document should just be readme? or part of it.
 - print all selected messages into file (append)
   - can pipe through a command line tool, so we don't need to clutter
     viewer.vim with more mappings and functions

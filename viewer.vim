@@ -183,6 +183,7 @@ function! s:update()
     redraw
     call cursor(line + 1, 0)
     normal z.
+    redraw
     echo "you have " . num . " new message" . (num == 1 ? '' : 's') . "!" 
   else
     redraw
