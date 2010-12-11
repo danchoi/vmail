@@ -71,6 +71,7 @@ function! s:create_message_window()
   noremap <silent> <buffer> <Leader>h :call <SID>open_html_part()<CR><cr>
   nnoremap <silent> <buffer> q :close<cr>
   nnoremap <silent> <buffer> <leader>d  :call <SID>focus_list_window()<cr>:call <SID>delete_messages("Deleted")<cr>
+  nnoremap <silent> <buffer> <leader>s  :call <SID>focus_list_window()<cr>:call <SID>toggle_star()<cr>
   " go fullscreen
   nnoremap <silent> <buffer> <Space> :call <SID>toggle_fullscreen()<cr>
   close
