@@ -425,18 +425,15 @@ DONE
   - solved by restoring two pane view
 - when loading update, position cursor on first new message
 - spacebar in message window to fullscreen the message and toggle back
+- spam range
 
 next:
-- reload after window resize
-- spam range
-- message threads
 - put instructions in message window; put in a top section
 - help document should just be readme? or part of it.
 - attachments extraction
 - print all selected messages into file (append)
   - can pipe through a command line tool, so we don't need to clutter
     viewer.vim with more mappings and functions
-- sometimes update doesn't work - bug
 - package gem
 - help
 - defaults for druby in config. pick up config from wherever
@@ -456,4 +453,7 @@ later:
 - range selection from : prompt
 - starring 
   - do fast action like deletes
+- reload after window resize
+- sometimes update doesn't work - bug
+- message threads
 

@@ -537,7 +537,7 @@ noremap <silent> <buffer> <leader>d :call <SID>delete_messages("Deleted")<CR>
 " command -buffer -range VmailDelete call s:toggle_star("Deleted")
 " command -buffer -range VmailStar call s:toggle_star("Flagged")
 
-noremap <silent> <buffer> ! :call <SID>delete_messages("[Gmail]/Spam")<CR>
+noremap <silent> <buffer> <leader>! :call <SID>delete_messages("[Gmail]/Spam")<CR>
 
 "open a link browser (os x)
 "autocmd CursorMoved <buffer> call <SID>show_message()
