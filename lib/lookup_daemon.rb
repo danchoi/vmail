@@ -95,7 +95,7 @@ class GmailServer
       return ""
     end
     results = reconnect_if_necessary do 
-      @imap.uid_fetch(uid_set, ["FLAGS", "ENVELOPE", "RFC822.HEADER" ])
+      @imap.uid_fetch(uid_set, ["FLAGS", "ENVELOPE", "RFC822.SIZE" ])
     end
     log "extracting headers"
     lines = results.sort_by {|x| Time.parse(x.attr['ENVELOPE'].date)}.map {|x| format_header(x)}
@@ -103,9 +103,12 @@ class GmailServer
     return lines.join("\n")
   end
 
+
   def format_header(fetch_data)
     uid = fetch_data.attr["UID"]
     envelope = fetch_data.attr["ENVELOPE"]
+    size = fetch_data.attr["RFC822.SIZE"]
+    log size
     flags = fetch_data.attr["FLAGS"]
     address_struct = (@mailbox == '[Gmail]/Sent Mail' ? envelope.to.first : envelope.from.first)
     
@@ -121,11 +124,33 @@ class GmailServer
                      end
     flags = format_flags(flags)
     first_col_width = @all_uids.max.to_s.length 
-    mid_width = @width - (first_col_width + 14 + 2) - (10 + 2) - 2
+    mid_width = @width - (first_col_width + 14 + 2) - (10 + 2) - 5
     address_col_width = (mid_width * 0.3).ceil
     subject_col_width = (mid_width * 0.7).floor
-    "#{uid.to_s.col(first_col_width)} #{(date_formatted || '').col(14)} #{address.col(address_col_width)} #{(envelope.subject || '').encode('utf-8').col(subject_col_width)} #{flags.rcol(10)}"
+    [uid.to_s.col(first_col_width), 
+      (date_formatted || '').col(14),
+      address.col(address_col_width),
+      (envelope.subject || '').encode('utf-8').col(subject_col_width),
+      number_to_human_size(size).rcol(6),
+      flags.rcol(7)].join(' ')
   end
+
+  UNITS = [:byte, :kb, :mb, :gb].freeze
+
+  # borrowed from ActionView/Helpers
+  def number_to_human_size(number)
+    if number.to_i < 1024
+      "#{number} bytes"
+    else
+      max_exp = UNITS.size - 1
+      exponent = (Math.log(number) / Math.log(1024)).to_i # Convert to base 1024
+      exponent = max_exp if exponent > max_exp # we need this to avoid overflow for the highest unit
+      number  /= 1024 ** exponent
+      unit = UNITS[exponent]
+      "#{number} #{unit}"
+    end
+  end
+
 
   FLAGMAP = {:Flagged => '[*]'}
   # flags is an array like [:Flagged, :Seen]
