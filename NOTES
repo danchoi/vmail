@@ -427,6 +427,7 @@ DONE
 - spacebar in message window to fullscreen the message and toggle back
 - spam range
 - in list, show message sizes 
+- prevent the "8 more lines" and wait for enter. 2 is the threshhold
 
 next:
 - fix compose message, reply windowing
@@ -442,11 +443,10 @@ next:
 - defaults for druby in config. pick up config from wherever
 - readme
 - deploy
-- prevent the "8 more lines" and wait for enter. 2 is the threshhold
 - too many dup addresses in recipients to reply template
-- some lingering encoding issues
 
 later:
+- some lingering encoding issues
 - something is wrong with cursorline sometimes
 - try flashing progress in echo line
 - mapping improvements:

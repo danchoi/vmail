@@ -248,7 +248,6 @@ func! s:delete_messages(flag) range
   endif
 endfunc
 
-
 " --------------------------------------------------------------------------------
 " move to another mailbox
 function! s:move_to_mailbox() range
@@ -500,6 +499,8 @@ endfun
 
 function! s:cancel_compose()
   call s:focus_list_window()
+  wincmd p
+  close!
 endfunction
 
 function! s:deliver_message()
