@@ -180,11 +180,12 @@ function! s:update()
     setlocal modifiable
     let line = line('$')
     $put =res
-    call cursor(line, 0)
     setlocal nomodifiable
     let num = len(split(res, '\n', ''))
     redraw
     echo "you have " . num . " new message" . (num == 1 ? '' : 's') . "!" 
+    call cursor(line + 1, 0)
+    normal z.
   else
     redraw
     echo "no new messages"
