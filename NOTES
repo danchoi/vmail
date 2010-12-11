@@ -424,12 +424,11 @@ DONE
 - when show_next_message, get message without flashing the list
   - solved by restoring two pane view
 - when loading update, position cursor on first new message
+- spacebar in message window to fullscreen the message and toggle back
 
 next:
-- spacebar in message window to fullscreen the message and toggle back
 - reload after window resize
 - spam range
-- something is wrong with cursorline sometimes
 - message threads
 - put instructions in message window; put in a top section
 - help document should just be readme? or part of it.
@@ -443,17 +442,18 @@ next:
 - defaults for druby in config. pick up config from wherever
 - readme
 - deploy
-- starring 
-  - do fast action like deletes
-  - prevent the "8 more lines" and wait for enter
+- prevent the "8 more lines" and wait for enter
 - too many dup addresses in recipients to reply template
 - some lingering encoding issues
 
 later:
+- something is wrong with cursorline sometimes
 - try flashing progress in echo line
 - mapping improvements:
   - straight to reply from list window
   - straight to switch mailbox, etc from message window
 - allow deliver command from any buffer or window, as long as headers are at top
 - range selection from : prompt
+- starring 
+  - do fast action like deletes
 
