@@ -429,6 +429,8 @@ DONE
 - in list, show message sizes 
 - prevent the "8 more lines" and wait for enter. 2 is the threshhold
 - fix compose message, reply windowing
+- mapping improvements:
+  - straight to reply from list window
 
 next:
 - use temp files
@@ -449,14 +451,13 @@ next:
 - deploy
 - too many dup addresses in recipients to reply template
 - figure out where the command runs and what files it produces
+- ,s s confusion. Star vs search
 
 later:
 - if move to unknown mailbox, create the mailbox, then do the move
 - some lingering encoding issues
 - something is wrong with cursorline sometimes
 - try flashing progress in echo line
-- mapping improvements:
-  - straight to reply from list window
   - straight to switch mailbox, etc from message window
 - allow deliver command from any buffer or window, as long as headers are at top
 - range selection from : prompt

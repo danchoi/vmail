@@ -299,36 +299,32 @@ END
   end
 
   def reply_template(uid, replyall=false)
+    log "sending reply template for #{uid}"
     fetch_data = @imap.uid_fetch(uid.to_i, ["FLAGS", "ENVELOPE", "RFC822"])[0]
     envelope = fetch_data.attr['ENVELOPE']
-    recipients = if replyall
-                    [envelope.from, envelope.to, envelope.cc, envelope.reply_to].flatten.
-                      uniq.
-                      compact.
-                      select {|x| "#{x.mailbox}@#{x.host}" != @username}.
-                      map {|x| 
-                        x.name ? "#{x.name} <#{x.mailbox}@#{x.host}>" : "#{x.mailbox}@#{x.host}"
-                      }.join(", ")
-                 else
-                   x = (envelope.reply_to || envelope.from)[0]
-                   x.name ? "#{x.name} <#{x.mailbox}@#{x.host}>" : "#{x.mailbox}@#{x.host}"
-                 end
+    recipient = [envelope.reply_to, envelope.from].flatten.map {|x| address_to_string(x)}[0]
+    cc = [envelope.to, envelope.cc]
+    cc = cc.flatten.compact.
+      select {|x| @username !~ /#{x.mailbox}@#{x.host}/}.
+      map {|x| address_to_string(x)}.join(", ")
     mail = Mail.new fetch_data.attr['RFC822']
     formatter = MessageFormatter.new(mail)
     headers = formatter.extract_headers
-    sender = headers['from']
     subject = headers['subject']
     if subject !~ /Re: /
       subject = "Re: #{subject}"
     end
-    cc = replyall ? mail['cc'] : nil
+    cc = replyall ? cc : nil
     date = headers['date'].is_a?(String) ? Time.parse(headers['date']) : headers['date']
-    quote_header = "On #{date.strftime('%a, %b %d, %Y at %I:%M %p')}, #{sender} wrote:\n\n"
+    quote_header = "On #{date.strftime('%a, %b %d, %Y at %I:%M %p')}, #{recipient} wrote:\n\n"
     body = quote_header + formatter.process_body.gsub(/^(?=>)/, ">").gsub(/^(?!>)/, "> ")
-    reply_headers = { 'from' => "#@name <#@username>", 'to' => recipients, 'cc' => cc, 'subject' => headers['subject']}
+    reply_headers = { 'from' => "#@name <#@username>", 'to' => recipient, 'cc' => cc, 'subject' => headers['subject']}
     format_headers(reply_headers) + "\n\n" + body + signature
   end
 
+  def address_to_string(x)
+    x.name ? "#{x.name} <#{x.mailbox}@#{x.host}>" : "#{x.mailbox}@#{x.host}"
+  end
   def signature
     return '' unless @signature
     "\n\n#@signature"
