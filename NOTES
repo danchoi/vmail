@@ -464,7 +464,7 @@ next:
 - attachments extraction
 - sending an attachment
 - forwarding attachments
-- use IMAP.decode_utf7
+- use IMAP.decode_utf7 for subject lines?
 - follow mysql and use -u and -p flags on startup of server?
   - omitting -p flag forces prompt
   - get rid of config file

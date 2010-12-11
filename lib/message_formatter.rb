@@ -91,6 +91,7 @@ class MessageFormatter
   end
 
   def utf8(string)
+    return '' unless string
     string.force_encoding(encoding)
     string.encode("UTF-8")
   end
