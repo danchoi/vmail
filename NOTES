@@ -459,6 +459,9 @@ DONE
 - save drafts on server to [Gmail]/Drafts
 
 next:
+- encoding issues (korean) 
+  - plus use iconv for 1.8
+  - search for from kr
 - put instructions in message window; put in a top section (format
   message show)
   - if html version, command to open

@@ -103,7 +103,6 @@ class GmailServer
     return lines.join("\n")
   end
 
-
   def format_header(fetch_data)
     uid = fetch_data.attr["UID"]
     envelope = fetch_data.attr["ENVELOPE"]
@@ -111,7 +110,7 @@ class GmailServer
     flags = fetch_data.attr["FLAGS"]
     address_struct = (@mailbox == '[Gmail]/Sent Mail' ? envelope.to.first : envelope.from.first)
     address = if address_struct.name
-                "#{address_struct.name} <#{[address_struct.mailbox, address_struct.host].join('@')}>"
+                "#{Mail::Encodings.unquote_and_convert_to(address_struct.name, 'utf-8')} <#{[address_struct.mailbox, address_struct.host].join('@')}>"
               else
                 [address_struct.mailbox, address_struct.host].join('@') 
               end
@@ -124,6 +123,8 @@ class GmailServer
                      else 
                        date.strftime "%b %d %I:%M%P" rescue envelope.date.to_s 
                      end
+    subject = envelope.subject || ''
+    subject = Mail::Encodings.unquote_and_convert_to(subject, 'utf-8')
     flags = format_flags(flags)
     first_col_width = @all_uids.max.to_s.length 
     mid_width = @width - (first_col_width + 14 + 2) - (10 + 2) - 5
@@ -132,7 +133,7 @@ class GmailServer
     [uid.to_s.col(first_col_width), 
       (date_formatted || '').col(14),
       address.col(address_col_width),
-      (envelope.subject || '').encode('utf-8').col(subject_col_width),
+      subject.encode('utf-8').col(subject_col_width),
       number_to_human_size(size).rcol(6),
       flags.rcol(7)].join(' ')
   end
