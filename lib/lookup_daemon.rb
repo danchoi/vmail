@@ -108,7 +108,6 @@ class GmailServer
     uid = fetch_data.attr["UID"]
     envelope = fetch_data.attr["ENVELOPE"]
     size = fetch_data.attr["RFC822.SIZE"]
-    log size
     flags = fetch_data.attr["FLAGS"]
     address_struct = (@mailbox == '[Gmail]/Sent Mail' ? envelope.to.first : envelope.from.first)
     address = if address_struct.name
@@ -224,23 +223,32 @@ class GmailServer
 
   def lookup(uid, raw=false, forwarded=false)
     log "fetching #{uid.inspect}"
-    res = reconnect_if_necessary do 
-      @imap.uid_fetch(uid.to_i, ["FLAGS", "RFC822"])[0].attr["RFC822"]
+    fetch_data = reconnect_if_necessary do 
+      @imap.uid_fetch(uid.to_i, ["FLAGS", "RFC822", "RFC822.SIZE"])[0]
     end
+    res = fetch_data.attr["RFC822"]
     if raw
       return res
     end
     mail = Mail.new(res)
     formatter = MessageFormatter.new(mail)
     part = formatter.find_text_part
-
     out = formatter.process_body 
+    size = fetch_data.attr["RFC822.SIZE"]
     message = <<-END
+#{@mailbox} #{uid} #{number_to_human_size size} #{forwarded ? nil : format_parts_info(formatter.list_parts)}
+----------------------------------------
 #{format_headers(formatter.extract_headers)}
 
-#{forwarded ? nil : formatter.list_parts}
 #{out}
 END
+  end
+
+  def format_parts_info(parts)
+    lines = parts.select {|part| part !~ %r{text/plain}}
+    if lines.size > 0
+      "\n#{lines.join("\n")}"
+    end
   end
 
   # uid_set is a string comming from the vim client

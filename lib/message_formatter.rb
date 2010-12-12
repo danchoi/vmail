@@ -10,7 +10,7 @@ class MessageFormatter
 
   def list_parts(parts = (@mail.parts.empty? ? [@mail] : @mail.parts))
     if parts.empty?
-      return nil
+      return []
     end
     lines = parts.map do |part|
       if part.multipart?
@@ -20,7 +20,7 @@ class MessageFormatter
         "- #{part.content_type}"
       end
     end
-    lines.join("\n") + "\n\n---BODY--\n\n"
+    lines.flatten
   end
 
   def process_body
