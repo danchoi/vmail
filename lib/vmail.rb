@@ -43,3 +43,4 @@ module Vmail
     exit
   end
 end
+

@@ -42,7 +42,6 @@ Flag new messages. And position cursor correctly on a refresh.
 
 
 
-
 inputlist()
 
 
@@ -464,16 +463,12 @@ DONE
   - search for from kr
   - can't rely on mail.encoding to be non-nil
 - if html version, command to open
-
+- create wrapper exec to start both daemon and client from same
+  window. redirect streams from daemon to a log file
+- package gem
+  - vmail (client)
 
 next:
-- create another bin wrapper to start both daemon and client from same
-  window. redirect streams from daemon to a log file
-  - can alter dep on command line opts
-- package gem
-  - vmail-server
-  - vmail (client)
-  - try running as one wrapper process
 - sending an attachment
   - can specify a directory, then all the items in the directory get
     attached and sent
