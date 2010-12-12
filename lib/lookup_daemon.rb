@@ -90,6 +90,7 @@ class GmailServer
     elsif uid_set.is_a?(Integer)
       uid_set = [uid_set]
     end
+    max_uid = uid_set.max
     log "fetch headers for #{uid_set.inspect}"
     if uid_set.empty?
       log "empty set"
@@ -99,12 +100,12 @@ class GmailServer
       @imap.uid_fetch(uid_set, ["FLAGS", "ENVELOPE", "RFC822.SIZE" ])
     end
     log "extracting headers"
-    lines = results.sort_by {|x| Time.parse(x.attr['ENVELOPE'].date)}.map {|x| format_header(x)}
+    lines = results.sort_by {|x| Time.parse(x.attr['ENVELOPE'].date)}.map {|x| format_header(x, max_uid)}
     log "returning result" 
     return lines.join("\n")
   end
 
-  def format_header(fetch_data)
+  def format_header(fetch_data, max_uid=nil)
     uid = fetch_data.attr["UID"]
     envelope = fetch_data.attr["ENVELOPE"]
     size = fetch_data.attr["RFC822.SIZE"]
@@ -127,7 +128,7 @@ class GmailServer
     subject = envelope.subject || ''
     subject = Mail::Encodings.unquote_and_convert_to(subject, 'utf-8')
     flags = format_flags(flags)
-    first_col_width = @all_uids.max.to_s.length 
+    first_col_width = max_uid.to_s.length 
     mid_width = @width - (first_col_width + 14 + 2) - (10 + 2) - 5
     address_col_width = (mid_width * 0.3).ceil
     subject_col_width = (mid_width * 0.7).floor
