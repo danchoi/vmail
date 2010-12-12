@@ -237,13 +237,13 @@ module Vmail
       part = formatter.find_text_part
       out = formatter.process_body 
       size = fetch_data.attr["RFC822.SIZE"]
-      message = <<-END
-  #{@mailbox} #{uid} #{number_to_human_size size} #{forwarded ? nil : format_parts_info(formatter.list_parts)}
-  ----------------------------------------
-  #{format_headers(formatter.extract_headers)}
+      message = <<-EOF
+#{@mailbox} #{uid} #{number_to_human_size size} #{forwarded ? nil : format_parts_info(formatter.list_parts)}
+----------------------------------------
+#{format_headers(formatter.extract_headers)}
 
-  #{out}
-  END
+#{out}
+EOF
     end
 
     def format_parts_info(parts)
@@ -358,7 +358,6 @@ module Vmail
     def deliver(text)
       # parse the text. The headers are yaml. The rest is text body.
       require 'net/smtp'
-      require 'smtp_tls'
       mail = new_mail_from_input(text)
       mail.delivery_method(*smtp_settings)
       mail.deliver!

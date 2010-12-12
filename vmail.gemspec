@@ -9,8 +9,8 @@ Gem::Specification.new do |s|
   s.authors     = ["Daniel Choi"]
   s.email       = ["dhchoi@gmail.com"]
   s.homepage    = "http://rubygems.org/gems/vmail"
-  s.summary     = %q{TODO: Write a gem summary}
-  s.description = %q{TODO: Write a gem description}
+  s.summary     = %q{A Vim interface to Gmail}
+  s.description = %q{Manage your email with Vim}
 
   s.rubyforge_project = "vmail"
 
@@ -18,4 +18,6 @@ Gem::Specification.new do |s|
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
+
+  s.add_dependency 'mail'
 end
