@@ -17,7 +17,9 @@ module Vmail
 
     query = ARGV.empty? ? [100, 'ALL'] : nil
 
+    
     buffer_file = "vmail-buffer.txt"
+    puts "using buffer file: #{buffer_file}"
     File.open(buffer_file, "w") do |file|
       file.puts server.search(*query)
     end
@@ -26,8 +28,15 @@ module Vmail
     # TODO
     #  - mvim; move viewer.vim to new file
 
-    vimscript = "viewer.vim"
-    system("DRB_URI='#{drb_uri}' vim -S #{vimscript} #{buffer_file}")
+    vim = ENV['VMAIL_VIM'] || 'vim'
+    vimscript = File.expand_path("../vmail.vim", __FILE__)
+    vim_command = "DRB_URI='#{drb_uri}' #{vim} -S #{vimscript} #{buffer_file}"
+    puts vim_command
+    system(vim_command)
+
+    if vim == 'mvim'
+      DRb.thread.join
+    end
 
     File.delete(buffer_file)
 

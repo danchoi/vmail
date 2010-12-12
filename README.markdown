@@ -2,6 +2,85 @@
 
 This project (soon to be documented) provides a Vim interface to Gmail.
 
+This is an alpha version. To run it, you need vim or macvim. 
+
+To use this alpha version, you need to put a gmail.yml file in your home
+directory.
+
+The format of the yaml file is as follows:
+
+    username: dhchoi@gmail.com
+    password: mypassword
+    name: Daniel Choi
+    signature: |
+      --
+      Sent via vmail. http://danielchoi.com
+
+vmail use the normal vim on your system by default. To use Macvim, invoke it as follows:
+
+    VMAIL_VIM=mvim vmail
+
+There is no real documentation as of yet, but here are the raw vimscript mappings
+
+## From Message List Window:
+
+    inoremap <silent> <buffer> <cr> <Esc>:call <SID>complete_move_to_mailbox()<CR> 
+    inoremap <silent> <buffer> <esc> <Esc>:q<cr>
+    inoremap <silent> <buffer> <cr> <Esc>:call <SID>select_mailbox()<CR> 
+    inoremap <silent> <buffer> <esc> <Esc>:q<cr>
+    noremap! <silent> <buffer> <cr> <Esc>:call <SID>do_search()<CR> 
+    noremap <silent> <buffer> <cr> :call <SID>show_message()<CR>
+    noremap <silent> <buffer> q :qal!<cr>
+    noremap <silent> <buffer> s :call <SID>toggle_star()<CR>
+    noremap <silent> <buffer> <leader>d :call <SID>delete_messages("Deleted")<CR>
+    noremap <silent> <buffer> <leader>! :call <SID>delete_messages("[Gmail]/Spam")<CR>
+    noremap <silent> <buffer> u :call <SID>update()<CR>
+    noremap <silent> <buffer> <Leader>s :call <SID>search_window()<CR>
+    noremap <silent> <buffer> <Leader>m :call <SID>mailbox_window()<CR>
+    noremap <silent> <buffer> <Leader>v :call <SID>move_to_mailbox()<CR>
+    noremap <silent> <buffer> <Leader>c :call <SID>compose_message()<CR>
+    noremap <silent> <buffer> <Leader>r :call <SID>show_message()<cr>:call <SID>compose_reply(0)<CR>
+    " reply all
+    noremap <silent> <buffer> <Leader>a :call <SID>show_message()<cr>:call <SID>compose_reply(1)<CR>
+
+
+## From Message Window:
+
+    noremap <silent> <buffer> <cr> :call <SID>focus_list_window()<CR> 
+    noremap <silent> <buffer> <Leader>q :call <SID>focus_list_window()<CR> 
+    noremap <silent> <buffer> q <Leader>q
+    noremap <silent> <buffer> <Leader>r :call <SID>compose_reply(0)<CR>
+    noremap <silent> <buffer> <Leader>a :call <SID>compose_reply(1)<CR>
+    noremap <silent> <buffer> <Leader>R :call <SID>show_raw()<cr>
+    noremap <silent> <buffer> <Leader>R :call <SID>show_raw()<cr>
+    noremap <silent> <buffer> <Leader>f :call <SID>compose_forward()<CR><cr>
+    noremap <silent> <buffer> <Leader>o yE :!open '<C-R>"'<CR><CR>
+    noremap <silent> <buffer> <leader>j :call <SID>show_next_message()<CR> 
+    noremap <silent> <buffer> <leader>k :call <SID>show_previous_message()<CR> 
+    noremap <silent> <buffer> <Leader>c :call <SID>compose_message()<CR>
+    noremap <silent> <buffer> <Leader>h :call <SID>open_html_part()<CR><cr>
+    nnoremap <silent> <buffer> q :close<cr>
+    nnoremap <silent> <buffer> <leader>d  :call <SID>focus_list_window()<cr>:call <SID>delete_messages("Deleted")<cr>
+    nnoremap <silent> <buffer> s  :call <SID>focus_list_window()<cr>:call <SID>toggle_star()<cr>
+    nnoremap <silent> <buffer> <Leader>m :call <SID>focus_list_window()<cr>:call <SID>mailbox_window()<CR>
+    nnoremap <silent> <buffer> <Leader>A :call <SID>save_attachments()<cr>
+
+
+## From Message Compose Window
+
+    noremap <silent> <buffer> <Leader>d :call <SID>deliver_message()<CR>
+    nnoremap <silent> <buffer> q :call <SID>cancel_compose()<cr>
+    nnoremap <silent> <buffer> <leader>q :call <SID>cancel_compose()<cr>
+    nnoremap <silent> <buffer> <Leader>s :call <SID>save_draft()<CR>
+
+Other:
+
+    nnoremap <silent> <buffer> <Space> :call <SID>toggle_fullscreen()<cr>
+
+
+
+
+
 ## Open Source License
 
 The source code for vmail is governed by the MIT License, which reads as
