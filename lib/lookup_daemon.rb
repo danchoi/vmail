@@ -307,7 +307,7 @@ END
       if value.is_a?(Array)
         value = value.join(", ")
       end
-      lines << "#{key}: #{value}"
+      lines << "#{key.gsub("_", '-')}: #{value}"
     end
     lines.join("\n")
   end
