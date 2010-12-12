@@ -466,6 +466,7 @@ DONE
 - if html version, command to open
 
 next:
+
 - put instructions in message window; put in a top section 
 - sending an attachment
   - can specify a directory, then all the items in the directory get

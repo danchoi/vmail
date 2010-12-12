@@ -362,8 +362,9 @@ END
     require 'net/smtp'
     require 'smtp_tls'
     mail = new_mail_from_input(text)
+    mail.delivery_method(*smtp_settings)
     mail.deliver!
-    "SENT"
+    "message '#{mail.subject}' sent"
   end
 
   def save_draft(text)
@@ -378,10 +379,14 @@ END
   def new_mail_from_input(text)
     require 'mail'
     mail = Mail.new
-    raw_headers, body = *text.split(/\n\n/, 2)
+    raw_headers, body = *text.split(/\n\s*\n/, 2)
+    # handle attachments
+    if (attachments = body.split(/\n\s*\n/, 2)[0]) =~ /^attach:/
+      log "attachments: #{YAML::load(attachments).inspect}"
+    end
     headers = {}
     raw_headers.split("\n").each do |line|
-      key, value = *line.split(':', 2)
+      key, value = *line.split(/:\s*/, 2)
       headers[key] = value
     end
     log "headers: #{headers.inspect}"
