@@ -459,13 +459,15 @@ DONE
 - save drafts on server to [Gmail]/Drafts
 
 next:
-- archive function (shortcut for move to all mail)
 - put instructions in message window; put in a top section (format
   message show)
   - if html version, command to open
 - attachments extraction
 - sending an attachment
 - forwarding attachments
+  - do heavy lifting on server side. check to see if delivered messages
+    has some marker, then forward with all attachments in the original
+    message
 - use IMAP.decode_utf7 for subject lines?
 - follow mysql and use -u and -p flags on startup of server?
   - omitting -p flag forces prompt
@@ -478,6 +480,11 @@ next:
 - print all selected messages into file (append)
   - can pipe through a command line tool, so we don't need to clutter
     viewer.vim with more mappings and functions
+- put "move to >" and "select mailbox >" in command window
+- make compat with ruby 1.8
+- create another bin wrapper to start both daemon and client from same
+  window. redirect streams from daemon to a log file
+  - can alter dep on command line opts
 - package gem
 - help
 - defaults for druby in config. pick up config from wherever
@@ -485,8 +492,12 @@ next:
 - deploy
 - figure out where the command runs and what files it produces
 - ,s s confusion? Star vs search
+- sort contacts by frequency, then take first 10 or so of any match
+  group
+
 
 later:
+- archive function (shortcut for move to all mail)
 - crate to package app as a OS X app?
   http://rubyconf2008.confreaks.com/crate-packaging-your-ruby-application.html
   - need to bundle macvim

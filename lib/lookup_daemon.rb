@@ -184,7 +184,10 @@ class GmailServer
       # this is just to prime the IMAP connection
       # It's necessary for some reason.
       log "priming connection for update"
-      log @imap.uid_fetch(@all_uids[-1], ["ENVELOPE"])
+      res = @imap.uid_fetch(@all_uids[-1], ["ENVELOPE"])
+      if res.nil?
+        raise IOError, "IMAP connection seems broken"
+      end
     end
     uids = reconnect_if_necessary { 
       log "uid_search #@query"
