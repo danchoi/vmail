@@ -404,7 +404,7 @@ function! s:search_window()
   setlocal noswapfile
   resize 1
   setlocal modifiable
-  noremap <silent> <buffer> <cr> <Esc>:call <SID>do_search()<CR> 
+  noremap! <silent> <buffer> <cr> <Esc>:call <SID>do_search()<CR> 
   call feedkeys("i")
 endfunction
 

@@ -518,3 +518,11 @@ later:
 - sometimes update doesn't work - bug
 - message threads
 
+
+
+------------------------------------------------------------------------
+
+Threading
+how to find the message that a message is in reply-to
+
+imap.search ["HEADER", "MESSAGE-ID", "<757FC46C-9394-494E-91B4-B051F48419DA@prx.org>"]
