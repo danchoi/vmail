@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+
+begin
+  require 'vmail'
+rescue LoadError
+  require 'rubygems'
+  require 'gmail'
+end
+
+ENV['VMAIL_VIM'] = 'mvim'
+Vmail.start
+
