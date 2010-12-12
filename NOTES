@@ -467,14 +467,17 @@ DONE
 
 
 next:
+- create another bin wrapper to start both daemon and client from same
+  window. redirect streams from daemon to a log file
+  - can alter dep on command line opts
+- package gem
+  - vmail-server
+  - vmail (client)
+  - try running as one wrapper process
 - sending an attachment
   - can specify a directory, then all the items in the directory get
     attached and sent
-  - attach: yaml
 - forwarding attachments
-  - do heavy lifting on server side. check to see if delivered messages
-    has some marker, then forward with all attachments in the original
-    message
   - could be "attach: [uid] attachments to signal"
 - use :wq to send compose message, not ,d (easy to confuse with delete!)
   - close! to cancel
@@ -494,18 +497,12 @@ next:
     viewer.vim with more mappings and functions
 - put "move to >" and "select mailbox >" in command window
 - make compat with ruby 1.8
-- create another bin wrapper to start both daemon and client from same
-  window. redirect streams from daemon to a log file
-  - can alter dep on command line opts
-- package gem
 - help
-- defaults for druby in config. pick up config from wherever
 - readme
-- deploy
-- figure out where the command runs and what files it produces
 - ,s s confusion? Star vs search
 - sort contacts by frequency, then take first 10 or so of any match
   group
+  - enhance contacts auto fix with more advance vim script
 - mvim = allow using through VMAIL_EDITOR env variable
 
 later:
