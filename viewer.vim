@@ -20,6 +20,7 @@ let s:reply_template_command = s:client_script . "reply_template "
 let s:forward_template_command = s:client_script . "forward_template "
 let s:deliver_command = s:client_script . "deliver "
 let s:save_draft_command = s:client_script . "save_draft "
+let s:save_attachments_command = s:client_script . "save_attachments "
 let s:open_html_command = s:client_script . "open_html_part "
 let s:message_bufname = "MessageWindow"
 let s:list_bufname = "MessageListWindow"
@@ -74,6 +75,7 @@ function! s:create_message_window()
   nnoremap <silent> <buffer> <leader>d  :call <SID>focus_list_window()<cr>:call <SID>delete_messages("Deleted")<cr>
   nnoremap <silent> <buffer> s  :call <SID>focus_list_window()<cr>:call <SID>toggle_star()<cr>
   nnoremap <silent> <buffer> <Leader>m :call <SID>focus_list_window()<cr>:call <SID>mailbox_window()<CR>
+  nnoremap <silent> <buffer> <Leader>A :call <SID>save_attachments()<cr>
   " go fullscreen
   nnoremap <silent> <buffer> <Space> :call <SID>toggle_fullscreen()<cr>
   close
@@ -553,6 +555,15 @@ func! s:open_html_part()
   exec "!open " . outfile
 endfunc
 
+func! s:save_attachments()
+  if !exists("s:savedir")
+    let s:savedir = getcwd()
+  end
+  let s:savedir = input("save attachments to directory: ", s:savedir)
+  let command = s:save_attachments_command . s:savedir
+  echo command
+  let res = system(command)
+endfunc
 " -------------------------------------------------------------------------------- 
 
 func! s:toggle_fullscreen()

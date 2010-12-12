@@ -343,6 +343,7 @@ END
   def address_to_string(x)
     x.name ? "#{x.name} <#{x.mailbox}@#{x.host}>" : "#{x.mailbox}@#{x.host}"
   end
+
   def signature
     return '' unless @signature
     "\n\n#@signature"
@@ -393,6 +394,21 @@ END
     mail.from ||= @username
     mail.body = body
     mail
+  end
+
+  def save_attachments(dir)
+    log "save_attachments #{dir}"
+    if !@current_message
+      log "missing a current message"
+    end
+    return unless dir && @current_message
+    attachments = @current_message.attachments
+    `mkdir -p #{dir}`
+    attachments.each do |x|
+      path = File.join(dir, x.filename)
+      log "saving #{path}"
+      File.open(path, 'wb') {|f| f.puts x.decoded}
+    end
   end
 
   def open_html_part(uid)

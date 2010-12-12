@@ -44,7 +44,6 @@ class MessageFormatter
     if parts.empty?
       return @mail
     end
-
     part = parts.detect {|part| part.multipart?}
     if part
       find_text_part(part.parts)

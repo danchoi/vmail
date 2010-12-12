@@ -66,5 +66,19 @@ describe MessageFormatter do
     end
   end
 
+  describe "when message has two attachments" do
+    before do
+      @raw  = read_fixture('with-attachments.eml') 
+      @mail = Mail.new(@raw)
+    end
+
+    it "should extract two attachments" do
+      attachments = @mail.attachments 
+      assert_equal 2, attachments.size
+      assert_equal ['image/png', 'image/gif'], attachments.map(&:mime_type)
+    end
+
+  end
+
 end
 
