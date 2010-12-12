@@ -36,6 +36,7 @@ class GmailServer
     @mailbox = nil
     @logger = Logger.new(STDERR)
     @logger.level = Logger::DEBUG
+    @current_message = nil
   end
 
   def open
@@ -223,15 +224,16 @@ class GmailServer
   end
 
   def lookup(uid, raw=false, forwarded=false)
+    if raw
+      return @current_message.to_s
+    end
     log "fetching #{uid.inspect}"
     fetch_data = reconnect_if_necessary do 
       @imap.uid_fetch(uid.to_i, ["FLAGS", "RFC822", "RFC822.SIZE"])[0]
     end
     res = fetch_data.attr["RFC822"]
-    if raw
-      return res
-    end
     mail = Mail.new(res)
+    @current_message = mail # used later to show raw message or extract attachments if any
     formatter = MessageFormatter.new(mail)
     part = formatter.find_text_part
     out = formatter.process_body 

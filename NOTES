@@ -458,7 +458,7 @@ DONE
 - show num additional when in sent msg list
 - save drafts on server to [Gmail]/Drafts
 - use unquote_and_convert for subject lines?
-
+i
 next:
 - encoding issues (korean) 
   - plus use iconv for 1.8
@@ -501,6 +501,7 @@ next:
 
 
 later:
+- remember searches?
 - archive function (shortcut for move to all mail)
 - crate to package app as a OS X app?
   http://rubyconf2008.confreaks.com/crate-packaging-your-ruby-application.html
