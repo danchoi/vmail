@@ -1,5 +1,6 @@
 require 'mail'
 require 'open3'
+require 'iconv'
 
 class MessageFormatter
   # initialize with a Mail object
@@ -27,17 +28,18 @@ class MessageFormatter
     part = find_text_part(@mail.parts)
     body = if part && part.respond_to?(:header)
       if part.header["Content-Type"].to_s =~ /text\/plain/
-        format_text_body(part.body) 
+        format_text_body(part) 
       elsif part.header["Content-Type"].to_s =~ /text\/html/
-        format_html_body(part.body) 
+        format_html_body(part) 
       else
-        format_text_body(part.body) 
+        format_text_body(part) 
       end
     else 
       "NO BODY" 
     end
-    body.force_encoding(self.encoding)
-    body.encode('utf-8', :undef => :replace, :universal_newline => true)
+  rescue
+    puts $!
+    body
   end
 
   def find_text_part(parts = @mail.parts)
@@ -58,16 +60,25 @@ class MessageFormatter
     end
   end
 
-  def format_text_body(body)
-    body.decoded.gsub("\r", '')
+  def format_text_body(part)
+    text = part.body.decoded.gsub("\r", '')
+    charset = part.content_type_parameters && part.content_type_parameters['charset']
+    if charset
+      Iconv.conv('utf-8//translit//ignore', charset, text)
+    else
+      text
+    end
   end
 
   # depend on lynx
-  def format_html_body(body)
+  def format_html_body(part)
+    html = part.body.decoded.gsub("\r", '')
     stdin, stdout, stderr = Open3.popen3("lynx -stdin -dump")
-    stdin.puts(body.decoded)
+    stdin.puts html
     stdin.close
-    stdout.read
+    output = stdout.read
+    charset = part.content_type_parameters && part.content_type_parameters['charset']
+    charset ?  Iconv.conv('utf-8//translit//ignore', charset, output) : output
   end
 
   def extract_headers(mail = @mail)
@@ -83,6 +94,8 @@ class MessageFormatter
       headers['reply_to'] = utf8(mail['reply_to'].decoded)
     end
     headers
+  rescue
+    {'error' => $!}
   end
 
   def encoding
@@ -91,7 +104,10 @@ class MessageFormatter
 
   def utf8(string)
     return '' unless string
-    string.force_encoding(encoding)
-    string.encode("UTF-8")
+    return string unless encoding
+    Iconv.conv('utf-8//translit/ignore', encoding, string)
+  rescue
+    puts $!
+    string
   end
 end

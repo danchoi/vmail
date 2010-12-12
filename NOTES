@@ -458,7 +458,8 @@ DONE
 - show num additional when in sent msg list
 - save drafts on server to [Gmail]/Drafts
 - use unquote_and_convert for subject lines?
-i
+- attachments extraction
+
 next:
 - encoding issues (korean) 
   - plus use iconv for 1.8
@@ -467,7 +468,6 @@ next:
 - put instructions in message window; put in a top section (format
   message show)
   - if html version, command to open
-- attachments extraction
 - sending an attachment
 - forwarding attachments
   - do heavy lifting on server side. check to see if delivered messages
