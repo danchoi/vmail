@@ -467,7 +467,8 @@ DONE
 
 next:
 - use :wq to send compose message, not ,d (easy to confuse with delete!)
-
+  - close! to cancel
+  - fewer mappings to remember this way
 - put instructions in message window; put in a top section 
 - sending an attachment
   - can specify a directory, then all the items in the directory get
