@@ -3,12 +3,10 @@ require 'rake/testtask'
 require 'bundler'
 Bundler::GemHelper.install_tasks
 
-task :environment do
-  require(File.join(File.dirname(__FILE__), 'config', 'environment'))
-end
+$LOAD_PATH.unshift File.join(File.dirname(__FILE__), 'lib')
 
 desc "Run tests"
-task :test => :environment do 
+task :test do 
   $:.unshift File.expand_path("test")
   require 'test_helper'
   require 'time_format_test'

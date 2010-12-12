@@ -4,8 +4,11 @@ module Vmail
   extend self
 
   def start
+    vim = ENV['VMAIL_VIM'] || 'vim'
+
     config = YAML::load(File.read(File.expand_path("~/gmail.yml")))
-    config.merge! 'logfile' => "vmail.log"
+    logfile = (vim == 'mvim') ? STDERR : 'vmail.log'
+    config.merge! 'logfile' => logfile
 
     puts "starting vmail imap client with config #{config}"
 
@@ -28,7 +31,6 @@ module Vmail
     # TODO
     #  - mvim; move viewer.vim to new file
 
-    vim = ENV['VMAIL_VIM'] || 'vim'
     vimscript = File.expand_path("../vmail.vim", __FILE__)
     vim_command = "DRB_URI='#{drb_uri}' #{vim} -S #{vimscript} #{buffer_file}"
     puts vim_command

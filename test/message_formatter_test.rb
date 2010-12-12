@@ -1,7 +1,8 @@
 # encoding: utf-8
 require 'test_helper'
+require 'vmail/message_formatter'
 
-describe MessageFormatter do
+describe Vmail::MessageFormatter do
   describe "message with email addresses along with names" do
     before do
       @raw = File.read(File.expand_path('../fixtures/google-affiliate.eml', __FILE__))
