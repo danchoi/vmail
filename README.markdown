@@ -1,8 +1,13 @@
 # vmail
 
-This project (soon to be documented) provides a Vim interface to Gmail.
+This project provides a Vim interface to Gmail.
 
 This is an alpha version. To run it, you need vim or macvim. 
+
+You also need ruby (1.9.2 recommended but not required) and rubygems.
+
+Once you have those prerequisites, you can install vmail with `gem install
+vmail`.
 
 To use this alpha version, you need to put a gmail.yml file in your home
 directory.
