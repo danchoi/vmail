@@ -457,11 +457,13 @@ DONE
 - position cursor conveniently on opening compose windows
 - show num additional when in sent msg list
 - save drafts on server to [Gmail]/Drafts
+- use unquote_and_convert for subject lines?
 
 next:
 - encoding issues (korean) 
   - plus use iconv for 1.8
   - search for from kr
+  - can't rely on mail.encoding to be non-nil
 - put instructions in message window; put in a top section (format
   message show)
   - if html version, command to open
@@ -471,7 +473,6 @@ next:
   - do heavy lifting on server side. check to see if delivered messages
     has some marker, then forward with all attachments in the original
     message
-- use IMAP.decode_utf7 for subject lines?
 - follow mysql and use -u and -p flags on startup of server?
   - omitting -p flag forces prompt
   - get rid of config file

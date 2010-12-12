@@ -75,8 +75,7 @@ class MessageFormatter
     headers = {'from' => utf8(mail['from'].decoded),
       'date' => (mail.date.strftime('%a, %b %d %I:%M %p %Z %Y') rescue mail.date),
       'to' => mail['to'].nil? ? nil : utf8(mail['to'].decoded),
-      'subject' => utf8(mail.subject),
-      'encoding' => encoding
+      'subject' => utf8(mail.subject)
     }
     if !mail.cc.nil?
       headers['cc'] = utf8(mail['cc'].decoded.to_s)

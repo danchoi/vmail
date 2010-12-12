@@ -415,6 +415,9 @@ function! s:do_search()
   if match(s:query, '^\s*$') != -1
     return
   endif
+  " close message window if open
+  call s:focus_message_window()
+  close
   " TODO should we really hardcode 100 as the quantity?
   let command = s:search_command . "100 " . shellescape(s:query)
   echo command
