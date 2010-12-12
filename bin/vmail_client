@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 require 'drb'
 
 server = DRbObject.new_with_uri ARGV.shift

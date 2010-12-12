@@ -1,0 +1,35 @@
+#!/usr/bin/env ruby
+require 'vmail/imap_client'
+
+config = YAML::load(File.read(File.expand_path("~/gmail.yml")))
+config.merge! 'logfile' => "vmail.log"
+
+puts "starting vmail imap client with config #{config}"
+
+drb_uri = Vmail::ImapClient.daemon config
+
+server = DRbObject.new_with_uri drb_uri
+server.window_width = `stty size`.strip.split(' ')[1]
+server.select_mailbox ARGV.shift || 'inbox'
+
+query = ARGV.empty? ? [100, 'ALL'] : nil
+
+File.open("mailbox.txt", "w") do |file|
+  file.puts server.search(*query)
+end
+
+# invoke vim
+system("DRB_URI='#{drb_uri}' vim -S viewer.vim mailbox.txt")
+
+require 'timeout'
+puts "closing imap connection"  
+begin
+  Timeout::timeout(5) do 
+    $gmail.close
+  end
+rescue Timeout::Error
+  puts "close connection attempt timed out"
+end
+exit
+
+server.close

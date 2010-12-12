@@ -4,7 +4,7 @@ let s:query = ''
 
 let s:drb_uri = $DRB_URI
 
-let s:client_script = "ruby lib/client.rb " . s:drb_uri . " "
+let s:client_script = "vmail_client " . s:drb_uri . " "
 let s:window_width_command = s:client_script . "window_width= "
 let s:list_mailboxes_command = s:client_script . "list_mailboxes "
 let s:lookup_command = s:client_script . "lookup "
