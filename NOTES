@@ -466,11 +466,14 @@ DONE
 - if html version, command to open
 
 next:
+- use :wq to send compose message, not ,d (easy to confuse with delete!)
 
 - put instructions in message window; put in a top section 
 - sending an attachment
   - can specify a directory, then all the items in the directory get
     attached and sent
+  - attach: yaml
+- map u update from message window      
 - forwarding attachments
   - do heavy lifting on server side. check to see if delivered messages
     has some marker, then forward with all attachments in the original
