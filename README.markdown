@@ -21,9 +21,8 @@ The format of the yaml file is as follows:
       --
       Sent via vmail. http://danielchoi.com
 
-vmail use the normal vim on your system by default. To use Macvim, invoke it as follows:
-
-    VMAIL_VIM=mvim vmail
+Start the program by typing `vmail` on your command line. If you want to use the Macvim 
+version, type `mvmail`.
 
 There is no real documentation as of yet, but here are the raw vimscript mappings
 
