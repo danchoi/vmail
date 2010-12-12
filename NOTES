@@ -465,20 +465,22 @@ DONE
   - can't rely on mail.encoding to be non-nil
 - if html version, command to open
 
+
 next:
-- use :wq to send compose message, not ,d (easy to confuse with delete!)
-  - close! to cancel
-  - fewer mappings to remember this way
-- put instructions in message window; put in a top section 
 - sending an attachment
   - can specify a directory, then all the items in the directory get
     attached and sent
   - attach: yaml
-- map u update from message window      
 - forwarding attachments
   - do heavy lifting on server side. check to see if delivered messages
     has some marker, then forward with all attachments in the original
     message
+  - could be "attach: [uid] attachments to signal"
+- use :wq to send compose message, not ,d (easy to confuse with delete!)
+  - close! to cancel
+  - fewer mappings to remember this way
+- put instructions in message window; put in a top section 
+- map u update from message window      
 - follow mysql and use -u and -p flags on startup of server?
   - omitting -p flag forces prompt
   - get rid of config file
@@ -504,9 +506,10 @@ next:
 - ,s s confusion? Star vs search
 - sort contacts by frequency, then take first 10 or so of any match
   group
-
+- mvim = allow using through VMAIL_EDITOR env variable
 
 later:
+- allow one daemon, multiple clients (select mailbox?)
 - remember searches?
 - archive function (shortcut for move to all mail)
 - crate to package app as a OS X app?
@@ -533,3 +536,9 @@ Threading
 how to find the message that a message is in reply-to
 
 imap.search ["HEADER", "MESSAGE-ID", "<757FC46C-9394-494E-91B4-B051F48419DA@prx.org>"]
+
+:! ls %
+
+  % is filename
+
+

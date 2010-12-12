@@ -110,14 +110,22 @@ class GmailServer
     envelope = fetch_data.attr["ENVELOPE"]
     size = fetch_data.attr["RFC822.SIZE"]
     flags = fetch_data.attr["FLAGS"]
-    address_struct = (@mailbox == '[Gmail]/Sent Mail' ? envelope.to.first : envelope.from.first)
-    address = if address_struct.name
+    address_struct = if @mailbox == '[Gmail]/Sent Mail' 
+                       structs = envelope.to || envelope.cc
+                       structs.nil? ? nil : structs.first 
+                     else
+                       envelope.from.first
+                     end
+    address = if address_struct.nil?
+                "unknown"
+              elsif address_struct.name
                 "#{Mail::Encodings.unquote_and_convert_to(address_struct.name, 'utf-8')} <#{[address_struct.mailbox, address_struct.host].join('@')}>"
               else
                 [address_struct.mailbox, address_struct.host].join('@') 
               end
-    if @mailbox == '[Gmail]/Sent Mail' && envelope.to.size > 1
-      address += " + #{envelope.to.size - 1}"
+    if @mailbox == '[Gmail]/Sent Mail' && envelope.to && envelope.cc
+      total_recips = (envelope.to + envelope.cc).size
+      address += " + #{total_recips - 1}"
     end
     date = Time.parse(envelope.date).localtime
     date_formatted = if date.year != Time.now.year
