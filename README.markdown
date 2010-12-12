@@ -22,13 +22,11 @@ vmail use the normal vim on your system by default. To use Macvim, invoke it as 
 
 There is no real documentation as of yet, but here are the raw vimscript mappings
 
+
 ## From Message List Window:
 
-    inoremap <silent> <buffer> <cr> <Esc>:call <SID>complete_move_to_mailbox()<CR> 
     inoremap <silent> <buffer> <esc> <Esc>:q<cr>
-    inoremap <silent> <buffer> <cr> <Esc>:call <SID>select_mailbox()<CR> 
     inoremap <silent> <buffer> <esc> <Esc>:q<cr>
-    noremap! <silent> <buffer> <cr> <Esc>:call <SID>do_search()<CR> 
     noremap <silent> <buffer> <cr> :call <SID>show_message()<CR>
     noremap <silent> <buffer> q :qal!<cr>
     noremap <silent> <buffer> s :call <SID>toggle_star()<CR>
@@ -48,18 +46,16 @@ There is no real documentation as of yet, but here are the raw vimscript mapping
 
     noremap <silent> <buffer> <cr> :call <SID>focus_list_window()<CR> 
     noremap <silent> <buffer> <Leader>q :call <SID>focus_list_window()<CR> 
+    nnoremap <silent> <buffer> q :close<cr>
     noremap <silent> <buffer> q <Leader>q
     noremap <silent> <buffer> <Leader>r :call <SID>compose_reply(0)<CR>
     noremap <silent> <buffer> <Leader>a :call <SID>compose_reply(1)<CR>
     noremap <silent> <buffer> <Leader>R :call <SID>show_raw()<cr>
-    noremap <silent> <buffer> <Leader>R :call <SID>show_raw()<cr>
     noremap <silent> <buffer> <Leader>f :call <SID>compose_forward()<CR><cr>
-    noremap <silent> <buffer> <Leader>o yE :!open '<C-R>"'<CR><CR>
     noremap <silent> <buffer> <leader>j :call <SID>show_next_message()<CR> 
     noremap <silent> <buffer> <leader>k :call <SID>show_previous_message()<CR> 
     noremap <silent> <buffer> <Leader>c :call <SID>compose_message()<CR>
     noremap <silent> <buffer> <Leader>h :call <SID>open_html_part()<CR><cr>
-    nnoremap <silent> <buffer> q :close<cr>
     nnoremap <silent> <buffer> <leader>d  :call <SID>focus_list_window()<cr>:call <SID>delete_messages("Deleted")<cr>
     nnoremap <silent> <buffer> s  :call <SID>focus_list_window()<cr>:call <SID>toggle_star()<cr>
     nnoremap <silent> <buffer> <Leader>m :call <SID>focus_list_window()<cr>:call <SID>mailbox_window()<CR>
@@ -76,8 +72,6 @@ There is no real documentation as of yet, but here are the raw vimscript mapping
 Other:
 
     nnoremap <silent> <buffer> <Space> :call <SID>toggle_fullscreen()<cr>
-
-
 
 
 
