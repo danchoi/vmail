@@ -475,7 +475,6 @@ module Vmail
       puts DRb.start_service(nil, $gmail)
       uri = DRb.uri
       puts "starting gmail service at #{uri}"
-      # return drb uri so we can pass it onto to vim client 
       uri
     end
   end
