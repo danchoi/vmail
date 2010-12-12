@@ -1,0 +1,3 @@
+module Vmail
+  # Your code goes here...
+end
