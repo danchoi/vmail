@@ -459,16 +459,17 @@ DONE
 - save drafts on server to [Gmail]/Drafts
 - use unquote_and_convert for subject lines?
 - attachments extraction
-
-next:
 - encoding issues (korean) 
   - plus use iconv for 1.8
   - search for from kr
   - can't rely on mail.encoding to be non-nil
-- put instructions in message window; put in a top section (format
-  message show)
-  - if html version, command to open
+- if html version, command to open
+
+next:
+- put instructions in message window; put in a top section 
 - sending an attachment
+  - can specify a directory, then all the items in the directory get
+    attached and sent
 - forwarding attachments
   - do heavy lifting on server side. check to see if delivered messages
     has some marker, then forward with all attachments in the original
