@@ -269,7 +269,9 @@ EOF
       if flg == 'Deleted'
         # for delete, do in a separate thread because deletions are slow
         Thread.new do 
-          @imap.uid_copy(uid_set, "[Gmail]/Trash")
+          unless @mailbox == '[Gmail]/Trash'
+            @imap.uid_copy(uid_set, "[Gmail]/Trash")
+          end
           res = @imap.uid_store(uid_set, action, [flg.to_sym])
         end
         uid_set.each { |uid| @all_uids.delete(uid) }
