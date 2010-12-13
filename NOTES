@@ -486,9 +486,9 @@ DONE
 - archive function (shortcut for move to all mail)
 - remember searches?
 - perma-delete from Trash
+- put move to> and copy to> prompts
 
 next:
-- put move to> and copy to>
 - tweak contacts list script (plus instruction for how to use)
 - help doc: just return readme file, or a vim version of it (vim filetype later)
 - follow mysql and use -u and -p flags on startup of server?
