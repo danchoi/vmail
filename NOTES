@@ -480,13 +480,13 @@ DONE
 - sending an attachment
   - can specify a directory, then all the items in the directory get
     attached and sent
+- extract and append text of all selected messages into file (append)
 
 next:
 - tweak contacts list script (plus instruction for how to use)
 - help doc: just return readme file, or a vim version of it (vim filetype later)
 - follow mysql and use -u and -p flags on startup of server?
   - omitting -p flag forces prompt
-- extract and append text of all selected messages into file (append)
 - ,s s confusion? Star vs search
 - note dependence on lynx in README
 
