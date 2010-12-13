@@ -25,7 +25,6 @@ let s:save_draft_command = s:client_script . "save_draft "
 let s:save_attachments_command = s:client_script . "save_attachments "
 let s:open_html_command = s:client_script . "open_html_part "
 let s:message_bufname = "MessageWindow"
-let s:list_bufname = "MessageListWindow"
 
 function! VmailStatusLine()
   return "%<%f\ " . s:mailbox . " " . s:query . "%r%=%-14.(%l,%c%V%)\ %P"
@@ -257,6 +256,8 @@ func! s:delete_messages(flag) range
   if len(uids) > 2
     call feedkeys("\<cr>")
   endif
+  redraw
+  echo len(uids) . " message" . (len(uids) == 1 ? '' : 's') . " marked " . a:flag
 endfunc
 
 func! s:archive_messages() range
@@ -277,6 +278,8 @@ func! s:archive_messages() range
   exec a:firstline . "," . a:lastline . "delete"
   setlocal nomodifiable
   write
+  redraw
+  echo len(uids) . " message" . (len(uids) == 1 ? '' : 's') . " archived"
 endfunc
 
 
