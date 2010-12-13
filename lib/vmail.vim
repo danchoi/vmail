@@ -621,7 +621,7 @@ func! s:message_window_mappings()
   noremap <silent> <buffer> <Leader>h :call <SID>open_html_part()<CR><cr>
   nnoremap <silent> <buffer> q :close<cr>
   nnoremap <silent> <buffer> <leader>d  :call <SID>focus_list_window()<cr>:call <SID>delete_messages("Deleted")<cr>
-  nnoremap <silent> <buffer> s  :call <SID>focus_list_window()<cr>:call <SID>toggle_star()<cr>
+  nnoremap <silent> <buffer> <leader>*  :call <SID>focus_list_window()<cr>:call <SID>toggle_star()<cr>
   nnoremap <silent> <buffer> u :call <SID>focus_list_window()<cr>:call <SID>update()<CR>
   nnoremap <silent> <buffer> <Leader>m :call <SID>focus_list_window()<cr>:call <SID>mailbox_window()<CR>
   nnoremap <silent> <buffer> <Leader>A :call <SID>save_attachments()<cr>
@@ -632,12 +632,8 @@ endfunc
 func! s:message_list_window_mappings()
   noremap <silent> <buffer> <cr> :call <SID>show_message()<CR>
   noremap <silent> <buffer> q :qal!<cr>
-  noremap <silent> <buffer> s :call <SID>toggle_star()<CR>
+  noremap <silent> <buffer> <leader>* :call <SID>toggle_star()<CR>
   noremap <silent> <buffer> <leader>d :call <SID>delete_messages("Deleted")<CR>
-  " TODO the range doesn't quite work as expect, need <line1> <line2>
-  " trying to make user defined commands that work from : prompt
-  " command -buffer -range VmailDelete call s:toggle_star("Deleted")
-  " command -buffer -range VmailStar call s:toggle_star("Flagged")
   noremap <silent> <buffer> <leader>! :call <SID>delete_messages("[Gmail]/Spam")<CR>
   "open a link browser (os x)
   "autocmd CursorMoved <buffer> call <SID>show_message()

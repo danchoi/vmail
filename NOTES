@@ -536,4 +536,8 @@ imap.search ["HEADER", "MESSAGE-ID", "<757FC46C-9394-494E-91B4-B051F48419DA@prx.
 
   % is filename
 
+  " TODO the range doesn't quite work as expect, need <line1> <line2>
+  " trying to make user defined commands that work from : prompt
+  " command -buffer -range VmailDelete call s:toggle_star("Deleted")
+  " command -buffer -range VmailStar call s:toggle_star("Flagged")
 
