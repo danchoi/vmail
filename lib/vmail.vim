@@ -499,7 +499,7 @@ function! CompleteContact(findstart, base)
     return start
   else
     " find contacts matching with "a:base"
-    let matches = system("grep " . shellescape(a:base) . " contacts.txt")
+    let matches = system("grep -i " . shellescape(a:base) . " contacts.txt")
     return split(matches, "\n")
   endif
 endfun

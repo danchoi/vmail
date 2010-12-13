@@ -477,6 +477,7 @@ DONE
 - vim resize event
 
 next:
+- sort contacts by frequency, then take first 10 or so of any match
 - sending an attachment
   - can specify a directory, then all the items in the directory get
     attached and sent
@@ -496,7 +497,6 @@ next:
   - can pipe through a command line tool, so we don't need to clutter
     viewer.vim with more mappings and functions
 - ,s s confusion? Star vs search
-- sort contacts by frequency, then take first 10 or so of any match
   group
   - enhance contacts auto fix with more advanced vim script
 - mvim - window width not correct
