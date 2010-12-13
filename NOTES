@@ -467,6 +467,9 @@ DONE
   window. redirect streams from daemon to a log file
 - package gem
   - vmail (client)
+- mvim = allow using through VMAIL_EDITOR env variable
+- need to put mailbox and search on status line from startup
+- c-j c-k to go to prev/next message
 
 next:
 - vim resize event
@@ -496,18 +499,13 @@ next:
 - sort contacts by frequency, then take first 10 or so of any match
   group
   - enhance contacts auto fix with more advance vim script
-- mvim = allow using through VMAIL_EDITOR env variable
 - mvim - window width not correct
 - mvim - starred messages not syntax colored
-- need to put mailbox and search on status line from startup
-- c-j c-k to go to prev/next message
-- mvim fix echo messages
-- mvim redrawstatus line bug
-  http://vim.1045645.n5.nabble.com/Redrawing-bug-in-MacVim-Command-T-since-commit-ba44868-td3248742.html
-- show total messages from a search, showing 100
 - remember and show last search
 
 later:
+- mvim redrawstatus line bug
+  http://vim.1045645.n5.nabble.com/Redrawing-bug-in-MacVim-Command-T-since-commit-ba44868-td3248742.html
 - allow one daemon, multiple clients (select mailbox?)
 - remember searches?
 - archive function (shortcut for move to all mail)
@@ -525,6 +523,7 @@ later:
   - do fast action like deletes
 - reload after window resize
 - sometimes update doesn't work - bug
+- show total messages from a search, showing 100
 - message threads
 
 
