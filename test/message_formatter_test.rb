@@ -7,7 +7,7 @@ describe Vmail::MessageFormatter do
     before do
       @raw = File.read(File.expand_path('../fixtures/google-affiliate.eml', __FILE__))
       @mail = Mail.new(@raw)
-      @formatter = MessageFormatter.new(@mail)
+      @formatter = Vmail::MessageFormatter.new(@mail)
     end
 
     it "should extract name along with email address" do
@@ -22,7 +22,7 @@ describe Vmail::MessageFormatter do
     before do 
       @raw = File.read(File.expand_path('../fixtures/textbody-nocontenttype.eml', __FILE__))
       @mail = Mail.new(@raw)
-      @formatter = MessageFormatter.new(@mail)
+      @formatter = Vmail::MessageFormatter.new(@mail)
     end
     it "should return the text body" do
       @formatter.process_body.wont_be_nil
@@ -34,7 +34,7 @@ describe Vmail::MessageFormatter do
     before do
       @raw = File.read(File.expand_path('../fixtures/htmlbody.eml', __FILE__))
       @mail = Mail.new(@raw)
-      @formatter = MessageFormatter.new(@mail)
+      @formatter = Vmail::MessageFormatter.new(@mail)
     end
     it "should turn the body into readable text" do
       @formatter.process_body.must_match %r{\n   Web 1 new result for instantwatcher.com netflix}
@@ -45,7 +45,7 @@ describe Vmail::MessageFormatter do
     before do
       @raw = File.read(File.expand_path('../fixtures/euc-kr-header.eml', __FILE__))
       @mail = Mail.new(@raw)
-      @formatter = MessageFormatter.new(@mail)
+      @formatter = Vmail::MessageFormatter.new(@mail)
     end
     it "should know its encoding" do
       @mail.header.charset.must_equal 'euc-kr'
@@ -60,7 +60,7 @@ describe Vmail::MessageFormatter do
     before do 
       @raw = File.read(File.expand_path('../fixtures/moleskine-html.eml', __FILE__))
       @mail = Mail.new(@raw)
-      @formatter = MessageFormatter.new(@mail)
+      @formatter = Vmail::MessageFormatter.new(@mail)
     end
     it "should process body" do
       @formatter.process_body.wont_be_nil

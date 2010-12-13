@@ -493,9 +493,9 @@ DONE
   also use command line opts
 
 NEXT:
+- fix tests
 - help doc: just return readme file, or a vim version of it (vim filetype later)
 - note dependence on lynx in README
-- fix tests
 
 later:
 - mvim - starred messages not syntax colored
