@@ -483,7 +483,7 @@ EOF
                     @current_mail.body
                   end
       return if html_part.nil?
-      outfile = 'htmlpart.html'
+      outfile = 'vmail-htmlpart.html'
       File.open(outfile, 'w') {|f| f.puts(html_part.decoded)}
       # client should handle opening the html file
       return outfile
