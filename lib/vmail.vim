@@ -387,7 +387,6 @@ function! s:select_mailbox()
   endif
   let s:mailbox = mailbox
   let command = s:select_mailbox_command . shellescape(s:mailbox)
-  echo command
   call system(command)
   redraw
   " now get latest 100 messages
@@ -434,11 +433,11 @@ function! s:do_search()
   end
   let s:query = limit . ' ' . imap_query
   let command = s:search_command . limit . ' ' . shellescape(imap_query)
-  redrawstatus
-  echo "running query on " . s:mailbox . ": " . s:query . ". please wait..."
+  redraw
   call s:focus_list_window()  
-  let res = system(command)
   setlocal modifiable
+  echo "running query on " . s:mailbox . ": " . s:query . ". please wait..."
+  let res = system(command)
   1,$delete
   put! =res
   execute "normal Gdd\<c-y>" 
