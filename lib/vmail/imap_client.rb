@@ -233,7 +233,7 @@ module Vmail
       res = fetch_data.attr["RFC822"]
       mail = Mail.new(res)
       @current_message = mail # used later to show raw message or extract attachments if any
-      formatter = MessageFormatter.new(mail)
+      formatter = Vmail::MessageFormatter.new(mail)
       part = formatter.find_text_part
       out = formatter.process_body 
       size = fetch_data.attr["RFC822.SIZE"]
@@ -324,7 +324,7 @@ EOF
         select {|x| @username !~ /#{x.mailbox}@#{x.host}/}.
         map {|x| address_to_string(x)}.join(", ")
       mail = Mail.new fetch_data.attr['RFC822']
-      formatter = MessageFormatter.new(mail)
+      formatter = Vmail::MessageFormatter.new(mail)
       headers = formatter.extract_headers
       subject = headers['subject']
       if subject !~ /Re: /
