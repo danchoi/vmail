@@ -470,6 +470,7 @@ DONE
 - mvim = allow using through VMAIL_EDITOR env variable
 - need to put mailbox and search on status line from startup
 - c-j c-k to go to prev/next message
+- turn search into an input() style prompt
 
 next:
 - vim resize event
@@ -494,7 +495,6 @@ next:
 - print all selected messages into file (append)
   - can pipe through a command line tool, so we don't need to clutter
     viewer.vim with more mappings and functions
-- put "move to >" and "select mailbox >" in command window
 - ,s s confusion? Star vs search
 - sort contacts by frequency, then take first 10 or so of any match
   group

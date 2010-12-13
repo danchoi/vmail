@@ -406,19 +406,11 @@ function! s:select_mailbox()
   normal z.
 endfunction
 
-function! s:search_window()
-  topleft split SearchWindow
-  setlocal buftype=nofile
-  setlocal noswapfile
-  resize 1
-  setlocal modifiable
-  noremap! <silent> <buffer> <cr> <Esc>:call <SID>do_search()<CR> 
-  call feedkeys("i")
-endfunction
-
 function! s:do_search()
-  let s:query = getline(line('.'))
-  close
+  if !exists("s:query")
+    let s:query = ""
+  endif
+  let s:query = input("search query: ", s:query)
   " empty query
   if match(s:query, '^\s*$') != -1
     return
@@ -614,7 +606,7 @@ noremap <silent> <buffer> <leader>! :call <SID>delete_messages("[Gmail]/Spam")<C
 "autocmd CursorMoved <buffer> call <SID>show_message()
 
 noremap <silent> <buffer> u :call <SID>update()<CR>
-noremap <silent> <buffer> <Leader>s :call <SID>search_window()<CR>
+noremap <silent> <buffer> <Leader>s :call <SID>do_search()<CR>
 noremap <silent> <buffer> <Leader>m :call <SID>mailbox_window()<CR>
 noremap <silent> <buffer> <Leader>v :call <SID>move_to_mailbox()<CR>
 
