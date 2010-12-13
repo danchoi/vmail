@@ -354,9 +354,7 @@ EOF
 
     def forward_template(uid)
       original_body = show_message(uid, false, true)
-      with_attachments = !@current_mail.attachments.empty?
       new_message_template + 
-        (with_attachments ? "attach: [original attachments]\n"  : '') +
         "\n---------- Forwarded message ----------\n" +
         original_body + signature
     end
@@ -412,6 +410,7 @@ EOF
         mail.text_part do
           body raw_body.split(/\n\s*\n/, 2)[1]
         end
+
       else
         mail.text_part do
           body raw_body
