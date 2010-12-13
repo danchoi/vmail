@@ -22,7 +22,7 @@ The format of the yaml file is as follows:
       Sent via vmail. http://danielchoi.com
 
 Start the program by typing `vmail` on your command line. If you want to use the Macvim 
-version, type `mvmail`.
+version, `export VMAIL_VIM=mvim` first.
 
 There is no real documentation as of yet, but here are the raw vimscript mappings
 

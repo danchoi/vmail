@@ -476,6 +476,7 @@ DONE
 - do search after loading vim or mvim and send size first
 - vim resize event
 - mvim - window width corrected
+- delete mvmail command. just use env variable - cleaner
 
 next:
 - sending an attachment
@@ -494,7 +495,6 @@ next:
 - ,s s confusion? Star vs search
 - enhance contacts auto fix with more advanced vim script
   - sort contacts by frequency, then take first 10 or so of any match
-- delete mvmail command. just use env variable - cleaner
 
 later:
 - mvim - starred messages not syntax colored
