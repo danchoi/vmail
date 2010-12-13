@@ -487,14 +487,19 @@ DONE
 - remember searches?
 - perma-delete from Trash
 - put move to> and copy to> prompts
+- create mailboxes if they don't exist on move or copy
 
 next:
-- create mailboxes if they don't exist
 - tweak contacts list script (plus instruction for how to use)
+  - share class that finds vmailrc and prompts for password, and parses
+    opts
+- .vmailrc is a yaml file, first in current dir, then check home, can
+  also use command line opts
 - help doc: just return readme file, or a vim version of it (vim filetype later)
 - follow mysql and use -u and -p flags on startup of server?
   - omitting -p flag forces prompt
 - note dependence on lynx in README
+- fix tests
 
 later:
 - mvim - starred messages not syntax colored

@@ -1,3 +1,4 @@
+require 'vmail/options'
 require 'vmail/imap_client'
 
 module Vmail
@@ -6,7 +7,11 @@ module Vmail
   def start
     vim = ENV['VMAIL_VIM'] || 'vim'
 
-    config = YAML::load(File.read(File.expand_path("~/gmail.yml")))
+    opts = Vmail::Options.new(ARGV)
+    opts.config
+
+    config = opts.config
+
     logfile = (vim == 'mvim') ? STDERR : 'vmail.log'
     config.merge! 'logfile' => logfile
 

@@ -4,7 +4,7 @@ begin
   require 'vmail'
 rescue LoadError
   require 'rubygems'
-  require 'gmail'
+  require 'vmail'
 end
 
 Vmail.start
