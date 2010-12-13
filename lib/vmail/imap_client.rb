@@ -298,7 +298,20 @@ EOF
       log @imap.uid_store(uid_set, '+FLAGS', [:Deleted])
     end
 
-    # TODO mark spam
+    def append_to_file(file, uid_set)
+      if uid_set.is_a?(String)
+        uid_set = uid_set.split(",").map(&:to_i)
+      end
+      log "append messages to file: #{file}"
+      uid_set.each do |uid|
+        message = show_message(uid)
+        divider = "#{'=' * 39}\n"
+        File.open(file, 'a') {|f| f.puts(divider + message + "\n\n")}
+        log "appended uid #{uid}"
+      end
+      "printed #{uid_set.size} message#{uid_set.size == 1 ? '' : 's'} to #{file.strip}"
+    end
+
 
     def new_message_template
       headers = {'from' => "#{@name} <#{@username}>",

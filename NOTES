@@ -482,15 +482,13 @@ DONE
     attached and sent
 
 next:
-- forwarding with attachments
-  - could be "attach: [uid] attachments to signal"
+- tweak contacts list script (plus instruction for how to use)
 - help doc: just return readme file, or a vim version of it (vim filetype later)
 - follow mysql and use -u and -p flags on startup of server?
   - omitting -p flag forces prompt
-- print all selected messages into file (append)
+- extract and append text of all selected messages into file (append)
 - ,s s confusion? Star vs search
-- enhance contacts auto fix with more advanced vim script
-  - sort contacts by frequency, then take first 10 or so of any match
+- note dependence on lynx in README
 
 later:
 - mvim - starred messages not syntax colored
@@ -504,8 +502,11 @@ later:
   - need to bundle macvim
 - if move to unknown mailbox, create the mailbox, then do the move
 - some lingering encoding issues
+- forwarding with attachments
+  - could be "attach: [uid] attachments to signal"
 - something is wrong with cursorline sometimes
 - try flashing progress in echo line
+- sort contacts by frequency, then take first 10 or so of any match
   - straight to switch mailbox, etc from message window
 - allow deliver command from any buffer or window, as long as headers are at top
 - range selection from : prompt
@@ -519,6 +520,8 @@ later:
   - tempname()
   - system() allows a parameters that is written to tmp file and passed
     to stdin
+- enhance contacts auto fix with more advanced vim script
+- create contacts database on first startup
 
 
 

@@ -1,5 +1,6 @@
 let s:mailbox = $VMAIL_MAILBOX
 let s:query = $VMAIL_QUERY
+let s:append_file = ''
 
 let s:drb_uri = $DRB_URI
 
@@ -13,6 +14,7 @@ let s:select_mailbox_command = s:client_script . "select_mailbox "
 let s:search_command = s:client_script . "search "
 let s:more_messages_command = s:client_script . "more_messages "
 let s:flag_command = s:client_script . "flag "
+let s:append_to_file_command = s:client_script . "append_to_file "
 let s:move_to_command = s:client_script . "move_to "
 let s:new_message_template_command = s:client_script . "new_message_template "
 let s:reply_template_command = s:client_script . "reply_template "
@@ -254,6 +256,27 @@ func! s:delete_messages(flag) range
   if len(uids) > 2
     call feedkeys("\<cr>")
   endif
+endfunc
+
+" --------------------------------------------------------------------------------
+" append text bodies of a set of messages to a file
+func! s:append_messages_to_file() range
+  let lnum = a:firstline
+  let n = 0
+  let uids = []
+  while lnum <= a:lastline
+    let line =  getline(lnum)
+    let message_uid = matchstr(line, '^\d\+')
+    call add(uids, message_uid)
+    let lnum = lnum + 1
+  endwhile
+  let uid_set = join(uids, ",")
+  let s:append_file = input("print messages to file: ", s:append_file)
+  let command = s:append_to_file_command . s:append_file . ' ' . uid_set 
+  echo "appending " . len(uids) . " message" . (len(uids) == 1 ? '' : 's') . " to " s:append_file
+  let res = system(command)
+  echo res
+  redraw
 endfunc
 
 " --------------------------------------------------------------------------------
@@ -618,6 +641,7 @@ func! s:message_list_window_mappings()
   noremap <silent> <buffer> <leader>! :call <SID>delete_messages("[Gmail]/Spam")<CR>
   "open a link browser (os x)
   "autocmd CursorMoved <buffer> call <SID>show_message()
+  noremap <silent> <buffer> <leader>vp :call <SID>append_messages_to_file()<CR>
   noremap <silent> <buffer> u :call <SID>update()<CR>
   noremap <silent> <buffer> <Leader>s :call <SID>search_query()<CR>
   noremap <silent> <buffer> <Leader>m :call <SID>mailbox_window()<CR>

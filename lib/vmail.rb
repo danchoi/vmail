@@ -29,7 +29,7 @@ module Vmail
     buffer_file = "vmailbuffer.txt"
     puts "using buffer file: #{buffer_file}"
     File.open(buffer_file, "w") do |file|
-      file.puts "just a moment..."  
+      file.puts "fetching messages. please wait..."  
     end
 
     # invoke vim
