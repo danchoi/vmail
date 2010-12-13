@@ -476,6 +476,7 @@ DONE
 
 next:
 - vim resize event
+  - do search after loading vim or mvim and send size first
 - sending an attachment
   - can specify a directory, then all the items in the directory get
     attached and sent

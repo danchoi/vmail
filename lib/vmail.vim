@@ -383,11 +383,15 @@ function! s:select_mailbox()
   normal z.
 endfunction
 
-function! s:do_search()
+func! s:search_query()
   if !exists("s:query")
     let s:query = ""
   endif
   let s:query = input("search query: ", s:query)
+  call s:do_search()
+endfunc
+
+function! s:do_search()
   " empty query
   if match(s:query, '^\s*$') != -1
     return
@@ -598,7 +602,7 @@ func! s:message_list_window_mappings()
   "open a link browser (os x)
   "autocmd CursorMoved <buffer> call <SID>show_message()
   noremap <silent> <buffer> u :call <SID>update()<CR>
-  noremap <silent> <buffer> <Leader>s :call <SID>do_search()<CR>
+  noremap <silent> <buffer> <Leader>s :call <SID>search_query()<CR>
   noremap <silent> <buffer> <Leader>m :call <SID>mailbox_window()<CR>
   noremap <silent> <buffer> <Leader>v :call <SID>move_to_mailbox()<CR>
   noremap <silent> <buffer> <Leader>c :call <SID>compose_message()<CR>
@@ -621,10 +625,8 @@ call s:create_message_window()
 
 call s:focus_list_window() " to go list window
 
-
-" go to bottom and center cursorline
-normal G
-normal z.
+call system(s:select_mailbox_command . shellescape(s:mailbox))
+call s:do_search()
 
 " send window width
 " system(s:set_window_width_command . winwidth(1))

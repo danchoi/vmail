@@ -22,18 +22,17 @@ module Vmail
     mailbox = ARGV.shift || 'INBOX'
     server.select_mailbox mailbox
 
-    query = ARGV.empty? ? [100, 'ALL'] : nil
+    query = ARGV.empty? ? [100, 'ALL'] : ARGV
+    puts "mailbox: #{mailbox}"
+    puts "query: #{query.inspect}"
     
     buffer_file = "vmailbuffer.txt"
     puts "using buffer file: #{buffer_file}"
     File.open(buffer_file, "w") do |file|
-      file.puts server.search(*query)
+      file.puts "just a moment..."  
     end
 
     # invoke vim
-    # TODO
-    #  - mvim; move viewer.vim to new file
-
     vimscript = File.expand_path("../vmail.vim", __FILE__)
     vim_command = "DRB_URI='#{drb_uri}' VMAIL_MAILBOX=#{String.shellescape(mailbox)} VMAIL_QUERY=#{String.shellescape(query.join(' '))} #{vim} -S #{vimscript} #{buffer_file}"
     puts vim_command
