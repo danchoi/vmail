@@ -477,12 +477,12 @@ DONE
 - vim resize event
 - mvim - window width corrected
 - delete mvmail command. just use env variable - cleaner
-
-next:
 - sending an attachment
   - can specify a directory, then all the items in the directory get
     attached and sent
-- forwarding attachments
+
+next:
+- forwarding with attachments
   - could be "attach: [uid] attachments to signal"
 - help doc: just return readme file, or a vim version of it (vim filetype later)
 - follow mysql and use -u and -p flags on startup of server?
