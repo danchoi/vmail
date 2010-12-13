@@ -7,7 +7,7 @@ let s:drb_uri = $DRB_URI
 let s:client_script = "vmail_client " . s:drb_uri . " "
 let s:window_width_command = s:client_script . "window_width= "
 let s:list_mailboxes_command = s:client_script . "list_mailboxes "
-let s:lookup_command = s:client_script . "lookup "
+let s:show_message_command = s:client_script . "show_message "
 let s:update_command = s:client_script . "update"
 let s:fetch_headers_command = s:client_script . "fetch_headers "
 let s:select_mailbox_command = s:client_script . "select_mailbox "
@@ -101,7 +101,7 @@ function! s:show_message()
   redraw
   let selected_uid = matchstr(line, '^\d\+')
   let s:current_uid = selected_uid
-  let command = s:lookup_command . s:current_uid
+  let command = s:show_message_command . s:current_uid
   echo "Loading message. Please wait..."
   let res = system(command)
   call s:focus_message_window()
@@ -133,7 +133,7 @@ endfunction
 
 " invoked from withint message window
 function! s:show_raw()
-  let command = s:lookup_command . s:current_uid . ' raw'
+  let command = s:show_message_command . s:current_uid . ' raw'
   echo command
   setlocal modifiable
   1,$delete

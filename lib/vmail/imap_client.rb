@@ -223,7 +223,7 @@ module Vmail
       res 
     end
 
-    def lookup(uid, raw=false, forwarded=false)
+    def show_message(uid, raw=false, forwarded=false)
       uid = uid.to_i
       return @current_mail.to_s if raw 
       return @current_message if uid == @current_uid
@@ -351,7 +351,7 @@ EOF
 
     # TODO, forward with attachments 
     def forward_template(uid)
-      original_body = lookup(uid, false, true)
+      original_body = show_message(uid, false, true)
       new_message_template + 
         "\n---------- Forwarded message ----------\n" +
         original_body + signature
