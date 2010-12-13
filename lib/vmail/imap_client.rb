@@ -224,8 +224,11 @@ module Vmail
 
     def show_message(uid, raw=false, forwarded=false)
       uid = uid.to_i
+      if forwarded
+        return @current_message.split(/\n-{20,}\n/, 2)[1]
+      end
       return @current_mail.to_s if raw 
-      return @current_message if uid == @current_uid
+      return @current_message if uid == @current_uid 
       log "fetching #{uid.inspect}" 
       fetch_data = reconnect_if_necessary do 
         @imap.uid_fetch(uid, ["FLAGS", "RFC822", "RFC822.SIZE"])[0]
@@ -240,8 +243,8 @@ module Vmail
       out = formatter.process_body 
       size = fetch_data.attr["RFC822.SIZE"]
       @current_message = <<-EOF
-#{@mailbox} #{uid} #{number_to_human_size size} #{forwarded ? nil : format_parts_info(formatter.list_parts)}
-----------------------------------------
+#{@mailbox} #{uid} #{number_to_human_size size} #{format_parts_info(formatter.list_parts)}
+---------------------------------------
 #{format_headers(formatter.extract_headers)}
 
 #{out}
@@ -351,7 +354,9 @@ EOF
 
     def forward_template(uid)
       original_body = show_message(uid, false, true)
+      with_attachments = !@current_mail.attachments.empty?
       new_message_template + 
+        (with_attachments ? "attach: [original attachments]\n"  : '') +
         "\n---------- Forwarded message ----------\n" +
         original_body + signature
     end
