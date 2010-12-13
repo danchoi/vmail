@@ -285,7 +285,6 @@ EOF
       end
     end
 
-    # uid_set is a string comming from the vim client
     def move_to(uid_set, mailbox)
       if MailboxAliases[mailbox]
         mailbox = MailboxAliases[mailbox]
@@ -296,6 +295,17 @@ EOF
       end
       log @imap.uid_copy(uid_set, mailbox)
       log @imap.uid_store(uid_set, '+FLAGS', [:Deleted])
+    end
+
+    def copy_to(uid_set, mailbox)
+      if MailboxAliases[mailbox]
+        mailbox = MailboxAliases[mailbox]
+      end
+      log "move_to #{uid_set.inspect} #{mailbox}"
+      if uid_set.is_a?(String)
+        uid_set = uid_set.split(",").map(&:to_i)
+      end
+      log @imap.uid_copy(uid_set, mailbox)
     end
 
     def append_to_file(file, uid_set)

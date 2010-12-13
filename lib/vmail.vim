@@ -16,6 +16,7 @@ let s:more_messages_command = s:client_script . "more_messages "
 let s:flag_command = s:client_script . "flag "
 let s:append_to_file_command = s:client_script . "append_to_file "
 let s:move_to_command = s:client_script . "move_to "
+let s:copy_to_command = s:client_script . "copy_to "
 let s:new_message_template_command = s:client_script . "new_message_template "
 let s:reply_template_command = s:client_script . "reply_template "
 let s:forward_template_command = s:client_script . "forward_template "
@@ -302,7 +303,8 @@ endfunc
 
 " --------------------------------------------------------------------------------
 " move to another mailbox
-function! s:move_to_mailbox() range
+function! s:move_to_mailbox(copy) range
+  let s:copy_to_mailbox = a:copy
   let lnum = a:firstline
   let n = 0
   let uids = []
@@ -332,8 +334,6 @@ function! s:move_to_mailbox() range
   " save these in script scope to delete the lines when move completes
 endfunction
 
-" Open command window to choose a mailbox to move a message to.
-" Very similar to mailbox_window() function
 function! s:complete_move_to_mailbox()
   let mailbox = getline(line('.'))
   close
@@ -341,7 +341,11 @@ function! s:complete_move_to_mailbox()
   if (index(s:mailboxes, mailbox) == -1) 
     return
   endif
-  let command = s:move_to_command . s:uid_set . ' ' . shellescape(mailbox)
+  if s:copy_to_mailbox 
+    let command = s:copy_to_command . s:uid_set . ' ' . shellescape(mailbox)
+  else
+    let command = s:move_to_command . s:uid_set . ' ' . shellescape(mailbox)
+  endif
   redraw
   echo "moving uids ". s:uid_set . " to mailbox '" . mailbox "'" 
   let res = system(command)
@@ -649,7 +653,8 @@ func! s:message_window_mappings()
   nnoremap <silent> <buffer> q :close<cr>
   nnoremap <silent> <buffer> <leader>d  :call <SID>focus_list_window()<cr>:call <SID>delete_messages("Deleted")<cr>
   nnoremap <silent> <buffer> <leader>*  :call <SID>focus_list_window()<cr>:call <SID>toggle_star()<cr>
-  nnoremap <silent> <buffer> <Leader>b :call <SID>focus_list_window()<cr>call <SID>move_to_mailbox()<CR>
+  nnoremap <silent> <buffer> <Leader>b :call <SID>focus_list_window()<cr>call <SID>move_to_mailbox(0)<CR>
+  nnoremap <silent> <buffer> <Leader>B :call <SID>focus_list_window()<cr>call <SID>move_to_mailbox(1)<CR>
   nnoremap <silent> <buffer> <leader>#  :call <SID>focus_list_window()<cr>:call <SID>archive_messages()<cr>
   nnoremap <silent> <buffer> u :call <SID>focus_list_window()<cr>:call <SID>update()<CR>
   nnoremap <silent> <buffer> <Leader>m :call <SID>focus_list_window()<cr>:call <SID>mailbox_window()<CR>
@@ -671,7 +676,8 @@ func! s:message_list_window_mappings()
   noremap <silent> <buffer> u :call <SID>update()<CR>
   noremap <silent> <buffer> <Leader>s :call <SID>search_query()<CR>
   noremap <silent> <buffer> <Leader>m :call <SID>mailbox_window()<CR>
-  noremap <silent> <buffer> <Leader>b :call <SID>move_to_mailbox()<CR>
+  noremap <silent> <buffer> <Leader>b :call <SID>move_to_mailbox(0)<CR>
+  noremap <silent> <buffer> <Leader>B :call <SID>move_to_mailbox(1)<CR>
   noremap <silent> <buffer> <Leader>c :call <SID>compose_message()<CR>
   noremap <silent> <buffer> <Leader>r :call <SID>show_message()<cr>:call <SID>compose_reply(0)<CR>
   noremap <silent> <buffer> <Leader>a :call <SID>show_message()<cr>:call <SID>compose_reply(1)<CR>
