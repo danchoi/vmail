@@ -525,7 +525,7 @@ function! s:cancel_compose()
   close!
 endfunction
 
-function! s:deliver_message()
+function! s:send_message()
   write
   let mail = join(getline(1,'$'), "\n")
   exec ":!" . s:deliver_command . " < ComposeMessage" 
@@ -561,8 +561,8 @@ func! s:save_attachments()
   end
   let s:savedir = input("save attachments to directory: ", s:savedir)
   let command = s:save_attachments_command . s:savedir
-  echo command
   let res = system(command)
+  echo res
 endfunc
 " -------------------------------------------------------------------------------- 
 
@@ -629,10 +629,10 @@ func! s:message_list_window_mappings()
 endfunc
 
 func! s:compose_window_mappings()
-  " NOTE deliver_message is a global mapping, so user can load a saved
+  " NOTE send_message is a global mapping, so user can load a saved
   " message from a file and send it
-  nnoremap <silent> <Leader>vd :call <SID>deliver_message()<CR>
-  nnoremap <silent> <buffer> <Leader>vs :call <SID>save_draft()<CR>
+  nnoremap <silent> <Leader>vs :call <SID>send_message()<CR>
+  nnoremap <silent> <buffer> <Leader>vd :call <SID>save_draft()<CR>
   noremap <silent> <buffer> <leader>q :call <SID>cancel_compose()<cr>
   nmap <silent> <buffer> q <leader>q
 endfunc

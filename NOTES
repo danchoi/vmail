@@ -484,14 +484,10 @@ next:
     attached and sent
 - forwarding attachments
   - could be "attach: [uid] attachments to signal"
-- put instructions in message window; put in a top section 
-  - just return readme file, or a vim version of it (vim filetype later)
+- help doc: just return readme file, or a vim version of it (vim filetype later)
 - follow mysql and use -u and -p flags on startup of server?
   - omitting -p flag forces prompt
-  - get rid of config file
 - print all selected messages into file (append)
-  - can pipe through a command line tool, so we don't need to clutter
-    viewer.vim with more mappings and functions
 - ,s s confusion? Star vs search
 - enhance contacts auto fix with more advanced vim script
   - sort contacts by frequency, then take first 10 or so of any match

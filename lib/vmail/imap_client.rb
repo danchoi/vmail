@@ -378,12 +378,7 @@ EOF
     def new_mail_from_input(text)
       require 'mail'
       mail = Mail.new
-      raw_headers, body = *text.split(/\n\s*\n/, 2)
-      # handle attachments
-      if (attachments = body.split(/\n\s*\n/, 2)[0]) =~ /^attach:/
-        # TODO
-        log "attachments: #{YAML::load(attachments).inspect}"
-      end
+      raw_headers, raw_body = *text.split(/\n\s*\n/, 2)
       headers = {}
       raw_headers.split("\n").each do |line|
         key, value = *line.split(/:\s*/, 2)
@@ -397,7 +392,27 @@ EOF
       mail.bcc = headers['bcc'] #&& headers['cc'].split(/,\s+/)
       mail.subject = headers['subject']
       mail.from ||= @username
-      mail.body = body
+      # attachments are added as a snippet of YAML after a blank line
+      # after the headers, and followed by a blank line
+      if (attachments = raw_body.split(/\n\s*\n/, 2)[0]) =~ /^attach(ment|ments)*:/
+        # TODO
+        files = YAML::load(attachments).values.flatten
+        log "attachments: #{files}"
+        files.each do |file|
+          if File.directory?(file)
+            Dir.glob("#{file}/*").each {|f| mail.add_file(f) if File.size?(f)}
+          else
+            mail.add_file(file) if File.size?(file)
+          end
+        end
+        mail.text_part do
+          body raw_body.split(/\n\s*\n/, 2)[1]
+        end
+      else
+        mail.text_part do
+          body raw_body
+        end
+      end
       mail
     end
 
@@ -409,11 +424,13 @@ EOF
       return unless dir && @current_mail
       attachments = @current_mail.attachments
       `mkdir -p #{dir}`
-      attachments.each do |x|
+      saved = attachments.map do |x|
         path = File.join(dir, x.filename)
         log "saving #{path}"
         File.open(path, 'wb') {|f| f.puts x.decoded}
+        path
       end
+      "saved:\n" + saved.map {|x| "- #{x}"}.join("\n")
     end
 
     def open_html_part(uid)
