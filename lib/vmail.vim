@@ -3,8 +3,6 @@ let s:query = $VMAIL_QUERY
 
 let s:drb_uri = $DRB_URI
 
-let s:compose_message_file = 'vmail-compose-message.txt'
-
 let s:client_script = "vmail_client " . s:drb_uri . " "
 let s:set_window_width_command = s:client_script . "window_width= "
 let s:list_mailboxes_command = s:client_script . "list_mailboxes "
@@ -490,8 +488,9 @@ func! s:open_compose_window(command)
   redraw
   echo a:command
   let res = system(a:command)
-  exec "split " . s:compose_message_file
-  setlocal buftype=file
+  split compose-message
+  setlocal buftype=nofile
+  setlocal noswapfile
   setlocal modifiable
   wincmd p 
   close!
@@ -531,16 +530,21 @@ endfunction
 
 function! s:send_message()
   let mail = join(getline(1,'$'), "\n")
-  exec ":!" . s:deliver_command . " < " . s:compose_message_file
+  echo "sending message"
+  call system(s:deliver_command, mail)
+  redraw
+  echo "sent! press q to go back to message list"
 endfunction
 
 func! s:save_draft()
   let mail = join(getline(1,'$'), "\n")
-  exec ":!" . s:save_draft_command . " < " . s:compose_message_file
+  echo "saving draft"
+  call system(s:save_draft_command, mail)
   redraw
   call s:focus_list_window()
   wincmd p
   close!
+  echo "draft saved"
 endfunc
 
 " -------------------------------------------------------------------------------- 
