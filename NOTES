@@ -498,7 +498,7 @@ next:
 - ,s s confusion? Star vs search
 - sort contacts by frequency, then take first 10 or so of any match
   group
-  - enhance contacts auto fix with more advance vim script
+  - enhance contacts auto fix with more advanced vim script
 - mvim - window width not correct
 - mvim - starred messages not syntax colored
 

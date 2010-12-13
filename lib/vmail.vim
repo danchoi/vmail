@@ -613,10 +613,12 @@ func! s:message_list_window_mappings()
 endfunc
 
 func! s:compose_window_mappings()
-  noremap <silent> <buffer> <Leader>d :call <SID>deliver_message()<CR>
-  nnoremap <silent> <buffer> q :call <SID>cancel_compose()<cr>
-  nnoremap <silent> <buffer> <leader>q :call <SID>cancel_compose()<cr>
-  nnoremap <silent> <buffer> <Leader>s :call <SID>save_draft()<CR>
+  " NOTE deliver_message is a global mapping, so user can load a saved
+  " message from a file and send it
+  nnoremap <silent> <Leader>vd :call <SID>deliver_message()<CR>
+  nnoremap <silent> <buffer> <Leader>vs :call <SID>save_draft()<CR>
+  noremap <silent> <buffer> <leader>q :call <SID>cancel_compose()<cr>
+  nmap <silent> <buffer> q <leader>q
 endfunc
 
 call s:create_list_window()
