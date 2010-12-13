@@ -522,7 +522,7 @@ EOF
 
     def self.daemon(config)
       $gmail = self.start(config)
-      puts DRb.start_service(nil, $gmail)
+      DRb.start_service(nil, $gmail)
       uri = DRb.uri
       puts "starting gmail service at #{uri}"
       uri

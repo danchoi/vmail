@@ -483,8 +483,11 @@ DONE
 - extract and append text of all selected messages into file (append)
 - ,s s confusion? Star vs search
   - ,* is star now
+- archive function (shortcut for move to all mail)
+- remember searches?
 
 next:
+- put move to> and copy to>
 - tweak contacts list script (plus instruction for how to use)
 - help doc: just return readme file, or a vim version of it (vim filetype later)
 - follow mysql and use -u and -p flags on startup of server?
@@ -496,8 +499,6 @@ later:
 - mvim redrawstatus line bug
   http://vim.1045645.n5.nabble.com/Redrawing-bug-in-MacVim-Command-T-since-commit-ba44868-td3248742.html
 - allow one daemon, multiple clients (select mailbox?)
-- remember searches?
-- archive function (shortcut for move to all mail)
 - crate to package app as a OS X app?
   http://rubyconf2008.confreaks.com/crate-packaging-your-ruby-application.html
   - need to bundle macvim

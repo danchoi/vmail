@@ -324,18 +324,21 @@ function! s:move_to_mailbox(copy) range
   setlocal noswapfile
   setlocal modifiable
   resize 1
+  let prompt = "select mailbox to " . (a:copy ? 'copy' : 'move') . " to: "
+  call setline(1, prompt)
+  normal $
   inoremap <silent> <buffer> <cr> <Esc>:call <SID>complete_move_to_mailbox()<CR> 
   inoremap <silent> <buffer> <esc> <Esc>:q<cr>
   set completefunc=CompleteMoveMailbox
   " c-p clears the line
   let s:firstline = a:firstline 
   let s:lastline = a:lastline
-  call feedkeys("i\<c-x>\<c-u>\<c-p>", 't')
+  call feedkeys("a\<c-x>\<c-u>\<c-p>", 't')
   " save these in script scope to delete the lines when move completes
 endfunction
 
 function! s:complete_move_to_mailbox()
-  let mailbox = getline(line('.'))
+  let mailbox = get(split(getline(line('.')), ": "), 1)
   close
   " check if mailbox is a real mailbox
   if (index(s:mailboxes, mailbox) == -1) 
@@ -365,7 +368,12 @@ function! CompleteMoveMailbox(findstart, base)
   endif
   if a:findstart
     " locate the start of the word
-    return 0
+    let line = getline('.')
+    let start = col('.') - 1
+    while start > 0 && line[start - 1] =~ '\a'
+      let start -= 1
+    endwhile
+    return start
   else
     " find months matching with "a:base"
     let res = []
@@ -390,25 +398,6 @@ function! s:get_mailbox_list()
   let s:mailboxes = split(res, "\n", '')
 endfunction
 
-function! CompleteMailbox(findstart, base)
-  if !exists("s:mailboxes")
-    call s:get_mailbox_list()
-  endif
-  if a:findstart
-    " locate the start of the word
-    return 0
-  else
-    " find mailboxes matching with "a:base"
-    let res = []
-    for m in s:mailboxes
-      if m =~ '^' . a:base
-        call add(res, m)
-      endif
-    endfor
-    return res
-  endif
-endfun
-
 " -------------------------------------------------------------------------------
 " select mailbox
 
@@ -425,11 +414,37 @@ function! s:mailbox_window()
   inoremap <silent> <buffer> <esc> <Esc>:q<cr>
   set completefunc=CompleteMailbox
   " c-p clears the line
-  call feedkeys("i\<c-x>\<c-u>\<c-p>", 't')
+  call setline(1, "select mailbox to switch to: ")
+  normal $
+  call feedkeys("a\<c-x>\<c-u>\<c-p>", 't')
 endfunction
 
+function! CompleteMailbox(findstart, base)
+  if !exists("s:mailboxes")
+    call s:get_mailbox_list()
+  endif
+  if a:findstart
+    " locate the start of the word
+    let line = getline('.')
+    let start = col('.') - 1
+    while start > 0 && line[start - 1] =~ '\a'
+      let start -= 1
+    endwhile
+    return start
+  else
+    " find mailboxes matching with "a:base"
+    let res = []
+    for m in s:mailboxes
+      if m =~ '^' . a:base
+        call add(res, m)
+      endif
+    endfor
+    return res
+  endif
+endfun
+
 function! s:select_mailbox()
-  let mailbox = getline(line('.'))
+  let mailbox = get(split(getline(line('.')), ": "), 1)
   close
   call s:focus_message_window()
   close
