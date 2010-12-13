@@ -235,6 +235,7 @@ module Vmail
       mail = Mail.new(res) 
       @current_uid = uid
       @current_mail = mail # used later to show raw message or extract attachments if any
+      log "saving current mail with parts: #{@current_mail.parts.inspect}"
       formatter = Vmail::MessageFormatter.new(mail)
       part = formatter.find_text_part
       out = formatter.process_body 
@@ -418,10 +419,16 @@ EOF
 
     def open_html_part(uid)
       log "open_html_part #{uid}"
-      fetch_data = @imap.uid_fetch(uid.to_i, ["RFC822"])[0]
-      mail = Mail.new(fetch_data.attr['RFC822'])
-      multipart = mail.parts.detect {|part| part.multipart?}
-      html_part = (multipart || mail).parts.detect {|part| part.header["Content-Type"].to_s =~ /text\/html/}
+      log @current_mail.parts.inspect
+      multipart = @current_mail.parts.detect {|part| part.multipart?}
+      html_part = if multipart 
+                    multipart.parts.detect {|part| part.header["Content-Type"].to_s =~ /text\/html/}
+                  elsif ! @current_mail.parts.empty?
+                    @current_mail.parts.detect {|part| part.header["Content-Type"].to_s =~ /text\/html/}
+                  else
+                    @current_mail.body
+                  end
+      return if html_part.nil?
       outfile = 'htmlpart.html'
       File.open(outfile, 'w') {|f| f.puts(html_part.decoded)}
       # client should handle opening the html file
