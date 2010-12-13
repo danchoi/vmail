@@ -488,16 +488,12 @@ DONE
 - perma-delete from Trash
 - put move to> and copy to> prompts
 - create mailboxes if they don't exist on move or copy
-
-next:
 - tweak contacts list script (plus instruction for how to use)
-  - share class that finds vmailrc and prompts for password, and parses
-    opts
 - .vmailrc is a yaml file, first in current dir, then check home, can
   also use command line opts
+
+NEXT:
 - help doc: just return readme file, or a vim version of it (vim filetype later)
-- follow mysql and use -u and -p flags on startup of server?
-  - omitting -p flag forces prompt
 - note dependence on lynx in README
 - fix tests
 
@@ -532,7 +528,9 @@ later:
 - enhance contacts auto fix with more advanced vim script
 - create contacts database on first startup
 
-
+won't do
+- follow mysql and use -u and -p flags on startup of server?
+  - omitting -p flag forces prompt
 
 ------------------------------------------------------------------------
 
