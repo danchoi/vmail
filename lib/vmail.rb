@@ -15,9 +15,14 @@ module Vmail
     logfile = (vim == 'mvim') ? STDERR : 'vmail.log'
     config.merge! 'logfile' => logfile
 
-    puts "starting vmail imap client with config #{config}"
+    puts "starting vmail imap client for #{config['username']}"
 
-    drb_uri = Vmail::ImapClient.daemon config
+    drb_uri = begin 
+                Vmail::ImapClient.daemon config
+              rescue 
+                puts "Failure:", $!
+                exit(1)
+              end
 
     server = DRbObject.new_with_uri drb_uri
 

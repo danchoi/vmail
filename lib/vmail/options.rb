@@ -19,7 +19,8 @@ module Vmail
 
     def parse(argv)
       OptionParser.new do |opts|
-        opts.banner = "Usage:  vmail [ options ] [ limit ] [ imap search query ]"
+        opts.banner = "Usage:  vmail [ options ] [ limit ] [ imap search query ]\n\n" + 
+          CONFIG_FILE_INSTRUCTIONS
         opts.on("-c", "--config path", String, "Path to config file") do |config_file|
           @config_file = config_file
         end
@@ -37,9 +38,22 @@ module Vmail
 
 Missing config file! 
 
+#{CONFIG_FILE_INSTRUCTIONS}
+EOF
+            exit(1)
+          end
+        rescue OptionParser::ParseError => e
+          STDERR.puts e.message, "\n", opts
+        end
+      end
+    end
+  end
+
+  CONFIG_FILE_INSTRUCTIONS = <<EOF
 To run vmail, you need to create a yaml file called .vmailrc and save it
 either in the current directory (the directory from which you launch
-vmail) or in your home directory. 
+vmail) or in your home directory. If you want to name this file
+something else or put it in an non-standard location, use the -c option.
 
 This file should look like this, except using your settings:
 
@@ -57,13 +71,6 @@ You can omit the password key-value pair if you'd rather not have the password
 on disk. In that case, you'll prompted for the password each time you
 start vmail.
 
+
 EOF
-            exit(1)
-          end
-        rescue OptionParser::ParseError => e
-          STDERR.puts e.message, "\n", opts
-        end
-      end
-    end
-  end
 end
