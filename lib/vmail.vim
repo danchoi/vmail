@@ -97,6 +97,7 @@ function! s:show_message()
   redraw
 endfunction
 
+" from message window
 function! s:show_next_message()
   call s:focus_list_window()
   execute "normal j"
@@ -105,11 +106,25 @@ endfunction
 
 function! s:show_previous_message()
   call s:focus_list_window()
- execute "normal k" 
- if line('.') != 1
-   execute "normal \<cr>"
- endif
+  execute "normal k" 
+  if line('.') != 1
+    execute "normal \<cr>"
+  endif
 endfunction
+
+" from message list window
+function! s:show_next_message_in_list()
+  if line('.') != line('$')
+    call feedkeys("j\<cr>\<cr>") 
+  endif
+endfunction
+
+function! s:show_previous_message_in_list()
+  if line('.') != 1
+    call feedkeys("k\<cr>\<cr>") 
+  endif
+endfunction
+
 
 " invoked from withint message window
 function! s:show_raw()
@@ -608,7 +623,8 @@ func! s:message_list_window_mappings()
   noremap <silent> <buffer> <Leader>c :call <SID>compose_message()<CR>
   noremap <silent> <buffer> <Leader>r :call <SID>show_message()<cr>:call <SID>compose_reply(0)<CR>
   noremap <silent> <buffer> <Leader>a :call <SID>show_message()<cr>:call <SID>compose_reply(1)<CR>
-  " go fullscreen
+  noremap <silent> <buffer> <c-j> :call <SID>show_next_message_in_list()<cr>
+  noremap <silent> <buffer> <c-k> :call <SID>show_previous_message_in_list()<cr>
   nnoremap <silent> <buffer> <Space> :call <SID>toggle_fullscreen()<cr>
 endfunc
 
