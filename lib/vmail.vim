@@ -347,10 +347,12 @@ function! s:complete_move_to_mailbox()
     let command = s:move_to_command . s:uid_set . ' ' . shellescape(mailbox)
   endif
   redraw
-  echo "moving uids ". s:uid_set . " to mailbox '" . mailbox "'" 
+  echo "moving uids ". s:uid_set . " to mailbox " . mailbox 
   let res = system(command)
   setlocal modifiable
-  exec s:firstline . "," . s:lastline . "delete"
+  if !s:copy_to_mailbox
+    exec s:firstline . "," . s:lastline . "delete"
+  end
   setlocal nomodifiable
   write
   redraw
@@ -651,11 +653,11 @@ func! s:message_window_mappings()
   noremap <silent> <buffer> <Leader>c :call <SID>compose_message()<CR>
   noremap <silent> <buffer> <Leader>h :call <SID>open_html_part()<CR><cr>
   nnoremap <silent> <buffer> q :close<cr>
-  nnoremap <silent> <buffer> <leader>d  :call <SID>focus_list_window()<cr>:call <SID>delete_messages("Deleted")<cr>
+  nnoremap <silent> <buffer> <leader>#  :call <SID>focus_list_window()<cr>:call <SID>delete_messages("Deleted")<cr>
   nnoremap <silent> <buffer> <leader>*  :call <SID>focus_list_window()<cr>:call <SID>toggle_star()<cr>
   nnoremap <silent> <buffer> <Leader>b :call <SID>focus_list_window()<cr>call <SID>move_to_mailbox(0)<CR>
   nnoremap <silent> <buffer> <Leader>B :call <SID>focus_list_window()<cr>call <SID>move_to_mailbox(1)<CR>
-  nnoremap <silent> <buffer> <leader>#  :call <SID>focus_list_window()<cr>:call <SID>archive_messages()<cr>
+  nnoremap <silent> <buffer> <leader>e  :call <SID>focus_list_window()<cr>:call <SID>archive_messages()<cr>
   nnoremap <silent> <buffer> u :call <SID>focus_list_window()<cr>:call <SID>update()<CR>
   nnoremap <silent> <buffer> <Leader>m :call <SID>focus_list_window()<cr>:call <SID>mailbox_window()<CR>
   nnoremap <silent> <buffer> <Leader>A :call <SID>save_attachments()<cr>
@@ -667,9 +669,9 @@ func! s:message_list_window_mappings()
   noremap <silent> <buffer> <cr> :call <SID>show_message()<CR>
   noremap <silent> <buffer> q :qal!<cr>
   noremap <silent> <buffer> <leader>* :call <SID>toggle_star()<CR>
-  noremap <silent> <buffer> <leader>d :call <SID>delete_messages("Deleted")<CR>
+  noremap <silent> <buffer> <leader># :call <SID>delete_messages("Deleted")<CR>
   noremap <silent> <buffer> <leader>! :call <SID>delete_messages("[Gmail]/Spam")<CR>
-  noremap <silent> <buffer> <leader># :call <SID>archive_messages()<CR>
+  noremap <silent> <buffer> <leader>e :call <SID>archive_messages()<CR>
   "open a link browser (os x)
   "autocmd CursorMoved <buffer> call <SID>show_message()
   noremap <silent> <buffer> <leader>vp :call <SID>append_messages_to_file()<CR>

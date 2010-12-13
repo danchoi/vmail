@@ -301,7 +301,7 @@ EOF
       if MailboxAliases[mailbox]
         mailbox = MailboxAliases[mailbox]
       end
-      log "move_to #{uid_set.inspect} #{mailbox}"
+      log "copy #{uid_set.inspect} #{mailbox}"
       if uid_set.is_a?(String)
         uid_set = uid_set.split(",").map(&:to_i)
       end
