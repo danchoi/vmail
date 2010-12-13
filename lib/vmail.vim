@@ -184,11 +184,11 @@ function! s:update()
     redraw
     call cursor(line + 1, 0)
     normal z.
-    echom "you have " . num . " new message" . (num == 1 ? '' : 's') . "!" 
-    redrawstatus
+    redraw
+    echo "you have " . num . " new message" . (num == 1 ? '' : 's') . "!" 
   else
-    echom "no new messages"
-    redrawstatus
+    redraw
+    echo "no new messages"
   endif
 endfunction
 
