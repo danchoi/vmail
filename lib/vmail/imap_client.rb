@@ -26,7 +26,8 @@ module Vmail
       @mailbox = nil
       @logger = Logger.new(config['logfile'] || STDERR)
       @logger.level = Logger::DEBUG
-      @current_message = nil
+      @current_mail = nil
+      @current_uid = nil
     end
 
     def open
@@ -223,21 +224,22 @@ module Vmail
     end
 
     def lookup(uid, raw=false, forwarded=false)
-      if raw
-        return @current_message.to_s
-      end
-      log "fetching #{uid.inspect}"
+      uid = uid.to_i
+      return @current_mail.to_s if raw 
+      return @current_message if uid == @current_uid
+      log "fetching #{uid.inspect}" 
       fetch_data = reconnect_if_necessary do 
-        @imap.uid_fetch(uid.to_i, ["FLAGS", "RFC822", "RFC822.SIZE"])[0]
+        @imap.uid_fetch(uid, ["FLAGS", "RFC822", "RFC822.SIZE"])[0]
       end
       res = fetch_data.attr["RFC822"]
-      mail = Mail.new(res)
-      @current_message = mail # used later to show raw message or extract attachments if any
+      mail = Mail.new(res) 
+      @current_uid = uid
+      @current_mail = mail # used later to show raw message or extract attachments if any
       formatter = Vmail::MessageFormatter.new(mail)
       part = formatter.find_text_part
       out = formatter.process_body 
       size = fetch_data.attr["RFC822.SIZE"]
-      message = <<-EOF
+      @current_message = <<-EOF
 #{@mailbox} #{uid} #{number_to_human_size size} #{forwarded ? nil : format_parts_info(formatter.list_parts)}
 ----------------------------------------
 #{format_headers(formatter.extract_headers)}
@@ -401,11 +403,11 @@ EOF
 
     def save_attachments(dir)
       log "save_attachments #{dir}"
-      if !@current_message
+      if !@current_mail
         log "missing a current message"
       end
-      return unless dir && @current_message
-      attachments = @current_message.attachments
+      return unless dir && @current_mail
+      attachments = @current_mail.attachments
       `mkdir -p #{dir}`
       attachments.each do |x|
         path = File.join(dir, x.filename)
