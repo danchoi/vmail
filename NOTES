@@ -471,6 +471,8 @@ DONE
 - need to put mailbox and search on status line from startup
 - c-j c-k to go to prev/next message
 - turn search into an input() style prompt
+- remember and show last search
+- map u update from message window      
 
 next:
 - vim resize event
@@ -484,7 +486,6 @@ next:
 - put instructions in message window; put in a top section 
   - help /readme
   - help document should just be readme? or part of it.
-- map u update from message window      
 - follow mysql and use -u and -p flags on startup of server?
   - omitting -p flag forces prompt
   - get rid of config file
@@ -501,7 +502,6 @@ next:
   - enhance contacts auto fix with more advance vim script
 - mvim - window width not correct
 - mvim - starred messages not syntax colored
-- remember and show last search
 
 later:
 - mvim redrawstatus line bug
