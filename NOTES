@@ -501,6 +501,11 @@ next:
   group
   - enhance contacts auto fix with more advance vim script
 - mvim = allow using through VMAIL_EDITOR env variable
+- mvim - window width not correct
+- mvim - starred messages not syntax colored
+- need to put mailbox and search on status line from startup
+- c-j c-k to go to prev/next message
+- cmdheight 
 
 later:
 - allow one daemon, multiple clients (select mailbox?)

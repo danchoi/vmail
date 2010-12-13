@@ -224,7 +224,7 @@ function! s:toggle_star() range
   setlocal nomodifiable
   " if more than 2 lines change, vim forces us to look at a message.
   " dismiss it.
-  if len(split(res, "\n")) > 2
+  if len(split(res, "\n")) > &cmdheight
     call feedkeys("\<cr>")
   endif
 endfunction
@@ -249,7 +249,7 @@ func! s:delete_messages(flag) range
   setlocal nomodifiable
   " if more than 2 lines change, vim forces us to look at a message.
   " dismiss it.
-  if len(uids) > 2
+  if len(uids) > &cmdheight
     call feedkeys("\<cr>")
   endif
 endfunc
