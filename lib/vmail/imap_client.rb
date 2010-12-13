@@ -128,7 +128,7 @@ module Vmail
       subject = Mail::Encodings.unquote_and_convert_to(subject, 'utf-8')
       flags = format_flags(flags)
       first_col_width = max_uid.to_s.length 
-      mid_width = @width - (first_col_width + 38)
+      mid_width = @width - (first_col_width + 33)
       address_col_width = (mid_width * 0.3).ceil
       subject_col_width = (mid_width * 0.7).floor
       [uid.to_s.col(first_col_width), 

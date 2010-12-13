@@ -4,7 +4,7 @@ let s:query = $VMAIL_QUERY
 let s:drb_uri = $DRB_URI
 
 let s:client_script = "vmail_client " . s:drb_uri . " "
-let s:window_width_command = s:client_script . "window_width= "
+let s:set_window_width_command = s:client_script . "window_width= "
 let s:list_mailboxes_command = s:client_script . "list_mailboxes "
 let s:show_message_command = s:client_script . "show_message "
 let s:update_command = s:client_script . "update"
@@ -625,10 +625,13 @@ call s:create_message_window()
 
 call s:focus_list_window() " to go list window
 
+" send window width
+call system(s:set_window_width_command . winwidth(1))
+
+autocmd VimResized <buffer> call system(s:set_window_width_command . winwidth(1))
+
 call system(s:select_mailbox_command . shellescape(s:mailbox))
 call s:do_search()
 
-" send window width
-" system(s:set_window_width_command . winwidth(1))
 
 
