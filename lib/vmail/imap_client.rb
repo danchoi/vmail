@@ -349,7 +349,6 @@ EOF
       "\n\n#@signature"
     end
 
-    # TODO, forward with attachments 
     def forward_template(uid)
       original_body = show_message(uid, false, true)
       new_message_template + 
@@ -397,7 +396,7 @@ EOF
       if (attachments = raw_body.split(/\n\s*\n/, 2)[0]) =~ /^attach(ment|ments)*:/
         # TODO
         files = YAML::load(attachments).values.flatten
-        log "attachments: #{files}"
+        log "attach: #{files}"
         files.each do |file|
           if File.directory?(file)
             Dir.glob("#{file}/*").each {|f| mail.add_file(f) if File.size?(f)}
