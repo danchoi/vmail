@@ -1,15 +1,20 @@
 require 'optparse'
+require 'highline/import'
+
 module Vmail
   class Options
     attr_accessor :config
     def initialize(argv)
-      config_file_locations = ['.vmailrc', '~/.vmailrc']
+      config_file_locations = ['.vmailrc', "#{ENV['HOME']}/.vmailrc"]
       @config_file = config_file_locations.detect do |path|
-        File.exist?(path)
+        File.exists?(File.expand_path(path))
       end
       @config = {}
       parse argv
       @config = YAML::load(File.read(@config_file))
+      if @config['password'].nil?
+        @config['password'] = ask("Enter gmail password (won't be visible & won't be persisted):") {|q| q.echo = false}
+      end
     end
 
     def parse(argv)
@@ -22,17 +27,42 @@ module Vmail
           puts opts
           exit
         end
-      end
-      begin
-        opts.parse!(argv)
-        if File.exist?(@config_file)
-          puts "Using config file #{@config_file}"
-        else
-          puts "Missing config file!"
-          exit(1)
+
+        begin
+          opts.parse!(argv)
+          if @config_file && File.exists?(@config_file)
+            puts "Using config file #{@config_file}"
+          else
+            puts <<EOF
+
+Missing config file! 
+
+To run vmail, you need to create a yaml file called .vmailrc and save it
+either in the current directory (the directory from which you launch
+vmail) or in your home directory. 
+
+This file should look like this, except using your settings:
+
+username: dhchoi@gmail.com
+password: password
+name: Daniel Choi
+signature: |
+  --
+  Sent via vmail. https://github.com/danchoi/vmail
+
+This file should be formatted according to the rules of YAML.
+http://www.yaml.org/spec/1.2/spec.html
+
+You can omit the password key-value pair if you'd rather not have the password
+on disk. In that case, you'll prompted for the password each time you
+start vmail.
+
+EOF
+            exit(1)
+          end
+        rescue OptionParser::ParseError => e
+          STDERR.puts e.message, "\n", opts
         end
-      rescue OptionParser::ParserError => e
-        STDERR.puts e.message, "\n", opts
       end
     end
   end
