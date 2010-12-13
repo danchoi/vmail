@@ -1,6 +1,5 @@
-let s:mailbox = ''
-let s:num_msgs = 0 " number of messages
-let s:query = ''
+let s:mailbox = $VMAIL_MAILBOX
+let s:query = $VMAIL_QUERY
 
 let s:drb_uri = $DRB_URI
 
@@ -26,7 +25,7 @@ let s:message_bufname = "MessageWindow"
 let s:list_bufname = "MessageListWindow"
 
 function! VmailStatusLine()
-  return "%<%f\ " . s:mailbox . "%r%=%-14.(%l,%c%V%)\ %P"
+  return "%<%f\ " . s:mailbox . " " . s:query . "%r%=%-14.(%l,%c%V%)\ %P"
 endfunction
 
 function! s:create_list_window()
@@ -425,9 +424,18 @@ function! s:do_search()
   " close message window if open
   call s:focus_message_window()
   close
-  " TODO should we really hardcode 100 as the quantity?
-  let command = s:search_command . "100 " . shellescape(s:query)
-  echo command
+  " if query doesn't start with a number, set max returned to 100
+  let limit = 100
+  let imap_query = s:query
+  if match(s:query, '^\d') == 0
+    let query_chunks = split(s:query, '\s')
+    let limit = remove(query_chunks, 0)
+    let imap_query = join(query_chunks, ' ')
+  end
+  let s:query = limit . ' ' . imap_query
+  let command = s:search_command . limit . ' ' . shellescape(imap_query)
+  redrawstatus
+  echo "running query on " . s:mailbox . ": " . s:query . ". please wait..."
   call s:focus_list_window()  
   let res = system(command)
   setlocal modifiable
@@ -625,4 +633,5 @@ normal z.
 
 " send window width
 " system(s:set_window_width_command . winwidth(1))
+
 

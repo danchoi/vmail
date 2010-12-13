@@ -19,11 +19,12 @@ module Vmail
     # TODO this is useless if we're using mvim
     server.window_width = `stty size`.strip.split(' ')[1]
 
-    server.select_mailbox ARGV.shift || 'INBOX'
+    mailbox = ARGV.shift || 'INBOX'
+    server.select_mailbox mailbox
 
     query = ARGV.empty? ? [100, 'ALL'] : nil
     
-    buffer_file = "vmail-buffer.txt"
+    buffer_file = "vmailbuffer.txt"
     puts "using buffer file: #{buffer_file}"
     File.open(buffer_file, "w") do |file|
       file.puts server.search(*query)
@@ -34,7 +35,7 @@ module Vmail
     #  - mvim; move viewer.vim to new file
 
     vimscript = File.expand_path("../vmail.vim", __FILE__)
-    vim_command = "DRB_URI='#{drb_uri}' #{vim} -S #{vimscript} #{buffer_file}"
+    vim_command = "DRB_URI='#{drb_uri}' VMAIL_MAILBOX=#{String.shellescape(mailbox)} VMAIL_QUERY=#{String.shellescape(query.join(' '))} #{vim} -S #{vimscript} #{buffer_file}"
     puts vim_command
     system(vim_command)
 

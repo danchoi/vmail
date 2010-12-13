@@ -504,6 +504,8 @@ next:
 - mvim fix echo messages
 - mvim redrawstatus line bug
   http://vim.1045645.n5.nabble.com/Redrawing-bug-in-MacVim-Command-T-since-commit-ba44868-td3248742.html
+- show total messages from a search, showing 100
+- remember and show last search
 
 later:
 - allow one daemon, multiple clients (select mailbox?)
