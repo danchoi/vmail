@@ -258,6 +258,27 @@ func! s:delete_messages(flag) range
   endif
 endfunc
 
+func! s:archive_messages() range
+  let lnum = a:firstline
+  let n = 0
+  let uids = []
+  while lnum <= a:lastline
+    let line =  getline(lnum)
+    let message_uid = matchstr(line, '^\d\+')
+    call add(uids, message_uid)
+    let lnum = lnum + 1
+  endwhile
+  let uid_set = join(uids, ",")
+  let command = s:move_to_command . uid_set . ' ' . shellescape("[Gmail]/All Mail")
+  echo "archiving message" . (len(uids) == 1 ? '' : 's')
+  let res = system(command)
+  setlocal modifiable
+  exec a:firstline . "," . a:lastline . "delete"
+  setlocal nomodifiable
+  write
+endfunc
+
+
 " --------------------------------------------------------------------------------
 " append text bodies of a set of messages to a file
 func! s:append_messages_to_file() range
@@ -326,6 +347,7 @@ function! s:complete_move_to_mailbox()
   setlocal modifiable
   exec s:firstline . "," . s:lastline . "delete"
   setlocal nomodifiable
+  write
 endfunction
 
 function! CompleteMoveMailbox(findstart, base)
@@ -421,6 +443,7 @@ function! s:select_mailbox()
   execute "normal Gdd\<c-y>" 
   normal G
   setlocal nomodifiable
+  write
   normal z.
 endfunction
 
@@ -460,6 +483,7 @@ function! s:do_search()
   execute "normal Gdd\<c-y>" 
   normal z.
   setlocal nomodifiable
+  write
 endfunction
 
 function! s:more_messages()
@@ -622,6 +646,7 @@ func! s:message_window_mappings()
   nnoremap <silent> <buffer> q :close<cr>
   nnoremap <silent> <buffer> <leader>d  :call <SID>focus_list_window()<cr>:call <SID>delete_messages("Deleted")<cr>
   nnoremap <silent> <buffer> <leader>*  :call <SID>focus_list_window()<cr>:call <SID>toggle_star()<cr>
+  nnoremap <silent> <buffer> <leader>#  :call <SID>focus_list_window()<cr>:call <SID>archive_messages()<cr>
   nnoremap <silent> <buffer> u :call <SID>focus_list_window()<cr>:call <SID>update()<CR>
   nnoremap <silent> <buffer> <Leader>m :call <SID>focus_list_window()<cr>:call <SID>mailbox_window()<CR>
   nnoremap <silent> <buffer> <Leader>A :call <SID>save_attachments()<cr>
@@ -635,6 +660,7 @@ func! s:message_list_window_mappings()
   noremap <silent> <buffer> <leader>* :call <SID>toggle_star()<CR>
   noremap <silent> <buffer> <leader>d :call <SID>delete_messages("Deleted")<CR>
   noremap <silent> <buffer> <leader>! :call <SID>delete_messages("[Gmail]/Spam")<CR>
+  noremap <silent> <buffer> <leader># :call <SID>archive_messages()<CR>
   "open a link browser (os x)
   "autocmd CursorMoved <buffer> call <SID>show_message()
   noremap <silent> <buffer> <leader>vp :call <SID>append_messages_to_file()<CR>
