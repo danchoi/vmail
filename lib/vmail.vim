@@ -180,6 +180,7 @@ function! s:update()
     let line = line('$')
     $put =res
     setlocal nomodifiable
+    write
     let num = len(split(res, '\n', ''))
     redraw
     call cursor(line + 1, 0)
@@ -221,6 +222,7 @@ function! s:toggle_star() range
   exec a:firstline . "," . a:lastline . "delete"
   exec (a:firstline - 1). "put =res"
   setlocal nomodifiable
+  write
   " if more than 2 lines change, vim forces us to look at a message.
   " dismiss it.
   if len(split(res, "\n")) > 2
@@ -246,6 +248,7 @@ func! s:delete_messages(flag) range
   setlocal modifiable
   exec a:firstline . "," . a:lastline . "delete"
   setlocal nomodifiable
+  write
   " if more than 2 lines change, vim forces us to look at a message.
   " dismiss it.
   if len(uids) > 2
@@ -465,7 +468,6 @@ function! s:compose_reply(all)
 endfunction
 
 function! s:compose_message()
-  write
   let command = s:new_message_template_command
   call s:open_compose_window(command)
   " position cursor after to:
@@ -475,7 +477,6 @@ function! s:compose_message()
 endfunction
 
 function! s:compose_forward()
-  write
   let command = s:forward_template_command . s:current_uid
   call s:open_compose_window(command)
   call search("^to:")
@@ -487,10 +488,11 @@ func! s:open_compose_window(command)
   redraw
   echo a:command
   let res = system(a:command)
-  split ComposeMessage
-  wincmd p 
-  close
+  split vmailcompose.txt
+  setlocal buftype=file
   setlocal modifiable
+  wincmd p 
+  close!
   1,$delete
   put! =res
   normal 1G
@@ -526,7 +528,6 @@ function! s:cancel_compose()
 endfunction
 
 function! s:send_message()
-  write
   let mail = join(getline(1,'$'), "\n")
   exec ":!" . s:deliver_command . " < ComposeMessage" 
   redraw
@@ -536,7 +537,6 @@ function! s:send_message()
 endfunction
 
 func! s:save_draft()
-  write
   let mail = join(getline(1,'$'), "\n")
   exec ":!" . s:save_draft_command . " < ComposeMessage" 
   redraw
