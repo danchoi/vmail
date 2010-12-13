@@ -467,9 +467,9 @@ DONE
   window. redirect streams from daemon to a log file
 - package gem
   - vmail (client)
+- use cmdheight variable
 
 next:
-- mvim fix echo messages
 - vim resize event
 - sending an attachment
   - can specify a directory, then all the items in the directory get
@@ -505,7 +505,9 @@ next:
 - mvim - starred messages not syntax colored
 - need to put mailbox and search on status line from startup
 - c-j c-k to go to prev/next message
-- cmdheight 
+- mvim fix echo messages
+- mvim redrawstatus line bug
+  http://vim.1045645.n5.nabble.com/Redrawing-bug-in-MacVim-Command-T-since-commit-ba44868-td3248742.html
 
 later:
 - allow one daemon, multiple clients (select mailbox?)

@@ -102,7 +102,8 @@ function! s:show_message()
   let selected_uid = matchstr(line, '^\d\+')
   let s:current_uid = selected_uid
   let command = s:show_message_command . s:current_uid
-  echo "Loading message. Please wait..."
+  echom "Loading message. Please wait..."
+  redrawstatus
   let res = system(command)
   call s:focus_message_window()
   setlocal modifiable
@@ -178,7 +179,7 @@ endfunction
 " gets new messages since last update
 function! s:update()
   let command = s:update_command
-  echo command
+  echo "checking for new messages. please wait..."
   let res = system(command)
   if match(res, '^\d\+') != -1
     setlocal modifiable
@@ -189,11 +190,11 @@ function! s:update()
     redraw
     call cursor(line + 1, 0)
     normal z.
-    redraw
-    echo "you have " . num . " new message" . (num == 1 ? '' : 's') . "!" 
+    echom "you have " . num . " new message" . (num == 1 ? '' : 's') . "!" 
+    redrawstatus
   else
-    redraw
-    echo "no new messages"
+    echom "no new messages"
+    redrawstatus
   endif
 endfunction
 
@@ -215,7 +216,11 @@ function! s:toggle_star() range
     let action = " -FLAGS"
   endif
   let command = s:flag_command . uid_set . action . " Flagged" 
-  echo command
+  if len(uids) == 1
+    echom "toggling flag on message " . uid_set
+  else
+    echom "toggling flags on messages " . join(uid_set, ",")
+  endif
   " toggle [*] on lines
   let res = system(command)
   setlocal modifiable
@@ -224,7 +229,7 @@ function! s:toggle_star() range
   setlocal nomodifiable
   " if more than 2 lines change, vim forces us to look at a message.
   " dismiss it.
-  if len(split(res, "\n")) > &cmdheight
+  if len(split(res, "\n")) > 2
     call feedkeys("\<cr>")
   endif
 endfunction
@@ -249,7 +254,7 @@ func! s:delete_messages(flag) range
   setlocal nomodifiable
   " if more than 2 lines change, vim forces us to look at a message.
   " dismiss it.
-  if len(uids) > &cmdheight
+  if len(uids) > 2
     call feedkeys("\<cr>")
   endif
 endfunc
