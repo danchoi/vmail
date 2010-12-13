@@ -15,11 +15,13 @@ module Vmail
     drb_uri = Vmail::ImapClient.daemon config
 
     server = DRbObject.new_with_uri drb_uri
+
+    # TODO this is useless if we're using mvim
     server.window_width = `stty size`.strip.split(' ')[1]
+
     server.select_mailbox ARGV.shift || 'INBOX'
 
     query = ARGV.empty? ? [100, 'ALL'] : nil
-
     
     buffer_file = "vmail-buffer.txt"
     puts "using buffer file: #{buffer_file}"

@@ -467,7 +467,6 @@ DONE
   window. redirect streams from daemon to a log file
 - package gem
   - vmail (client)
-- use cmdheight variable
 
 next:
 - vim resize event
@@ -478,8 +477,9 @@ next:
   - could be "attach: [uid] attachments to signal"
 - use :wq to send compose message, not ,d (easy to confuse with delete!)
   - close! to cancel
-  - fewer mappings to remember this way
 - put instructions in message window; put in a top section 
+  - help /readme
+  - help document should just be readme? or part of it.
 - map u update from message window      
 - follow mysql and use -u and -p flags on startup of server?
   - omitting -p flag forces prompt
@@ -488,14 +488,10 @@ next:
   - tempname()
   - system() allows a parameters that is written to tmp file and passed
     to stdin
-- help document should just be readme? or part of it.
 - print all selected messages into file (append)
   - can pipe through a command line tool, so we don't need to clutter
     viewer.vim with more mappings and functions
 - put "move to >" and "select mailbox >" in command window
-- make compat with ruby 1.8
-- help
-- readme
 - ,s s confusion? Star vs search
 - sort contacts by frequency, then take first 10 or so of any match
   group
