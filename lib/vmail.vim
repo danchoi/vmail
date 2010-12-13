@@ -581,7 +581,7 @@ function! CompleteContact(findstart, base)
     return start
   else
     " find contacts matching with "a:base"
-    let matches = system("grep -i " . shellescape(a:base) . " contacts.txt")
+    let matches = system("grep -i " . shellescape(a:base) . " " . $VMAIL_CONTACTS_FILE)
     return split(matches, "\n")
   endif
 endfun

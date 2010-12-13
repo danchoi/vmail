@@ -1,27 +1,30 @@
 require 'net/imap'
 
+module Vmail
 class ContactsExtractor
-  def initialize(config)
-    @username, @password = config['login'], config['password']
+  def initialize(username, password)
+    puts "logging as #{username}"
+    @username, @password = username, password
   end
 
   def open
     @imap = Net::IMAP.new('imap.gmail.com', 993, true, nil, false)
-    @imap.login(@username, @password)
+    puts @imap.login(@username, @password)
     yield @imap
     @imap.close 
     @imap.disconnect
   end
 
-  def extract!
-    @contacts = []
+  def extract(limit = 500)
     open do |imap|
       mailbox = '[Gmail]/Sent Mail'
       STDERR.puts "selecting #{mailbox}"
       imap.select(mailbox)
-      STDERR.puts "fetching last 500 sent messages"
+      STDERR.puts "fetching last #{limit} sent messages"
       all_uids = imap.uid_search('ALL')
-      limit = [500, all_uids.size].max
+      STDERR.puts "total messages: #{all_uids.size}"
+      limit = [limit, all_uids.size].min
+      STDERR.puts "extracting addresses from #{limit} of them"
       uids = all_uids[-limit ,limit]
       imap.uid_fetch(uids, ["FLAGS", "ENVELOPE"]).each do |fetch_data|
         recipients = fetch_data.attr["ENVELOPE"].to
@@ -30,21 +33,15 @@ class ContactsExtractor
           email = [address_struct.mailbox, address_struct.host].join('@') 
           name = address_struct.name
           if name 
-            puts "#{name} <#{email}>"
+            name = Mail::Encodings.unquote_and_convert_to(name, 'utf-8') 
+            yield "#{name} <#{email}>"
           else
-            puts email
+            yield email
           end
         end
       end
     end
-    @contacts
   end
 end
-
-if __FILE__ == $0
-  require 'yaml'
-  config = YAML::load(File.read(File.expand_path("../../config/gmail.yml", __FILE__)))
-  extractor = ContactsExtractor.new(config)
-  # pipe through uniq | sort 
-  extractor.extract!
 end
+
