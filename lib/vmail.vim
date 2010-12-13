@@ -342,12 +342,15 @@ function! s:complete_move_to_mailbox()
     return
   endif
   let command = s:move_to_command . s:uid_set . ' ' . shellescape(mailbox)
-  echo command
+  redraw
+  echo "moving uids ". s:uid_set . " to mailbox '" . mailbox "'" 
   let res = system(command)
   setlocal modifiable
   exec s:firstline . "," . s:lastline . "delete"
   setlocal nomodifiable
   write
+  redraw
+  echo "done"
 endfunction
 
 function! CompleteMoveMailbox(findstart, base)
@@ -646,6 +649,7 @@ func! s:message_window_mappings()
   nnoremap <silent> <buffer> q :close<cr>
   nnoremap <silent> <buffer> <leader>d  :call <SID>focus_list_window()<cr>:call <SID>delete_messages("Deleted")<cr>
   nnoremap <silent> <buffer> <leader>*  :call <SID>focus_list_window()<cr>:call <SID>toggle_star()<cr>
+  nnoremap <silent> <buffer> <Leader>b :call <SID>focus_list_window()<cr>call <SID>move_to_mailbox()<CR>
   nnoremap <silent> <buffer> <leader>#  :call <SID>focus_list_window()<cr>:call <SID>archive_messages()<cr>
   nnoremap <silent> <buffer> u :call <SID>focus_list_window()<cr>:call <SID>update()<CR>
   nnoremap <silent> <buffer> <Leader>m :call <SID>focus_list_window()<cr>:call <SID>mailbox_window()<CR>
@@ -667,7 +671,7 @@ func! s:message_list_window_mappings()
   noremap <silent> <buffer> u :call <SID>update()<CR>
   noremap <silent> <buffer> <Leader>s :call <SID>search_query()<CR>
   noremap <silent> <buffer> <Leader>m :call <SID>mailbox_window()<CR>
-  noremap <silent> <buffer> <Leader>v :call <SID>move_to_mailbox()<CR>
+  noremap <silent> <buffer> <Leader>b :call <SID>move_to_mailbox()<CR>
   noremap <silent> <buffer> <Leader>c :call <SID>compose_message()<CR>
   noremap <silent> <buffer> <Leader>r :call <SID>show_message()<cr>:call <SID>compose_reply(0)<CR>
   noremap <silent> <buffer> <Leader>a :call <SID>show_message()<cr>:call <SID>compose_reply(1)<CR>
