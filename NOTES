@@ -491,9 +491,9 @@ DONE
 - tweak contacts list script (plus instruction for how to use)
 - .vmailrc is a yaml file, first in current dir, then check home, can
   also use command line opts
+- fix tests
 
 NEXT:
-- fix tests
 - help doc: just return readme file, or a vim version of it (vim filetype later)
 - note dependence on lynx in README
 

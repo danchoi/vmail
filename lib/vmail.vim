@@ -560,6 +560,7 @@ func! s:open_compose_window(command)
   close!
   1,$delete
   put! =res
+  call feedkeys("\<cr>")
   normal 1G
   call s:compose_window_mappings()
   set completefunc=CompleteContact
