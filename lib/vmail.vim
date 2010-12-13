@@ -46,6 +46,7 @@ function! s:create_list_window()
   " we need the bufnr to find the window later
   let s:listbufnr = bufnr('%')
   setlocal statusline=%!VmailStatusLine()
+  call s:message_list_window_mappings()
 endfunction
 
 " the message display buffer window
@@ -55,29 +56,7 @@ function! s:create_message_window()
   " setlocal noswapfile
   " setlocal nobuflisted
   let s:message_window_bufnr = bufnr('%')
-  " message window bindings
-  noremap <silent> <buffer> <cr> :call <SID>focus_list_window()<CR> 
-  noremap <silent> <buffer> <Leader>r :call <SID>compose_reply(0)<CR>
-  noremap <silent> <buffer> <Leader>a :call <SID>compose_reply(1)<CR>
-  noremap <silent> <buffer> <Leader>R :call <SID>show_raw()<cr>
-  noremap <silent> <buffer> <Leader>R :call <SID>show_raw()<cr>
-  noremap <silent> <buffer> <Leader>f :call <SID>compose_forward()<CR><cr>
-  " TODO improve this
-  noremap <silent> <buffer> <Leader>o yE :!open '<C-R>"'<CR><CR>
-  noremap <silent> <buffer> <c-j> :call <SID>show_next_message()<CR> 
-  noremap <silent> <buffer> <c-k> :call <SID>show_previous_message()<CR> 
-  nmap <silent> <buffer> <leader>j <c-j>
-  nmap <silent> <buffer> <leader>k <c-k>
-  noremap <silent> <buffer> <Leader>c :call <SID>compose_message()<CR>
-  noremap <silent> <buffer> <Leader>h :call <SID>open_html_part()<CR><cr>
-  nnoremap <silent> <buffer> q :close<cr>
-  nnoremap <silent> <buffer> <leader>d  :call <SID>focus_list_window()<cr>:call <SID>delete_messages("Deleted")<cr>
-  nnoremap <silent> <buffer> s  :call <SID>focus_list_window()<cr>:call <SID>toggle_star()<cr>
-  nnoremap <silent> <buffer> u :call <SID>focus_list_window()<cr>:call <SID>update()<CR>
-  nnoremap <silent> <buffer> <Leader>m :call <SID>focus_list_window()<cr>:call <SID>mailbox_window()<CR>
-  nnoremap <silent> <buffer> <Leader>A :call <SID>save_attachments()<cr>
-  " go fullscreen
-  nnoremap <silent> <buffer> <Space> :call <SID>toggle_fullscreen()<cr>
+  call s:message_window_mappings()
   close
 endfunction
 
@@ -496,10 +475,7 @@ func! s:open_compose_window(command)
   1,$delete
   put! =res
   normal 1G
-  noremap <silent> <buffer> <Leader>d :call <SID>deliver_message()<CR>
-  nnoremap <silent> <buffer> q :call <SID>cancel_compose()<cr>
-  nnoremap <silent> <buffer> <leader>q :call <SID>cancel_compose()<cr>
-  nnoremap <silent> <buffer> <Leader>s :call <SID>save_draft()<CR>
+  call s:compose_window_mappings()
   set completefunc=CompleteContact
 endfunc
 
@@ -580,44 +556,71 @@ func! s:toggle_fullscreen()
   endif
 endfunc
 
+
+" -------------------------------------------------------------------------------- 
+" MAPPINGS
+
+func! s:message_window_mappings()
+  noremap <silent> <buffer> <cr> :call <SID>focus_list_window()<CR> 
+  noremap <silent> <buffer> <Leader>r :call <SID>compose_reply(0)<CR>
+  noremap <silent> <buffer> <Leader>a :call <SID>compose_reply(1)<CR>
+  noremap <silent> <buffer> <Leader>R :call <SID>show_raw()<cr>
+  noremap <silent> <buffer> <Leader>R :call <SID>show_raw()<cr>
+  noremap <silent> <buffer> <Leader>f :call <SID>compose_forward()<CR><cr>
+  " TODO improve this
+  noremap <silent> <buffer> <Leader>o yE :!open '<C-R>"'<CR><CR>
+  noremap <silent> <buffer> <c-j> :call <SID>show_next_message()<CR> 
+  noremap <silent> <buffer> <c-k> :call <SID>show_previous_message()<CR> 
+  nmap <silent> <buffer> <leader>j <c-j>
+  nmap <silent> <buffer> <leader>k <c-k>
+  noremap <silent> <buffer> <Leader>c :call <SID>compose_message()<CR>
+  noremap <silent> <buffer> <Leader>h :call <SID>open_html_part()<CR><cr>
+  nnoremap <silent> <buffer> q :close<cr>
+  nnoremap <silent> <buffer> <leader>d  :call <SID>focus_list_window()<cr>:call <SID>delete_messages("Deleted")<cr>
+  nnoremap <silent> <buffer> s  :call <SID>focus_list_window()<cr>:call <SID>toggle_star()<cr>
+  nnoremap <silent> <buffer> u :call <SID>focus_list_window()<cr>:call <SID>update()<CR>
+  nnoremap <silent> <buffer> <Leader>m :call <SID>focus_list_window()<cr>:call <SID>mailbox_window()<CR>
+  nnoremap <silent> <buffer> <Leader>A :call <SID>save_attachments()<cr>
+  " go fullscreen
+  nnoremap <silent> <buffer> <Space> :call <SID>toggle_fullscreen()<cr>
+endfunc
+
+func! s:message_list_window_mappings()
+  noremap <silent> <buffer> <cr> :call <SID>show_message()<CR>
+  noremap <silent> <buffer> q :qal!<cr>
+  noremap <silent> <buffer> s :call <SID>toggle_star()<CR>
+  noremap <silent> <buffer> <leader>d :call <SID>delete_messages("Deleted")<CR>
+  " TODO the range doesn't quite work as expect, need <line1> <line2>
+  " trying to make user defined commands that work from : prompt
+  " command -buffer -range VmailDelete call s:toggle_star("Deleted")
+  " command -buffer -range VmailStar call s:toggle_star("Flagged")
+  noremap <silent> <buffer> <leader>! :call <SID>delete_messages("[Gmail]/Spam")<CR>
+  "open a link browser (os x)
+  "autocmd CursorMoved <buffer> call <SID>show_message()
+  noremap <silent> <buffer> u :call <SID>update()<CR>
+  noremap <silent> <buffer> <Leader>s :call <SID>do_search()<CR>
+  noremap <silent> <buffer> <Leader>m :call <SID>mailbox_window()<CR>
+  noremap <silent> <buffer> <Leader>v :call <SID>move_to_mailbox()<CR>
+  noremap <silent> <buffer> <Leader>c :call <SID>compose_message()<CR>
+  noremap <silent> <buffer> <Leader>r :call <SID>show_message()<cr>:call <SID>compose_reply(0)<CR>
+  noremap <silent> <buffer> <Leader>a :call <SID>show_message()<cr>:call <SID>compose_reply(1)<CR>
+  " go fullscreen
+  nnoremap <silent> <buffer> <Space> :call <SID>toggle_fullscreen()<cr>
+endfunc
+
+func! s:compose_window_mappings()
+  noremap <silent> <buffer> <Leader>d :call <SID>deliver_message()<CR>
+  nnoremap <silent> <buffer> q :call <SID>cancel_compose()<cr>
+  nnoremap <silent> <buffer> <leader>q :call <SID>cancel_compose()<cr>
+  nnoremap <silent> <buffer> <Leader>s :call <SID>save_draft()<CR>
+endfunc
+
 call s:create_list_window()
 
 call s:create_message_window()
 
 call s:focus_list_window() " to go list window
-" this are list window bindings
 
-noremap <silent> <buffer> <cr> :call <SID>show_message()<CR>
-noremap <silent> <buffer> q :qal!<cr>
-
-noremap <silent> <buffer> s :call <SID>toggle_star()<CR>
-noremap <silent> <buffer> <leader>d :call <SID>delete_messages("Deleted")<CR>
-
-" TODO the range doesn't quite work as expect, need <line1> <line2>
-" trying to make user defined commands that work from : prompt
-" command -buffer -range VmailDelete call s:toggle_star("Deleted")
-" command -buffer -range VmailStar call s:toggle_star("Flagged")
-
-noremap <silent> <buffer> <leader>! :call <SID>delete_messages("[Gmail]/Spam")<CR>
-
-"open a link browser (os x)
-"autocmd CursorMoved <buffer> call <SID>show_message()
-
-noremap <silent> <buffer> u :call <SID>update()<CR>
-noremap <silent> <buffer> <Leader>s :call <SID>do_search()<CR>
-noremap <silent> <buffer> <Leader>m :call <SID>mailbox_window()<CR>
-noremap <silent> <buffer> <Leader>v :call <SID>move_to_mailbox()<CR>
-
-noremap <silent> <buffer> <Leader>c :call <SID>compose_message()<CR>
-
-noremap <silent> <buffer> <Leader>r :call <SID>show_message()<cr>:call <SID>compose_reply(0)<CR>
-noremap <silent> <buffer> <Leader>a :call <SID>show_message()<cr>:call <SID>compose_reply(1)<CR>
-
-" go fullscreen
-nnoremap <silent> <buffer> <Space> :call <SID>toggle_fullscreen()<cr>
-
-" press double return in list view to go full screen on a message; then
-" return? again to restore the list view
 
 " go to bottom and center cursorline
 normal G
