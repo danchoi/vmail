@@ -481,8 +481,6 @@ next:
     attached and sent
 - forwarding attachments
   - could be "attach: [uid] attachments to signal"
-- use :wq to send compose message, not ,d (easy to confuse with delete!)
-  - close! to cancel
 - put instructions in message window; put in a top section 
   - help /readme
   - help document should just be readme? or part of it.

@@ -57,8 +57,6 @@ function! s:create_message_window()
   let s:message_window_bufnr = bufnr('%')
   " message window bindings
   noremap <silent> <buffer> <cr> :call <SID>focus_list_window()<CR> 
-  noremap <silent> <buffer> <Leader>q :call <SID>focus_list_window()<CR> 
-  noremap <silent> <buffer> q <Leader>q
   noremap <silent> <buffer> <Leader>r :call <SID>compose_reply(0)<CR>
   noremap <silent> <buffer> <Leader>a :call <SID>compose_reply(1)<CR>
   noremap <silent> <buffer> <Leader>R :call <SID>show_raw()<cr>
@@ -70,7 +68,6 @@ function! s:create_message_window()
   noremap <silent> <buffer> <c-k> :call <SID>show_previous_message()<CR> 
   nmap <silent> <buffer> <leader>j <c-j>
   nmap <silent> <buffer> <leader>k <c-k>
-
   noremap <silent> <buffer> <Leader>c :call <SID>compose_message()<CR>
   noremap <silent> <buffer> <Leader>h :call <SID>open_html_part()<CR><cr>
   nnoremap <silent> <buffer> q :close<cr>
