@@ -291,6 +291,7 @@ EOF
       if MailboxAliases[mailbox]
         mailbox = MailboxAliases[mailbox]
       end
+      create_if_necessary mailbox
       log "move_to #{uid_set.inspect} #{mailbox}"
       if uid_set.is_a?(String)
         uid_set = uid_set.split(",").map(&:to_i)
@@ -303,11 +304,20 @@ EOF
       if MailboxAliases[mailbox]
         mailbox = MailboxAliases[mailbox]
       end
+      create_if_necessary mailbox
       log "copy #{uid_set.inspect} #{mailbox}"
       if uid_set.is_a?(String)
         uid_set = uid_set.split(",").map(&:to_i)
       end
       log @imap.uid_copy(uid_set, mailbox)
+    end
+
+    def create_if_necessary(mailbox)
+      if !@mailboxes.include?(mailbox) 
+        log "creating mailbox #{mailbox}"
+        log @imap.create(mailbox) 
+        @mailboxes = nil # force reload next fime list_mailboxes() called
+      end
     end
 
     def append_to_file(file, uid_set)

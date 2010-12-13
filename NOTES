@@ -489,6 +489,7 @@ DONE
 - put move to> and copy to> prompts
 
 next:
+- create mailboxes if they don't exist
 - tweak contacts list script (plus instruction for how to use)
 - help doc: just return readme file, or a vim version of it (vim filetype later)
 - follow mysql and use -u and -p flags on startup of server?

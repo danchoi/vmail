@@ -343,10 +343,6 @@ endfunction
 function! s:complete_move_to_mailbox()
   let mailbox = get(split(getline(line('.')), ": "), 1)
   close
-  " check if mailbox is a real mailbox
-  if (index(s:mailboxes, mailbox) == -1) 
-    return
-  endif
   if s:copy_to_mailbox 
     let command = s:copy_to_command . s:uid_set . ' ' . shellescape(mailbox)
   else
@@ -405,9 +401,7 @@ endfunction
 " select mailbox
 
 function! s:mailbox_window()
-  if !exists("s:mailboxes")
-    call s:get_mailbox_list()
-  endif
+  call s:get_mailbox_list()
   topleft split MailboxSelect
   setlocal buftype=nofile
   setlocal noswapfile
@@ -451,10 +445,6 @@ function! s:select_mailbox()
   close
   call s:focus_message_window()
   close
-  " check if mailbox is a real mailbox
-  if (index(s:mailboxes, mailbox) == -1) 
-    return
-  endif
   let s:mailbox = mailbox
   let command = s:select_mailbox_command . shellescape(s:mailbox)
   call system(command)
