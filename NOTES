@@ -475,6 +475,7 @@ DONE
 - map u update from message window      
 - do search after loading vim or mvim and send size first
 - vim resize event
+- mvim - window width corrected
 
 next:
 - sending an attachment
@@ -483,25 +484,19 @@ next:
 - forwarding attachments
   - could be "attach: [uid] attachments to signal"
 - put instructions in message window; put in a top section 
-  - help /readme
-  - help document should just be readme? or part of it.
+  - just return readme file, or a vim version of it (vim filetype later)
 - follow mysql and use -u and -p flags on startup of server?
   - omitting -p flag forces prompt
   - get rid of config file
-- use temp files
-  - tempname()
-  - system() allows a parameters that is written to tmp file and passed
-    to stdin
 - print all selected messages into file (append)
   - can pipe through a command line tool, so we don't need to clutter
     viewer.vim with more mappings and functions
 - ,s s confusion? Star vs search
 - enhance contacts auto fix with more advanced vim script
   - sort contacts by frequency, then take first 10 or so of any match
-- mvim - window width not correct
-- mvim - starred messages not syntax colored
 
 later:
+- mvim - starred messages not syntax colored
 - mvim redrawstatus line bug
   http://vim.1045645.n5.nabble.com/Redrawing-bug-in-MacVim-Command-T-since-commit-ba44868-td3248742.html
 - allow one daemon, multiple clients (select mailbox?)
@@ -523,6 +518,10 @@ later:
 - sometimes update doesn't work - bug
 - show total messages from a search, showing 100
 - message threads
+- use temp files
+  - tempname()
+  - system() allows a parameters that is written to tmp file and passed
+    to stdin
 
 
 
