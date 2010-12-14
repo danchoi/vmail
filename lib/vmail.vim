@@ -260,7 +260,6 @@ func! s:delete_messages(flag) range
   close
   redraw
   echo len(uids) . " message" . (len(uids) == 1 ? '' : 's') . " marked " . a:flag
-
 endfunc
 
 func! s:archive_messages() range
