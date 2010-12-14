@@ -98,34 +98,33 @@ EOF
   INSTRUCTIONS = <<-EOF
 CONFIGURATION FILE
 
-To run vmail, you need to create a yaml file called .vmailrc and save it
-either in the current directory (the directory from which you launch
-vmail) or in your home directory. 
+To run vmail, create a yaml file called .vmailrc and save it either in the
+current directory (the directory from which you launch vmail) or in your home
+directory. 
 
-This file should look like this, except using your settings:
+This file should look something like this. Substitute your own values.
 
 username: dhchoi@gmail.com
 password: password
 name: Daniel Choi
 signature: |
   --
-  Sent via vmail. https://github.com/danchoi/vmail
+  Sent via vmail. http://danielchoi.com/software/vmail.html
 
-This file should be formatted according to the rules of YAML.
+This file should be formatted in YAML syntax.
 http://www.yaml.org/spec/1.2/spec.html
 
 You can omit the password key-value pair if you'd rather not have the password
-on disk. In that case, you'll prompted for the password each time you
+saved in the file. In that case, you'll prompted for the password each time you
 start vmail.
 
 CONTACTS AUTOCOMPLETION
 
-Vmail uses vim autocompletion to help you auto-complete email addresses.
+vmail uses vim autocompletion to help you auto-complete email addresses.
 To use this feature, generate a vim-contacts.txt file in the current or
-home directory. This is a simple list of all the email addresses.
+home directory. This is a simple list of your email contacts.
 Invoking vmail with the -g option generates this file for you by
-collecting all the recipients and cc's from your last 500 or so sent
-emails. 
-
+collecting all the recipients and cc's from your last 500 sent
+emails. You can adjust this number by using -g with a number argument. 
   EOF
 end

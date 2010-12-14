@@ -3,10 +3,10 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
       <title>Vmail</title>
-      <link href="stylesheets-vmail/reset.css?1292335140" media="screen" rel="stylesheet" type="text/css" />
-      <link href="stylesheets-vmail/960.css?1292335140" media="screen" rel="stylesheet" type="text/css" />
-      <link href="stylesheets-vmail/text.css?1292335140" media="screen" rel="stylesheet" type="text/css" />
-      <link href="stylesheets-vmail/site.css?1292335140" media="screen" rel="stylesheet" type="text/css" />
+      <link href="stylesheets-vmail/reset.css?1292337765" media="screen" rel="stylesheet" type="text/css" />
+      <link href="stylesheets-vmail/960.css?1292337765" media="screen" rel="stylesheet" type="text/css" />
+      <link href="stylesheets-vmail/text.css?1292337765" media="screen" rel="stylesheet" type="text/css" />
+      <link href="stylesheets-vmail/site.css?1292337765" media="screen" rel="stylesheet" type="text/css" />
       <script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script><script type="text/javascript">stLight.options({publisher:'8579b5f8-0860-4ea6-9ef1-6f0f58359a99'});</script>
       <script type="text/javascript" src="lightbox2/js/prototype.js"></script>
       <script type="text/javascript" src="lightbox2/js/scriptaculous.js?load=effects,builder"></script>
@@ -17,13 +17,65 @@
   <body>
     <div class="container_12">
       <div class="grid_10 alpha" id="main">
-        <h1>Vmail</h1>
+        <h1>vmail</h1>
 
-<p>Vmail is a Vim interface to Gmail. Here are some screenshots:</p>
+<p>vmail is a Vim interface to Gmail. Here are some screenshots:</p>
 
 <p><a href="images-vmail/1.png" rel="lightbox[screens]"><img src="images-vmail/1.png" /></a>
 <a href="images-vmail/autocomplete.png" rel="lightbox[screens]"><img src="images-vmail/autocomplete.png" /></a>
 <a href="images-vmail/attach.png" rel="lightbox[screens]"><img src="images-vmail/attach.png" /></a></p>
+
+<p>Why vmail? Because every minute you spend fiddling around in a web browser is a
+minute you're not experiencing the Zen of using a real text editor and staying
+close to the Unix command line.</p>
+
+<h2>Prerequisites</h2>
+
+<ul>
+<li>a relatively recent version of Vim (vmail is developed against Vim 7.3)</li>
+<li>Ruby (vmail is developed using Ruby 1.9.2)</li>
+<li>RubyGems (if Ruby version is older than 1.9)</li>
+<li>the <code>lynx</code> text-based web browser is required to view HTML mail parts in vmail</li>
+</ul>
+
+
+<p>The current version of vmail assumes a Unix environment. I'll try to make later versions accommodate Windows.</p>
+
+<h2>Installation</h2>
+
+<pre><code>gem install vmail
+</code></pre>
+
+<h2>Configuration File</h2>
+
+<p>To run vmail, create a yaml file called .vmailrc and save it either in the
+current directory (the directory from which you launch vmail) or in your home
+directory.</p>
+
+<p>This file should look something like this. Substitute your own values.</p>
+
+<pre><code>username: dhchoi@gmail.com
+password: password
+name: Daniel Choi
+signature: |
+  --
+  Sent via vmail. http://danielchoi.com/software/vmail.html
+</code></pre>
+
+<p>This file should be formatted in <a href="http://www.yaml.org/spec/1.2/spec.html">YAML syntax</a>.</p>
+
+<p>You can omit the password key-value pair if you'd rather not have the password
+saved in the file. In that case, you'll prompted for the password each time you
+start vmail.</p>
+
+<h1>Contacts Autocompletion</h1>
+
+<p>vmail uses vim autocompletion to help you auto-complete email addresses.
+To use this feature, generate a vim-contacts.txt file in the current or
+home directory. This is a simple list of your email contacts.
+Invoking vmail with the -g option generates this file for you by
+collecting all the recipients and cc's from your last 500 sent
+emails. You can adjust this number by using -g with a number argument.</p>
 
       </div>
       <div class="grid_2 omega">
