@@ -59,7 +59,6 @@ EOF
             sleep 0.5
           else
             puts "Using contacts file #{@contacts_file}"
-
           end
 
           @config = YAML::load(File.read(@config_file))
