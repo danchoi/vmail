@@ -104,6 +104,8 @@ Put the cursor on this line and press ENTER to load more of these messages.
 
 Unread messages are marked with a `[+]` symbol.
 
+To view the raw RFC822 version of a message, type `,R` while viewing the message.
+
 ## Starring, deleting, archiving
 
 To star a message, put the cursor on it and type `,*` or alternatively `s`.
@@ -138,5 +140,58 @@ message list, and type `,b`. You'll be prompted to select the target mailbox.
 
 To copy a message to another mailbox, put the cursor on the message in the
 message list, and type `,B`. You'll be prompted to select the target mailbox.
+
+## Composing messages
+
+To start writing a new a email message, type `,c`. 
+
+To reply to a message, type `,r`. 
+
+To reply-all to a message, type `,a`. 
+
+To forward a message, type `,f`.
+
+All these command open a message composition window. At the top, you will see 
+mail headers like this:
+
+    from: Daniel Choi <dhchoi@gmail.com>
+    to:
+    subject:
+
+The `from:` field will be pre-filled from your `.vmailrc` configuration.
+You're responsible for fill in the `to:` and the `subject:` fields.
+You can add a `cc:` and `bcc:` field if you want.
+
+
+When you fill in the recipient addresses, you can use vim autocompletion if you
+generated a `vmail-contacts.txt` file. Start typing a name or email address, then press `C-x C-u` 
+to invoke autocompletion.
+
+Tip: Use `C-y` instead of ENTER to select a match. This will prevent you from
+creating a blank line in the middle of the email headers.
+
+Make sure your email addresses are separated by commas and that they all
+ultimately appear on the **same, unbroken line** for each field. Vim will
+probably break long lines automatically as you type them, so for now (pending a
+future enhancement), you'll have to rejoin the lines if breaks get inserted.
+
+After you fill in the headers, write your message.  Make sure there is a
+blank line between the headers and the body of your message.
+
+When you're done writing, send the message by typing `,vs` in normal mode.
+
+You can save the message as a draft in your draft mailbox by typing `,vd` in
+normal mode.
+
+At any point, you can quit the composition window by typing `q` in normal mode.
+
+
+## Attachments
+
+The current version of vmail can handle attachments to a certain extent.
+
+When you're viewing a message with attachments, you'll see something like this
+at the top of the message window:
+
 
 

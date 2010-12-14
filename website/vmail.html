@@ -3,10 +3,10 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
       <title>Vmail</title>
-      <link href="stylesheets-vmail/reset.css?1292342357" media="screen" rel="stylesheet" type="text/css" />
-      <link href="stylesheets-vmail/960.css?1292342357" media="screen" rel="stylesheet" type="text/css" />
-      <link href="stylesheets-vmail/text.css?1292342357" media="screen" rel="stylesheet" type="text/css" />
-      <link href="stylesheets-vmail/site.css?1292342357" media="screen" rel="stylesheet" type="text/css" />
+      <link href="stylesheets-vmail/reset.css?1292343080" media="screen" rel="stylesheet" type="text/css" />
+      <link href="stylesheets-vmail/960.css?1292343080" media="screen" rel="stylesheet" type="text/css" />
+      <link href="stylesheets-vmail/text.css?1292343080" media="screen" rel="stylesheet" type="text/css" />
+      <link href="stylesheets-vmail/site.css?1292343080" media="screen" rel="stylesheet" type="text/css" />
       <script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script><script type="text/javascript">stLight.options({publisher:'8579b5f8-0860-4ea6-9ef1-6f0f58359a99'});</script>
       <script type="text/javascript" src="lightbox2/js/prototype.js"></script>
       <script type="text/javascript" src="lightbox2/js/scriptaculous.js?load=effects,builder"></script>
@@ -168,6 +168,48 @@ message list, and type <code>,b</code>. You'll be prompted to select the target 
 
 <p>To copy a message to another mailbox, put the cursor on the message in the
 message list, and type <code>,B</code>. You'll be prompted to select the target mailbox.</p>
+
+<h2>Composing messages</h2>
+
+<p>To start writing a new a email message, type <code>,c</code>.</p>
+
+<p>To reply to a message, type <code>,r</code>.</p>
+
+<p>To reply-all to a message, type <code>,a</code>.</p>
+
+<p>To forward a message, type <code>,f</code>.</p>
+
+<p>All these command open a message composition window. At the top, you will see
+mail headers like this:</p>
+
+<pre><code>from: Daniel Choi &lt;dhchoi@gmail.com&gt;
+to:
+subject:
+</code></pre>
+
+<p>The <code>from:</code> field will be pre-filled from your <code>.vmailrc</code> configuration.
+You're responsible for fill in the <code>to:</code> and the <code>subject:</code> fields.
+You can add a <code>cc:</code> and <code>bcc:</code> field if you want.</p>
+
+<p>Please make sure there is a blank line between the headers and the rest of your
+message.</p>
+
+<p>When you fill in the recipient addresses, you can use vim autocompletion if you
+generated a <code>vmail-contacts.txt</code> file. Start typing a name or email address, then press <code>C-x C-u</code>
+to invoke autocompletion.</p>
+
+<p>Tip: Use <code>C-y</code> instead of ENTER to select a match. This will prevent you from
+creating a blank line in the middle of the email headers.</p>
+
+<p>Make sure your email addresses are separated by commas and that they all
+ultimately appear on the <strong>same, unbroken line</strong> for each field. Vim will
+probably break long lines automatically as you type them, so for now (pending a
+future enhancement), you'll have to rejoin the lines if breaks get inserted.</p>
+
+<h2>Attachments</h2>
+
+<p>The current version of vmail offers some facilities for handling attachments to
+a certain extent. Future versions will do more on this front.</p>
 
       </div>
       <div class="grid_2 omega">
