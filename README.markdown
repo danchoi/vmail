@@ -85,7 +85,7 @@ The first screen vmail shows you is a list of messages. You can view a message
 by moving the cursor line to it and pressing ENTER. This will split the screen
 and show the message content in the bottom pane.
 
-To full-screen the message, press SPACE when the cursor is the message window.
+To full-screen the message, press SPACE when the cursor is in the message window.
 To go back to the split view, press ENTER.
 
 You can full-screen the list window by pressing SPACE while the cursor is in it.
