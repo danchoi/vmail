@@ -90,6 +90,9 @@ To go back to the split view, press ENTER.
 
 You can full-screen the list window by pressing SPACE while the cursor is in it.
 
+In the split view, you can jump between the two panes by just pressing ENTER
+from either window.
+
 vmail loads a certain number messages at a time, starting with the most recent.
 If there are more messages that vmail hasn't loaded, you'll see a line at the
 top of the list that looks something like this:

@@ -10,6 +10,9 @@ Why vmail? Because every minute you spend fumbling around in a web browser is a
 minute you're not experiencing the Zen of using a real text editor and staying
 close to the Unix command line. 
  
+The current version is 0.0.8.
+
+
 ## Prerequisites
 
 * a Gmail account
@@ -93,6 +96,12 @@ To full-screen the message, press SPACE when the cursor is the message window.
 To go back to the split view, press ENTER.
 
 You can full-screen the list window by pressing SPACE while the cursor is in it.
+
+In the split view, you can jump between the two panes by just pressing ENTER
+from either window.
+
+In the split view, you can jump between the two panes by just pressing ENTER
+from either window.
 
 vmail loads a certain number messages at a time, starting with the most recent.
 If there are more messages that vmail hasn't loaded, you'll see a line at the
@@ -350,20 +359,18 @@ My name is Daniel Choi. I am based in Cambridge, MA, and you can email me at dhc
 If you find vmail very useful, feel free to drop me a note to say so. If you have
 a bug to report or a good feature to suggest, please file it on the [issue tracker][1].
 Few things make this software developer happier than knowing that people find my
-software useful and interacting with my users.
+software useful. 
 
 [1]:https://github.com/danchoi/vmail/issues
 
-If you also want to donate money to financially support development time on the
-vmail project, use this PayPal button:
-
+Please do not feel obligated to donate money simply because you use vmail. But if you
+want to donate some money to support the independent software developer behind
+vmail, use this PayPal button:
 
 <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 <input type="hidden" name="cmd" value="_s-xclick">
-<input type="hidden" name="hosted_button_id" value="TZBA7QXCBNE6L">
+<input type="hidden" name="hosted_button_id" value="YC3S3D5RFMJSC">
 <input type="image" src="https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
 <img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">
 </form>
-
-
 
