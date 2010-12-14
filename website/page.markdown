@@ -2,20 +2,21 @@
 
 vmail is a Vim interface to Gmail. Here are some screenshots:
 
-<a href="images-vmail/1.png" rel="lightbox[screens]"><img src="images-vmail/1.png" /></a>
-<a href="images-vmail/autocomplete.png" rel="lightbox[screens]"><img src="images-vmail/autocomplete.png" /></a>
-<a href="images-vmail/attach.png" rel="lightbox[screens]"><img src="images-vmail/attach.png" /></a>
+<a href="images-vmail/1.png" rel="lightbox[screens]"><img src="images-vmail/1-small.png" /></a>
+<a href="images-vmail/autocomplete.png" rel="lightbox[screens]"><img src="images-vmail/autocomplete-small.png" /></a>
+<a href="images-vmail/attach.png" rel="lightbox[screens]"><img src="images-vmail/attach-small.png" /></a>
 
-Why vmail? Because every minute you spend fiddling around in a web browser is a
+Why vmail? Because every minute you spend fumbling around in a web browser is a
 minute you're not experiencing the Zen of using a real text editor and staying
 close to the Unix command line.
  
 ##Prerequisites
 
+* a Gmail account
 * a relatively recent version of Vim (vmail is developed against Vim 7.3)
 * Ruby (vmail is developed using Ruby 1.9.2)
 * RubyGems (if Ruby version is older than 1.9)
-* the `lynx` text-based web browser is required to view HTML mail parts in vmail
+* the `lynx` text-only-mode web browser is required to view HTML mail parts in vmail
 
 The current version of vmail assumes a Unix environment. I'll try to make later versions accommodate Windows.
 
