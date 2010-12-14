@@ -323,7 +323,7 @@ network.
 
 [1]:http://en.wikipedia.org/wiki/Transport_Layer_Security
 
-You can also be sure that the vmail code doesn't do any nefarious with your
+You can also be sure that the vmail code doesn't do anything nefarious with your
 Gmail password because vmail is open source. Anyone can inspect the source code
 of the copy fo vmail that runs on your computer and inspect the code at the
 [github repository][1] and at [rubygems.org][2] (where the vmail gem is
@@ -331,7 +331,6 @@ downloaded from).
 
 [1]:https://github.com/danchoi/vmail
 [2]:https://rubygems.org/gems/vmail
-
 
 ## Bug reports, feature requests
 

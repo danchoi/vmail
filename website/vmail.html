@@ -3,10 +3,10 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
       <title>Vmail</title>
-      <link href="stylesheets-vmail/reset.css?1292348852" media="screen" rel="stylesheet" type="text/css" />
-      <link href="stylesheets-vmail/960.css?1292348852" media="screen" rel="stylesheet" type="text/css" />
-      <link href="stylesheets-vmail/text.css?1292348852" media="screen" rel="stylesheet" type="text/css" />
-      <link href="stylesheets-vmail/site.css?1292348852" media="screen" rel="stylesheet" type="text/css" />
+      <link href="stylesheets-vmail/reset.css?1292349581" media="screen" rel="stylesheet" type="text/css" />
+      <link href="stylesheets-vmail/960.css?1292349581" media="screen" rel="stylesheet" type="text/css" />
+      <link href="stylesheets-vmail/text.css?1292349581" media="screen" rel="stylesheet" type="text/css" />
+      <link href="stylesheets-vmail/site.css?1292349581" media="screen" rel="stylesheet" type="text/css" />
       <script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script><script type="text/javascript">stLight.options({publisher:'8579b5f8-0860-4ea6-9ef1-6f0f58359a99'});</script>
       <script type="text/javascript" src="lightbox2/js/prototype.js"></script>
       <script type="text/javascript" src="lightbox2/js/scriptaculous.js?load=effects,builder"></script>
@@ -25,11 +25,10 @@
 <a href="images-vmail/autocomplete.png" rel="lightbox[screens]"><img src="images-vmail/autocomplete-small.png" /></a>
 <a href="images-vmail/attach.png" rel="lightbox[screens]"><img src="images-vmail/attach-small.png" /></a></p>
 
+
 <p>Why vmail? Because every minute you spend fumbling around in a web browser is a
 minute you're not experiencing the Zen of using a real text editor and staying
 close to the Unix command line.</p>
-
-<p>The current version is 0.0.8.</p>
 
 <h2>Prerequisites</h2>
 
@@ -65,7 +64,7 @@ signature: |
   Sent via vmail. http://danielchoi.com/software/vmail.html
 </code></pre>
 
-<p>This file should be formatted in <a href="https://github.com/danchoi/vmail/issues">YAML syntax</a>.</p>
+<p>This file should be formatted in <a href="https://github.com/danchoi/vmail">YAML syntax</a>.</p>
 
 <p>You can omit the password key-value pair if you'd rather not have the password
 saved in the file. In that case, you'll prompted for the password each time you
@@ -121,9 +120,6 @@ and show the message content in the bottom pane.</p>
 To go back to the split view, press ENTER.</p>
 
 <p>You can full-screen the list window by pressing SPACE while the cursor is in it.</p>
-
-<p>In the split view, you can jump between the two panes by just pressing ENTER
-from either window.</p>
 
 <p>In the split view, you can jump between the two panes by just pressing ENTER
 from either window.</p>
@@ -247,6 +243,8 @@ date: Sun, Dec 12 08:39 AM -05:00 2010
 to: Daniel Choi &lt;dhchoi@gmail.com&gt;
 subject: attachment test
 
+
+
 see attached
 </code></pre>
 
@@ -261,10 +259,14 @@ composition window:</p>
 to: barackobama@whitehouse.gov
 subject: look at this!
 
+
+
 attach:
 - images/middle-east-map.png
 - images/policypaper.pdf
 - docs/
+
+
 
 I think you'll find this stuff interesting.
 </code></pre>
@@ -310,14 +312,22 @@ followed by a valid IMAP search query.</p>
 <pre><code># the default 
 100 all  
 
+
+
 # all messages from thematrix.com domain
 from thematrix.com  
+
+
 
 # all messages from this person
 from barackobama@whitehouse.gov  
 
+
+
 # subject field search; use double quotes to enclose multiple words
 subject "unix philosophy"  
+
+
 
 # example of date range and multiple conditions
 before 30-Nov-2010 since 1-Nov-2010 from prx.org  
@@ -359,23 +369,24 @@ what's going on behind the scenes as you use vmail.</p>
 
 <h2>Is my gmail password secure?</h2>
 
-<p>In short, yes. vmail uses TLS (<a href="https://github.com/danchoi/vmail/issues">Transport Layer Security</a>) to perform IMAP
+<p>In short, yes. vmail uses TLS (<a href="https://github.com/danchoi/vmail">Transport Layer Security</a>) to perform IMAP
 and SMTP authentication. So vmail transmits your password securely over the
 network.</p>
 
-<p>You can also be sure that the vmail code doesn't do any nefarious with your
+<p>You can also be sure that the vmail code doesn't do anything nefarious with your
 Gmail password because vmail is open source. Anyone can inspect the source code
 of the copy fo vmail that runs on your computer and inspect the code at the
-<a href="https://github.com/danchoi/vmail/issues">github repository</a> and at <a href="https://rubygems.org/gems/vmail">rubygems.org</a> (where the vmail gem is
+<a href="https://github.com/danchoi/vmail">github repository</a> and at <a href="https://rubygems.org/gems/vmail">rubygems.org</a> (where the vmail gem is
 downloaded from).</p>
 
 <h2>Bug reports, feature requests</h2>
 
-<p>Please file bug reports and features requests in the <a href="https://github.com/danchoi/vmail/issues">vmail github issue tracker</a>.</p>
+<p>Please file bug reports and features requests in the <a href="https://github.com/danchoi/vmail">vmail github issue tracker</a>.</p>
 
 <h2>How to contact the developer</h2>
 
 <p>My name is Daniel Choi. I am based in Cambridge, MA, and you can email me at dhchoi@gmail.com.</p>
+
 
 <h2>How to support the vmail project</h2>
 
