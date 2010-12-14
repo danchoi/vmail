@@ -252,7 +252,6 @@ module Vmail
       @current_mail = mail # used later to show raw message or extract attachments if any
       log "saving current mail with parts: #{@current_mail.parts.inspect}"
       formatter = Vmail::MessageFormatter.new(mail)
-      part = formatter.find_text_part
       out = formatter.process_body 
       size = fetch_data.attr["RFC822.SIZE"]
       @current_message = <<-EOF

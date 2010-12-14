@@ -1,0 +1,306 @@
+Return-Path: <Joshua.Robin@state.ma.us>
+Received: by 10.213.2.204 with SMTP id 12cs7788ebk; Mon, 13 Dec 2010 17:30:19 -0800
+Received: by 10.229.246.82 with SMTP id lx18mr4342235qcb.0.1292290218892; Mon, 13 Dec 2010 17:30:18 -0800
+Received: from mmp-mitc-1.state.ma.us (mmp-mitc-1.state.ma.us [170.63.135.243]) by mx.google.com with ESMTP id p9si13679281qcg.75.2010.12.13.17.30.18; Mon, 13 Dec 2010 17:30:18 -0800
+Received: from state.ma.us (itd-smtp-dmz.state.ma.us [170.63.135.245]) by mmp-mitc-1.state.ma.us with ESMTP id BT-MMP-56018; Mon, 13 Dec 2010 20:30:17 -0500
+Received: from ([146.243.132.136]) by CF-Appliance-01.state.ma.us with ESMTP id 5503384.856631672; Mon, 13 Dec 2010 20:30:13 -0500
+Received: from 146.243.132.243 ([146.243.132.243]) by
+ EOT-MAIL.MHD.Root.eot.gov ([146.243.132.237]) with Microsoft Exchange Server
+ HTTP-DAV ; Tue, 14 Dec 2010 01:30:37 +0000
+Date: Mon, 13 Dec 2010 20:30:18 -0500
+From: "Robin, Joshua \(DOT\)" <Joshua.Robin@state.ma.us>
+To: "Robin, Joshua (DOT)" <Joshua.Robin@state.ma.us>
+Message-ID: <020a01cb9b2e$829914e7$f384f392@MHD.Root.eot.gov>
+Subject: Fwd: MassDOT Developers Holiday Meeting - Next Tuesday, December 14,
+ 2010
+Mime-Version: 1.0
+Content-Type: multipart/mixed;
+ boundary="----=_NextPart_000_020B_01CB9B2E.829914E7";
+ charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Delivered-To: dhchoi@gmail.com
+Received-SPF: pass (google.com: best guess record for domain of
+ Joshua.Robin@state.ma.us designates 170.63.135.243 as permitted sender)
+ client-ip=170.63.135.243;
+Authentication-Results: mx.google.com; spf=pass (google.com: best guess record
+ for domain of Joshua.Robin@state.ma.us designates 170.63.135.243 as permitted
+ sender) smtp.mail=Joshua.Robin@state.ma.us
+x-mimeole: Produced By Microsoft Exchange V6.5
+Thread-Topic: MassDOT Developers Holiday Meeting - Next Tuesday, December 14,
+ 2010
+Thread-Index: AcubLoKZqc0CaHEvTHevxE1vULW7fw==
+Importance: Normal
+
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_020B_01CB9B2E.829914E7
+Date: Mon, 13 Dec 2010 21:18:42 -0500
+Mime-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="----=_Part_1_1292290225853";
+ charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Content-ID: <4d06d4022052a_23e680983d90322e7@spartan.local.mail>
+
+
+
+------=_Part_1_1292290225853
+Date: Mon, 13 Dec 2010 21:18:42 -0500
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
+Content-ID: <4d06d4021e1fa_23e680983d9032041@spartan.local.mail>
+
+DQpKdXN0IGEgcmVtaW5kZXIgYWJvdXQgVHVlc2RheSdzIGRldmVsb3BlciBt
+ZWV0aW5nLiBEZXRhaWxzIGJlbG93LgoKQmVzdCwKSm9zaAoKSm9zaHVhIEsu
+IFJvYmluCjYxNy41MDYuOTEzNwoKLS0tLS0gRm9yd2FyZGVkIG1lc3NhZ2Ug
+LS0tLS0KRnJvbTogIkpvc2ggZnJvbSBNYXNzRE9UIiA8Sm9zaHVhLlJvYmlu
+QHN0YXRlLm1hLnVzPgpEYXRlOiBNb24sIERlYyAxMywgMjAxMCA2OjUwIHBt
+ClN1YmplY3Q6IE1hc3NET1QgRGV2ZWxvcGVycyBIb2xpZGF5IE1lZXRpbmcg
+LSBOZXh0IFR1ZXNkYXksIERlY2VtYmVyIDE0LCAyMDEwClRvOiAiTWFzc0RP
+VERldmVsb3BlcnMiIDxtYXNzZG90ZGV2ZWxvcGVyc0Bnb29nbGVncm91cHMu
+Y29tPgoKDQo=
+
+
+------=_Part_1_1292290225853
+Date: Mon, 13 Dec 2010 21:18:42 -0500
+Mime-Version: 1.0
+Content-Type: text/html;
+ charset=utf-8
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
+Content-ID: <4d06d4021f76f_23e680983d90321d0@spartan.local.mail>
+
+DQpKdXN0IGEgcmVtaW5kZXIgYWJvdXQgVHVlc2RheSYjMzk7cyBkZXZlbG9w
+ZXIgbWVldGluZy4gRGV0YWlscyBiZWxvdy48YnI+PGJyPkJlc3QsPGJyPkpv
+c2g8YnI+PGJyPkpvc2h1YSBLLiBSb2Jpbjxicj42MTcuNTA2LjkxMzc8YnI+
+PGJyPi0tLS0tIEZvcndhcmRlZCBtZXNzYWdlIC0tLS0tPGJyPkZyb206ICZx
+dW90O0pvc2ggZnJvbSBNYXNzRE9UJnF1b3Q7ICZsdDtKb3NodWEuUm9iaW5A
+c3RhdGUubWEudXMmZ3Q7PGJyPkRhdGU6IE1vbiwgRGVjIDEzLCAyMDEwIDY6
+NTAgcG08YnI+U3ViamVjdDogTWFzc0RPVCBEZXZlbG9wZXJzIEhvbGlkYXkg
+TWVldGluZyAtIE5leHQgVHVlc2RheSwgRGVjZW1iZXIgMTQsIDIwMTA8YnI+
+VG86ICZxdW90O01hc3NET1REZXZlbG9wZXJzJnF1b3Q7ICZsdDttYXNzZG90
+ZGV2ZWxvcGVyc0Bnb29nbGVncm91cHMuY29tJmd0Ozxicj48YnI+DQo=
+
+
+------=_Part_1_1292290225853--
+
+
+------=_NextPart_000_020B_01CB9B2E.829914E7
+Date: Mon, 13 Dec 2010 21:18:42 -0500
+Mime-Version: 1.0
+Content-Type: message/rfc822;
+ charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment
+Content-ID: <4d06d4022267b_23e680983d903236d@spartan.local.mail>
+
+Received: from mmp-bos-1.state.ma.us ([146.243.4.195]) by EOT-MAIL.mhd.root.eot.gov with Microsoft SMTPSVC(6.0.3790.4675);
+	 Mon, 13 Dec 2010 18:50:22 -0500
+Return-Path: <massdotdevelopers+bncciglx7eefhcg4probboerstdgg@googlegroups.com>
+Received: from state.ma.us (itd-smtp-bos.state.ma.us [146.243.4.197]) by mmp-bos-1.state.ma.us with ESMTP id BT-MMP-61494 for joshua.robin@eot.state.ma.us; Mon, 13 Dec 2010 18:49:57 -0500
+Received: from ([209.85.216.57])
+	by cf-appliance-03.state.ma.us with ESMTP  id 5503337.637401966;
+	Mon, 13 Dec 2010 18:49:53 -0500
+Received: by qwe4 with SMTP id 4sf56431qwe.22
+        for <joshua.robin@eot.state.ma.us>; Mon, 13 Dec 2010 15:49:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlegroups.com; s=beta;
+        h=domainkey-signature:received:x-beenthere:received:mime-version
+         :received:received:date:in-reply-to:x-ip:references:user-agent
+         :x-http-useragent:message-id:subject:from:to:x-original-sender
+         :reply-to:precedence:mailing-list:list-id:list-post:list-help
+         :list-archive:sender:list-subscribe:list-unsubscribe:content-type
+         :content-transfer-encoding;
+        bh=debdKLQY1iPuqITEebleJH6sD3ncMvreFZ5BLGBFAUc=;
+        b=WBI0D/ioYMIVHleC7fj/huf37UQX7JqjpqiMgmkdEDvbI0CenzxR3M29QDDm4j9P14
+         SSfXfsOuHMTCT7Wtsm1kD/456Yf4WbzZp90MHNuN3+lSJSolGgirauOZOybsd+RJa8LI
+         dqfYovLN0UsQlqvg75y2bdBhOqXyqYUTt6ydk=
+DomainKey-Signature: a=rsa-sha1; c=nofws;
+        d=googlegroups.com; s=beta;
+        h=x-beenthere:mime-version:date:in-reply-to:x-ip:references
+         :user-agent:x-http-useragent:message-id:subject:from:to
+         :x-original-sender:reply-to:precedence:mailing-list:list-id
+         :list-post:list-help:list-archive:sender:list-subscribe
+         :list-unsubscribe:content-type:content-transfer-encoding;
+        b=h+zbFDxmB8/FfyAye39umXhx5BYu5Cc524mfsom/POHeFihJ7VWeGJFB9qrpbkkhCY
+         RTXmuchZP64eST40XJjA/6MX2OblidsBSpYdP+Dq0rSpNeVccaCthUrYmiGlMQbMeWqW
+         YbHuKueckpvuQQrX0wQCHNWXpdqiNOsNFuD44=
+Received: by 10.224.19.134 with SMTP id a6mr215500qab.12.1292284192039;
+        Mon, 13 Dec 2010 15:49:52 -0800 (PST)
+X-BeenThere: massdotdevelopers@googlegroups.com
+Received: by 10.224.222.20 with SMTP id ie20ls415170qab.7.p; Mon, 13 Dec 2010
+ 15:49:51 -0800 (PST)
+Received: by 10.224.53.195 with SMTP id n3mr209795qag.32.1292284191672; Mon,
+ 13 Dec 2010 15:49:51 -0800 (PST)
+Received: by fu15g2000vbb.googlegroups.com with HTTP; Mon, 13 Dec 2010
+ 15:49:51 -0800 (PST)
+Date: Mon, 13 Dec 2010 15:49:51 -0800 (PST)
+In-Reply-To: <d59d680d-cfc4-4d44-a155-cee632c8a0e4@o14g2000prn.googlegroups.com>
+X-IP: 67.208.190.2
+References: <d59d680d-cfc4-4d44-a155-cee632c8a0e4@o14g2000prn.googlegroups.com>
+User-Agent: G2/1.0
+X-HTTP-UserAgent: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US)
+ AppleWebKit/534.10 (KHTML, like Gecko) Chrome/8.0.552.215 Safari/534.10,gzip(gfe)
+Message-ID: <0ce48b97-eb28-4b0c-87f7-c1de84d5cd99@fu15g2000vbb.googlegroups.com>
+Subject: Re: MassDOT Developers Holiday Meeting - Next Tuesday, December 14, 2010
+From: Josh from MassDOT <Joshua.Robin@state.ma.us>
+To: MassDOTDevelopers <massdotdevelopers@googlegroups.com>
+X-Original-Sender: joshua.robin@eot.state.ma.us
+Reply-To: massdotdevelopers@googlegroups.com
+Precedence: list
+Mailing-list: list massdotdevelopers@googlegroups.com; contact massdotdevelopers+owners@googlegroups.com
+List-ID: <massdotdevelopers.googlegroups.com>
+List-Post: <http://groups.google.com/group/massdotdevelopers/post?hl=en_US>, <mailto:massdotdevelopers@googlegroups.com>
+List-Help: <http://groups.google.com/support/?hl=en_US>, <mailto:massdotdevelopers+help@googlegroups.com>
+List-Archive: <http://groups.google.com/group/massdotdevelopers?hl=en_US>
+Sender: massdotdevelopers@googlegroups.com
+List-Subscribe: <http://groups.google.com/group/massdotdevelopers/subscribe?hl=en_US>,
+ <mailto:massdotdevelopers+subscribe@googlegroups.com>
+List-Unsubscribe: <http://groups.google.com/group/massdotdevelopers/subscribe?hl=en_US>,
+ <mailto:massdotdevelopers+unsubscribe@googlegroups.com>
+X-spam: ESP<40>=
+	SHA:<0> 
+	SHA_FLAGS:<0> 
+	UHA:<10> 
+	ISC:<0> 
+	BAYES:<0> 
+	SenderID:<-1> 
+	DKIM:<1> 
+	TS:<0> 
+	SIG:<gHcABoAUAAITVFMyMC0xN0w1LTJPVTQtUFNES4AEAAEAA3zBgAIABQACgAgA
+	BAc1NTAzMzM3gBkABxhNZGJQNE5GcTZURzNQRm5YNE1DSndBPT2ADQAIDDIu
+	MC4zLjAyLTk1M4AEAAkDSU0ggAcACgY2LjcuMiAAAAAAgZYACYABAA8CgAgA
+	B1QriKfiWW1tgAQAAtFV2DmACAAT0ki8MXOad3CACAAJ0ki8MXOad3CACAAK
+	BbITBBADSfiACQALOSCBeEwXkBwAgAgACEzQY7hPJpS1gAQADAAADgmAZAAD
+	AAAADJ+xa+vsI1/TjO4NiQnVr+2Bo+nYshDoHlVMPWWxnqrWPRbndQlRt0K4
+	CeCaNl448PN9nCxV0AfGIDeiABTyHtTAUT3+qqhi8oFT51HNdpYianv67O4R
+	exiCeLHENg5wz4DIAAQAxmh0dHA6Ly9tYXBzLmdvb2dsZS5jb20vbWFwcz9m
+	PTNEZCZzb3VyY2U9M0RzX2Qmc2FkZHI9M0QmZGFkZHI9M0Q0Mi4zNTE4Mjks
+	LT0AaHR0cDovL3RhbGVydHMuY29tL3Jzc2ZlZWQyL2FsZXJ0c3Jzcy5hc3B4
+	AGh0dHA6Ly9tYXBzLmdvb2dsZS5jb20vbWFwcz9mPTNEZCZzb3U9AGh0dHA6
+	Ly9ncm91cHMuZ29vZ2xlLmNvbS9ncm91cC9tYXNzZG89AAAAAAA=>
+	DSC:<21> (google_group:<21>) 
+	TRU_watch_spam: <0>
+	TRU_cn_scam_spam: <0>
+	TRU_adult_spam: <0>
+	TRU_back_scatter_new: <0>
+	TRU_medical_spam: <0>
+	TRU_cn_business_spam: <0>
+	TRU_spam1: <0>
+	TRU_marketing_spam: <0>
+	TRU_cn_profanity_spam: <0>
+	TRU_jp_adult_spam: <0>
+	TRU_cn_class_ad: <0>
+	URL Real-Time Signatures: <0>
+	TRU_html_image_spam: <0>
+	TRU_jp_misc_spam: <0>
+	TRU_embedded_image_spam: <0>
+	TRU_scam_spam: <0>
+	TRU_urllinks: <0>
+	TRU_cn_political: <0>
+	TRU_legal_spam: <0>
+	TRU_money_spam: <0>
+	TRU_cn_misc_spam: <0>
+	TRU_misc_spam: <0>
+	TRU_ru_spamsubj: <0>
+	TRU_lotto_spam: <0>
+	TRU_freehosting: <0>
+	TRU_profanity_spam: <0>
+	TRU_cn_entertainment_spam: <0>
+	TRU_stock_spam: <0>
+	TRU_phish_spam: <0>
+	TRU_spam2: <0>
+	TRU_playsites: <9>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: quoted-printable
+X-OriginalArrivalTime: 13 Dec 2010 23:50:22.0140 (UTC) FILETIME=[8156CFC0:01CB9B20]
+
+All,
+
+I just wanted to remind you about our Developers Meeting tomorrow
+night at 6pm at 10 Park Plaza in Boston.  We will be meeting at the
+information desk at the top of the escalators at 6pm.
+
+For those who arrive later than 6, you will need to sign in at the
+information desk and head to Suite 3170.  If you have any issues
+getting to the meeting please call me at 617.506.9137.
+
+These are the directions to our building:
+http://maps.google.com/maps?f=3Dd&source=3Ds_d&saddr=3D&daddr=3D42.351829,-=
+71.066029&hl=3Den&geocode=3DFdU8hgIdU57D-w&mra=3Dltm&dirflg=3Dr&ttype=3Ddep=
+&date=3D12/07/10&time=3D3:28pm&noexp=3D0&noal=3D0&sort=3Ddef&sll=3D42.35139=
+2,-71.068003&sspn=3D0.005249,0.011362&ie=3DUTF8&t=3Dh&z=3D17&start=3D0
+
+We will keep the meeting to an hour maximum and promise to have you
+out the door by 7. Your input will be very valuable as we plan our
+initiatives for 2011.
+
+See you tomorrow!
+Josh
+
+
+On Dec 7, 5:52=A0pm, Josh from MassDOT <joshua.ro...@eot.state.ma.us>
+wrote:
+> Hi Everyone,
+>
+> I hope everyone is having a great holiday season. =A0It has been a few
+> months since we released real-time data for all MBTA buses and the
+> Red, Orange, and Blue Lines. =A0With these successes in 2010, we are
+> making plans for 2011 and need your help!
+>
+> While we know everyone is busy this time of year, we will be hosting a
+> developers meeting next Tuesday evening at 6pm at the State
+> Transportation Building at 10 Park Plaza in Boston. =A0We promise to
+> keep the meeting short but are planning to solicit your input on plans
+> for 2011 including:
+>
+> =95 =A0 =A0 Our plans for releasing real-time commuter rail data. =A0We n=
+eed your
+> input on what the data format will be.
+> =95 =A0 =A0 Our plan s for opening up an API to our customer comment form=
+s so
+> that riders can send in pictures of issues they see in the system.
+> =95 =A0 =A0 Discuss the improvements made in the new T-Alerts RSS feed av=
+ailable
+> athttp://talerts.com/rssfeed2/alertsrss.aspx
+> =95 =A0 =A0 Ideas on a tool for reporting poor predictions
+> =95 =A0 =A0 We need your input on a marketing campaign for Spring 2011 to=
+ raise
+> awareness of all your great apps!
+> =95 =A0 =A0 Lastly, we need any other neat ideas you have! =A0Please resp=
+ond to
+> this tread with any items you would like added to the agenda.
+>
+> One place where you, the developer community, can help us is by
+> providing us statistics on the use of your apps. =A0With more than 30
+> apps launched, we want to be able to create a picture of the usage of
+> apps. =A0Please use this form to let us know how your app is being used:h=
+ttps://spreadsheets.google.com/viewform?formkey=3DdEtubURPV291UWFyM0hS...
+>
+> Again, next week=92s meeting will be on Tuesday, December 14th at 6pm at
+> the State Transportation Building located at 10 Park Plaza in Boston.
+> For directions please use this link:http://maps.google.com/maps?f=3Dd&sou=
+rce=3Ds_d&saddr=3D&daddr=3D42.351829,-71...
+>
+> Thanks and looking forward to seeing you next week!
+> Josh
+>
+> ____________________________________
+> Joshua K. Robin
+> Massachusetts Department of Transportation
+> joshua.ro...@state.ma.us
+
+--=20
+You received this message because you are subscribed to the Google Groups "=
+MassDOTDevelopers" group.
+To post to this group, send email to massdotdevelopers@googlegroups.com.
+To unsubscribe from this group, send email to massdotdevelopers+unsubscribe=
+@googlegroups.com.
+For more options, visit this group at http://groups.google.com/group/massdo=
+tdevelopers?hl=3Den.
+
+------=_NextPart_000_020B_01CB9B2E.829914E7--

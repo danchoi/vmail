@@ -25,31 +25,52 @@ module Vmail
       lines.flatten
     end
 
-    def process_body
-      part = find_text_part(@mail.parts)
-      body = if part && part.respond_to?(:header)
-        if part.header["Content-Type"].to_s =~ /text\/plain/
-          format_text_body(part) 
-        elsif part.header["Content-Type"].to_s =~ /text\/html/
+    def process_body(target = @mail)
+      if target.header['Content-Type'].to_s =~ /multipart\/mixed/
+        target.parts.map {|part| 
+          if part.multipart?
+            part = find_text_or_html_part(target.parts)
+            format_part(part) 
+          else
+            format_part(part) 
+          end
+        }.join("\n#{'-' * 39}\n")
+      elsif target.header['Content-Type'].to_s =~ /multipart\/alternative/
+        part = find_text_or_html_part(target.parts)
+        format_part(part) 
+      else
+        format_part(target)
+      end
+    end
+
+    def format_part(part)
+      if part && part.respond_to?(:header)
+        case part.header["Content-Type"].to_s 
+        when /text\/html/
           format_html_body(part) 
-        else
+        when /text\/plain/
+          format_text_body(part) 
+        when /message\/rfc/
+          m = Mail.new(part.body.decoded)
+          process_body(m)
+        else # just format_text on it anyway
           format_text_body(part) 
         end
       else 
-        "NO BODY" 
+        "[NO BODY]" 
       end
     rescue
       puts $!
-      body
+      "[error:] #{$!}"
     end
 
-    def find_text_part(parts = @mail.parts)
+    def find_text_or_html_part(parts = @mail.parts)
       if parts.empty?
         return @mail
       end
       part = parts.detect {|part| part.multipart?}
       if part
-        find_text_part(part.parts)
+        find_text_or_html_part(part.parts)
       else
         # no multipart part
         part = parts.detect {|part| (part.header["Content-Type"].to_s =~ /text\/plain/) }

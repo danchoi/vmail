@@ -78,7 +78,19 @@ describe Vmail::MessageFormatter do
       assert_equal 2, attachments.size
       assert_equal ['image/png', 'image/gif'], attachments.map(&:mime_type)
     end
+  end
 
+  describe 'message with message/rfc822 part' do
+    before do
+      @raw = read_fixture('rfc_part.eml')
+      @mail = Mail.new(@raw)
+      @formatter = Vmail::MessageFormatter.new(@mail)
+    end
+
+    it 'should extract the message/rfc822 part' do
+      assert_match /I hope everyone is having a great holiday season/, 
+        @formatter.process_body
+    end
   end
 
 end
