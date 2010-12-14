@@ -3,10 +3,10 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
       <title>Vmail</title>
-      <link href="stylesheets-vmail/reset.css?1292349581" media="screen" rel="stylesheet" type="text/css" />
-      <link href="stylesheets-vmail/960.css?1292349581" media="screen" rel="stylesheet" type="text/css" />
-      <link href="stylesheets-vmail/text.css?1292349581" media="screen" rel="stylesheet" type="text/css" />
-      <link href="stylesheets-vmail/site.css?1292349581" media="screen" rel="stylesheet" type="text/css" />
+      <link href="stylesheets-vmail/reset.css?1292352305" media="screen" rel="stylesheet" type="text/css" />
+      <link href="stylesheets-vmail/960.css?1292352305" media="screen" rel="stylesheet" type="text/css" />
+      <link href="stylesheets-vmail/text.css?1292352305" media="screen" rel="stylesheet" type="text/css" />
+      <link href="stylesheets-vmail/site.css?1292352305" media="screen" rel="stylesheet" type="text/css" />
       <script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script><script type="text/javascript">stLight.options({publisher:'8579b5f8-0860-4ea6-9ef1-6f0f58359a99'});</script>
       <script type="text/javascript" src="lightbox2/js/prototype.js"></script>
       <script type="text/javascript" src="lightbox2/js/scriptaculous.js?load=effects,builder"></script>
@@ -206,8 +206,8 @@ You're responsible for fill in the <code>to:</code> and the <code>subject:</code
 You can add a <code>cc:</code> and <code>bcc:</code> field if you want.</p>
 
 <p>When you fill in the recipient addresses, you can use vim autocompletion if you
-generated a <code>vmail-contacts.txt</code> file. Start typing a name or email address, then press <code>C-x C-u</code>
-to invoke autocompletion.</p>
+generated a <code>vmail-contacts.txt</code> file. Start typing a name or email address,
+then press <code>C-x C-u</code> to invoke autocompletion.</p>
 
 <p>Tip: Use <code>C-y</code> instead of ENTER to select a match. This will prevent you from
 creating a blank line in the middle of the email headers.</p>
@@ -222,8 +222,23 @@ blank line between the headers and the body of your message.</p>
 
 <p>When you're done writing, send the message by typing <code>,vs</code> in normal mode.</p>
 
-<p>You can save the message as a draft in your draft mailbox by typing <code>,vd</code> in
-normal mode.</p>
+<p>In this early version of vmail, saving and resuming draft emails is a bit
+clunky. But it works.</p>
+
+<p>While you're composing a message in the composition window, you can save a
+draft to a local file the standard vim <code>w</code> command with a filename argument:</p>
+
+<pre><code>:w my_draft_filename.txt 
+</code></pre>
+
+<p>Make sure you don't use <code>:wq</code> unless you mean to quit vmail immediately. After
+you save the draft to a file, you can go back to the message list by typing <code>q</code>
+in normal mode.</p>
+
+<p>To resume writing the draft later, type <code>,c</code> to open a message composition
+window, delete all its contents, and then type <code>:r my_draft_filename.txt</code> to
+load the draft email into the buffer. Make sure you delete any blank lines that
+are created above the header. Resume editing. Send by typing <code>,vs</code>.</p>
 
 <p>At any point, you can quit the composition window by typing <code>q</code> in normal mode.</p>
 

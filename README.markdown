@@ -171,8 +171,8 @@ You can add a `cc:` and `bcc:` field if you want.
 
 
 When you fill in the recipient addresses, you can use vim autocompletion if you
-generated a `vmail-contacts.txt` file. Start typing a name or email address, then press `C-x C-u` 
-to invoke autocompletion.
+generated a `vmail-contacts.txt` file. Start typing a name or email address,
+then press `C-x C-u` to invoke autocompletion.
 
 Tip: Use `C-y` instead of ENTER to select a match. This will prevent you from
 creating a blank line in the middle of the email headers.
@@ -187,11 +187,22 @@ blank line between the headers and the body of your message.
 
 When you're done writing, send the message by typing `,vs` in normal mode.
 
-In the future, vmail will let you save your draft in Gmail's `drafts` folder. But for now (and alternatively),
-you can save a draft to a local file using the standard vim command `:w`.
+In this early version of vmail, saving and resuming draft emails is a bit
+clunky. But it works.
 
-To resume writing the draft later, just type `,c` to open a compose message window and `:e draft_filename.txt` to resume editing it.
-Send it by typing `,vs`.
+While you're composing a message in the composition window, you can save a
+draft to a local file the standard vim `w` command with a filename argument:
+
+    :w my_draft_filename.txt 
+
+Make sure you don't use `:wq` unless you mean to quit vmail immediately. After
+you save the draft to a file, you can go back to the message list by typing `q`
+in normal mode.
+
+To resume writing the draft later, type `,c` to open a message composition
+window, delete all its contents, and then type `:r my_draft_filename.txt` to
+load the draft email into the buffer. Make sure you delete any blank lines that
+are created above the header. Resume editing. Send by typing `,vs`.
 
 At any point, you can quit the composition window by typing `q` in normal mode.
 
