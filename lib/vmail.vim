@@ -155,7 +155,7 @@ function! s:focus_list_window()
   if has("syntax")
     syn clear
     syn match BufferFlagged /^.*[*].*$/hs=s
-    hi def BufferFlagged ctermfg=red ctermbg=black
+    hi def BufferFlagged ctermfg=red 
   endif
   " vertically center the cursor line
   " normal z.
@@ -677,8 +677,12 @@ func! s:message_window_mappings()
   noremap <silent> <buffer> <Leader>c :call <SID>compose_message()<CR>
   noremap <silent> <buffer> <Leader>h :call <SID>open_html_part()<CR><cr>
   nnoremap <silent> <buffer> q :close<cr>
+
   nnoremap <silent> <buffer> <leader>#  :call <SID>focus_list_window()<cr>:call <SID>delete_messages("Deleted")<cr>
+  nmap <silent> <buffer> <leader>d  <leader>#
   nnoremap <silent> <buffer> <leader>*  :call <SID>focus_list_window()<cr>:call <SID>toggle_star()<cr>
+  nmap <silent> <buffer> s  <leader>*
+
   nnoremap <silent> <buffer> <Leader>b :call <SID>focus_list_window()<cr>call <SID>move_to_mailbox(0)<CR>
   nnoremap <silent> <buffer> <Leader>B :call <SID>focus_list_window()<cr>call <SID>move_to_mailbox(1)<CR>
   nnoremap <silent> <buffer> <leader>e  :call <SID>focus_list_window()<cr>:call <SID>archive_messages()<cr>
@@ -692,8 +696,12 @@ endfunc
 func! s:message_list_window_mappings()
   noremap <silent> <buffer> <cr> :call <SID>show_message()<CR>
   noremap <silent> <buffer> q :qal!<cr>
+
   noremap <silent> <buffer> <leader>* :call <SID>toggle_star()<CR>
+  nmap <silent> <buffer> s <leader>*
   noremap <silent> <buffer> <leader># :call <SID>delete_messages("Deleted")<CR>
+  nmap <silent> <buffer> <leader>d <leader>#
+
   noremap <silent> <buffer> <leader>! :call <SID>delete_messages("[Gmail]/Spam")<CR>
   noremap <silent> <buffer> <leader>e :call <SID>archive_messages()<CR>
   "open a link browser (os x)
@@ -724,6 +732,9 @@ func! s:global_mappings()
   nnoremap <silent> <leader>vd :call <SID>save_draft()<CR>
   noremap <silent> <leader>o :call <SID>open_href()<cr> 
 endfunc
+
+"TODO see if using LocalLeader and maplocalleader makes more sense
+let mapleader = ","
 
 call s:global_mappings()
 

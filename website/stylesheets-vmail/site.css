@@ -48,5 +48,12 @@ table.pin td {
 
 #main img {
   width: 250px;
-  
 }
+pre {
+  background-color: #ECECEC;
+}
+code {
+  background-color: #ECECEC;
+  font-size: 15px;
+}
+

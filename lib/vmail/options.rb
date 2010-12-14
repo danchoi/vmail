@@ -102,7 +102,7 @@ To run vmail, create a yaml file called .vmailrc and save it either in the
 current directory (the directory from which you launch vmail) or in your home
 directory. 
 
-This file should look something like this. Substitute your own values.
+The .vmailrc file should look something like this. Substitute your own values.
 
 username: dhchoi@gmail.com
 password: password
@@ -121,7 +121,7 @@ start vmail.
 CONTACTS AUTOCOMPLETION
 
 vmail uses vim autocompletion to help you auto-complete email addresses.
-To use this feature, generate a vim-contacts.txt file in the current or
+To use this feature, generate a vmail-contacts.txt file in the current or
 home directory. This is a simple list of your email contacts.
 Invoking vmail with the -g option generates this file for you by
 collecting all the recipients and cc's from your last 500 sent
