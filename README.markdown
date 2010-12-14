@@ -187,22 +187,21 @@ blank line between the headers and the body of your message.
 
 When you're done writing, send the message by typing `,vs` in normal mode.
 
-In this early version of vmail, saving and resuming draft emails is a bit
-clunky. But it works.
-
 While you're composing a message in the composition window, you can save a
-draft to a local file the standard vim `w` command with a filename argument:
+draft to a local file with the standard vim `:w` command: 
 
     :w my_draft_filename.txt 
+
+Make sure you append *.txt to the filename, or else vmail won't recognize it as
+a potential email when you reload it.
 
 Make sure you don't use `:wq` unless you mean to quit vmail immediately. After
 you save the draft to a file, you can go back to the message list by typing `q`
 in normal mode.
 
-To resume writing the draft later, type `,c` to open a message composition
-window, delete all its contents, and then type `:r my_draft_filename.txt` to
-load the draft email into the buffer. Make sure you delete any blank lines that
-are created above the header. Resume editing. Send by typing `,vs`.
+To resume writing the draft later, just type `:e my_draft_filename.txt` to load
+the draft email into a buffer. (Use `:e!` if you're already in the message
+composition window.) Resume editing. Send by typing `,vs`.
 
 At any point, you can quit the composition window by typing `q` in normal mode.
 
