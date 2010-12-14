@@ -91,7 +91,15 @@ module Vmail
         @imap.uid_fetch(uid_set, ["FLAGS", "ENVELOPE", "RFC822.SIZE" ])
       end
       log "extracting headers"
-      lines = results.sort_by {|x| Time.parse(x.attr['ENVELOPE'].date)}.map {|x| format_header(x, max_uid)}
+      lines = results.
+        sort_by {|x| 
+          begin
+            Time.parse(x.attr['ENVELOPE'].date) 
+          rescue ArgumentError
+            Time.now
+          end
+        }.
+        map {|x| format_header(x, max_uid)}
       log "returning result" 
       return lines.join("\n")
     end
@@ -118,7 +126,12 @@ module Vmail
         total_recips = (envelope.to + envelope.cc).size
         address += " + #{total_recips - 1}"
       end
-      date = Time.parse(envelope.date).localtime
+      date = begin 
+               Time.parse(envelope.date).localtime
+             rescue ArgumentError
+               Time.now
+             end
+
       date_formatted = if date.year != Time.now.year
                          date.strftime "%b %d %Y" rescue envelope.date.to_s 
                        else 
@@ -249,6 +262,9 @@ module Vmail
 
 #{out}
 EOF
+    rescue
+      log "parsing error"
+      "Error encountered parsing this message:\n#{$!}"
     end
 
     def format_parts_info(parts)

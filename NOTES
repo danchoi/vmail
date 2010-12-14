@@ -1,4 +1,3 @@
-
 interesting. the UID don't seem to be globally unique. two different
 messages in 2 different mailboxes can have same UID
 
@@ -496,6 +495,8 @@ DONE
 NEXT:
 - help doc: just return readme file, or a vim version of it (vim filetype later)
 - note dependence on lynx in README
+- fix http open
+
 
 later:
 - mvim - starred messages not syntax colored

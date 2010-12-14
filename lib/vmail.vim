@@ -256,8 +256,11 @@ func! s:delete_messages(flag) range
   if len(uids) > 2
     call feedkeys("\<cr>")
   endif
+  call s:focus_message_window()
+  close
   redraw
   echo len(uids) . " message" . (len(uids) == 1 ? '' : 's') . " marked " . a:flag
+
 endfunc
 
 func! s:archive_messages() range
@@ -278,6 +281,8 @@ func! s:archive_messages() range
   exec a:firstline . "," . a:lastline . "delete"
   setlocal nomodifiable
   write
+  call s:focus_message_window()
+  close
   redraw
   echo len(uids) . " message" . (len(uids) == 1 ? '' : 's') . " archived"
 endfunc
