@@ -1,5 +1,6 @@
 let s:mailbox = $VMAIL_MAILBOX
 let s:query = $VMAIL_QUERY
+let s:browser_command = $VMAIL_BROWSER
 let s:append_file = ''
 
 let s:drb_uri = $DRB_URI
@@ -23,7 +24,7 @@ let s:forward_template_command = s:client_script . "forward_template "
 let s:deliver_command = s:client_script . "deliver "
 let s:save_draft_command = s:client_script . "save_draft "
 let s:save_attachments_command = s:client_script . "save_attachments "
-let s:open_html_command = s:client_script . "open_html_part "
+let s:open_html_part_command = s:client_script . "open_html_part "
 let s:message_bufname = "MessageWindow"
 
 function! VmailStatusLine()
@@ -623,10 +624,11 @@ endfunc
 
 " call from inside message window with <Leader>h
 func! s:open_html_part()
-  let command = s:open_html_command . s:current_uid 
+  let command = s:open_html_part_command . s:current_uid 
+  " the command saves the html part to a local file
   let outfile = system(command)
   " todo: allow user to change open in browser command?
-  exec "!open " . outfile
+  exec "!" . s:browser_command . ' ' . outfile
 endfunc
 
 func! s:save_attachments()
@@ -650,7 +652,8 @@ endfunc
 func! s:open_href()
   call search("http:", 'c')
   let href = matchstr(getline(line('.')), 'http\S\+')
-  exec "!open '" . href . "'"
+  let command = "!" . s:browser_command . ' ' . shellescape(href) 
+  exec command
 endfunc
 
 " -------------------------------------------------------------------------------- 

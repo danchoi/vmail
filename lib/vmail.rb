@@ -5,7 +5,10 @@ module Vmail
   extend self
 
   def start
+
     vim = ENV['VMAIL_VIM'] || 'vim'
+
+    ENV['VMAIL_BROWSER'] ||= 'open'
 
     # check for lynx
     if `which lynx` == ''
