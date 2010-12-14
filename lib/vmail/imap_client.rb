@@ -412,6 +412,15 @@ EOF
     def deliver(text)
       # parse the text. The headers are yaml. The rest is text body.
       require 'net/smtp'
+      reconnect_if_necessary(4) do 
+        # this is just to prime the IMAP connection
+        # It's necessary for some reason.
+        log "priming connection for delivering"
+        res = @imap.uid_fetch(@all_uids[-1], ["ENVELOPE"])
+        if res.nil?
+          raise IOError, "IMAP connection seems broken"
+        end
+      end 
       mail = new_mail_from_input(text)
       mail.delivery_method(*smtp_settings)
       mail.deliver!
