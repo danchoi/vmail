@@ -158,7 +158,7 @@ function! s:focus_list_window()
     hi def BufferFlagged ctermfg=red ctermbg=black
   endif
   " vertically center the cursor line
-  normal z.
+  " normal z.
   call feedkeys("\<c-l>") " prevents screen artifacts when user presses return too fast
 endfunction
 
