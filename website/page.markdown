@@ -303,25 +303,67 @@ will show vmail's logging output while MacVim is running. To quit vmail in
 MacVim mode, you will have to press CTRL-c in this window to stop the vmail
 process.
 
-## vmail file artifacts
+## vmail file byproducts
 
-vmail generates a few file artifacts when it is running. It generates a
+vmail generates a few file byproducts when it is running. It generates a
 temporary `vmailbuffer.txt` file in the current directory to hold the message
 list. This should get deleted automatically when vmail quits.
 
-vmail also generates a `vmail-htmlpart.html` file in the current directory if you
+vmail also creates a `vmail-htmlpart.html` file in the current directory if you
 open an HTML mail part from vmail. 
 
 Finally, vmail logs output to a `vmail.log` file which it creates in the
 current directory. You can tail this file in a separate terminal window to see
 what's going on behind the scenes as you use vmail.
 
-## Bug reports, feature requests, general discussion
+## Is my gmail password secure?
+
+In short, yes. vmail uses TLS ([Transport Layer Security][1]) to perform IMAP
+and SMTP authentication. So vmail transmits your password securely over the
+network.
+
+[1]:http://en.wikipedia.org/wiki/Transport_Layer_Security
+
+You can also be sure that the vmail code doesn't do any nefarious with your
+Gmail password because vmail is open source. Anyone can inspect the source code
+of the copy fo vmail that runs on your computer and inspect the code at the
+[github repository][1] and at [rubygems.org][2] (where the vmail gem is
+downloaded from). 
+
+[1]:https://github.com/danchoi/vmail
+[2]:https://rubygems.org/gems/vmail
+
+
+## Bug reports, feature requests
 
 Please file bug reports and features requests in the [vmail github issue tracker][1].
 
-General vmail discussion
+[1]:https://github.com/danchoi/vmail/issues
 
+## How to contact the developer
+
+My name is Daniel Choi. I am based in Cambridge, MA, and you can email me at dhchoi@gmail.com.
+
+
+## How to support the vmail project
+
+If you find vmail very useful, feel free to drop me a note to say so. If you have
+a bug to report or a good feature to suggest, please file it on the [issue tracker][1].
+Few things make this software developer happier than knowing that people find my
+software useful and interacting with my users.
+
+[1]:https://github.com/danchoi/vmail/issues
+
+If you also want to donate money to financially support development time on the
+vmail project, use this PayPal button:
+
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="hosted_button_id" value="TZBA7QXCBNE6L">
+<input type="image" src="https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+<img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">
+</form>
 
 
 

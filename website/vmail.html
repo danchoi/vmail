@@ -3,10 +3,10 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
       <title>Vmail</title>
-      <link href="stylesheets-vmail/reset.css?1292346294" media="screen" rel="stylesheet" type="text/css" />
-      <link href="stylesheets-vmail/960.css?1292346294" media="screen" rel="stylesheet" type="text/css" />
-      <link href="stylesheets-vmail/text.css?1292346294" media="screen" rel="stylesheet" type="text/css" />
-      <link href="stylesheets-vmail/site.css?1292346294" media="screen" rel="stylesheet" type="text/css" />
+      <link href="stylesheets-vmail/reset.css?1292347796" media="screen" rel="stylesheet" type="text/css" />
+      <link href="stylesheets-vmail/960.css?1292347796" media="screen" rel="stylesheet" type="text/css" />
+      <link href="stylesheets-vmail/text.css?1292347796" media="screen" rel="stylesheet" type="text/css" />
+      <link href="stylesheets-vmail/site.css?1292347796" media="screen" rel="stylesheet" type="text/css" />
       <script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script><script type="text/javascript">stLight.options({publisher:'8579b5f8-0860-4ea6-9ef1-6f0f58359a99'});</script>
       <script type="text/javascript" src="lightbox2/js/prototype.js"></script>
       <script type="text/javascript" src="lightbox2/js/scriptaculous.js?load=effects,builder"></script>
@@ -336,22 +336,55 @@ will show vmail's logging output while MacVim is running. To quit vmail in
 MacVim mode, you will have to press CTRL-c in this window to stop the vmail
 process.</p>
 
-<h2>vmail file artifacts</h2>
+<h2>vmail file byproducts</h2>
 
-<p>vmail generates a few file artifacts when it is running. It generates a
+<p>vmail generates a few file byproducts when it is running. It generates a
 temporary <code>vmailbuffer.txt</code> file in the current directory to hold the message
 list. This should get deleted automatically when vmail quits.</p>
 
-<p>vmail also generates a <code>vmail-htmlpart.html</code> file in the current directory if you
+<p>vmail also creates a <code>vmail-htmlpart.html</code> file in the current directory if you
 open an HTML mail part from vmail.</p>
 
 <p>Finally, vmail logs output to a <code>vmail.log</code> file which it creates in the
 current directory. You can tail this file in a separate terminal window to see
 what's going on behind the scenes as you use vmail.</p>
 
-<h2>Bug reports and feature requests</h2>
+<h2>Is my gmail password secure?</h2>
+
+<p>In short, yes. vmail uses TLS (<a href="https://github.com/danchoi/vmail/issues">Transport Layer Security</a>) to perform IMAP
+and SMTP authentication. So vmail transmits your password securely over the
+network.</p>
+
+<p>You can also be sure that the vmail code doesn't do any nefarious with your
+Gmail password because vmail is open source. Anyone can inspect the source code
+of the copy fo vmail that runs on your computer and inspect the code at the
+<a href="https://github.com/danchoi/vmail/issues">github repository</a> and at <a href="https://rubygems.org/gems/vmail">rubygems.org</a> (where the vmail gem is
+downloaded from).</p>
+
+<h2>Bug reports, feature requests</h2>
 
 <p>Please file bug reports and features requests in the <a href="https://github.com/danchoi/vmail/issues">vmail github issue tracker</a>.</p>
+
+<h2>How to contact the developer</h2>
+
+<p>My name is Daniel Choi. I am based in Cambridge, MA, and you can email me at dhchoi@gmail.com.</p>
+
+<h2>How to support the vmail project</h2>
+
+<p>If you find vmail very useful, feel free to drop me a note to say so. If you have
+a bug to report or a good feature to suggest, please file it on the <a href="https://github.com/danchoi/vmail/issues">issue tracker</a>.
+Few things make this software developer happier than knowing that people find my
+software useful and interacting with my users.</p>
+
+<p>If you also want to donate money to financially support development time on the
+vmail project, use this PayPal button:</p>
+
+<p><form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="hosted_button_id" value="TZBA7QXCBNE6L">
+<input type="image" src="https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+<img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">
+</form></p>
 
       </div>
       <div class="grid_2 omega">
