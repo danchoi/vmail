@@ -588,8 +588,12 @@ function! CompleteContact(findstart, base)
     endwhile
     return start
   else
-    " find contacts matching with "a:base"
-    let matches = system("grep -i " . shellescape(a:base) . " " . $VMAIL_CONTACTS_FILE)
+    " find contacts 
+    " model regex: match at beginning of line, or inside < > wrapping
+    " email addr
+    "  '\(^ho\|<ho\)'
+    let regex = shellescape('\(^' . a:base . '\|<' . a:base . '\)')
+    let matches = system("grep -i " . regex  . " " . $VMAIL_CONTACTS_FILE)
     return split(matches, "\n")
   endif
 endfun
