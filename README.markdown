@@ -246,7 +246,7 @@ at the top of the message window:
 
 To download these attachments to a local directory, type `,A`. You'll be
 prompted for a directory path.  Then vmail will save all the attachments in the
-message to this directory.
+message to this directory, creating the directory if necessary.
 
 To send attachments, add something like this to your new message in the message
 composition window:
