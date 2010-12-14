@@ -312,13 +312,13 @@ perfectly. In particular, there seems to be a bug in MacVim that prevents
 vmail's status line activity messages from appearing properly. Nonetheless,
 most of vmail is functional in MacVim.
 
-To use MacVim as your vmail Vim engine, `export VMAIL_VIM=mvim` before startin
+To use MacVim as your vmail Vim engine, `export VMAIL_VIM=mvim` before starting
 vmail.
 
 Note that when vmail uses MacVim, the terminal window in which you invoke vmail
 will show vmail's logging output while MacVim is running. To quit vmail in
 MacVim mode, you will have to press CTRL-c in this window to stop the vmail
-process.
+process in after quitting the MacVim app.
 
 ## vmail file byproducts
 
