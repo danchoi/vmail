@@ -355,7 +355,7 @@ vmail gem is downloaded from).
 
 ## Bug reports, feature requests
 
-Please file bug reports and features requests in the [vmail github issue tracker][1].
+Please file bug reports and feature requests in the [vmail github issue tracker][1].
 
 [1]:https://github.com/danchoi/vmail/issues
 
