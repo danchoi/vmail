@@ -339,26 +339,26 @@ what's going on behind the scenes as you use vmail.
 
 ## Is my gmail password secure?
 
-In short, yes. vmail uses TLS ([Transport Layer Security][1]) to perform IMAP
+In short, yes. vmail uses TLS ([Transport Layer Security][tls]) to perform IMAP
 and SMTP authentication. So vmail transmits your password securely over the
 network.
 
-[1]:http://en.wikipedia.org/wiki/Transport_Layer_Security
+[tls]:http://en.wikipedia.org/wiki/Transport_Layer_Security
 
 You can also be sure that the vmail code doesn't do anything nefarious with
 your Gmail password because vmail is open source. Anyone can inspect the source
 code of the copy of vmail that runs on your computer and inspect the latest
-vmail code at the [github repository][1] and at [rubygems.org][2] (where the
+vmail code at the [github repository][github] and at [rubygems.org][rubygems] (where the
 vmail gem is downloaded from). 
 
-[1]:https://github.com/danchoi/vmail
-[2]:https://rubygems.org/gems/vmail
+[github]:https://github.com/danchoi/vmail
+[rubygems]:https://rubygems.org/gems/vmail
 
 ## Bug reports, feature requests
 
-Please file bug reports and feature requests in the [vmail github issue tracker][1].
+Please file bug reports and feature requests in the [vmail github issue tracker][tracker].
 
-[1]:https://github.com/danchoi/vmail/issues
+[tracker]:https://github.com/danchoi/vmail/issues
 
 ## How to contact the developer
 
