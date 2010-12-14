@@ -238,12 +238,12 @@ composition window:
     from: Daniel Choi <dhchoi@gmail.com>
     to: barackobama@whitehouse.gov
     subject: look at this!
-
+    
     attach:
     - images/middle-east-map.png
     - images/policypaper.pdf
     - docs/
-
+    
     I think you'll find this stuff interesting.
     
 
@@ -343,7 +343,7 @@ network.
 
 You can also be sure that the vmail code doesn't do anything nefarious with your
 Gmail password because vmail is open source. Anyone can inspect the source code
-of the copy fo vmail that runs on your computer and inspect the code at the
+of the copy of vmail that runs on your computer and inspect the code at the
 [github repository][1] and at [rubygems.org][2] (where the vmail gem is
 downloaded from). 
 

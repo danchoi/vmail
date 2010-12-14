@@ -12,6 +12,9 @@ middle_markdown = File.read(readme).split(/^\s*$/)
 middle_markdown = middle_markdown[2..-1].join("\n\n")
 
 middle = RDiscount.new(middle_markdown).to_html
+# for some reason markdown inserts extra blank lines
+middle = middle.gsub(/\n\n{3,}/, "\n\n")
+
 
 bottom = RDiscount.new(File.read("bottom.markdown")).to_html
 
