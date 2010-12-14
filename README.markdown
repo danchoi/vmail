@@ -33,7 +33,7 @@ The `.vmailrc` file should look something like this. Substitute your own values.
     name: Daniel Choi
     signature: |
       --
-      Sent via vmail. http://danielchoi.com/software/vmail.html
+      Sent from vmail. http://danielchoi.com/software/vmail.html
 
 This file should be formatted in [YAML syntax][1].
 
