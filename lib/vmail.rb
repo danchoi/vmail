@@ -7,6 +7,11 @@ module Vmail
   def start
     vim = ENV['VMAIL_VIM'] || 'vim'
 
+    # check for lynx
+    if `which lynx` == ''
+      puts "You need to install lynx on your system in order to see html-only messages"
+      sleep 3
+    end
     opts = Vmail::Options.new(ARGV)
     opts.config
 
