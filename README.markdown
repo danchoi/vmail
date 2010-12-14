@@ -371,7 +371,7 @@ vmail gem is downloaded from).
 
 Please file bug reports and feature requests in the [vmail github issue tracker][tracker].
 
-This problem is seriously in beta, so there are bound to be bugs and issues.
+vmail is very young and in beta, so there are bound to be bugs and issues.
 But in a few weeks, with your help, vmail will become stable.
 
 [tracker]:https://github.com/danchoi/vmail/issues
