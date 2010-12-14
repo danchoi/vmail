@@ -20,9 +20,15 @@ The current version of vmail assumes a Unix environment. I'll try to make later 
 
     gem install vmail
 
+Test your installation by typing `vmail -h`. You should see vmail's help.
+
 On some systems you may run into a PATH issue, where the system can't find the
-`vmail` command after installation. Please report if you encounter this
-problem, and mention what system you're using.
+`vmail` command after installation. Please report this if you encounter this
+problem, and mention what system you're using. You might want to try 
+
+    sudo gem install vmail
+
+to see if that puts `vmail` on your PATH.
 
 ## Configuration file
 
