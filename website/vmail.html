@@ -3,10 +3,10 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
       <title>Vmail</title>
-      <link href="stylesheets-vmail/reset.css?1292343080" media="screen" rel="stylesheet" type="text/css" />
-      <link href="stylesheets-vmail/960.css?1292343080" media="screen" rel="stylesheet" type="text/css" />
-      <link href="stylesheets-vmail/text.css?1292343080" media="screen" rel="stylesheet" type="text/css" />
-      <link href="stylesheets-vmail/site.css?1292343080" media="screen" rel="stylesheet" type="text/css" />
+      <link href="stylesheets-vmail/reset.css?1292346294" media="screen" rel="stylesheet" type="text/css" />
+      <link href="stylesheets-vmail/960.css?1292346294" media="screen" rel="stylesheet" type="text/css" />
+      <link href="stylesheets-vmail/text.css?1292346294" media="screen" rel="stylesheet" type="text/css" />
+      <link href="stylesheets-vmail/site.css?1292346294" media="screen" rel="stylesheet" type="text/css" />
       <script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script><script type="text/javascript">stLight.options({publisher:'8579b5f8-0860-4ea6-9ef1-6f0f58359a99'});</script>
       <script type="text/javascript" src="lightbox2/js/prototype.js"></script>
       <script type="text/javascript" src="lightbox2/js/scriptaculous.js?load=effects,builder"></script>
@@ -63,7 +63,7 @@ signature: |
   Sent via vmail. http://danielchoi.com/software/vmail.html
 </code></pre>
 
-<p>This file should be formatted in <a href="http://www.yaml.org/spec/1.2/spec.html">YAML syntax</a>.</p>
+<p>This file should be formatted in <a href="https://github.com/danchoi/vmail/issues">YAML syntax</a>.</p>
 
 <p>You can omit the password key-value pair if you'd rather not have the password
 saved in the file. In that case, you'll prompted for the password each time you
@@ -131,7 +131,9 @@ top of the list that looks something like this:</p>
 
 <p>Unread messages are marked with a <code>[+]</code> symbol.</p>
 
-<h2>Starring, deleting, archiving</h2>
+<p>To view the raw RFC822 version of a message, type <code>,R</code> while viewing the message.</p>
+
+<h2>Starring, deleting, archiving, marking spam</h2>
 
 <p>To star a message, put the cursor on it and type <code>,*</code> or alternatively <code>s</code>.
 Starring a message copies it to the <code>starred</code> mailbox.  Starred messages are
@@ -143,6 +145,14 @@ Deleting a message puts it in the <code>trash</code> mailbox. Deleting a message
 
 <p>To archive a message, put the cursor on it and type <code>,e</code>.  Archiving a message
 moves it to the <code>all</code> mailbox.</p>
+
+<p>To mark a message spam, put the cursor on it and type <code>,!</code>. This moves the
+message to to the <code>spam</code> mailbox.</p>
+
+<p>You can use range selections in the message list when you star, delete, mark as
+spam, or archive. Use <code>&lt;C-v&gt;</code> to start marking a range of lines (the vertical
+position of the cursor doesn't matter).  Then type any of the above commands to
+perform an action on all the messages you selected.</p>
 
 <h2>Switching mailboxes, moving messages, copying messages to another mailbox</h2>
 
@@ -191,9 +201,6 @@ subject:
 You're responsible for fill in the <code>to:</code> and the <code>subject:</code> fields.
 You can add a <code>cc:</code> and <code>bcc:</code> field if you want.</p>
 
-<p>Please make sure there is a blank line between the headers and the rest of your
-message.</p>
-
 <p>When you fill in the recipient addresses, you can use vim autocompletion if you
 generated a <code>vmail-contacts.txt</code> file. Start typing a name or email address, then press <code>C-x C-u</code>
 to invoke autocompletion.</p>
@@ -206,10 +213,145 @@ ultimately appear on the <strong>same, unbroken line</strong> for each field. Vi
 probably break long lines automatically as you type them, so for now (pending a
 future enhancement), you'll have to rejoin the lines if breaks get inserted.</p>
 
+<p>After you fill in the headers, write your message.  Make sure there is a
+blank line between the headers and the body of your message.</p>
+
+<p>When you're done writing, send the message by typing <code>,vs</code> in normal mode.</p>
+
+<p>You can save the message as a draft in your draft mailbox by typing <code>,vd</code> in
+normal mode.</p>
+
+<p>At any point, you can quit the composition window by typing <code>q</code> in normal mode.</p>
+
 <h2>Attachments</h2>
 
-<p>The current version of vmail offers some facilities for handling attachments to
-a certain extent. Future versions will do more on this front.</p>
+<p>The current version of vmail can handle attachments to a certain extent.</p>
+
+<p>When you're viewing a message with attachments, you'll see something like this
+at the top of the message window:</p>
+
+<pre><code>INBOX 2113 4 kb
+- image/png; name=canada.png
+- image/gif; name=arrow_right.gif
+---------------------------------------
+from: Daniel Choi &lt;dhchoi@gmail.com&gt;
+date: Sun, Dec 12 08:39 AM -05:00 2010
+to: Daniel Choi &lt;dhchoi@gmail.com&gt;
+subject: attachment test
+
+see attached
+</code></pre>
+
+<p>To download these attachments to a local directory, type <code>,A</code>. You'll be
+prompted for a directory path.  Then vmail will save all the attachments in the
+message to this directory.</p>
+
+<p>To send attachments, add something like this to your new message in the message
+composition window:</p>
+
+<pre><code>from: Daniel Choi &lt;dhchoi@gmail.com&gt;
+to: barackobama@whitehouse.gov
+subject: look at this!
+
+attach:
+- images/middle-east-map.png
+- images/policypaper.pdf
+- docs/
+
+I think you'll find this stuff interesting.
+</code></pre>
+
+<p>The <code>attach:</code> block is a YAML list. The items are paths (either relative or
+absolute) to the files you want to attach to your message. Note that you can
+also specify a directory, in which case vmail attaches every file it finds in
+that directory.</p>
+
+<p>One thing vmail doesn't do yet is let you forward a message with all its
+attachments intact.  This feature will be implemented in the near future.</p>
+
+<h2>Printing messages to a file</h2>
+
+<p><code>,vp</code> from the message list prints (appends) the text content of all the selected
+messages to a file.</p>
+
+<h2>Invoking your web browser</h2>
+
+<p>When you're reading a message, <code>,o</code> opens the first hyperlink in the document
+on or after the cursor in your normal web browser.</p>
+
+<p>When you're reading a message with an html mail part, <code>,h</code> saves that part to a
+local file (<code>vmail-htmlpart.html</code>) and opens it in your normal web browser.</p>
+
+<p>By default, the command vmail uses to open your web browser is <code>open</code>. In OS X,
+this opens URLs and HTML files in the default web browser.  You can change the
+browser vmail invokes by setting the VMAIL_BROWSER environmental variable
+before you start vmail, e.g.:</p>
+
+<pre><code>export VMAIL_BROWSER='elinks'
+</code></pre>
+
+<h2>Search queries</h2>
+
+<p>vmail can generate a message list by performing an IMAP search on the current mailbox.
+From the message list window, type <code>,s</code>. This will prompt you for a search query.
+The search query is an optional number specifying the number of messages to return,
+followed by a valid IMAP search query.</p>
+
+<p>Here are some example search queries.</p>
+
+<pre><code># the default 
+100 all  
+
+# all messages from thematrix.com domain
+from thematrix.com  
+
+# all messages from this person
+from barackobama@whitehouse.gov  
+
+# subject field search; use double quotes to enclose multiple words
+subject "unix philosophy"  
+
+# example of date range and multiple conditions
+before 30-Nov-2010 since 1-Nov-2010 from prx.org  
+</code></pre>
+
+<p>Tip: When you're entering your search query, <code>&lt;C-u&gt;</code> clears the query line.</p>
+
+<p>Power-Tip: <code>&lt;C-f&gt;</code> opens a mini-editor that contains the current query plus a history of
+previous vmail search queries. You can edit any line in this mini-editor and
+press ENTER to perform the query on that line.</p>
+
+<h2>Using vmail with MacVim</h2>
+
+<p>vmail uses standard Vim by default, but vmail also works with MacVim, but not
+perfectly. In particular, there seems to be a bug in MacVim that prevents
+vmail's status line activity messages from appearing properly. Nonetheless,
+most of vmail is functional in MacVim.</p>
+
+<p>To use MacVim as your vmail Vim engine, <code>export VMAIL_VIM=mvim</code> before startin
+vmail.</p>
+
+<p>Note that when vmail uses MacVim, the terminal window in which you invoke vmail
+will show vmail's logging output while MacVim is running. To quit vmail in
+MacVim mode, you will have to press CTRL-c in this window to stop the vmail
+process.</p>
+
+<h2>vmail file artifacts</h2>
+
+<p>vmail generates a few file artifacts when it is running. It generates a
+temporary <code>vmailbuffer.txt</code> file in the current directory to hold the message
+list. This should get deleted automatically when vmail quits.</p>
+
+<p>vmail also generates a <code>vmail-htmlpart.html</code> file in the current directory if you
+open an HTML mail part from vmail.</p>
+
+<p>Finally, vmail logs output to a <code>vmail.log</code> file which it creates in the
+current directory. You can tail this file in a separate terminal window to see
+what's going on behind the scenes as you use vmail.</p>
+
+<h2>Bug reports and feature requests</h2>
+
+<p>Please file bug reports and features requests in the <a href="https://github.com/danchoi/vmail/issues">vmail github issue tracker</a>.</p>
 
       </div>
       <div class="grid_2 omega">

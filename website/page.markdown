@@ -106,7 +106,7 @@ Unread messages are marked with a `[+]` symbol.
 
 To view the raw RFC822 version of a message, type `,R` while viewing the message.
 
-## Starring, deleting, archiving
+## Starring, deleting, archiving, marking spam
 
 To star a message, put the cursor on it and type `,*` or alternatively `s`.
 Starring a message copies it to the `starred` mailbox.  Starred messages are
@@ -119,6 +119,14 @@ Deleting a message puts it in the `trash` mailbox. Deleting a message from the
 To archive a message, put the cursor on it and type `,e`.  Archiving a message
 moves it to the `all` mailbox.
 
+To mark a message spam, put the cursor on it and type `,!`. This moves the
+message to to the `spam` mailbox.
+
+You can use range selections in the message list when you star, delete, mark as
+spam, or archive. Use `<C-v>` to start marking a range of lines (the vertical
+position of the cursor doesn't matter).  Then type any of the above commands to
+perform an action on all the messages you selected.
+ 
 ## Switching mailboxes, moving messages, copying messages to another mailbox
 
 To switch mailboxes, type `,m`. You'll see an autocomplete window appear at the top.
@@ -185,13 +193,135 @@ normal mode.
 
 At any point, you can quit the composition window by typing `q` in normal mode.
 
-
 ## Attachments
 
 The current version of vmail can handle attachments to a certain extent.
 
 When you're viewing a message with attachments, you'll see something like this
 at the top of the message window:
+
+    INBOX 2113 4 kb
+    - image/png; name=canada.png
+    - image/gif; name=arrow_right.gif
+    ---------------------------------------
+    from: Daniel Choi <dhchoi@gmail.com>
+    date: Sun, Dec 12 08:39 AM -05:00 2010
+    to: Daniel Choi <dhchoi@gmail.com>
+    subject: attachment test
+
+    see attached
+
+To download these attachments to a local directory, type `,A`. You'll be
+prompted for a directory path.  Then vmail will save all the attachments in the
+message to this directory.
+
+To send attachments, add something like this to your new message in the message
+composition window:
+
+    from: Daniel Choi <dhchoi@gmail.com>
+    to: barackobama@whitehouse.gov
+    subject: look at this!
+
+    attach:
+    - images/middle-east-map.png
+    - images/policypaper.pdf
+    - docs/
+
+    I think you'll find this stuff interesting.
+    
+
+The `attach:` block is a YAML list. The items are paths (either relative or
+absolute) to the files you want to attach to your message. Note that you can
+also specify a directory, in which case vmail attaches every file it finds in
+that directory.
+
+One thing vmail doesn't do yet is let you forward a message with all its
+attachments intact.  This feature will be implemented in the near future. 
+
+## Printing messages to a file
+
+`,vp` from the message list prints (appends) the text content of all the selected
+messages to a file.
+
+## Invoking your web browser 
+
+When you're reading a message, `,o` opens the first hyperlink in the document
+on or after the cursor in your normal web browser.
+
+When you're reading a message with an html mail part, `,h` saves that part to a
+local file (`vmail-htmlpart.html`) and opens it in your normal web browser.
+
+By default, the command vmail uses to open your web browser is `open`. In OS X,
+this opens URLs and HTML files in the default web browser.  You can change the
+browser vmail invokes by setting the VMAIL_BROWSER environmental variable
+before you start vmail, e.g.:
+
+    export VMAIL_BROWSER='elinks'
+
+## Search queries
+
+vmail can generate a message list by performing an IMAP search on the current mailbox.
+From the message list window, type `,s`. This will prompt you for a search query. 
+The search query is an optional number specifying the number of messages to return, 
+followed by a valid IMAP search query.
+
+Here are some example search queries.
+
+    # the default 
+    100 all  
+
+    # all messages from thematrix.com domain
+    from thematrix.com  
+
+    # all messages from this person
+    from barackobama@whitehouse.gov  
+
+    # subject field search; use double quotes to enclose multiple words
+    subject "unix philosophy"  
+
+    # example of date range and multiple conditions
+    before 30-Nov-2010 since 1-Nov-2010 from prx.org  
+
+Tip: When you're entering your search query, `<C-u>` clears the query line.
+
+Power-Tip: `<C-f>` opens a mini-editor that contains the current query plus a history of
+previous vmail search queries. You can edit any line in this mini-editor and
+press ENTER to perform the query on that line.
+
+## Using vmail with MacVim
+
+vmail uses standard Vim by default, but vmail also works with MacVim, but not
+perfectly. In particular, there seems to be a bug in MacVim that prevents
+vmail's status line activity messages from appearing properly. Nonetheless,
+most of vmail is functional in MacVim.
+
+To use MacVim as your vmail Vim engine, `export VMAIL_VIM=mvim` before startin
+vmail.
+
+Note that when vmail uses MacVim, the terminal window in which you invoke vmail
+will show vmail's logging output while MacVim is running. To quit vmail in
+MacVim mode, you will have to press CTRL-c in this window to stop the vmail
+process.
+
+## vmail file artifacts
+
+vmail generates a few file artifacts when it is running. It generates a
+temporary `vmailbuffer.txt` file in the current directory to hold the message
+list. This should get deleted automatically when vmail quits.
+
+vmail also generates a `vmail-htmlpart.html` file in the current directory if you
+open an HTML mail part from vmail. 
+
+Finally, vmail logs output to a `vmail.log` file which it creates in the
+current directory. You can tail this file in a separate terminal window to see
+what's going on behind the scenes as you use vmail.
+
+## Bug reports, feature requests, general discussion
+
+Please file bug reports and features requests in the [vmail github issue tracker][1].
+
+General vmail discussion
+
 
 
 
