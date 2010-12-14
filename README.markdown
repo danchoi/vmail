@@ -169,7 +169,8 @@ message list, and type `,B`. You'll be prompted to select the target mailbox.
 
 ## Composing messages
 
-To start writing a new a email message, type `,c`. 
+To start writing a new a email message, type `,c`. That's a comma followed by
+the character 'c'.
 
 To reply to a message, type `,r`. 
 

@@ -727,6 +727,8 @@ endfunc
 func! s:compose_window_mappings()
   noremap <silent> <buffer> <leader>q :call <SID>cancel_compose()<cr>
   nmap <silent> <buffer> q <leader>q
+  setlocal ai
+  setlocal textwidth=72
 endfunc
 
 func! s:global_mappings()
