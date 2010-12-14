@@ -125,6 +125,11 @@ You can use range selections in the message list when you star, delete, mark as
 spam, or archive. Use `<C-v>` to start marking a range of lines (the vertical
 position of the cursor doesn't matter).  Then type any of the above commands to
 perform an action on all the messages you selected.
+
+## Checking for new messages
+
+To check for new messages in the current mailbox, press `u` in normal mode and
+watch the status line.
  
 ## Switching mailboxes, moving messages, copying messages to another mailbox
 
