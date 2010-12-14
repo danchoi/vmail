@@ -560,7 +560,6 @@ func! s:open_compose_window(command)
   echo a:command
   let res = system(a:command)
   split compose-message
-  setlocal buftype=nofile
   setlocal noswapfile
   setlocal modifiable
   wincmd p 
