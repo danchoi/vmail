@@ -2,3 +2,5 @@
 login.yml
 gmail.yml
 *.log
+pkg/
+.rvmrc
