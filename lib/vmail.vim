@@ -141,7 +141,6 @@ function! s:show_raw()
   setlocal nomodifiable
 endfunction
 
-
 function! s:focus_list_window()
   let winnr = bufwinnr(s:listbufnr) 
   if winnr == -1
@@ -641,12 +640,10 @@ func! s:save_attachments()
 endfunc
 " -------------------------------------------------------------------------------- 
 
-func! s:toggle_fullscreen()
+func! s:maximize_window()
   if winnr('$') > 1
     only
-    normal z.
-  else
-    call feedkeys("\<cr>")
+    " normal z.
   endif
 endfunc
 
@@ -682,7 +679,7 @@ func! s:message_window_mappings()
   nnoremap <silent> <buffer> <Leader>m :call <SID>focus_list_window()<cr>:call <SID>mailbox_window()<CR>
   nnoremap <silent> <buffer> <Leader>A :call <SID>save_attachments()<cr>
   " go fullscreen
-  nnoremap <silent> <buffer> <Space> :call <SID>toggle_fullscreen()<cr>
+  nnoremap <silent> <buffer> <Space> :call <SID>maximize_window()<cr>
 endfunc
 
 func! s:message_list_window_mappings()
@@ -705,7 +702,7 @@ func! s:message_list_window_mappings()
   noremap <silent> <buffer> <Leader>a :call <SID>show_message()<cr>:call <SID>compose_reply(1)<CR>
   noremap <silent> <buffer> <c-j> :call <SID>show_next_message_in_list()<cr>
   noremap <silent> <buffer> <c-k> :call <SID>show_previous_message_in_list()<cr>
-  nnoremap <silent> <buffer> <Space> :call <SID>toggle_fullscreen()<cr>
+  nnoremap <silent> <buffer> <Space> :call <SID>maximize_window()<cr>
 endfunc
 
 func! s:compose_window_mappings()
