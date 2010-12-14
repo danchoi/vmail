@@ -495,6 +495,7 @@ DONE
 
 NEXT:
 - help doc: just return readme file, or a vim version of it (vim filetype later)
+  - width 780 px
 - note dependence on lynx in README
 
 later:

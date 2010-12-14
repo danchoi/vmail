@@ -448,6 +448,10 @@ function! s:select_mailbox()
   close
   call s:focus_message_window()
   close
+  " check if mailbox is a real mailbox
+  if (index(s:mailboxes, mailbox) == -1)
+    return
+  endif
   let s:mailbox = mailbox
   let command = s:select_mailbox_command . shellescape(s:mailbox)
   call system(command)
