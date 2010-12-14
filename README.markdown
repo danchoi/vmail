@@ -186,7 +186,7 @@ mail headers like this:
     subject:
 
 The `from:` field will be pre-filled from your `.vmailrc` configuration.
-You're responsible for fill in the `to:` and the `subject:` fields.
+You're responsible for filling in the `to:` and the `subject:` fields.
 You can add a `cc:` and `bcc:` field if you want.
 
 
