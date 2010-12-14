@@ -121,8 +121,9 @@ To view the raw RFC822 version of a message, type `,R` while viewing the message
 ## Starring, deleting, archiving, marking spam
 
 To star a message, put the cursor on it and type `,*` or alternatively `s`.
-Starring a message copies it to the `starred` mailbox.  Starred messages are
-marked with a `[*]` symbol and color-highlighted.
+(Note that the comma before the * is part of the key sequence.) Starring a
+message copies it to the `starred` mailbox.  Starred messages are marked with a
+`[*]` symbol and color-highlighted.
 
 To delete a message, put the cursor on it and type `,#` or alternatively `,d`.
 Deleting a message puts it in the `trash` mailbox. Deleting a message from the
