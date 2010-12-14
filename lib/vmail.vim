@@ -603,6 +603,7 @@ function! s:send_message()
   call system(s:deliver_command, mail)
   redraw
   echo "sent! press q to go back to message list"
+  redraw
 endfunction
 
 func! s:save_draft()
