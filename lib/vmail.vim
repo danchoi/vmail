@@ -335,7 +335,7 @@ function! s:move_to_mailbox(copy) range
   normal $
   inoremap <silent> <buffer> <cr> <Esc>:call <SID>complete_move_to_mailbox()<CR> 
   inoremap <silent> <buffer> <esc> <Esc>:q<cr>
-  set completefunc=CompleteMoveMailbox
+  setlocal completefunc=CompleteMoveMailbox
   " c-p clears the line
   let s:firstline = a:firstline 
   let s:lastline = a:lastline
@@ -412,7 +412,7 @@ function! s:mailbox_window()
   resize 1
   inoremap <silent> <buffer> <cr> <Esc>:call <SID>select_mailbox()<CR> 
   inoremap <silent> <buffer> <esc> <Esc>:q<cr>
-  set completefunc=CompleteMailbox
+  setlocal completefunc=CompleteMailbox
   " c-p clears the line
   call setline(1, "select mailbox to switch to: ")
   normal $
@@ -569,7 +569,12 @@ func! s:open_compose_window(command)
   call feedkeys("\<cr>")
   normal 1G
   call s:compose_window_mappings()
-  set completefunc=CompleteContact
+  setlocal completefunc=CompleteContact
+endfunc
+
+func! s:turn_into_compose_window()
+  call s:compose_window_mappings()
+  setlocal completefunc=CompleteContact
 endfunc
 
 " contacts.txt file should be generated. 
@@ -747,6 +752,8 @@ call s:focus_list_window() " to go list window
 call system(s:set_window_width_command . winwidth(1))
 
 autocmd VimResized <buffer> call system(s:set_window_width_command . winwidth(1))
+
+autocmd bufreadpost *.txt call <SID>turn_into_compose_window()
 
 call system(s:select_mailbox_command . shellescape(s:mailbox))
 call s:do_search()
