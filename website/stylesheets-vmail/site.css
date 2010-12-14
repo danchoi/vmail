@@ -46,4 +46,7 @@ table.pin td {
 .purple {color:purple; font-weight:bold}
 .blue {color:blue; font-weight:bold}
 
-
+#main img {
+  width: 250px;
+  
+}
