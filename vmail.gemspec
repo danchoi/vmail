@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Daniel Choi"]
   s.email       = ["dhchoi@gmail.com"]
-  s.homepage    = "http://rubygems.org/gems/vmail"
+  s.homepage    = "http://danielchoi.com/software/vmail.html"
   s.summary     = %q{A Vim interface to Gmail}
   s.description = %q{Manage your email with Vim}
 
