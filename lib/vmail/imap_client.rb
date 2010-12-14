@@ -147,7 +147,7 @@ module Vmail
       [uid.to_s.col(first_col_width), 
         (date_formatted || '').col(14),
         address.col(address_col_width),
-        subject.encode('utf-8').col(subject_col_width),
+        subject.col(subject_col_width),
         number_to_human_size(size).rcol(6),
         flags.rcol(7)].join(' ')
     end
