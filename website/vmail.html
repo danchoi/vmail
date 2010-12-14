@@ -3,10 +3,10 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
       <title>Vmail</title>
-      <link href="stylesheets-vmail/reset.css?1292362077" media="screen" rel="stylesheet" type="text/css" />
-      <link href="stylesheets-vmail/960.css?1292362077" media="screen" rel="stylesheet" type="text/css" />
-      <link href="stylesheets-vmail/text.css?1292362077" media="screen" rel="stylesheet" type="text/css" />
-      <link href="stylesheets-vmail/site.css?1292362077" media="screen" rel="stylesheet" type="text/css" />
+      <link href="stylesheets-vmail/reset.css?1292362191" media="screen" rel="stylesheet" type="text/css" />
+      <link href="stylesheets-vmail/960.css?1292362191" media="screen" rel="stylesheet" type="text/css" />
+      <link href="stylesheets-vmail/text.css?1292362191" media="screen" rel="stylesheet" type="text/css" />
+      <link href="stylesheets-vmail/site.css?1292362191" media="screen" rel="stylesheet" type="text/css" />
       <script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script><script type="text/javascript">stLight.options({publisher:'8579b5f8-0860-4ea6-9ef1-6f0f58359a99'});</script>
       <script type="text/javascript" src="lightbox2/js/prototype.js"></script>
       <script type="text/javascript" src="lightbox2/js/scriptaculous.js?load=effects,builder"></script>
@@ -47,9 +47,16 @@ a web browser or a GUI mail program.</p>
 <pre><code>gem install vmail
 </code></pre>
 
+<p>Test your installation by typing <code>vmail -h</code>. You should see vmail's help.</p>
+
 <p>On some systems you may run into a PATH issue, where the system can't find the
-<code>vmail</code> command after installation. Please report if you encounter this
-problem, and mention what system you're using.</p>
+<code>vmail</code> command after installation. Please report this if you encounter this
+problem, and mention what system you're using. You might want to try</p>
+
+<pre><code>sudo gem install vmail
+</code></pre>
+
+<p>to see if that puts <code>vmail</code> on your PATH.</p>
 
 <h2>Configuration file</h2>
 
