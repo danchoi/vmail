@@ -187,8 +187,11 @@ blank line between the headers and the body of your message.
 
 When you're done writing, send the message by typing `,vs` in normal mode.
 
-You can save the message as a draft in your draft mailbox by typing `,vd` in
-normal mode.
+In the future, vmail will let you save your draft in Gmail's `drafts` folder. But for now (and alternatively),
+you can save a draft to a local file using the standard vim command `:w`.
+
+To resume writing the draft later, just type `,c` to open a compose message window and `:e draft_filename.txt` to resume editing it.
+Send it by typing `,vs`.
 
 At any point, you can quit the composition window by typing `q` in normal mode.
 

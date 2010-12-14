@@ -420,11 +420,19 @@ EOF
 
     def save_draft(text)
       mail = new_mail_from_input(text)
-      log mail.to_s
+      log "saving draft"
       reconnect_if_necessary do 
         log "saving draft"
         log @imap.append("[Gmail]/Drafts", text.gsub(/\n/, "\r\n"), [:Seen], Time.now)
       end
+    end
+
+    # TODO
+    def resume_draft
+      # chop off top three lines (this is hackey, fix later)
+      # text = text.split("\n")[3..-1].join("\n")
+      # delete date: field
+      # text = text.sub("^date:\s*$", "")
     end
 
     def new_mail_from_input(text)
