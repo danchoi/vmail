@@ -3,7 +3,7 @@
 vmail is a Vim interface to Gmail. Here are some screenshots:
 
 Why vmail? Because some people love using Vim 1000 times more than using
-a web browser or a GUI mail program.
+a web browser or a GUI mail program. 
 
  
 ## Prerequisites
@@ -19,6 +19,10 @@ The current version of vmail assumes a Unix environment. I'll try to make later 
 ## Installation
 
     gem install vmail
+
+On some systems you may run into a PATH issue, where the system can't find the
+`vmail` command after installation. Please report if you encounter this
+problem, and mention what system you're using.
 
 ## Configuration file
 
