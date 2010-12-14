@@ -57,6 +57,9 @@ EOF
           if @contacts_file.nil?
             puts "No contacts file found for auto-completion. See help for how to generate it."
             sleep 0.5
+          else
+            puts "Using contacts file #{@contacts_file}"
+
           end
 
           @config = YAML::load(File.read(@config_file))
