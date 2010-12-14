@@ -92,6 +92,5 @@ describe Vmail::MessageFormatter do
         @formatter.process_body
     end
   end
-
 end
 
