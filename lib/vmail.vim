@@ -287,7 +287,6 @@ func! s:archive_messages() range
   echo len(uids) . " message" . (len(uids) == 1 ? '' : 's') . " archived"
 endfunc
 
-
 " --------------------------------------------------------------------------------
 " append text bodies of a set of messages to a file
 func! s:append_messages_to_file() range
@@ -647,6 +646,11 @@ func! s:toggle_fullscreen()
   endif
 endfunc
 
+func! s:open_href()
+  call search("http:", 'c')
+  let href = matchstr(getline(line('.')), 'http\S\+')
+  exec "!open '" . href . "'"
+endfunc
 
 " -------------------------------------------------------------------------------- 
 " MAPPINGS
@@ -658,8 +662,6 @@ func! s:message_window_mappings()
   noremap <silent> <buffer> <Leader>R :call <SID>show_raw()<cr>
   noremap <silent> <buffer> <Leader>R :call <SID>show_raw()<cr>
   noremap <silent> <buffer> <Leader>f :call <SID>compose_forward()<CR><cr>
-  " TODO improve this
-  noremap <silent> <buffer> <Leader>o yE :!open '<C-R>"'<CR><CR>
   noremap <silent> <buffer> <c-j> :call <SID>show_next_message()<CR> 
   noremap <silent> <buffer> <c-k> :call <SID>show_previous_message()<CR> 
   nmap <silent> <buffer> <leader>j <c-j>
@@ -703,13 +705,19 @@ func! s:message_list_window_mappings()
 endfunc
 
 func! s:compose_window_mappings()
-  " NOTE send_message is a global mapping, so user can load a saved
-  " message from a file and send it
-  nnoremap <silent> <Leader>vs :call <SID>send_message()<CR>
-  nnoremap <silent> <buffer> <Leader>vd :call <SID>save_draft()<CR>
   noremap <silent> <buffer> <leader>q :call <SID>cancel_compose()<cr>
   nmap <silent> <buffer> q <leader>q
 endfunc
+
+func! s:global_mappings()
+  " NOTE send_message is a global mapping, so user can load a saved
+  " message from a file and send it
+  nnoremap <silent> <leader>vs :call <SID>send_message()<CR>
+  nnoremap <silent> <leader>vd :call <SID>save_draft()<CR>
+  noremap <silent> <leader>o :call <SID>open_href()<cr> 
+endfunc
+
+call s:global_mappings()
 
 call s:create_list_window()
 

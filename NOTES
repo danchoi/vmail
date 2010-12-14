@@ -496,7 +496,7 @@ NEXT:
 - help doc: just return readme file, or a vim version of it (vim filetype later)
 - note dependence on lynx in README
 - fix http open
-
+    http://instantwatcher.com
 
 later:
 - mvim - starred messages not syntax colored
