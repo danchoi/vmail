@@ -327,7 +327,7 @@ process in after quitting the MacVim app.
 ## vmail file byproducts
 
 vmail generates a few file byproducts when it is running. It generates a
-temporary `vmailbuffer.txt` file in the current directory to hold the message
+temporary `vmailbuffer` file in the current directory to hold the message
 list. This should get deleted automatically when vmail quits.
 
 vmail also creates a `vmail-htmlpart.html` file in the current directory if you

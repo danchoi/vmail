@@ -45,7 +45,7 @@ module Vmail
     puts "mailbox: #{mailbox}"
     puts "query: #{query.inspect}"
     
-    buffer_file = "vmailbuffer.txt"
+    buffer_file = "vmailbuffer"
     puts "using buffer file: #{buffer_file}"
     File.open(buffer_file, "w") do |file|
       file.puts "fetching messages. please wait..."  
