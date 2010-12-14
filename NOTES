@@ -493,12 +493,14 @@ DONE
 - fix tests
 - open_href is an improved way to open http hrefs
 - VMAIL_URL_OPENER=elinks
+- digg, reddit, etc buttons
+- note dependence on lynx on startup 
 
 NEXT:
 - help doc: just return readme file, or a vim version of it (vim filetype later)
   - width 780 px
-- note dependence on lynx in README
-- digg, reddit, etc buttons?
+- try turning starred item color into some existing syn color group -
+  like comments
 
 later:
 - mvim - starred messages not syntax colored
