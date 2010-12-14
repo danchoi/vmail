@@ -219,8 +219,8 @@ in normal mode.
 
 To resume writing the draft later, just type `:e my_draft_filename.txt` to load
 the draft email into a buffer. (Use `:e!` if you're already in the message
-composition window. You can also use :sp to open in a split window, etc.)
-Resume editing. Send by typing `,vs`.
+composition window. You can also use `:sp` if you want to open the draft email file in a
+split window, etc.) Resume editing. Send by typing `,vs`.
 
 At any point, you can quit the composition window by typing `q` in normal mode.
 
