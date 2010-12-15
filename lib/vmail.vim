@@ -258,8 +258,6 @@ func! s:delete_messages(flag) range
   if len(uids) > 2
     call feedkeys("\<cr>")
   endif
-  call s:focus_message_window()
-  close
   redraw
   echo len(uids) . " message" . (len(uids) == 1 ? '' : 's') . " marked " . a:flag
 endfunc
@@ -691,7 +689,7 @@ func! s:message_window_mappings()
   noremap <silent> <buffer> <Leader>h :call <SID>open_html_part()<CR><cr>
   nnoremap <silent> <buffer> q :close<cr>
 
-  nnoremap <silent> <buffer> <leader>#  :call <SID>focus_list_window()<cr>:call <SID>delete_messages("Deleted")<cr>
+  nnoremap <silent> <buffer> <leader>#  :close<cr>:call <SID>focus_list_window()<cr>:call <SID>delete_messages("Deleted")<cr>
   nmap <silent> <buffer> <leader>d  <leader>#
   nnoremap <silent> <buffer> <leader>*  :call <SID>focus_list_window()<cr>:call <SID>toggle_star()<cr>
   nmap <silent> <buffer> s  <leader>*
