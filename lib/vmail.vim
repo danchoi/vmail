@@ -689,8 +689,9 @@ func! s:message_window_mappings()
   nnoremap <silent> <buffer> u :call <SID>focus_list_window()<cr>:call <SID>update()<CR>
   nnoremap <silent> <buffer> <Leader>m :call <SID>focus_list_window()<cr>:call <SID>mailbox_window()<CR>
   nnoremap <silent> <buffer> <Leader>A :call <SID>save_attachments()<cr>
-  " go fullscreen
   nnoremap <silent> <buffer> <Space> :call <SID>maximize_window()<cr>
+  noremap <silent> <buffer> <Leader>s :call <SID>focus_list_window()<cr>call <SID>search_query()<CR>
+
 endfunc
 
 func! s:message_list_window_mappings()
