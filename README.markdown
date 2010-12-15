@@ -61,7 +61,7 @@ start vmail.
 
 ## Contacts autocompletion
 
-vmail uses vim autocompletion to help you auto-complete email addresses.
+vmail uses Vim autocompletion to help you auto-complete email addresses.
 To use this feature, generate a `vmail-contacts.txt` file in the current or
 home directory. This is a simple list of your email contacts.
 Invoking vmail with the `-g` option generates this file for you by
@@ -78,7 +78,7 @@ you can start vmail with
 
     vmail
 
-This opens the vmail/vim interface and shows you the last 100 messages in your
+This opens the vmail/Vim interface and shows you the last 100 messages in your
 Gmail inbox.
 
 You can have vmail show messages from any other mailbox (a.k.a. label) on
@@ -102,15 +102,15 @@ by moving the cursor line to it and pressing ENTER. This will split the screen
 and show the message content in the bottom pane.
 
 To full-screen the message, press SPACE when the cursor is in the message window.
-You can also use the standard vim key sequence `C-w C-o`.
+You can also use the standard Vim key sequence `C-w C-o`.
 To go back to the split view, press ENTER.
 
 You can full-screen the list window by pressing SPACE while the cursor is in it.
-You can also use the standard vim key sequence `C-w C-o`.
+You can also use the standard Vim key sequence `C-w C-o`.
 
 In the split view, you can jump between the two panes by just pressing ENTER
 from either window.
-You can also use the standard vim key sequence `C-w C-w`.
+You can also use the standard Vim key sequence `C-w C-w`.
 
 You can also use `<C-p>` and `<C-n>` from either window to show the previous or
 next message.
@@ -157,7 +157,7 @@ watch the status line.
 ## Switching mailboxes, moving messages, copying messages to another mailbox
 
 To switch mailboxes, type `,m`. You'll see an autocomplete window appear at the top.
-The standard vim autocomplete keystrokes apply:
+The standard Vim autocomplete keystrokes apply:
 
 * `C-p` and `C-n` move you up and down the match list
 * `C-e` closes the match list and lets you continue typing
@@ -199,7 +199,7 @@ You're responsible for filling in the `to:` and the `subject:` fields.
 You can add a `cc:` and `bcc:` field if you want.
 
 
-When you fill in the recipient addresses, you can use vim autocompletion if you
+When you fill in the recipient addresses, you can use Vim autocompletion if you
 generated a `vmail-contacts.txt` file. Start typing a name or email address,
 then press `C-x C-u` to invoke autocompletion.
 
@@ -217,7 +217,7 @@ blank line between the headers and the body of your message.
 When you're done writing, send the message by typing `,vs` in normal mode.
 
 While you're composing a message in the composition window, you can save a
-draft to a local file with the standard vim `:w` command: 
+draft to a local file with the standard Vim `:w` command: 
 
     :w my_draft_filename.txt 
 
@@ -317,6 +317,9 @@ Here are some example search queries.
 
     # all messages from this person
     from barackobama@whitehouse.gov  
+
+    # you can also omit the host part of the email address
+    from barackobama
 
     # subject field search; use double quotes to enclose multiple words
     subject "unix philosophy"  
