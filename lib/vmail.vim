@@ -658,9 +658,8 @@ endfunc
 func! s:open_href()
   call search("http:", 'c')
   let href = matchstr(getline(line('.')), 'http\S\+')
-  " BUG if # is in URL, vim puts in the buffer name
-  let command = "!" . s:browser_command . " '" . href . "'"
-  exec command
+  let command = s:browser_command . " '" . href . "'"
+  call system(command)
 endfunc
 
 " -------------------------------------------------------------------------------- 
