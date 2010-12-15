@@ -312,6 +312,9 @@ Here are some example search queries.
     # subject field search; use double quotes to enclose multiple words
     subject "unix philosophy"  
 
+    # body  field search; use double quotes to enclose multiple words
+    body "unix philosophy"  
+
     # example of date range and multiple conditions
     before 30-Nov-2010 since 1-Nov-2010 from prx.org  
 

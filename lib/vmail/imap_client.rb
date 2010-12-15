@@ -423,7 +423,7 @@ EOF
       end 
       mail = new_mail_from_input(text)
       mail.delivery_method(*smtp_settings)
-      mail.deliver!
+      log mail.deliver!
       "message '#{mail.subject}' sent"
     end
 
