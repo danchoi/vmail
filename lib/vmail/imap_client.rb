@@ -28,10 +28,12 @@ module Vmail
       @logger.level = Logger::DEBUG
       @current_mail = nil
       @current_uid = nil
+      @imap_server = config['server'] || 'imap.gmail.com'
+      @imap_port = config['port'] || 993
     end
 
     def open
-      @imap = Net::IMAP.new('imap.gmail.com', 993, true, nil, false)
+      @imap = Net::IMAP.new(@imap_server, @imap_port, true, nil, false)
       @imap.login(@username, @password)
     end
 
