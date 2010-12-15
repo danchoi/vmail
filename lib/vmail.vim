@@ -534,25 +534,22 @@ function! s:compose_reply(all)
   endif
   call s:open_compose_window(command)
   " cursor after headers
-  normal }
-  normal o
+  normal 1G}
 endfunction
 
 function! s:compose_message()
   let command = s:new_message_template_command
   call s:open_compose_window(command)
   " position cursor after to:
-  call search("^to:")
-  normal $
-  call feedkeys("a")
+"  call search("^to:") 
+"  normal A
 endfunction
 
 function! s:compose_forward()
   let command = s:forward_template_command . s:current_uid
   call s:open_compose_window(command)
-  call search("^to:")
-  normal $
-  call feedkeys("a")
+"  call search("^to:") 
+"  normal A
 endfunction
 
 func! s:open_compose_window(command)
@@ -566,9 +563,9 @@ func! s:open_compose_window(command)
   1,$delete
   put! =res
   call feedkeys("\<cr>")
-  normal 1G
   call s:compose_window_mappings()
   setlocal completefunc=CompleteContact
+  normal 1G
 endfunc
 
 func! s:turn_into_compose_window()
@@ -718,6 +715,7 @@ func! s:message_list_window_mappings()
   noremap <silent> <buffer> <Leader>c :call <SID>compose_message()<CR>
   noremap <silent> <buffer> <Leader>r :call <SID>show_message()<cr>:call <SID>compose_reply(0)<CR>
   noremap <silent> <buffer> <Leader>a :call <SID>show_message()<cr>:call <SID>compose_reply(1)<CR>
+  noremap <silent> <buffer> <Leader>f :call <SID>show_message()<cr>:call <SID>compose_forward()<CR><cr>
   noremap <silent> <buffer> <c-j> :call <SID>show_next_message_in_list()<cr>
   noremap <silent> <buffer> <c-k> :call <SID>show_previous_message_in_list()<cr>
   nnoremap <silent> <buffer> <Space> :call <SID>maximize_window()<cr>
