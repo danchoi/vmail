@@ -290,7 +290,7 @@ on or after the cursor in your normal web browser.
 When you're reading a message with an html mail part, `,h` saves that part to a
 local file (`vmail-htmlpart.html`) and opens it in your normal web browser.
 
-By default, the command vmail uses to open your web browser is `open`. In OS X,
+By default, the vmail uses the command `open` to launch your web browser. In OS X,
 this opens URLs and HTML files in the default web browser.  You can change the
 browser vmail invokes by setting the VMAIL_BROWSER environmental variable
 before you start vmail, e.g.:
