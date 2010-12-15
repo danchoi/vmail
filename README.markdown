@@ -61,7 +61,7 @@ start vmail.
 Server and port configuration pairs let you specify the IMAP connection details.
 This can be useful if you are behind a firewall, and can't use IMAP, but can
 create an SSH tunnel:
-ssh -f user@example.com -L 2999:imap.gmail.com:9993 -N
+ssh -f user@example.com -L 2999:imap.gmail.com:993 -N
 
 ## Contacts autocompletion
 
