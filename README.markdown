@@ -116,8 +116,8 @@ In the split view, you can jump between the two panes by just pressing ENTER
 from either window.
 You can also use the standard Vim key sequence `C-w C-w`.
 
-You can also use `<C-p>` and `<C-n>` from either window to show the previous or
-next message.
+You can use `<C-j>` or `,j` from either split window to show the next message.
+You can use `<C-k>` or `,k` to show the previous message. 
 
 vmail loads a certain number messages at a time, starting with the most recent.
 If there are more messages that vmail hasn't loaded, you'll see a line at the
