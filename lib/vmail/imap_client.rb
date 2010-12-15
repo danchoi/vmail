@@ -368,7 +368,7 @@ EOF
         'to' => nil,
         'subject' => nil
       }
-      format_headers(headers) + "\n\n"
+      format_headers(headers) + "\n\n" + signature
     end
 
     def format_headers(hash)
