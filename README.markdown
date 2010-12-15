@@ -318,7 +318,7 @@ Here are some example search queries.
     # subject field search; use double quotes to enclose multiple words
     subject "unix philosophy"  
 
-    # body field search; use double quotes to enclose multiple words
+    # message body search; use double quotes to enclose multiple words
     body "unix philosophy"  
 
     # example of date range and multiple conditions
