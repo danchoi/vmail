@@ -412,7 +412,7 @@ in your .vmailrc, like so:
 
 Then you can create an SSH tunnel, e.g.
 
-    ssh -f user@example.com -L 2999:imap.gmail.com:9993 -N
+    ssh -f user@example.com -L 2999:imap.gmail.com:993 -N
 
 (Thanks to Dave Bolton for this patch.)
 
