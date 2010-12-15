@@ -10,7 +10,7 @@ a web browser or a GUI mail program.
 
 * a Gmail account
 * a relatively recent version of Vim (vmail is developed against Vim 7.3)
-* Ruby (vmail is developed using Ruby 1.9.2)
+* Ruby with SSL support compiled in (vmail is developed using Ruby 1.9.2)
 * RubyGems (if Ruby version is older than 1.9)
 * the `lynx` text-only-mode web browser is required to view HTML mail parts in vmail
 
