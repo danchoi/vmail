@@ -86,7 +86,7 @@ module Vmail
       text = part.body.decoded.gsub("\r", '')
       charset = part.content_type_parameters && part.content_type_parameters['charset']
       if charset
-        Iconv.conv('utf-8//translit//ignore', charset, text)
+        Iconv.conv('UTF-8//TRANSLIT//IGNORE', charset, text)
       else
         text
       end
@@ -100,7 +100,7 @@ module Vmail
       stdin.close
       output = stdout.read
       charset = part.content_type_parameters && part.content_type_parameters['charset']
-      charset ?  Iconv.conv('utf-8//translit//ignore', charset, output) : output
+      charset ?  Iconv.conv('UTF-8//TRANSLIT//IGNORE', charset, output) : output
     end
 
     def extract_headers(mail = @mail)
@@ -121,13 +121,13 @@ module Vmail
     end
 
     def encoding
-      @encoding ||= @mail.header.charset || 'utf-8'
+      @encoding ||= @mail.header.charset || 'UTF-8'
     end
 
     def utf8(string)
       return '' unless string
       return string unless encoding
-      Iconv.conv('utf-8//translit/ignore', encoding, string)
+      Iconv.conv('UTF-8//TRANSLIT/IGNORE', encoding, string)
     rescue
       puts $!
       string

@@ -118,7 +118,7 @@ module Vmail
       address = if address_struct.nil?
                   "unknown"
                 elsif address_struct.name
-                  "#{Mail::Encodings.unquote_and_convert_to(address_struct.name, 'utf-8')} <#{[address_struct.mailbox, address_struct.host].join('@')}>"
+                  "#{Mail::Encodings.unquote_and_convert_to(address_struct.name, 'UTF-8')} <#{[address_struct.mailbox, address_struct.host].join('@')}>"
                 else
                   [address_struct.mailbox, address_struct.host].join('@') 
                 end
@@ -138,7 +138,7 @@ module Vmail
                          date.strftime "%b %d %I:%M%P" rescue envelope.date.to_s 
                        end
       subject = envelope.subject || ''
-      subject = Mail::Encodings.unquote_and_convert_to(subject, 'utf-8')
+      subject = Mail::Encodings.unquote_and_convert_to(subject, 'UTF-8')
       flags = format_flags(flags)
       first_col_width = max_uid.to_s.length 
       mid_width = @width - (first_col_width + 33)

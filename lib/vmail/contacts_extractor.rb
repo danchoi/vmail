@@ -33,7 +33,7 @@ class ContactsExtractor
           email = [address_struct.mailbox, address_struct.host].join('@') 
           name = address_struct.name
           if name 
-            name = Mail::Encodings.unquote_and_convert_to(name, 'utf-8') 
+            name = Mail::Encodings.unquote_and_convert_to(name, 'UTF-8') 
             yield "#{name} <#{email}>"
           else
             yield email
