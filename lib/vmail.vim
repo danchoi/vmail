@@ -25,6 +25,8 @@ let s:deliver_command = s:client_script . "deliver "
 let s:save_draft_command = s:client_script . "save_draft "
 let s:save_attachments_command = s:client_script . "save_attachments "
 let s:open_html_part_command = s:client_script . "open_html_part "
+let s:show_help_command = s:client_script . "show_help"
+
 let s:message_bufname = "MessageWindow"
 
 function! VmailStatusLine()
@@ -661,6 +663,17 @@ func! s:open_href()
 endfunc
 
 " -------------------------------------------------------------------------------- 
+"  HELP
+func! s:show_help()
+  let helpfile = system(s:show_help_command)
+  exec "split " . helpfile
+  setlocal nomodifiable
+  setlocal buftype=nofile
+  nnoremap <silent> <buffer> q :close<cr>
+endfunc
+
+
+" -------------------------------------------------------------------------------- 
 " MAPPINGS
 
 func! s:message_window_mappings()
@@ -735,6 +748,7 @@ func! s:global_mappings()
   nnoremap <silent> <leader>vs :call <SID>send_message()<CR>
   nnoremap <silent> <leader>vd :call <SID>save_draft()<CR>
   noremap <silent> <leader>o :call <SID>open_href()<cr> 
+  noremap <silent> <leader>? :call <SID>show_help()<cr>
 endfunc
 
 "TODO see if using LocalLeader and maplocalleader makes more sense
