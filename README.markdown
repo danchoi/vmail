@@ -30,6 +30,12 @@ problem, and mention what system you're using. You might want to try
 
 to see if that puts `vmail` on your PATH.
 
+vmail is evolving rapidly. To update to the latest version, simply run the
+installation command again.
+
+    gem install vmail
+
+
 ## Configuration file
 
 To run vmail, create a yaml file called `.vmailrc` and save it either in the
