@@ -193,7 +193,7 @@ module Vmail
       @query = query.join(' ')
       log "uid_search #@query #{limit}"
       @all_uids = reconnect_if_necessary do
-        @imap.uid_search(@query)
+        log @imap.uid_search(@query)
       end
       uids = @all_uids[-([limit.to_i, @all_uids.size].min)..-1] || []
       res = fetch_headers(uids)
