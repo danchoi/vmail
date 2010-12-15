@@ -50,7 +50,7 @@ module Vmail
       end
       log "selecting mailbox #{mailbox.inspect}"
       reconnect_if_necessary do 
-        @imap.select(mailbox)
+        log @imap.select(mailbox)
       end
       @mailbox = mailbox
       @all_uids = []
