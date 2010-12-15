@@ -400,7 +400,7 @@ EOF
       end
       cc = replyall ? cc : nil
       date = headers['date'].is_a?(String) ? Time.parse(headers['date']) : headers['date']
-      quote_header = "On #{date.strftime('%a, %b %d, %Y at %I:%M %p')}, #{recipient} wrote:\n\n"
+      quote_header = "On #{date.strftime('%a, %b %d, %Y at %I:%M %p')}, #{address_to_string(envelope.from[0])} wrote:\n\n"
       body = quote_header + formatter.process_body.gsub(/^(?=>)/, ">").gsub(/^(?!>)/, "> ")
       reply_headers = { 'from' => "#@name <#@username>", 'to' => recipient, 'cc' => cc, 'subject' => subject}
       format_headers(reply_headers) + "\n\n\n" + body + signature
