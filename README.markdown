@@ -354,7 +354,7 @@ Finally, vmail logs output to a `vmail.log` file which it creates in the
 current directory. You can tail this file in a separate terminal window to see
 what's going on behind the scenes as you use vmail.
 
-## Is my gmail password secure?
+## Is my Gmail password secure?
 
 In short, yes. vmail uses TLS ([Transport Layer Security][tls]) to perform IMAP
 and SMTP authentication. So vmail transmits your password securely over the
