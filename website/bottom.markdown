@@ -1,9 +1,9 @@
 ## How to support the vmail project
 
-If you find vmail very useful, feel free to drop me a note to say so. If you have
-a bug to report or a good feature to suggest, please file it on the [issue tracker][1].
-Few things make this software developer happier than knowing that people find my
-software useful. 
+If you find vmail very useful, feel free to drop me a note to say so. If you
+have a bug to report or a good feature to suggest, please file it on the [issue
+tracker][1].  Few things make this software developer happier than making good
+software and knowing that people find my software useful. 
 
 [1]:https://github.com/danchoi/vmail/issues
 
