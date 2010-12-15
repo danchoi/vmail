@@ -402,7 +402,7 @@ EOF
       date = headers['date'].is_a?(String) ? Time.parse(headers['date']) : headers['date']
       quote_header = "On #{date.strftime('%a, %b %d, %Y at %I:%M %p')}, #{recipient} wrote:\n\n"
       body = quote_header + formatter.process_body.gsub(/^(?=>)/, ">").gsub(/^(?!>)/, "> ")
-      reply_headers = { 'from' => "#@name <#@username>", 'to' => recipient, 'cc' => cc, 'subject' => headers['subject']}
+      reply_headers = { 'from' => "#@name <#@username>", 'to' => recipient, 'cc' => cc, 'subject' => subject}
       format_headers(reply_headers) + "\n\n\n" + body + signature
     end
 
