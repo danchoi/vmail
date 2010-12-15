@@ -576,3 +576,5 @@ todo
 
 - put command line parsing under a test harness
 
+- ,k ,j should accept a number so you can jump to a message further away
+
