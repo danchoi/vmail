@@ -559,3 +559,19 @@ todo
 
 - one particular email don't send
   - from f rojas. see why it fails silently
+
+- deal with encoding: quotable printable mail part, e.g.
+  inbox 85740 4 kb 
+  - application/pgp-signature; name=signature.asc
+  ---------------------------------------
+  from: asdsadsd
+  date: Wed, Dec 15 02:01 PM +01:00 2010
+  to: vim_use@googlegroups.com
+  subject: Re: introducing vmail
+  cc: Daniel Choi <dhchoi@gmail.com>
+
+  --Sig_/mr9Wc47A9zV0_9ckNR.1R8f
+  Content-Type: text/plain; charset=US-ASCII
+  Content-Transfer-Encoding: quoted-printable
+
+
