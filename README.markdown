@@ -158,7 +158,7 @@ The standard vim autocomplete keystrokes apply:
 * ENTER selects the highlighted match from the match list 
 
 Tip: start typing the first 1-3 characters of the mailbox name, then press
-'C-n`, `C-u` or `C-p` until you highlight the right match, and finally press ENTER to
+`C-n`, `C-u` or `C-p` until you highlight the right match, and finally press ENTER to
 select.
 
 To move a message to another mailbox, put the cursor on the message in the

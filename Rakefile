@@ -5,6 +5,13 @@ Bundler::GemHelper.install_tasks
 
 $LOAD_PATH.unshift File.join(File.dirname(__FILE__), 'lib')
 
+desc "build and push website"
+task :web do
+  Dir.chdir("website") do
+    puts `./run.sh`
+  end
+end
+
 desc "Run tests"
 task :test do 
   $:.unshift File.expand_path("test")
