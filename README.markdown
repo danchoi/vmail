@@ -321,6 +321,10 @@ Here are some example search queries.
     # you can also omit the host part of the email address
     from barackobama
 
+    # you can also search by the full name, first name, or last name associated
+    # with an email; use double quotes to enclose multiple words 
+    cc "David Fisher"
+
     # subject field search; use double quotes to enclose multiple words
     subject "unix philosophy"  
 
