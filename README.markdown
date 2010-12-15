@@ -16,6 +16,10 @@ a web browser or a GUI mail program.
 
 The current version of vmail assumes a Unix environment. I'll try to make later versions accommodate Windows.
 
+Your Gmail account should be [IMAP-enabled][gmailimap]. 
+
+[gmailimap]:http://mail.google.com/support/bin/answer.py?hl=en&answer=77695
+
 ## Installation
 
     gem install vmail
