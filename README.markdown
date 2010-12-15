@@ -178,7 +178,7 @@ To reply-all to a message, type `,a`.
 
 To forward a message, type `,f`.
 
-All these command open a message composition window. At the top, you will see 
+All these commands open a message composition window. At the top, you will see 
 mail headers like this:
 
     from: Daniel Choi <dhchoi@gmail.com>
