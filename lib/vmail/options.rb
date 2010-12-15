@@ -33,6 +33,11 @@ module Vmail
           @get_contacts = true
           @max_messages_to_scan = n || 500
         end
+        opts.on("-v", "--version", "Show version") do
+          require 'vmail/version'
+          puts "vmail #{Vmail::VERSION}\nCopyright 2010 Daniel Choi under the MIT license"
+          exit
+        end
         opts.on("-h", "--help", "Show this message") do
           puts opts
           exit
