@@ -552,4 +552,10 @@ imap.search ["HEADER", "MESSAGE-ID", "<757FC46C-9394-494E-91B4-B051F48419DA@prx.
   " trying to make user defined commands that work from : prompt
   " command -buffer -range VmailDelete call s:toggle_star("Deleted")
   " command -buffer -range VmailStar call s:toggle_star("Flagged")
+------------------------------------------------------------------------
+Tue Dec 14 23:06:41 EST 2010
 
+todo
+
+- one particular email don't send
+  - from f rojas. see why it fails silently
