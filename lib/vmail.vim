@@ -273,7 +273,7 @@ func! s:archive_messages() range
     let lnum = lnum + 1
   endwhile
   let uid_set = join(uids, ",")
-  let command = s:move_to_command . uid_set . ' ' . shellescape("[Gmail]/All Mail")
+  let command = s:move_to_command . uid_set . ' ' . "all"
   echo "archiving message" . (len(uids) == 1 ? '' : 's')
   let res = system(command)
   setlocal modifiable

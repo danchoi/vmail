@@ -75,6 +75,14 @@ module Vmail
       @mailboxes.join("\n")
     end
 
+    # called internally, not by vim client
+    def mailboxes
+      if @mailboxes.nil?
+        list_mailboxes
+      end
+      @mailboxes
+    end
+
     def fetch_headers(uid_set)
       if uid_set.is_a?(String)
         uid_set = uid_set.split(",").map(&:to_i)
@@ -303,14 +311,17 @@ EOF
     end
 
     def move_to(uid_set, mailbox)
+      if mailbox == 'all'
+        log "archiving messages"
+      end
       if MailboxAliases[mailbox]
         mailbox = MailboxAliases[mailbox]
       end
       create_if_necessary mailbox
-      log "move_to #{uid_set.inspect} #{mailbox}"
       if uid_set.is_a?(String)
         uid_set = uid_set.split(",").map(&:to_i)
       end
+      log "move_to #{uid_set.inspect} #{mailbox}"
       log @imap.uid_copy(uid_set, mailbox)
       log @imap.uid_store(uid_set, '+FLAGS', [:Deleted])
     end
@@ -328,10 +339,12 @@ EOF
     end
 
     def create_if_necessary(mailbox)
-      if !@mailboxes.include?(mailbox) 
+      current_mailboxes = mailboxes.map {|m| MailboxAliases[m] || m}
+      if !current_mailboxes.include?(mailbox)
+        log "current mailboxes: #{current_mailboxes.inspect}"
         log "creating mailbox #{mailbox}"
         log @imap.create(mailbox) 
-        @mailboxes = nil # force reload next fime list_mailboxes() called
+        mailboxes = nil # force reload next fime list_mailboxes() called
       end
     end
 
