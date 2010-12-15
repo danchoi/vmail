@@ -574,4 +574,5 @@ todo
   Content-Type: text/plain; charset=US-ASCII
   Content-Transfer-Encoding: quoted-printable
 
+- put command line parsing under a test harness
 
