@@ -42,6 +42,9 @@ module Vmail
     server.select_mailbox mailbox
 
     query = ARGV.empty? ? [100, 'ALL'] : ARGV
+    if query.size == 1 && query[0] =~ /^\d/
+      query << "ALL"
+    end
     puts "mailbox: #{mailbox}"
     puts "query: #{query.inspect}"
     
