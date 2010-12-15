@@ -346,8 +346,9 @@ vmail generates a few file byproducts when it is running. It generates a
 temporary `vmailbuffer` file in the current directory to hold the message
 list. This should get deleted automatically when vmail quits.
 
-vmail also creates a `vmail-htmlpart.html` file in the current directory if you
-open an HTML mail part from vmail. 
+vmail also creates a `compose_message.txt` file if you save the buffer for a
+new message.  vmail creates a `vmail-htmlpart.html` file in the current
+directory if you open an HTML mail part from vmail. 
 
 Finally, vmail logs output to a `vmail.log` file which it creates in the
 current directory. You can tail this file in a separate terminal window to see

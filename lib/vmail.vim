@@ -559,8 +559,7 @@ func! s:open_compose_window(command)
   redraw
   echo a:command
   let res = system(a:command)
-  split compose-message
-  setlocal noswapfile
+  split compose_message.txt
   setlocal modifiable
   wincmd p 
   close!
