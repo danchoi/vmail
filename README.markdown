@@ -180,6 +180,9 @@ message list, and type `,b`. You'll be prompted to select the target mailbox.
 To copy a message to another mailbox, put the cursor on the message in the
 message list, and type `,B`. You'll be prompted to select the target mailbox.
 
+If you type in the name of a target mailbox that doesn't exist yet, vmail will
+create it for you before performing a move or copy.
+
 ## Composing messages
 
 To start writing a new a email message, type `,c`. That's a comma followed by
