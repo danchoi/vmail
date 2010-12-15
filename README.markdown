@@ -348,6 +348,10 @@ that contains the current query plus a history of previous vmail search
 queries. You can edit any line in this mini-editor and press ENTER to perform
 the query on that line.
 
+## Getting help
+
+Type `,?` to load all these vmail pointers and tips into a Vim window.
+
 ## Using vmail with MacVim
 
 vmail uses standard Vim by default, but vmail also works with MacVim, but not
