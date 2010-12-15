@@ -102,12 +102,15 @@ by moving the cursor line to it and pressing ENTER. This will split the screen
 and show the message content in the bottom pane.
 
 To full-screen the message, press SPACE when the cursor is in the message window.
+You can also use the standard vim key sequence `C-w C-o`.
 To go back to the split view, press ENTER.
 
 You can full-screen the list window by pressing SPACE while the cursor is in it.
+You can also use the standard vim key sequence `C-w C-o`.
 
 In the split view, you can jump between the two panes by just pressing ENTER
 from either window.
+You can also use the standard vim key sequence `C-w C-w`.
 
 You can also use `<C-p>` and `<C-n>` from either window to show the previous or
 next message.
