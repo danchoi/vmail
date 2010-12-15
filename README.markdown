@@ -53,6 +53,16 @@ You can omit the password key-value pair if you'd rather not have the password
 saved in the file. In that case, you'll prompted for the password each time you
 start vmail.
 
+### Other configuration items
+
+    server: localhost
+    port: 2999
+
+Server and port configuration pairs let you specify the IMAP connection details.
+This can be useful if you are behind a firewall, and can't use IMAP, but can
+create an SSH tunnel:
+ssh -f user@example.com -L 2999:imap.gmail.com:9993 -N
+
 ## Contacts autocompletion
 
 vmail uses vim autocompletion to help you auto-complete email addresses.
