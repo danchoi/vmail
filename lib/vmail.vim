@@ -1,4 +1,4 @@
-if !has("g:vmail_flagged_color")
+if !exists("g:vmail_flagged_color")
   let g:vmail_flagged_color = "ctermfg=green"
 endif
 let s:mailbox = $VMAIL_MAILBOX
