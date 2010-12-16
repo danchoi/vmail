@@ -385,9 +385,10 @@ EOF
           end
           log "@imap.uid_store #{uid_set.inspect} #{action} [#{flg.to_sym}]"
           log @imap.uid_store(uid_set, action, [flg.to_sym])
-          remove_uid_set_from_cached_lists(uid_set)
           reload_mailbox
         end
+        remove_uid_set_from_cached_lists(uid_set)
+
       elsif flg == '[Gmail]/Spam'
         log "Marking as spam index_range: #{index_range.inspect}; uid_set: #{uid_set.inspect}"
         Thread.new do 
@@ -395,9 +396,10 @@ EOF
           log @imap.uid_copy(uid_set, "[Gmail]/Spam")
           log "@imap.uid_store #{uid_set.inspect} #{action} [:Deleted]"
           log @imap.uid_store(uid_set, action, [:Deleted])
-          remove_uid_set_from_cached_lists(uid_set)
           reload_mailbox
         end
+        remove_uid_set_from_cached_lists(uid_set)
+
         "#{id} deleted"
       else
         log "Flagging index_range: #{index_range.inspect}; uid_set: #{uid_set.inspect}"
@@ -547,15 +549,6 @@ EOF
       "message '#{mail.subject}' sent"
     end
 
-    def save_draft(text)
-      mail = new_mail_from_input(text)
-      log "saving draft"
-      reconnect_if_necessary do 
-        log "saving draft"
-        log @imap.append("[Gmail]/Drafts", text.gsub(/\n/, "\r\n"), [:Seen], Time.now)
-      end
-    end
-
     # TODO
     def resume_draft
       # chop off top three lines (this is hackey, fix later)
@@ -675,7 +668,9 @@ EOF
       log "attempting to reconnect"
       log(revive_connection)
       # hope this isn't an endless loop
-      reconnect_if_necessary(timeout, &block)
+      reconnect_if_necessary do 
+        block.call
+      end
     rescue
       log "error: #{$!}"
       raise
