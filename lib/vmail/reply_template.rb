@@ -31,7 +31,10 @@ module Vmail
 
     def cc
       return nil unless @replyall
-      cc = @mail.header['to'].value.split(/,\s*/) + @mail.header['cc'].value.split(/,\s*/) 
+      cc = @mail.header['to'].value.split(/,\s*/) 
+      if @mail.header['cc']
+        cc += @mail.header['cc'].value.split(/,\s*/) 
+      end
       cc = cc.flatten.compact.
         select {|x| 
           x.to_s[/<([^>]+)>/, 1] !~ /#{@username}/ && x.to_s[/^[^<]+/, 1] !~ /#{@name}/
