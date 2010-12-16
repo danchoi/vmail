@@ -214,12 +214,22 @@ function! s:toggle_star() range
   else
     echom "toggling flags on " . nummsgs . " messages"
   endif
-  " toggle * on lines; TODO: do this all in vimscript and do the starring
-  " in a thread in imap_client
+  " toggle * on lines
   let res = system(command)
   setlocal modifiable
-  exec a:firstline . "," . a:lastline . "delete"
-  exec (a:firstline - 1). "put =res"
+  let lnum = a:firstline
+  while lnum <= a:lastline
+    let line = getline(lnum)
+    if action == " +FLAGS"
+      let newline = substitute(line, '^ ', '*', '')
+      let newline = substitute(newline, '^+ ', '*+', '')
+    else
+      let newline = substitute(line, '^*+', '+ ', '')
+      let newline = substitute(newline, '^* ', '  ', '')
+    endif
+    call setline(lnum, newline)
+    let lnum += 1
+  endwhile
   setlocal nomodifiable
   write
   if nummsgs > 2

@@ -393,9 +393,10 @@ EOF
         "#{id} deleted"
       else
         log "Flagging index_range: #{index_range.inspect}; uid_set: #{uid_set.inspect}"
-        res = @imap.uid_store(uid_set, action, [flg.to_sym])
-        log res.inspect
-        fetch_envelopes(uid_set, true).tap {|x| log x}
+        Thread.new do
+          res = @imap.uid_store(uid_set, action, [flg.to_sym])
+          log res.inspect
+        end
       end
     end
 
