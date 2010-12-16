@@ -238,7 +238,7 @@ module Vmail
                     @start_index = [@ids.length - limit, 0].max
                     @ids[@start_index..-1]
                   end
-      log "search query result: #{fetch_ids.inspect}"
+      log "search query got #{@ids.size} results" 
       res = fetch_envelopes(fetch_ids)
       add_more_message_line(res, fetch_ids[0])
     end
