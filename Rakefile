@@ -7,8 +7,10 @@ $LOAD_PATH.unshift File.join(File.dirname(__FILE__), 'lib')
 
 desc "build and push website"
 task :web do
+  require 'vmail/version'
+  version = Vmail::VERSION
   Dir.chdir("website") do
-    puts `./run.sh`
+    puts `./run.sh #{version}`
   end
 end
 

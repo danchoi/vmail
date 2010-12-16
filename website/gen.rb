@@ -1,6 +1,8 @@
 require 'liquid'
 require 'rdiscount'
 
+version = ARGV.first
+
 top = RDiscount.new(File.read("top.markdown")).to_html
 
 readme = File.expand_path("../../README.markdown", __FILE__)
@@ -21,5 +23,5 @@ bottom = RDiscount.new(File.read("bottom.markdown")).to_html
 content = [top, middle, bottom].join("\n\n")
 
 template = File.read("vmail-template.html")
-out = Liquid::Template.parse(template).render 'content' => content, 'timestamp' => Time.now.to_i
+out = Liquid::Template.parse(template).render 'content' => content, 'timestamp' => Time.now.to_i, 'version' => version
 puts out
