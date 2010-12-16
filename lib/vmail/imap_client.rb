@@ -380,17 +380,21 @@ EOF
         # for delete, do in a separate thread because deletions are slow
         Thread.new do 
           unless @mailbox == '[Gmail]/Trash'
-            @imap.uid_copy(uid_set, "[Gmail]/Trash")
+            log "@imap.uid_copy #{uid_set.inspect} to trash"
+            log @imap.uid_copy(uid_set, "[Gmail]/Trash")
           end
-          res = @imap.uid_store(uid_set, action, [flg.to_sym])
+          log "@imap.uid_store #{uid_set.inspect} #{action} [#{flg.to_sym}]"
+          log @imap.uid_store(uid_set, action, [flg.to_sym])
           remove_uid_set_from_cached_lists(uid_set)
           reload_mailbox
         end
       elsif flg == '[Gmail]/Spam'
         log "Marking as spam index_range: #{index_range.inspect}; uid_set: #{uid_set.inspect}"
         Thread.new do 
-          @imap.uid_copy(uid_set, "[Gmail]/Spam")
-          res = @imap.uid_store(uid_set, action, [:Deleted])
+          log "@imap.uid_copy #{uid_set.inspect} to spam"
+          log @imap.uid_copy(uid_set, "[Gmail]/Spam")
+          log "@imap.uid_store #{uid_set.inspect} #{action} [:Deleted]"
+          log @imap.uid_store(uid_set, action, [:Deleted])
           remove_uid_set_from_cached_lists(uid_set)
           reload_mailbox
         end
@@ -398,8 +402,8 @@ EOF
       else
         log "Flagging index_range: #{index_range.inspect}; uid_set: #{uid_set.inspect}"
         Thread.new do
-          res = @imap.uid_store(uid_set, action, [flg.to_sym])
-          log res.inspect
+          log "@imap.uid_store #{uid_set.inspect} #{action} [#{flg.to_sym}]"
+          log @imap.uid_store(uid_set, action, [flg.to_sym])
         end
       end
     end
@@ -415,17 +419,22 @@ EOF
 
     def remove_uid_set_from_cached_lists(uid_set)
       # delete from cached @ids and @message_list
+      rows_to_delete = []
       uid_set.each {|uid| 
         @message_list.
           select {|row| row[:uid] == uid}.
-          each {|row| 
+          each_width_index {|row, idx| 
             seqno = row[:seqno]
             log "deleting seqno #{seqno} from @ids"
             @ids.delete seqno
             log "deleting msg uid #{row[:uid]} from @message_list"
-            @message_list.delete(row)
+            rows_to_delete << idx
           }
       }
+      rows_to_delete.reverse.each do |idx|
+        deleted_row = @message_list.delete_at idx 
+        log "deleting row uid #{deleted_row[:uid]} seqno #{deleted_row[:seqno]} from @message_list" 
+      end
 
     end
 
@@ -468,7 +477,8 @@ EOF
         log "current mailboxes: #{current_mailboxes.inspect}"
         log "creating mailbox #{mailbox}"
         log @imap.create(mailbox) 
-        mailboxes = nil # force reload next fime list_mailboxes() called
+        @mailboxes = nil # force reload ...
+        list_mailboxes
       end
     end
 
@@ -664,8 +674,8 @@ EOF
       log "error: #{$!}"
       log "attempting to reconnect"
       log(revive_connection)
-      # try just once
-      block.call
+      # hope this isn't an endless loop
+      reconnect_if_necessary(timeout, &block)
     rescue
       log "error: #{$!}"
       raise
