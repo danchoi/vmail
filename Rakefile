@@ -10,6 +10,7 @@ task :web do
   require 'vmail/version'
   version = Vmail::VERSION
   Dir.chdir("website") do
+    puts "updating website"
     puts `./run.sh #{version}`
   end
 end
