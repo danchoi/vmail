@@ -1,5 +1,5 @@
 if !exists("g:vmail_flagged_color")
-  let g:vmail_flagged_color = "ctermfg=green"
+  let g:vmail_flagged_color = "ctermfg=green ctermbg=black"
 endif
 let s:mailbox = $VMAIL_MAILBOX
 let s:query = $VMAIL_QUERY
