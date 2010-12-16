@@ -264,7 +264,7 @@ func! s:delete_messages(flag) range
   " if more than 2 lines change, vim forces us to look at a message.
   " dismiss it.
   if nummsgs > 2
-    call feedkeys("\<cr>")
+  "  call feedkeys("\<cr>")
   endif
   redraw
   echo nummsgs .  " message" . (nummsgs == 1 ? '' : 's') . " marked " . a:flag
