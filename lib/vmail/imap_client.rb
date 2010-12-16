@@ -90,6 +90,7 @@ module Vmail
 
     # id_set may be a range, array, or string
     def fetch_envelopes(id_set)
+      log "fetch_envelopes: #{id_set.inspect}"
       if id_set.is_a?(String)
         id_set = id_set.split(',')
       end
@@ -213,14 +214,12 @@ module Vmail
         @imap.search(@query)
       end
       # save ids in @ids, because filtered search relies on it
-      @ids = ids if !@all_search
-
-      fetch_ids = if ids.size > limit 
-                    log "truncating returned set to #{limit}"
-                    @start_index = ids.index(ids[-1]) - limit
-                    ids[@start_index..ids[-1]]
-                  else
+      @ids = ids 
+      fetch_ids = if @all_search
                     ids
+                  else #filtered search
+                    @start_index = [ids.length - limit, 0].max
+                    ids[@start_index..-1]
                   end
       log "search query result: #{fetch_ids.inspect}"
       res = fetch_envelopes(fetch_ids)
@@ -253,6 +252,7 @@ module Vmail
 
     # gets 100 messages prior to id
     def more_messages(message_id, limit=100)
+      log "more_messages: message_id #{message_id}"
       message_id = message_id.to_i
       if @all_search 
         x = [(message_id - limit), 0].max
@@ -261,27 +261,30 @@ module Vmail
         add_more_message_line(res, x)
       else
         # filter search query
+        log "@start_index #@start_index"
         x = [(@start_index - limit), 0].max
         y = [@start_index - 1, 0].max
         @start_index = x
+        log "fetch_envelopes @ids[#{x}..#{y}]"
         res = fetch_envelopes(@ids[x..y]) 
         add_more_message_line(res, @ids[x])
       end
     end
 
     def add_more_message_line(res, start_id)
-      log "add_more_message_line @all_search #{@all_search}"
-
+      log "add_more_message_line for start_id #{start_id}"
       if @all_search
         return res if start_id.nil?
         if start_id <= 1
           return res
         end
-        log "remaining = start_id - 1: #{start_id} - 1"
         remaining = start_id - 1
       else # filter search
-        log "remaining =  @ids.index(#{start_id}) - 1; @ids.size: #{@ids.size}"
         remaining = @ids.index(start_id) - 1
+      end
+      if remaining < 1
+        log "none remaining"
+        return res
       end
       log "remaining messages: #{remaining}"
       "> Load #{[100, remaining].min} more messages. #{remaining} remaining.\n" + res
