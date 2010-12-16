@@ -515,10 +515,10 @@ EOF
     end
 
 
-    def new_message_template
+    def new_message_template(subject = nil)
       headers = {'from' => "#{@name} <#{@username}>",
         'to' => nil,
-        'subject' => nil
+        'subject' => subject
       }
       format_headers(headers) + "\n\n" + signature
     end
@@ -550,7 +550,13 @@ EOF
 
     def forward_template
       original_body = @current_message.split(/\n-{20,}\n/, 2)[1]
-      new_message_template + 
+      formatter = Vmail::MessageFormatter.new(@current_mail)
+      headers = formatter.extract_headers
+      subject = headers['subject']
+      if subject !~ /Fwd: /
+        subject = "Fwd: #{subject}"
+      end
+      new_message_template(subject) + 
         "\n---------- Forwarded message ----------\n" +
         original_body + signature
     end
