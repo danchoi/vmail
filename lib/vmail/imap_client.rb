@@ -70,6 +70,18 @@ module Vmail
       @imap.select(@mailbox)
     end
 
+    def prime_connection
+      reconnect_if_necessary(4) do 
+        # this is just to prime the IMAP connection
+        # It's necessary for some reason before update and deliver. 
+        log "priming connection for delivering"
+        res = @imap.fetch(@ids[-1], ["ENVELOPE"])
+        if res.nil?
+          raise IOError, "IMAP connection seems broken"
+        end
+      end 
+    end
+
     def list_mailboxes
       @mailboxes ||= (@imap.list("[Gmail]/", "%") + @imap.list("", "%")).
         select {|struct| struct.attr.none? {|a| a == :Noselect} }.
@@ -210,16 +222,15 @@ module Vmail
       log "@all_search #{@all_search}"
       @query = query.join(' ')
       log "search query: #@query"
-      ids = reconnect_if_necessary do
+      @ids = reconnect_if_necessary do
         @imap.search(@query)
       end
       # save ids in @ids, because filtered search relies on it
-      @ids = ids 
       fetch_ids = if @all_search
-                    ids
+                    @ids
                   else #filtered search
-                    @start_index = [ids.length - limit, 0].max
-                    ids[@start_index..-1]
+                    @start_index = [@ids.length - limit, 0].max
+                    @ids[@start_index..-1]
                   end
       log "search query result: #{fetch_ids.inspect}"
       res = fetch_envelopes(fetch_ids)
@@ -227,25 +238,17 @@ module Vmail
     end
 
     def update
-      reconnect_if_necessary(4) do 
-        # this is just to prime the IMAP connection
-        # It's necessary for some reason.
-        log "priming connection for update"
-        res = @imap.fetch(@all_ids[-1], ["ENVELOPE"])
-        if res.nil?
-          raise IOError, "IMAP connection seems broken"
-        end
-      end
+      prime_connection
       ids = reconnect_if_necessary { 
         log "search #@query"
         @imap.search(@query) 
       }
       # TODO change this. will throw error now
-      new_ids = ids - @all_ids
+      new_ids = ids.select {|x| x > @ids.max}
+      @ids = @ids + new_ids
       log "UPDATE: NEW UIDS: #{new_ids.inspect}"
       if !new_ids.empty?
         res = fetch_envelopes(new_ids)
-        @all_ids = ids
         res
       end
     end
@@ -472,15 +475,7 @@ EOF
     def deliver(text)
       # parse the text. The headers are yaml. The rest is text body.
       require 'net/smtp'
-      reconnect_if_necessary(4) do 
-        # this is just to prime the IMAP connection
-        # It's necessary for some reason.
-        log "priming connection for delivering"
-        res = @imap.fetch(@all_ids[-1], ["ENVELOPE"])
-        if res.nil?
-          raise IOError, "IMAP connection seems broken"
-        end
-      end 
+      prime_connection
       mail = new_mail_from_input(text)
       mail.delivery_method(*smtp_settings)
       log mail.deliver!
