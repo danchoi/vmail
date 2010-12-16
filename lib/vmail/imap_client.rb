@@ -263,6 +263,7 @@ module Vmail
                   end
       log "search query got #{@ids.size} results" 
       @message_list = [] # this will hold all the data extracted from these message envelopes
+      @current_mail = nil
       res = fetch_envelopes(fetch_ids)
       add_more_message_line(res, fetch_ids[0])
     end
