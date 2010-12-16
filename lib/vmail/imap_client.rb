@@ -284,9 +284,11 @@ module Vmail
         @imap.search(update_query.join(' ')) 
       }
       # TODO change this. will throw error now
-      new_ids = ids.select {|x| x > @ids.max}
+      max_seqno = @message_list[-1][:seqno]
+      log "lookind for seqnos > #{max_seqno}"
+      new_ids = ids.select {|seqno| seqno > max_seqno}
       @ids = @ids + new_ids
-      log "UPDATE: NEW UIDS: #{new_ids.inspect}"
+      log "update: new uids: #{new_ids.inspect}"
       if !new_ids.empty?
         res = fetch_envelopes(new_ids)
         res
@@ -386,9 +388,9 @@ EOF
           end
           log "@imap.uid_store #{uid_set.inspect} #{action} [#{flg.to_sym}]"
           log @imap.uid_store(uid_set, action, [flg.to_sym])
+          remove_uid_set_from_cached_lists(uid_set)
           reload_mailbox
         end
-        remove_uid_set_from_cached_lists(uid_set)
 
       elsif flg == '[Gmail]/Spam'
         log "Marking as spam index_range: #{index_range.inspect}; uid_set: #{uid_set.inspect}"
@@ -397,10 +399,9 @@ EOF
           log @imap.uid_copy(uid_set, "[Gmail]/Spam")
           log "@imap.uid_store #{uid_set.inspect} #{action} [:Deleted]"
           log @imap.uid_store(uid_set, action, [:Deleted])
+          remove_uid_set_from_cached_lists(uid_set)
           reload_mailbox
         end
-        remove_uid_set_from_cached_lists(uid_set)
-
         "#{id} deleted"
       else
         log "Flagging index_range: #{index_range.inspect}; uid_set: #{uid_set.inspect}"
@@ -422,23 +423,36 @@ EOF
 
     def remove_uid_set_from_cached_lists(uid_set)
       # delete from cached @ids and @message_list
-      rows_to_delete = []
+      seqnos_to_delete = []
       uid_set.each {|uid| 
-        @message_list.
-          select {|row| row[:uid] == uid}.
-          each_width_index {|row, idx| 
-            seqno = row[:seqno]
-            log "deleting seqno #{seqno} from @ids"
-            @ids.delete seqno
-            log "deleting msg uid #{row[:uid]} from @message_list"
-            rows_to_delete << idx
-          }
+        row = @message_list.detect {|row| row[:uid] == uid}
+        seqno = row[:seqno]
+        log "deleting seqno #{seqno} from @ids"
+        @ids.delete seqno
+        seqnos_to_delete << seqno
       }
-      rows_to_delete.reverse.each do |idx|
-        deleted_row = @message_list.delete_at idx 
-        log "deleting row uid #{deleted_row[:uid]} seqno #{deleted_row[:seqno]} from @message_list" 
+      log "seqnos_to_delete: #{seqnos_to_delete.inspect}"
+      seqnos_to_delete.reverse.each do |seqno|
+        startsize = @message_list.size 
+        log "deleting row with seqno #{seqno}"
+        @message_list = @message_list.delete_if {|x| x[:seqno] == seqno}
+        endsize = @message_list.size
+        log "deleted #{startsize - endsize} rows"
       end
-
+      # now we need to decrement all the higher sequence numbers!
+      basenum = seqnos_to_delete.min  # this is the lowested seqno deleted
+      diff = seqnos_to_delete.size # substract this from all seqnos >= basenum
+      changes = []
+      @message_list.each do |row|
+        if row[:seqno] >= basenum
+          changes << "#{row[:seqno]}->#{row[:seqno] - diff}"
+          row[:seqno] -= diff
+        end
+      end
+      log "seqno decremented: #{changes.join(";")}"
+    rescue
+      log "error removing uid set from cached lists"
+      log $!
     end
 
     def move_to(id_set, mailbox)
@@ -456,6 +470,7 @@ EOF
       Thread.new do 
         log @imap.uid_copy(uid_set, mailbox)
         log @imap.uid_store(uid_set, '+FLAGS', [:Deleted])
+        remove_uid_set_from_cached_lists(uid_set)
         reload_mailbox
         log "moved uid_set #{uid_set.inspect} to #{mailbox}"
       end
