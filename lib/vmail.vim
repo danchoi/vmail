@@ -252,26 +252,20 @@ func! s:delete_messages(flag) range
 endfunc
 
 func! s:archive_messages() range
-  let lnum = a:firstline
-  let n = 0
-  let uids = []
-  while lnum <= a:lastline
-    let line =  getline(lnum)
-    let message_uid = matchstr(line, '^\d\+')
-    call add(uids, message_uid)
-    let lnum = lnum + 1
-  endwhile
-  let uid_set = join(uids, ",")
+  let uid_set = (a:firstline - 2) . '..' . (a:lastline - 2)
   let command = s:move_to_command . uid_set . ' ' . "all"
-  echo "archiving message" . (len(uids) == 1 ? '' : 's')
+  let nummsgs = (a:lastline - a:firstline + 1)
+  echo "archiving message" . (nummsgs == 1 ? '' : 's')
   let res = system(command)
   setlocal modifiable
   exec a:firstline . "," . a:lastline . "delete"
   setlocal nomodifiable
   write
-  call s:focus_message_window()
-  close
-  echo len(uids) . " message" . (len(uids) == 1 ? '' : 's') . " archived"
+  if nummsgs > 2
+    call feedkeys("\<cr>")
+  endif
+  redraw
+  echo nummsgs . " message" . (nummsgs == 1 ? '' : 's') . " archived"
 endfunc
 
 " --------------------------------------------------------------------------------
@@ -300,16 +294,8 @@ endfunc
 " move to another mailbox
 function! s:move_to_mailbox(copy) range
   let s:copy_to_mailbox = a:copy
-  let lnum = a:firstline
-  let n = 0
-  let uids = []
-  while lnum <= a:lastline
-    let line =  getline(lnum)
-    let message_uid = matchstr(line, '^\d\+')
-    call add(uids, message_uid)
-    let lnum = lnum + 1
-  endwhile
-  let s:uid_set = join(uids, ",")
+  let s:uid_set = (a:firstline - 2) . '..' . (a:lastline - 2)
+  let s:nummsgs = (a:lastline - a:firstline + 1)
   " now prompt use to select mailbox
   if !exists("s:mailboxes")
     call s:get_mailbox_list()
@@ -349,8 +335,11 @@ function! s:complete_move_to_mailbox()
   end
   setlocal nomodifiable
   write
+  if s:nummsgs > 2
+    call feedkeys("\<cr>")
+  endif
   redraw
-  echo "done"
+  echo s:nummsgs .  " message" . (s:nummsgs == 1 ? '' : 's') . ' ' . (s:copy_to_mailbox ? 'copied' : 'moved') . ' to ' . mailbox 
 endfunction
 
 function! CompleteMoveMailbox(findstart, base)
@@ -444,13 +433,15 @@ function! s:select_mailbox()
   let s:mailbox = mailbox
   let s:query = "100 all"
   let command = s:select_mailbox_command . shellescape(s:mailbox)
+  echo "selecting mailbox ". s:mailbox ". please wait..."
+
   call system(command)
   redraw
   " now get latest 100 messages
   call s:focus_list_window()  
   setlocal modifiable
   let command = s:search_command . "100 all"
-  echo "Please wait. Loading messages..."
+  echo "loading messages..."
   let res = system(command)
   1,$delete
   put! =res

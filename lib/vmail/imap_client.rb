@@ -408,6 +408,7 @@ EOF
     def uids_from_index_range(index_range_as_string)
       raise "expecting String" unless index_range_as_string.is_a?(String)
       raise "expecting a range as string" unless index_range_as_string =~ /^\d+\.\.\d+$/ 
+      log "converting index_range #{index_range_as_string} to uids"
       uids = @message_list[eval(index_range_as_string)].map {|row| row[:uid]}
       log "converted index_range #{index_range_as_string} to uids #{uids.inspect}"
       uids
@@ -426,9 +427,11 @@ EOF
             @message_list.delete(row)
           }
       }
+
     end
 
     def move_to(id_set, mailbox)
+      log "move #{id_set.inspect} to #{mailbox}"
       if mailbox == 'all'
         log "archiving messages"
       end
@@ -436,13 +439,15 @@ EOF
         mailbox = MailboxAliases[mailbox]
       end
       create_if_necessary mailbox
-      if id_set.is_a?(String)
-        id_set = id_set.split(",").map(&:to_i)
+      log "getting uids form index range #{id_set}"
+      uid_set = uids_from_index_range(id_set)
+      log "moving uid_set: #{uid_set.inspect} to #{mailbox}"
+      Thread.new do 
+        log @imap.uid_copy(uid_set, mailbox)
+        log @imap.uid_store(uid_set, '+FLAGS', [:Deleted])
+        reload_mailbox
+        log "moved uid_set #{uid_set.inspect} to #{mailbox}"
       end
-      log "move_to #{id_set.inspect} #{mailbox}"
-      log @imap.copy(id_set, mailbox)
-      log @imap.store(id_set, '+FLAGS', [:Deleted])
-      reload_mailbox
     end
 
     def copy_to(id_set, mailbox)
@@ -450,11 +455,12 @@ EOF
         mailbox = MailboxAliases[mailbox]
       end
       create_if_necessary mailbox
-      log "copy #{id_set.inspect} #{mailbox}"
-      if id_set.is_a?(String)
-        id_set = id_set.split(",").map(&:to_i)
+      uid_set = uids_from_index_range(id_set)
+      log "copying #{uid_set.inspect} to #{mailbox}"
+      Thread.new do 
+        log @imap.uid_copy(uid_set, mailbox)
+        log "copied uid_set #{uid_set.inspect} to #{mailbox}"
       end
-      log @imap.copy(id_set, mailbox)
     end
 
     def create_if_necessary(mailbox)
