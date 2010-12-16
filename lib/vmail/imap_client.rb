@@ -352,8 +352,8 @@ module Vmail
       out = formatter.process_body 
       size = fetch_data.attr["RFC822.SIZE"]
       @current_message = <<-EOF
-#{@mailbox} seqno:#{index} uid:#{uid} #{number_to_human_size size} #{format_parts_info(formatter.list_parts)}
----------------------------------------
+#{@mailbox} seqno:#{envelope_data[:seqno]} uid:#{uid} #{number_to_human_size size} #{format_parts_info(formatter.list_parts)}
+----------------------------------------------
 #{format_headers(formatter.extract_headers)}
 
 #{out}
