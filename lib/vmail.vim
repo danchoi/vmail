@@ -235,6 +235,7 @@ function! s:toggle_star() range
 endfunction
 
 " flag can be Deleted or [Gmail]/Spam
+" both functions must renumber all the messages!
 func! s:delete_messages(flag) range
   let lnum = a:firstline
   let n = 0
@@ -258,7 +259,7 @@ func! s:delete_messages(flag) range
   if len(uids) > 2
     call feedkeys("\<cr>")
   endif
-  redraw
+  call s:renumber_lines()
   echo len(uids) . " message" . (len(uids) == 1 ? '' : 's') . " marked " . a:flag
 endfunc
 
@@ -282,9 +283,30 @@ func! s:archive_messages() range
   write
   call s:focus_message_window()
   close
-  redraw
+  call s:renumber_lines()
   echo len(uids) . " message" . (len(uids) == 1 ? '' : 's') . " archived"
 endfunc
+
+" --------------------------------------------------------------------------------
+" RENUMBERING LINES
+" after deleting or archiving or moving, we must renumber all the lines
+" because the message ids shift
+func! s:renumber_lines()
+  let base_lnum = line(".") - 2
+  let base_number = matchstr(getline(base_lnum), '^\d\+')
+  let lnum = line(".") - 1
+  setlocal modifiable
+  while lnum <= line("$")
+    let line =  getline(lnum)
+    let old_id = matchstr(line, '^\d\+')
+    let new_id = base_number + (lnum - base_lnum)
+    let newline = substitute(line, old_id, new_id, '')
+    call setline(lnum, newline)
+    let lnum = lnum + 1
+  endwhile
+  setlocal nomodifiable
+  write
+endfunct
 
 " --------------------------------------------------------------------------------
 " append text bodies of a set of messages to a file

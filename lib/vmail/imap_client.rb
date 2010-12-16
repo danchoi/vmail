@@ -60,6 +60,10 @@ module Vmail
       return "OK"
     end
 
+    def reload_mailbox
+      select_mailbox(@mailbox, true)
+    end
+
     def get_highest_message_id
       # get highest message ID
       res = @imap.fetch([1,"*"], ["ENVELOPE"])
@@ -249,7 +253,7 @@ module Vmail
       prime_connection
       old_num_messages = @num_messages
       # we need to re-select the mailbox to get the new highest id
-      select_mailbox(@mailbox, true)
+      reload_mailbox
       update_query = @query
       # set a new range filter
       update_query[0] = "#{old_num_messages}:#{@num_messages}"
@@ -359,11 +363,15 @@ EOF
             @imap.copy(id_set, "[Gmail]/Trash")
           end
           res = @imap.store(id_set, action, [flg.to_sym])
+          reload_mailbox
         end
-        id_set.each { |id| @all_ids.delete(id) }
+        id_set.each { |id| @ids.delete(id) }
       elsif flg == '[Gmail]/Spam'
-        @imap.copy(id_set, "[Gmail]/Spam")
-        res = @imap.store(id_set, action, [:Deleted])
+        Thread.new do 
+          @imap.copy(id_set, "[Gmail]/Spam")
+          res = @imap.store(id_set, action, [:Deleted])
+          reload_mailbox
+        end
         "#{id} deleted"
       else
         log "Flagging"
@@ -387,6 +395,7 @@ EOF
       log "move_to #{id_set.inspect} #{mailbox}"
       log @imap.copy(id_set, mailbox)
       log @imap.store(id_set, '+FLAGS', [:Deleted])
+      reload_mailbox
     end
 
     def copy_to(id_set, mailbox)
