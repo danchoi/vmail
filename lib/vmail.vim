@@ -83,9 +83,9 @@ function! s:show_message()
   " moving up when the next echo statement executes:
   call feedkeys(":\<cr>") 
   redraw
-  let selected_uid = matchstr(line, '^\d\+')
-  let s:current_uid = selected_uid
-  let command = s:show_message_command . s:current_uid
+  " substract 2: because lines numbers start at 1 & messages start at line 2
+  let s:current_message_index = line('.') - 2
+  let command = s:show_message_command . s:current_message_index
   echom "Loading message. Please wait..."
   redrawstatus
   let res = system(command)
@@ -133,7 +133,7 @@ endfunction
 
 " invoked from withint message window
 function! s:show_raw()
-  let command = s:show_message_command . s:current_uid . ' raw'
+  let command = s:show_message_command . s:current_message_index . ' raw'
   echo command
   setlocal modifiable
   1,$delete
@@ -551,7 +551,7 @@ endfunction
 "  compose reply, compose, forward, save draft
 
 function! s:compose_reply(all)
-  let command = s:reply_template_command . s:current_uid
+  let command = s:reply_template_command . s:current_message_index
   if a:all
     let command = command . ' 1'
   endif
@@ -569,7 +569,7 @@ function! s:compose_message()
 endfunction
 
 function! s:compose_forward()
-  let command = s:forward_template_command . s:current_uid
+  let command = s:forward_template_command . s:current_message_index
   call s:open_compose_window(command)
 "  call search("^to:") 
 "  normal A
@@ -651,7 +651,7 @@ endfunc
 
 " call from inside message window with <Leader>h
 func! s:open_html_part()
-  let command = s:open_html_part_command . s:current_uid 
+  let command = s:open_html_part_command . s:current_message_index 
   " the command saves the html part to a local file
   let outfile = system(command)
   " todo: allow user to change open in browser command?

@@ -27,7 +27,7 @@ module Vmail
       @logger = Logger.new(config['logfile'] || STDERR)
       @logger.level = Logger::DEBUG
       @current_mail = nil
-      @current_id = nil
+      @current_message_index = nil
       @imap_server = config['server'] || 'imap.gmail.com'
       @imap_port = config['port'] || 993
     end
@@ -55,8 +55,6 @@ module Vmail
         log @imap.select(mailbox)
       end
       @mailbox = mailbox
-      # Clear internal message list
-      # This will be an array of hashes 
       get_mailbox_status
       get_highest_message_id
       return "OK"
@@ -190,12 +188,13 @@ module Vmail
       mid_width = @width - (first_col_width + 33)
       address_col_width = (mid_width * 0.3).ceil
       subject_col_width = (mid_width * 0.7).floor
-      row_text = [seqno.to_s.col(first_col_width), 
-        (date_formatted || '').col(14),
-        address.col(address_col_width),
-        subject.col(subject_col_width),
-        number_to_human_size(size).rcol(6),
-        flags.rcol(7)].join(' ')
+      row_text = [  seqno.to_s.col(first_col_width), 
+                    (date_formatted || '').col(14),
+                    address.col(address_col_width),
+                    subject.col(subject_col_width),
+                    number_to_human_size(size).rcol(6),
+                    flags.rcol(7)  
+                 ].join(' ')
       {:uid => uid, :seqno => seqno, :row_text => row_text}
     rescue 
       log "error extracting header for uid #{uid} seqno #{seqno}: #$!"
@@ -323,27 +322,30 @@ module Vmail
       "> Load #{[100, remaining].min} more messages. #{remaining} remaining.\n" + res
     end
 
-    def show_message(id, raw=false, forwarded=false)
-      id = id.to_i
+    def show_message(index, raw=false, forwarded=false)
+      log "showing message at #{index}" 
       if forwarded
         return @current_message.split(/\n-{20,}\n/, 2)[1]
       end
       return @current_mail.to_s if raw 
-      return @current_message if id == @current_id 
-      log "fetching #{id.inspect}" 
+      index = index.to_i
+      return @current_message if index == @current_message_index 
+      envelope_data = @message_list[index]
+      uid = envelope_data[:uid] 
+      log "fetching uid #{uid}"
       fetch_data = reconnect_if_necessary do 
-        @imap.fetch(id, ["FLAGS", "RFC822", "RFC822.SIZE"])[0]
+        @imap.uid_fetch(uid, ["FLAGS", "RFC822", "RFC822.SIZE"])[0]
       end
       res = fetch_data.attr["RFC822"]
       mail = Mail.new(res) 
-      @current_id = id
+      @current_message_index = index
       @current_mail = mail # used later to show raw message or extract attachments if any
       log "saving current mail with parts: #{@current_mail.parts.inspect}"
       formatter = Vmail::MessageFormatter.new(mail)
       out = formatter.process_body 
       size = fetch_data.attr["RFC822.SIZE"]
       @current_message = <<-EOF
-#{@mailbox} #{id} #{number_to_human_size size} #{format_parts_info(formatter.list_parts)}
+#{@mailbox} #{index} #{number_to_human_size size} #{format_parts_info(formatter.list_parts)}
 ---------------------------------------
 #{format_headers(formatter.extract_headers)}
 
