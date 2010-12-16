@@ -32,6 +32,8 @@ let s:show_help_command = s:client_script . "show_help"
 
 let s:message_bufname = "MessageWindow"
 
+
+
 function! VmailStatusLine()
   return "%<%f\ " . s:mailbox . " " . s:query . "%r%=%-14.(%l,%c%V%)\ %P"
 endfunction
@@ -163,6 +165,18 @@ function! s:focus_list_window()
     " colorize whole line
     syn match VmailBufferFlagged /^*.*/hs=s
     exec "hi def VmailBufferFlagged " . g:vmail_flagged_color
+    " color each field differently.
+    syn  match  flags    "^[^|]*"  nextgroup=date
+    syn  match  date     "|[^|]*"  contained nextgroup=sender
+    syn  match  sender   "|[^|]*"  contained nextgroup=subject
+    syn  match  subject  "|[^|]*"  contained nextgroup=size
+    syn  match  size     "|[^|]*"  contained
+
+    hi def link flags    constant
+    hi def link date     question
+    hi def link sender   statement
+    hi def link subject  title
+    hi def link size     number
   endif
   " vertically center the cursor line
   " normal z.
