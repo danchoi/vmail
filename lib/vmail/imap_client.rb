@@ -473,18 +473,18 @@ EOF
       end
     end
 
-    def append_to_file(file, id_set)
-      if id_set.is_a?(String)
-        id_set = id_set.split(",").map(&:to_i)
-      end
-      log "append messages to file: #{file}"
-      id_set.each do |id|
-        message = show_message(id)
+    def append_to_file(file, index_range_as_string)
+      raise "expecting a range as string" unless index_range_as_string =~ /^\d+\.\.\d+$/ 
+      index_range = eval(index_range_as_string)
+      log "append to file range #{index_range.inspect} to file: #{file}"
+      index_range.each do |idx|
+        message = show_message(idx)
         divider = "#{'=' * 39}\n"
         File.open(file, 'a') {|f| f.puts(divider + message + "\n\n")}
-        log "appended id #{id}"
+        subject = (message[/^subject:(.*)/,1] || '').strip
+        log "appended message '#{subject}'"
       end
-      "printed #{id_set.size} message#{id_set.size == 1 ? '' : 's'} to #{file.strip}"
+      "printed #{index_range.to_a.size} message#{index_range.to_a.size == 1 ? '' : 's'} to #{file.strip}"
     end
 
 

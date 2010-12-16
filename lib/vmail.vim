@@ -272,19 +272,11 @@ endfunc
 
 " append text bodies of a set of messages to a file
 func! s:append_messages_to_file() range
-  let lnum = a:firstline
-  let n = 0
-  let uids = []
-  while lnum <= a:lastline
-    let line =  getline(lnum)
-    let message_uid = matchstr(line, '^\d\+')
-    call add(uids, message_uid)
-    let lnum = lnum + 1
-  endwhile
-  let uid_set = join(uids, ",")
+  let uid_set = (a:firstline - 2) . '..' . (a:lastline - 2)
+  let nummsgs = (a:lastline - a:firstline + 1)
   let s:append_file = input("print messages to file: ", s:append_file)
   let command = s:append_to_file_command . s:append_file . ' ' . uid_set 
-  echo "appending " . len(uids) . " message" . (len(uids) == 1 ? '' : 's') . " to " s:append_file
+  echo "appending " . nummsgs . " message" . (nummsgs == 1 ? '' : 's') . " to " . s:append_file . ". please wait..."
   let res = system(command)
   echo res
   redraw
