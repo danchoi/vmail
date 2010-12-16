@@ -1,5 +1,6 @@
 require 'drb'
 require 'vmail/message_formatter'
+require 'vmail/reply_template'
 require 'vmail/string_ext'
 require 'yaml'
 require 'mail'
@@ -507,33 +508,14 @@ EOF
       lines.join("\n")
     end
 
-    def reply_template(id, replyall=false)
-      log "sending reply template for #{id}"
-      fetch_data = @imap.fetch(id.to_i, ["FLAGS", "ENVELOPE", "RFC822"])[0]
-      envelope = fetch_data.attr['ENVELOPE']
-      recipient = [envelope.reply_to, envelope.from].flatten.map {|x| address_to_string(x)}[0]
-      cc = [envelope.to, envelope.cc]
-      cc = cc.flatten.compact.
-        select {|x| @username !~ /#{x.mailbox}@#{x.host}/}.
-        map {|x| address_to_string(x)}.join(", ")
-      mail = Mail.new fetch_data.attr['RFC822']
-      formatter = Vmail::MessageFormatter.new(mail)
-      headers = formatter.extract_headers
-      subject = headers['subject']
-      if subject !~ /Re: /
-        subject = "Re: #{subject}"
-      end
-      cc = replyall ? cc : nil
-      date = headers['date'].is_a?(String) ? Time.parse(headers['date']) : headers['date']
-      quote_header = "On #{date.strftime('%a, %b %d, %Y at %I:%M %p')}, #{address_to_string(envelope.from[0])} wrote:\n\n"
-      body = quote_header + formatter.process_body.gsub(/^(?=>)/, ">").gsub(/^(?!>)/, "> ")
-      reply_headers = { 'from' => "#@name <#@username>", 'to' => recipient, 'cc' => cc, 'subject' => subject}
+    def reply_template(replyall=false)
+      log "sending reply template"
+      # TODO
+      # user reply_template class
+      reply_headers = Vmail::ReplyTemplate.new(@current_mail, @username, @name, replyall)
       format_headers(reply_headers) + "\n\n\n" + body + signature
     end
 
-    def address_to_string(x)
-      x.name ? "#{x.name} <#{x.mailbox}@#{x.host}>" : "#{x.mailbox}@#{x.host}"
-    end
 
     def signature
       return '' unless @signature
@@ -633,8 +615,8 @@ EOF
       "saved:\n" + saved.map {|x| "- #{x}"}.join("\n")
     end
 
-    def open_html_part(id)
-      log "open_html_part #{id}"
+    def open_html_part
+      log "open_html_part"
       log @current_mail.parts.inspect
       multipart = @current_mail.parts.detect {|part| part.multipart?}
       html_part = if multipart 

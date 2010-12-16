@@ -23,6 +23,7 @@ task :test do
   require 'test_helper'
   require 'time_format_test'
   require 'message_formatter_test'
+  require 'reply_template_test'
   require 'base64_test'
   MiniTest::Unit.autorun
 end

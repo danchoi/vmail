@@ -501,7 +501,7 @@ endfunction
 "  compose reply, compose, forward, save draft
 
 function! s:compose_reply(all)
-  let command = s:reply_template_command . s:current_message_index
+  let command = s:reply_template_command 
   if a:all
     let command = command . ' 1'
   endif
@@ -601,7 +601,7 @@ endfunc
 
 " call from inside message window with <Leader>h
 func! s:open_html_part()
-  let command = s:open_html_part_command . s:current_message_index 
+  let command = s:open_html_part_command 
   " the command saves the html part to a local file
   let outfile = system(command)
   " todo: allow user to change open in browser command?

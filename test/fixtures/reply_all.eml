@@ -1,0 +1,58 @@
+Return-Path: <chappy1@gmail.com>
+Received: by 10.213.2.204 with SMTP id 12cs233347ebk; Sun, 12 Dec 2010 10:13:13 -0800
+Received: by 10.91.51.19 with SMTP id d19mr3869811agk.183.1292177592502; Sun, 12 Dec 2010 10:13:12 -0800
+Received: from mail-yx0-f171.google.com (mail-yx0-f171.google.com [209.85.213.171]) by mx.google.com with ESMTP id d7si4681466and.167.2010.12.12.10.13.10; Sun, 12 Dec 2010 10:13:11 -0800
+Received: by mail-yx0-f171.google.com with SMTP id 11so3634988yxi.2 for
+ <multiple recipients>; Sun, 12 Dec 2010 10:13:10 -0800 (PST)
+Received: by 10.90.24.10 with SMTP id 10mr3890562agx.179.1292177590623; Sun, 12 Dec 2010 10:13:10 -0800
+Received: from [26.144.14.48] (m482436d0.tmodns.net [208.54.36.72]) by mx.google.com with ESMTPS id c34sm4564739anc.30.2010.12.12.10.13.08 (version=TLSv1/SSLv3 cipher=RC4-MD5); Sun, 12 Dec 2010 10:13:09 -0800
+Date: Sun, 12 Dec 2010 13:13:01 -0500
+From: Chappy Youn <chappy1@gmail.com>
+To: Daniel Choi <dhchoi@gmail.com>, 
+ Draculette Ko <violinist.ko@gmail.com>, 
+ Cookiemonster Youn <cookiemonster@gmail.com>
+Cc: Racoon <raycoon@gmail.com>
+Message-ID: <73734601-F016-4F3B-A0C8-0FF48011292F@gmail.com>
+Subject: Holiday potluck at Ray's
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=us-ascii;
+ delsp=yes;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Delivered-To: dhchoi@gmail.com
+Received-SPF: pass (google.com: domain of chappy1@gmail.com designates
+ 209.85.213.171 as permitted sender) client-ip=209.85.213.171;
+Authentication-Results: mx.google.com; spf=pass (google.com: domain of
+ chappy1@gmail.com designates 209.85.213.171 as permitted sender)
+ smtp.mail=chappy1@gmail.com; dkim=pass (test mode) header.i=@gmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=gamma;
+ h=domainkey-signature:received:received:message-id:from:to
+ :content-type:content-transfer-encoding:x-mailer:mime-version
+ :subject:date:cc; bh=2E6xsnWGlAai1MjVchauqPtC2J0dmGnscU+hCRvcScY=;
+ b=joH+NKL712kaFO0ThbHEF/7q9qSf1O6Xi9u2TBCp3uQl0aEVwuqGFHcg+id0/Am5qM
+ IoxNBItJn9zMUgmzzZcJSl5/LaxKwrj8NOn/eYF8fkKRecCbNUoCYV4Z0T7BkuPwpkWA
+ PYPun1PZT8ArAM2aXoMzApEnzOCvf/ZkM78Q4=
+DomainKey-Signature: a=rsa-sha1; c=nofws; d=gmail.com; s=gamma;
+ h=message-id:from:to:content-type:content-transfer-encoding:x-mailer
+ :mime-version:subject:date:cc;
+ b=fCuCk6O03S/wqKttwtK0ePIAy7MFja+qOyIkt9X/ToJg8MiPoHh6UH5o0UaAlAEyE7
+ 7C8iRyxjV4EC3vfQhzHUzZHFuXAOtPOF6ZSidHKbXVad3Wvv0zie9dV3pFXCbg0fyC8M
+ c1nHTFM+So9DDIulICizW196SVSh65Ds+NVK4=
+X-Mailer: iPhone Mail (7C144)
+
+Guys,
+Tonight we will have a potluck at Ray's at 7. Pls bring food for 1.5  
+ppl.
+
+Ray will provide wine and dessert.
+
+Also, we will be having a poor man's Yankee swap. Pls bring something  
+gift wrapped from home. Nothing fancy, but something halfway decent or  
+funny.
+
+El, make sure it's worth more than 50 cents.
+
+Chappy
+
+Sent from my iPhone
