@@ -184,7 +184,7 @@ function! s:update()
   let command = s:update_command
   echo "checking for new messages. please wait..."
   let res = system(command)
-  if match(res, '^\d\+') != -1
+  if len(split(res, "\n", '')) > 0
     setlocal modifiable
     let line = line('$')
     put =res
