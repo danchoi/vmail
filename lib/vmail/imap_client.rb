@@ -128,7 +128,7 @@ module Vmail
                 elsif address_struct.name
                   "#{Mail::Encodings.unquote_and_convert_to(address_struct.name, 'UTF-8')} <#{[address_struct.mailbox, address_struct.host].join('@')}>"
                 else
-                  [address_struct.mailbox, address_struct.host].join('@') 
+                  [Mail::Encodings.unquote_and_convert_to(address_struct.mailbox, 'UTF-8'), Mail::Encodings.unquote_and_convert_to(address_struct.host, 'UTF-8')].join('@') 
                 end
       if @mailbox == '[Gmail]/Sent Mail' && envelope.to && envelope.cc
         total_recips = (envelope.to + envelope.cc).size
@@ -158,6 +158,8 @@ module Vmail
         subject.col(subject_col_width),
         number_to_human_size(size).rcol(6),
         flags.rcol(7)].join(' ')
+    rescue 
+      "#{uid.to_s} : error extracting this header"
     end
 
     UNITS = [:b, :kb, :mb, :gb].freeze
