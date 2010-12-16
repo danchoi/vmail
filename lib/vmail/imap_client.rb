@@ -91,7 +91,8 @@ module Vmail
         log "priming connection for delivering"
         res = @imap.fetch(@ids[-1], ["ENVELOPE"])
         if res.nil?
-          raise IOError, "IMAP connection seems broken"
+          # just go ahead, just log
+          log "priming connection didn't work, connection seems broken, but still going ahead..."
         end
       end 
     end
@@ -669,6 +670,7 @@ EOF
       log(revive_connection)
       # hope this isn't an endless loop
       reconnect_if_necessary do 
+        close
         block.call
       end
     rescue
