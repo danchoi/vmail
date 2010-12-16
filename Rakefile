@@ -14,7 +14,7 @@ end
 
 desc "git push and rake release bumped version"
 task :bumped do
-  `gca -m'bump' && git push && rake release`
+  `git commit -a -m'bump' && git push && rake release`
 end
 
 desc "Run tests"
