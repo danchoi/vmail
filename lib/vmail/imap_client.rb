@@ -120,7 +120,6 @@ module Vmail
       if id_set.is_a?(String)
         id_set = id_set.split(',')
       end
-      max_id = id_set.to_a[-1]
       if id_set.to_a.empty?
         log "empty set"
         return ""
@@ -137,7 +136,7 @@ module Vmail
         log(error) && raise(error)
       end
       log "extracting headers"
-      new_message_rows = results.map {|x| extract_row_data(x, max_id) }
+      new_message_rows = results.map {|x| extract_row_data(x) }
       if are_uids
         # replace old row_text values
         new_message_rows.each {|new_row_data|
@@ -156,7 +155,7 @@ module Vmail
     end
 
     # TODO extract this to another class or module and write unit tests
-    def extract_row_data(fetch_data, max_id=nil)
+    def extract_row_data(fetch_data)
       seqno = fetch_data.seqno
       uid = fetch_data.attr['UID']
       # log "fetched seqno #{seqno} uid #{uid}"
@@ -194,21 +193,18 @@ module Vmail
       subject = envelope.subject || ''
       subject = Mail::Encodings.unquote_and_convert_to(subject, 'UTF-8')
       flags = format_flags(flags)
-      first_col_width = max_id.to_s.length 
-      mid_width = @width - (first_col_width + 33)
+      mid_width = @width - 38
       address_col_width = (mid_width * 0.3).ceil
       subject_col_width = (mid_width * 0.7).floor
-      row_text = [  seqno.to_s.col(first_col_width), 
-                    (date_formatted || '').col(14),
-                    address.col(address_col_width),
-                    subject.col(subject_col_width),
-                    number_to_human_size(size).rcol(6),
-                    flags.rcol(7)  
-                 ].join(' ')
+      row_text = [ flags.col(2),
+                   (date_formatted || '').col(14),
+                   address.col(address_col_width),
+                   subject.col(subject_col_width), 
+                   number_to_human_size(size).rcol(6) ].join(' ')
       {:uid => uid, :seqno => seqno, :row_text => row_text}
     rescue 
       log "error extracting header for uid #{uid} seqno #{seqno}: #$!"
-      row_text =i "#{seqno.to_s} : error extracting this header"
+      row_text = "#{seqno.to_s} : error extracting this header"
       {:uid => uid, :seqno => seqno, :row_text => row_text}
     end
 
@@ -224,16 +220,16 @@ module Vmail
         exponent = max_exp if exponent > max_exp # we need this to avoid overflow for the highest unit
         number  /= 1024 ** exponent
         unit = UNITS[exponent]
-        "#{number} #{unit}"
+        "#{number}#{unit}"
       end
     end
 
-    FLAGMAP = {:Flagged => '[*]'}
+    FLAGMAP = {:Flagged => '*'}
     # flags is an array like [:Flagged, :Seen]
     def format_flags(flags)
       flags = flags.map {|flag| FLAGMAP[flag] || flag}
       if flags.delete(:Seen).nil?
-        flags << '[+]' # unread
+        flags << '+' # unread
       end
       flags.join('')
     end

@@ -73,8 +73,9 @@ function! s:show_message()
     call s:more_messages()
     return
   endif
-  " remove the unread flag  [+]
-  let newline = substitute(line, "\\[+\]\\s*", "", '')
+  " remove the unread flag +
+  " TODO!
+  let newline = substitute(line, '^**+', ' ', '')
   setlocal modifiable
   call setline(line('.'), newline)
   setlocal nomodifiable
@@ -156,7 +157,8 @@ function! s:focus_list_window()
   " set up syntax highlighting
   if has("syntax")
     syn clear
-    syn match BufferFlagged /^.*[*].*$/hs=s
+    " colorize whole line
+    syn match BufferFlagged /^*.*/hs=s
     hi def BufferFlagged ctermfg=red 
   endif
   " vertically center the cursor line
@@ -199,19 +201,20 @@ endfunction
 
 function! s:toggle_star() range
   let uid_set = (a:firstline - 2) . '..' . (a:lastline - 2)
-  let flag_symbol = "[*]"
+  let nummsgs = (a:lastline - a:firstline + 1)
+  let flag_symbol = "^*"
   " check if starred already
   let action = " +FLAGS"
   if (match(getline(a:firstline), flag_symbol) != -1)
     let action = " -FLAGS"
   endif
   let command = s:flag_command . uid_set . action . " Flagged" 
-  if (a:lastline - a:firstline + 1) == 1
+  if nummsgs == 1
     echom "toggling flag on message" 
   else
-    echom "toggling flags on " . (a:lastline - a:firstline + 1) . " messages"
+    echom "toggling flags on " . nummsgs . " messages"
   endif
-  " toggle [*] on lines; TODO: do this all in vimscript and do the starring
+  " toggle * on lines; TODO: do this all in vimscript and do the starring
   " in a thread in imap_client
   let res = system(command)
   setlocal modifiable
@@ -219,12 +222,15 @@ function! s:toggle_star() range
   exec (a:firstline - 1). "put =res"
   setlocal nomodifiable
   write
-  " if more than 2 lines change, vim forces us to look at a message.
-  " dismiss it.
-  if len(split(res, "\n")) > 2
-    call feedkeys("\<cr>")
+  if nummsgs > 2
+    " call feedkeys("\<cr>")
   endif
-  echom "done" 
+  redraw
+  if nummsgs == 1
+    echom "toggled flag on message" 
+  else
+    echom "toggled flags on " . nummsgs . " messages"
+  endif
 endfunction
 
 " flag can be Deleted or [Gmail]/Spam
@@ -442,6 +448,7 @@ function! s:select_mailbox()
   setlocal nomodifiable
   write
   normal z.
+  echom "done"
 endfunction
 
 func! s:search_query()
