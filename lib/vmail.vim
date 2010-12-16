@@ -198,29 +198,22 @@ function! s:update()
 endfunction
 
 function! s:toggle_star() range
-  let lnum = a:firstline
   let n = 0
-  let uids = []
-  while lnum <= a:lastline
-    let line =  getline(lnum)
-    let message_uid = matchstr(line, '^\d\+')
-    call add(uids, message_uid)
-    let lnum = lnum + 1
-  endwhile
-  let uid_set = join(uids, ",")
+  let uid_set = (a:firstline - 2) . '..' . (a:lastline - 2)
   let flag_symbol = "[*]"
   " check if starred already
   let action = " +FLAGS"
-  if (match(line, flag_symbol) != -1)
+  if (match(getline(a:firstline), flag_symbol) != -1)
     let action = " -FLAGS"
   endif
   let command = s:flag_command . uid_set . action . " Flagged" 
-  if len(uids) == 1
-    echom "toggling flag on message " . uid_set
+  if (a:lastline - a:firstline + 1) == 1
+    echom "toggling flag on message" 
   else
-    echom "toggling flags on messages " . join(uid_set, ",")
+    echom "toggling flags on " . (a:lastline - a:firstline + 1) . " messages"
   endif
-  " toggle [*] on lines
+  " toggle [*] on lines; TODO: do this all in vimscript and do the starring
+  " in a thread in imap_client
   let res = system(command)
   setlocal modifiable
   exec a:firstline . "," . a:lastline . "delete"
@@ -288,27 +281,7 @@ func! s:archive_messages() range
 endfunc
 
 " --------------------------------------------------------------------------------
-" RENUMBERING LINES
-" after deleting or archiving or moving, we must renumber all the lines
-" because the message ids shift
-func! s:renumber_lines()
-  let base_lnum = line(".") - 2
-  let base_number = matchstr(getline(base_lnum), '^\d\+')
-  let lnum = line(".") - 1
-  setlocal modifiable
-  while lnum <= line("$")
-    let line =  getline(lnum)
-    let old_id = matchstr(line, '^\d\+')
-    let new_id = base_number + (lnum - base_lnum)
-    let newline = substitute(line, old_id, new_id, '')
-    call setline(lnum, newline)
-    let lnum = lnum + 1
-  endwhile
-  setlocal nomodifiable
-  write
-endfunct
 
-" --------------------------------------------------------------------------------
 " append text bodies of a set of messages to a file
 func! s:append_messages_to_file() range
   let lnum = a:firstline

@@ -114,7 +114,7 @@ module Vmail
     end
 
     # id_set may be a range, array, or string
-    def fetch_envelopes(id_set)
+    def fetch_envelopes(id_set, are_uids=false)
       log "fetch_envelopes: #{id_set.inspect}"
       if id_set.is_a?(String)
         id_set = id_set.split(',')
@@ -125,14 +125,33 @@ module Vmail
         return ""
       end
       results = reconnect_if_necessary do 
-        @imap.fetch(id_set, ["FLAGS", "ENVELOPE", "RFC822.SIZE", "UID" ])
+        if are_uids
+          @imap.uid_fetch(id_set, ["FLAGS", "ENVELOPE", "RFC822.SIZE", "UID" ])
+        else
+          @imap.fetch(id_set, ["FLAGS", "ENVELOPE", "RFC822.SIZE", "UID" ])
+        end
+      end
+      if results.nil?
+        error = "expected fetch results but got nil"
+        log(error) && raise(error)
       end
       log "extracting headers"
       new_message_rows = results.map {|x| extract_row_data(x, max_id) }
-      # put new rows before the current ones
-      @message_list.unshift(*new_message_rows)
+      if are_uids
+        # replace old row_text values
+        new_message_rows.each {|new_row_data|
+          @message_list.
+            select {|old_row_data| old_row_data[:uid] == new_row_data[:uid]}.
+            each {|old_row_data| old_row_data[:row_text] = new_row_data[:row_text]}
+        }
+      else
+        # put new rows before the current ones
+        @message_list.unshift(*new_message_rows)
+      end
       log "returning #{new_message_rows.size} new rows" 
-      return new_message_rows.map {|x| x[:row_text]}.join("\n")
+      return new_message_rows.
+        map {|x| x[:row_text]}.
+        join("\n")
     end
 
     # TODO extract this to another class or module and write unit tests
@@ -355,35 +374,51 @@ EOF
 
     # id_set is a string comming from the vim client
     # action is -FLAGS or +FLAGS
-    def flag(id_set, action, flg)
-      if id_set.is_a?(String)
-        id_set = id_set.split(",").map(&:to_i)
-      end
-      # #<struct Net::IMAP::FetchData seqno=17423, attr={"FLAGS"=>[:Seen, "Flagged"], "UID"=>83113}>
-      log "flag #{id_set} #{flg} #{action}"
+    def flag(index_range, action, flg)
+      uid_set = uids_from_index_range(index_range)
+      log "flag #{uid_set.inspect} #{flg} #{action}"
       if flg == 'Deleted'
+        log "Deleting index_range: #{index_range.inspect}; uid_set: #{uid_set.inspect}"
         # for delete, do in a separate thread because deletions are slow
         Thread.new do 
           unless @mailbox == '[Gmail]/Trash'
-            @imap.copy(id_set, "[Gmail]/Trash")
+            @imap.uid_copy(uid_set, "[Gmail]/Trash")
           end
-          res = @imap.store(id_set, action, [flg.to_sym])
+          res = @imap.uid_store(uid_set, action, [flg.to_sym])
           reload_mailbox
         end
-        id_set.each { |id| @ids.delete(id) }
+        # delete from internal @ids and @message_list
+        uid_set.each {|uid| 
+          @message_list.
+            select {|row| row[:uid] == uid}.
+            each {|row| 
+              seqno = row[:seqno]
+              @ids.delete seqno
+              @message_list.delete(row)
+            }
+        }
       elsif flg == '[Gmail]/Spam'
+        log "Marking as spam index_range: #{index_range.inspect}; uid_set: #{uid_set.inspect}"
         Thread.new do 
-          @imap.copy(id_set, "[Gmail]/Spam")
-          res = @imap.store(id_set, action, [:Deleted])
+          @imap.uid_copy(uid_set, "[Gmail]/Spam")
+          res = @imap.uid_store(uid_set, action, [:Deleted])
           reload_mailbox
         end
         "#{id} deleted"
       else
-        log "Flagging"
-        res = @imap.store(id_set, action, [flg.to_sym])
-        # log res.inspect
-        fetch_envelopes(id_set)
+        log "Flagging index_range: #{index_range.inspect}; uid_set: #{uid_set.inspect}"
+        res = @imap.uid_store(uid_set, action, [flg.to_sym])
+        log res.inspect
+        fetch_envelopes(uid_set, true).tap {|x| log x}
       end
+    end
+
+    def uids_from_index_range(index_range_as_string)
+      raise "expecting String" unless index_range_as_string.is_a?(String)
+      raise "expecting a range as string" unless index_range_as_string =~ /^\d+\.\.\d+$/ 
+      uids = @message_list[eval(index_range_as_string)].map {|row| row[:uid]}
+      log "converted index_range #{index_range_as_string} to uids #{uids.inspect}"
+      uids
     end
 
     def move_to(id_set, mailbox)
