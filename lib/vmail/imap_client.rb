@@ -27,7 +27,7 @@ module Vmail
       @logger = Logger.new(config['logfile'] || STDERR)
       @logger.level = Logger::DEBUG
       @current_mail = nil
-      @current_uid = nil
+      @current_id = nil
     end
 
     def open
@@ -52,9 +52,14 @@ module Vmail
       reconnect_if_necessary do 
         log @imap.select(mailbox)
       end
+      @status = @imap.status(mailbox,  ["MESSAGES", "RECENT", "UNSEEN"])
+      log "STATUS: #{@status.inspect}"
+      # get highest message ID
+      res = @imap.fetch([1,"*"], ["ENVELOPE"])
+      @num_messages = res[-1].seqno
+      log "HIGHEST ID: #@num_messages"
       @mailbox = mailbox
-      @all_uids = []
-      @bad_uids = []
+      @bad_ids = []
       return "OK"
     end
 
@@ -83,20 +88,19 @@ module Vmail
       @mailboxes
     end
 
-    def fetch_headers(uid_set)
-      if uid_set.is_a?(String)
-        uid_set = uid_set.split(",").map(&:to_i)
-      elsif uid_set.is_a?(Integer)
-        uid_set = [uid_set]
+    # id_set may be a range, array, or string
+    def fetch_envelopes(id_set)
+      if id_set.is_a?(String)
+        id_set = id_set.split(',')
       end
-      max_uid = uid_set.max
-      log "fetch headers for #{uid_set.inspect}"
-      if uid_set.empty?
+      max_id = id_set.to_a[-1]
+      log "fetch envelopes for #{id_set.inspect}"
+      if id_set.to_a.empty?
         log "empty set"
         return ""
       end
       results = reconnect_if_necessary do 
-        @imap.uid_fetch(uid_set, ["FLAGS", "ENVELOPE", "RFC822.SIZE" ])
+        @imap.fetch(id_set, ["FLAGS", "ENVELOPE", "RFC822.SIZE" ])
       end
       log "extracting headers"
       lines = results.
@@ -107,13 +111,13 @@ module Vmail
             Time.now
           end
         }.
-        map {|x| format_header(x, max_uid)}
+        map {|x| format_list_row(x, max_id)}
       log "returning result" 
       return lines.join("\n")
     end
 
-    def format_header(fetch_data, max_uid=nil)
-      uid = fetch_data.attr["UID"]
+    def format_list_row(fetch_data, max_id=nil)
+      id = fetch_data.seqno
       envelope = fetch_data.attr["ENVELOPE"]
       size = fetch_data.attr["RFC822.SIZE"]
       flags = fetch_data.attr["FLAGS"]
@@ -148,18 +152,18 @@ module Vmail
       subject = envelope.subject || ''
       subject = Mail::Encodings.unquote_and_convert_to(subject, 'UTF-8')
       flags = format_flags(flags)
-      first_col_width = max_uid.to_s.length 
+      first_col_width = max_id.to_s.length 
       mid_width = @width - (first_col_width + 33)
       address_col_width = (mid_width * 0.3).ceil
       subject_col_width = (mid_width * 0.7).floor
-      [uid.to_s.col(first_col_width), 
+      [id.to_s.col(first_col_width), 
         (date_formatted || '').col(14),
         address.col(address_col_width),
         subject.col(subject_col_width),
         number_to_human_size(size).rcol(6),
         flags.rcol(7)].join(' ')
     rescue 
-      "#{uid.to_s} : error extracting this header"
+      "#{id.to_s} : error extracting this header"
     end
 
     UNITS = [:b, :kb, :mb, :gb].freeze
@@ -189,17 +193,36 @@ module Vmail
     end
 
     def search(limit, *query)
-      log "uid_search limit: #{limit} query: #{@query.inspect}"
-      limit = 25 if limit.to_s !~ /^\d+$/
+      limit = limit.to_i
+      limit = 100 if limit.to_s !~ /^\d+$/
       query = ['ALL'] if query.empty?
-      @query = query.join(' ')
-      log "uid_search #@query #{limit}"
-      @all_uids = reconnect_if_necessary do
-        @imap.uid_search(@query)
+      if query.size == 1 && query[0].downcase == 'all'
+        # form a sequence range
+        query.unshift [[@num_messages - limit.to_i + 1 , 1].max, @num_messages].join(':')
+        @all_search = true
+      else
+        # this is a special query search
+        # set the target range to the whole set
+        query.unshift "1:#@num_messages"
+        @all_search = false
       end
-      uids = @all_uids[-([limit.to_i, @all_uids.size].min)..-1] || []
-      res = fetch_headers(uids)
-      add_more_message_line(res, uids)
+      @query = query.join(' ')
+      log "search query: #@query"
+      ids = reconnect_if_necessary do
+        @imap.search(@query)
+      end
+      fetch_ids = if ids.size > limit 
+                    log "truncating returned set to #{limit}"
+                    @start_index = ids.index(ids[-1]) - limit
+                    # save ids in @ids
+                    @ids = ids
+                    ids[@start_index..ids[-1]]
+                  else
+                    ids
+                  end
+      log "search query result: #{fetch_ids.inspect}"
+      res = fetch_envelopes(fetch_ids)
+      add_more_message_line(res, fetch_ids[0])
     end
 
     def update
@@ -207,65 +230,80 @@ module Vmail
         # this is just to prime the IMAP connection
         # It's necessary for some reason.
         log "priming connection for update"
-        res = @imap.uid_fetch(@all_uids[-1], ["ENVELOPE"])
+        res = @imap.fetch(@all_ids[-1], ["ENVELOPE"])
         if res.nil?
           raise IOError, "IMAP connection seems broken"
         end
       end
-      uids = reconnect_if_necessary { 
-        log "uid_search #@query"
-        @imap.uid_search(@query) 
+      ids = reconnect_if_necessary { 
+        log "search #@query"
+        @imap.search(@query) 
       }
-      new_uids = uids - @all_uids
-      log "UPDATE: NEW UIDS: #{new_uids.inspect}"
-      if !new_uids.empty?
-        res = fetch_headers(new_uids)
-        @all_uids = uids
+      # TODO change this. will throw error now
+      new_ids = ids - @all_ids
+      log "UPDATE: NEW UIDS: #{new_ids.inspect}"
+      if !new_ids.empty?
+        res = fetch_envelopes(new_ids)
+        @all_ids = ids
         res
       end
     end
 
-    # gets 100 messages prior to uid
-    def more_messages(uid, limit=100)
-      uid = uid.to_i
-      x = [(@all_uids.index(uid) - limit), 0].max
-      y = [@all_uids.index(uid) - 1, 0].max
-      uids = @all_uids[x..y]
-      res = fetch_headers(uids)
-      add_more_message_line(res, uids)
-    end
-
-    def add_more_message_line(res, uids)
-      return res if uids.empty?
-      start_index = @all_uids.index(uids[0])
-      if start_index > 0
-        remaining = start_index 
-        res = "> Load #{[100, remaining].min} more messages. #{remaining} remaining.\n" + res
+    # gets 100 messages prior to id
+    def more_messages(message_id, limit=100)
+      message_id = message_id.to_i
+      if @all_search 
+        x = [(message_id - limit), 0].max
+        y = [message_id - 1, 0].max
+        res = fetch_envelopes((x..y))
+        add_more_message_line(res, x)
+      else
+        # filter search query
+        x = [(@start_index - limit), 0].max
+        y = [@start_index - 1, 0].max
+        @start_index = x
+        res = fetch_envelopes(@ids[x..y]) 
+        add_more_message_line(res, @ids[x])
       end
-      res 
     end
 
-    def show_message(uid, raw=false, forwarded=false)
-      uid = uid.to_i
+    def add_more_message_line(res, start_id)
+      if @all_search
+        return res if start_id.nil?
+        if start_id <= 1
+          return res
+        end
+        log "remaining = start_id - 1: #{start_id} - 1"
+        remaining = start_id - 1
+      else # filter search
+        log "remaining =  @ids.index(#{start_id}) - 1; @ids.size: #{@ids.size}"
+        remaining = @ids.index(start_id) - 1
+      end
+      log "remaining messages: #{remaining}"
+      "> Load #{[100, remaining].min} more messages. #{remaining} remaining.\n" + res
+    end
+
+    def show_message(id, raw=false, forwarded=false)
+      id = id.to_i
       if forwarded
         return @current_message.split(/\n-{20,}\n/, 2)[1]
       end
       return @current_mail.to_s if raw 
-      return @current_message if uid == @current_uid 
-      log "fetching #{uid.inspect}" 
+      return @current_message if id == @current_id 
+      log "fetching #{id.inspect}" 
       fetch_data = reconnect_if_necessary do 
-        @imap.uid_fetch(uid, ["FLAGS", "RFC822", "RFC822.SIZE"])[0]
+        @imap.fetch(id, ["FLAGS", "RFC822", "RFC822.SIZE"])[0]
       end
       res = fetch_data.attr["RFC822"]
       mail = Mail.new(res) 
-      @current_uid = uid
+      @current_id = id
       @current_mail = mail # used later to show raw message or extract attachments if any
       log "saving current mail with parts: #{@current_mail.parts.inspect}"
       formatter = Vmail::MessageFormatter.new(mail)
       out = formatter.process_body 
       size = fetch_data.attr["RFC822.SIZE"]
       @current_message = <<-EOF
-#{@mailbox} #{uid} #{number_to_human_size size} #{format_parts_info(formatter.list_parts)}
+#{@mailbox} #{id} #{number_to_human_size size} #{format_parts_info(formatter.list_parts)}
 ---------------------------------------
 #{format_headers(formatter.extract_headers)}
 
@@ -283,36 +321,36 @@ EOF
       end
     end
 
-    # uid_set is a string comming from the vim client
+    # id_set is a string comming from the vim client
     # action is -FLAGS or +FLAGS
-    def flag(uid_set, action, flg)
-      if uid_set.is_a?(String)
-        uid_set = uid_set.split(",").map(&:to_i)
+    def flag(id_set, action, flg)
+      if id_set.is_a?(String)
+        id_set = id_set.split(",").map(&:to_i)
       end
       # #<struct Net::IMAP::FetchData seqno=17423, attr={"FLAGS"=>[:Seen, "Flagged"], "UID"=>83113}>
-      log "flag #{uid_set} #{flg} #{action}"
+      log "flag #{id_set} #{flg} #{action}"
       if flg == 'Deleted'
         # for delete, do in a separate thread because deletions are slow
         Thread.new do 
           unless @mailbox == '[Gmail]/Trash'
-            @imap.uid_copy(uid_set, "[Gmail]/Trash")
+            @imap.copy(id_set, "[Gmail]/Trash")
           end
-          res = @imap.uid_store(uid_set, action, [flg.to_sym])
+          res = @imap.store(id_set, action, [flg.to_sym])
         end
-        uid_set.each { |uid| @all_uids.delete(uid) }
+        id_set.each { |id| @all_ids.delete(id) }
       elsif flg == '[Gmail]/Spam'
-        @imap.uid_copy(uid_set, "[Gmail]/Spam")
-        res = @imap.uid_store(uid_set, action, [:Deleted])
-        "#{uid} deleted"
+        @imap.copy(id_set, "[Gmail]/Spam")
+        res = @imap.store(id_set, action, [:Deleted])
+        "#{id} deleted"
       else
         log "Flagging"
-        res = @imap.uid_store(uid_set, action, [flg.to_sym])
+        res = @imap.store(id_set, action, [flg.to_sym])
         # log res.inspect
-        fetch_headers(uid_set)
+        fetch_envelopes(id_set)
       end
     end
 
-    def move_to(uid_set, mailbox)
+    def move_to(id_set, mailbox)
       if mailbox == 'all'
         log "archiving messages"
       end
@@ -320,24 +358,24 @@ EOF
         mailbox = MailboxAliases[mailbox]
       end
       create_if_necessary mailbox
-      if uid_set.is_a?(String)
-        uid_set = uid_set.split(",").map(&:to_i)
+      if id_set.is_a?(String)
+        id_set = id_set.split(",").map(&:to_i)
       end
-      log "move_to #{uid_set.inspect} #{mailbox}"
-      log @imap.uid_copy(uid_set, mailbox)
-      log @imap.uid_store(uid_set, '+FLAGS', [:Deleted])
+      log "move_to #{id_set.inspect} #{mailbox}"
+      log @imap.copy(id_set, mailbox)
+      log @imap.store(id_set, '+FLAGS', [:Deleted])
     end
 
-    def copy_to(uid_set, mailbox)
+    def copy_to(id_set, mailbox)
       if MailboxAliases[mailbox]
         mailbox = MailboxAliases[mailbox]
       end
       create_if_necessary mailbox
-      log "copy #{uid_set.inspect} #{mailbox}"
-      if uid_set.is_a?(String)
-        uid_set = uid_set.split(",").map(&:to_i)
+      log "copy #{id_set.inspect} #{mailbox}"
+      if id_set.is_a?(String)
+        id_set = id_set.split(",").map(&:to_i)
       end
-      log @imap.uid_copy(uid_set, mailbox)
+      log @imap.copy(id_set, mailbox)
     end
 
     def create_if_necessary(mailbox)
@@ -350,18 +388,18 @@ EOF
       end
     end
 
-    def append_to_file(file, uid_set)
-      if uid_set.is_a?(String)
-        uid_set = uid_set.split(",").map(&:to_i)
+    def append_to_file(file, id_set)
+      if id_set.is_a?(String)
+        id_set = id_set.split(",").map(&:to_i)
       end
       log "append messages to file: #{file}"
-      uid_set.each do |uid|
-        message = show_message(uid)
+      id_set.each do |id|
+        message = show_message(id)
         divider = "#{'=' * 39}\n"
         File.open(file, 'a') {|f| f.puts(divider + message + "\n\n")}
-        log "appended uid #{uid}"
+        log "appended id #{id}"
       end
-      "printed #{uid_set.size} message#{uid_set.size == 1 ? '' : 's'} to #{file.strip}"
+      "printed #{id_set.size} message#{id_set.size == 1 ? '' : 's'} to #{file.strip}"
     end
 
 
@@ -384,9 +422,9 @@ EOF
       lines.join("\n")
     end
 
-    def reply_template(uid, replyall=false)
-      log "sending reply template for #{uid}"
-      fetch_data = @imap.uid_fetch(uid.to_i, ["FLAGS", "ENVELOPE", "RFC822"])[0]
+    def reply_template(id, replyall=false)
+      log "sending reply template for #{id}"
+      fetch_data = @imap.fetch(id.to_i, ["FLAGS", "ENVELOPE", "RFC822"])[0]
       envelope = fetch_data.attr['ENVELOPE']
       recipient = [envelope.reply_to, envelope.from].flatten.map {|x| address_to_string(x)}[0]
       cc = [envelope.to, envelope.cc]
@@ -417,8 +455,8 @@ EOF
       "\n\n#@signature"
     end
 
-    def forward_template(uid)
-      original_body = show_message(uid, false, true)
+    def forward_template(id)
+      original_body = show_message(id, false, true)
       new_message_template + 
         "\n---------- Forwarded message ----------\n" +
         original_body + signature
@@ -431,7 +469,7 @@ EOF
         # this is just to prime the IMAP connection
         # It's necessary for some reason.
         log "priming connection for delivering"
-        res = @imap.uid_fetch(@all_uids[-1], ["ENVELOPE"])
+        res = @imap.fetch(@all_ids[-1], ["ENVELOPE"])
         if res.nil?
           raise IOError, "IMAP connection seems broken"
         end
@@ -518,8 +556,8 @@ EOF
       "saved:\n" + saved.map {|x| "- #{x}"}.join("\n")
     end
 
-    def open_html_part(uid)
-      log "open_html_part #{uid}"
+    def open_html_part(id)
+      log "open_html_part #{id}"
       log @current_mail.parts.inspect
       multipart = @current_mail.parts.detect {|part| part.multipart?}
       html_part = if multipart 
@@ -571,6 +609,9 @@ EOF
       log(revive_connection)
       # try just once
       block.call
+    rescue
+      log "error: #{$!}"
+      raise
     end
 
     def self.start(config)

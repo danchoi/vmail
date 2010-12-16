@@ -453,6 +453,7 @@ function! s:select_mailbox()
     return
   endif
   let s:mailbox = mailbox
+  let s:query = "100 all"
   let command = s:select_mailbox_command . shellescape(s:mailbox)
   call system(command)
   redraw
