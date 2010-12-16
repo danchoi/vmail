@@ -63,7 +63,8 @@ You can omit the password key-value pair if you'd rather not have the password
 saved in the file. In that case, you'll prompted for the password each time you
 start vmail.
 
-
+If you are behind a firewall that blocks IMAP, there are additional
+configuration options that you can use. See below.
 
 ## Contacts autocompletion
 
@@ -402,7 +403,7 @@ vmail gem is downloaded from).
 
 ## Additional configuration options
 
-The default IMAP server vmail uses is 'imap.gmail.com` and the default port is
+The default IMAP server vmail uses is `imap.gmail.com` and the default port is
 `993`. If you want to change these values, e.g, because you are behind a
 firewall which blocks IMAP, you can change these values by specifying new ones
 in your .vmailrc, like so:
