@@ -594,6 +594,7 @@ function! s:cancel_compose()
   call s:focus_list_window()
   wincmd p
   close!
+  normal z.
 endfunction
 
 function! s:send_message()
