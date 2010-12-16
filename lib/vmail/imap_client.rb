@@ -290,7 +290,8 @@ module Vmail
     end
 
     # gets 100 messages prior to id
-    def more_messages(message_id, limit=100)
+    def more_messages(limit=100)
+      message_id = @message_list[0][:seqno]
       log "more_messages: message_id #{message_id}"
       message_id = message_id.to_i
       if @all_search 
@@ -325,7 +326,7 @@ module Vmail
         return res
       end
       log "remaining messages: #{remaining}"
-      "> Load #{[100, remaining].min} more messages. #{remaining} remaining.\n" + res
+      ">  Load #{[100, remaining].min} more messages. #{remaining} remaining.\n" + res
     end
 
     def show_message(index, raw=false)
@@ -348,7 +349,7 @@ module Vmail
       out = formatter.process_body 
       size = fetch_data.attr["RFC822.SIZE"]
       @current_message = <<-EOF
-#{@mailbox} #{index} #{number_to_human_size size} #{format_parts_info(formatter.list_parts)}
+#{@mailbox} seqno:#{index} uid:#{uid} #{number_to_human_size size} #{format_parts_info(formatter.list_parts)}
 ---------------------------------------
 #{format_headers(formatter.extract_headers)}
 

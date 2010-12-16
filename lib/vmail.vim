@@ -67,7 +67,7 @@ endfunction
 
 function! s:show_message()
   let line = getline(line("."))
-  if match(line, '^> Load') != -1
+  if match(line, '^>  Load') != -1
     setlocal modifiable
     delete
     call s:more_messages()
@@ -502,8 +502,7 @@ endfunction
 
 function! s:more_messages()
   let line = getline(line('.'))
-  let uid = matchstr(line, '^\d\+')
-  let command = s:more_messages_command . uid
+  let command = s:more_messages_command 
   echo "fetching more messages. please wait..."
   let res = system(command)
   setlocal modifiable
