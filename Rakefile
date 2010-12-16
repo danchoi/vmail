@@ -17,6 +17,7 @@ end
 desc "git push and rake release bumped version"
 task :bumped do
   puts `git commit -a -m'bump' && git push && rake release`
+  Rake::Task["web"].execute
 end
 
 desc "Run tests"
