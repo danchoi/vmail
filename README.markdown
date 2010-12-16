@@ -353,7 +353,7 @@ the query on that line.
 
 ## Getting help
 
-Type `,?` will open this webpage in a browser.
+Typing `,?` will open this webpage in a browser.
 
 ## Using vmail with MacVim
 
