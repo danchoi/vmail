@@ -430,7 +430,7 @@ file like so:
 
 Type `:help highlight-args` in Vim for more details.
 
-## Bug reports, feature requests
+## Bug reports, feature requests, user community
 
 Please file bug reports and feature requests in the [vmail github issue tracker][tracker].
 
@@ -438,6 +438,11 @@ vmail is very young and in beta, so there are bound to be bugs and issues.
 But in a few weeks, with your help, vmail will become stable.
 
 [tracker]:https://github.com/danchoi/vmail/issues
+
+And if you have any tips or troubleshooting advice you want to share with other
+vmail users, please add them to the [vmail wiki][wiki].
+
+[wiki]:https://github.com/danchoi/vmail/wiki
 
 ## How to contact the developer
 
