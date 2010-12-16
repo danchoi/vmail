@@ -353,7 +353,7 @@ the query on that line.
 
 ## Getting help
 
-Type `,?` to load all these vmail pointers and tips into a Vim window.
+Type `,?` will open this webpage in a browser.
 
 ## Using vmail with MacVim
 

@@ -656,11 +656,10 @@ endfunc
 " -------------------------------------------------------------------------------- 
 "  HELP
 func! s:show_help()
-  let helpfile = system(s:show_help_command)
-  exec "split " . helpfile
-  setlocal nomodifiable
-  setlocal buftype=nofile
-  nnoremap <silent> <buffer> q :close<cr>
+  let command = s:browser_command . ' ' . shellescape('http://danielchoi.com/software/vmail.html')
+  call system(command)
+  "let helpfile = system(s:show_help_command)
+  "exec "split " . helpfile
 endfunc
 
 
