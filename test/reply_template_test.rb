@@ -22,7 +22,8 @@ describe Vmail::ReplyTemplate do
   end
 
   def test_template
-    expected = {"from"=>"Daniel Choi <dhchoi@gmail.com>", "to"=>"Chappy Youn <chappy1@gmail.com>", "cc"=>"Draculette Ko <violinist.ko@gmail.com>, Cookiemonster Youn <cookiemonster@gmail.com>, Racoon <raycoon@gmail.com>", "subject"=>"Re: Holiday potluck at Ray's"}
+    expected = {"from"=>"Daniel Choi <dhchoi@gmail.com>", "to"=>"Chappy Youn <chappy1@gmail.com>", "cc"=>"Draculette Ko <violinist.ko@gmail.com>, Cookiemonster Youn <cookiemonster@gmail.com>, Racoon <raycoon@gmail.com>", "subject"=>"Re: Holiday potluck at Ray's", :body=>"On Sun, Dec 12, 2010 at 01:13 PM, Chappy Youn <chappy1@gmail.com> wrote:\n\n> Guys,\n> Tonight we will have a potluck at Ray's at 7. Pls bring food for 1.5  \n> ppl.\n> \n> Ray will provide wine and dessert.\n> \n> Also, we will be having a poor man's Yankee swap. Pls bring something  \n> gift wrapped from home. Nothing fancy, but something halfway decent or  \n> funny.\n> \n> El, make sure it's worth more than 50 cents.\n> \n> Chappy\n> \n> Sent from my iPhone"}
+
     assert_equal expected,  @rt.reply_headers
   end
 

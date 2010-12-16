@@ -512,7 +512,8 @@ EOF
       log "sending reply template"
       # TODO
       # user reply_template class
-      reply_headers = Vmail::ReplyTemplate.new(@current_mail, @username, @name, replyall)
+      reply_headers = Vmail::ReplyTemplate.new(@current_mail, @username, @name, replyall).reply_headers
+      body = reply_headers.delete(:body)
       format_headers(reply_headers) + "\n\n\n" + body + signature
     end
 
