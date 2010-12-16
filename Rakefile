@@ -12,6 +12,11 @@ task :web do
   end
 end
 
+desc "git push and rake release bumped version"
+task :bumped do
+  `gca -m'bump' && git push && rake release`
+end
+
 desc "Run tests"
 task :test do 
   $:.unshift File.expand_path("test")

@@ -41,26 +41,33 @@ module Vmail
       @imap.disconnect
     end
 
-    def select_mailbox(mailbox)
+    def select_mailbox(mailbox, force=false)
       if MailboxAliases[mailbox]
         mailbox = MailboxAliases[mailbox]
       end
-      if mailbox == @mailbox 
+      if mailbox == @mailbox && !force
         return
       end
       log "selecting mailbox #{mailbox.inspect}"
       reconnect_if_necessary do 
         log @imap.select(mailbox)
       end
-      @status = @imap.status(mailbox,  ["MESSAGES", "RECENT", "UNSEEN"])
-      log "STATUS: #{@status.inspect}"
+      @mailbox = mailbox
+      get_mailbox_status
+      get_highest_message_id
+      return "OK"
+    end
+
+    def get_highest_message_id
       # get highest message ID
       res = @imap.fetch([1,"*"], ["ENVELOPE"])
       @num_messages = res[-1].seqno
       log "HIGHEST ID: #@num_messages"
-      @mailbox = mailbox
-      @bad_ids = []
-      return "OK"
+    end
+
+    def get_mailbox_status
+      @status = @imap.status(@mailbox,  ["MESSAGES", "RECENT", "UNSEEN"])
+      log "mailbox status: #{@status.inspect}"
     end
 
     def revive_connection
@@ -107,7 +114,6 @@ module Vmail
         id_set = id_set.split(',')
       end
       max_id = id_set.to_a[-1]
-      log "fetch envelopes for #{id_set.inspect}"
       if id_set.to_a.empty?
         log "empty set"
         return ""
@@ -220,10 +226,10 @@ module Vmail
         @all_search = false
       end
       log "@all_search #{@all_search}"
-      @query = query.join(' ')
-      log "search query: #@query"
+      @query = query
+      log "search query: #@query.inspect"
       @ids = reconnect_if_necessary do
-        @imap.search(@query)
+        @imap.search(@query.join(' '))
       end
       # save ids in @ids, because filtered search relies on it
       fetch_ids = if @all_search
@@ -239,9 +245,15 @@ module Vmail
 
     def update
       prime_connection
+      old_num_messages = @num_messages
+      # we need to re-select the mailbox to get the new highest id
+      select_mailbox(@mailbox, true)
+      update_query = @query
+      # set a new range filter
+      update_query[0] = "#{old_num_messages}:#{@num_messages}"
       ids = reconnect_if_necessary { 
-        log "search #@query"
-        @imap.search(@query) 
+        log "search #update_query"
+        @imap.search(update_query.join(' ')) 
       }
       # TODO change this. will throw error now
       new_ids = ids.select {|x| x > @ids.max}
