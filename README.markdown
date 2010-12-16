@@ -130,7 +130,7 @@ top of the list that looks something like this:
 
 Put the cursor on this line and press ENTER to load more of these messages.
 
-Unread messages are marked with a `[+]` symbol.
+Unread messages are marked with a `+` symbol.
 
 To view the raw RFC822 version of a message, type `,R` while viewing the message.
 
@@ -138,7 +138,7 @@ To view the raw RFC822 version of a message, type `,R` while viewing the message
 
 To star a message, put the cursor on it and type `,*`.  (Note that the comma
 before the * is part of the key sequence.) Starring a message copies it to the
-`starred` mailbox.  Starred messages are marked with a `[*]` symbol and
+`starred` mailbox.  Starred messages are marked with a `*` symbol and
 color-highlighted.
 
 To delete a message, put the cursor on it and type `,#`.  Deleting a message
