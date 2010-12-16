@@ -25,7 +25,6 @@ let s:new_message_template_command = s:client_script . "new_message_template "
 let s:reply_template_command = s:client_script . "reply_template "
 let s:forward_template_command = s:client_script . "forward_template "
 let s:deliver_command = s:client_script . "deliver "
-let s:save_draft_command = s:client_script . "save_draft "
 let s:save_attachments_command = s:client_script . "save_attachments "
 let s:open_html_part_command = s:client_script . "open_html_part "
 let s:show_help_command = s:client_script . "show_help"
@@ -606,17 +605,6 @@ function! s:send_message()
   redraw
 endfunction
 
-func! s:save_draft()
-  let mail = join(getline(1,'$'), "\n")
-  echo "saving draft"
-  call system(s:save_draft_command, mail)
-  redraw
-  call s:focus_list_window()
-  wincmd p
-  close!
-  echo "draft saved"
-endfunc
-
 " -------------------------------------------------------------------------------- 
 
 " call from inside message window with <Leader>h
@@ -737,7 +725,6 @@ func! s:global_mappings()
   " NOTE send_message is a global mapping, so user can load a saved
   " message from a file and send it
   nnoremap <silent> <leader>vs :call <SID>send_message()<CR>
-  nnoremap <silent> <leader>vd :call <SID>save_draft()<CR>
   noremap <silent> <leader>o :call <SID>open_href()<cr> 
   noremap <silent> <leader>? :call <SID>show_help()<cr>
 endfunc
