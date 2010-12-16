@@ -1,3 +1,6 @@
+if !has("g:vmail_flagged_color")
+  let g:vmail_flagged_color = "ctermfg=green"
+endif
 let s:mailbox = $VMAIL_MAILBOX
 let s:query = $VMAIL_QUERY
 let s:browser_command = $VMAIL_BROWSER
@@ -158,8 +161,8 @@ function! s:focus_list_window()
   if has("syntax")
     syn clear
     " colorize whole line
-    syn match BufferFlagged /^*.*/hs=s
-    hi def BufferFlagged ctermfg=red 
+    syn match VmailBufferFlagged /^*.*/hs=s
+    exec "hi def VmailBufferFlagged " . g:vmail_flagged_color
   endif
   " vertically center the cursor line
   " normal z.
@@ -495,9 +498,9 @@ function! s:do_search()
   1,$delete
   put! =res
   execute "normal Gdd\<c-y>" 
-  normal z.
   setlocal nomodifiable
   write
+  normal z.
 endfunction
 
 function! s:more_messages()
@@ -758,6 +761,4 @@ autocmd bufreadpost *.txt call <SID>turn_into_compose_window()
 
 call system(s:select_mailbox_command . shellescape(s:mailbox))
 call s:do_search()
-
-
 
