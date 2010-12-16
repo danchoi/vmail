@@ -206,16 +206,18 @@ module Vmail
         query.unshift "1:#@num_messages"
         @all_search = false
       end
+      log "@all_search #{@all_search}"
       @query = query.join(' ')
       log "search query: #@query"
       ids = reconnect_if_necessary do
         @imap.search(@query)
       end
+      # save ids in @ids, because filtered search relies on it
+      @ids = ids if !@all_search
+
       fetch_ids = if ids.size > limit 
                     log "truncating returned set to #{limit}"
                     @start_index = ids.index(ids[-1]) - limit
-                    # save ids in @ids
-                    @ids = ids
                     ids[@start_index..ids[-1]]
                   else
                     ids
@@ -268,6 +270,8 @@ module Vmail
     end
 
     def add_more_message_line(res, start_id)
+      log "add_more_message_line @all_search #{@all_search}"
+
       if @all_search
         return res if start_id.nil?
         if start_id <= 1
