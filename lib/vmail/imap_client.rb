@@ -55,6 +55,8 @@ module Vmail
         log @imap.select(mailbox)
       end
       @mailbox = mailbox
+      # Clear internal message list
+      # This will be an array of hashes 
       get_mailbox_status
       get_highest_message_id
       return "OK"
@@ -125,7 +127,7 @@ module Vmail
         return ""
       end
       results = reconnect_if_necessary do 
-        @imap.fetch(id_set, ["FLAGS", "ENVELOPE", "RFC822.SIZE" ])
+        @imap.fetch(id_set, ["FLAGS", "ENVELOPE", "RFC822.SIZE", "UID" ])
       end
       log "extracting headers"
       lines = results.
@@ -136,14 +138,20 @@ module Vmail
             Time.now
           end
         }.
-        map {|x| format_list_row(x, max_id)}
-      log "returning result" 
+        map {|x| 
+          row_data = extract_row_data(x, max_id)
+          @message_list << row_data
+          row_data[:row_text]
+        }
+      log "returning #{lines.size} new rows" 
       return lines.join("\n")
     end
 
-    def format_list_row(fetch_data, max_id=nil)
-      id = fetch_data.seqno
-      log fetch_data
+    # TODO extract this to another class or module and write unit tests
+    def extract_row_data(fetch_data, max_id=nil)
+      seqno = fetch_data.seqno
+      uid = fetch_data.attr['UID']
+      # log "fetched seqno #{seqno} uid #{uid}"
       envelope = fetch_data.attr["ENVELOPE"]
       size = fetch_data.attr["RFC822.SIZE"]
       flags = fetch_data.attr["FLAGS"]
@@ -182,14 +190,17 @@ module Vmail
       mid_width = @width - (first_col_width + 33)
       address_col_width = (mid_width * 0.3).ceil
       subject_col_width = (mid_width * 0.7).floor
-      [id.to_s.col(first_col_width), 
+      row_text = [seqno.to_s.col(first_col_width), 
         (date_formatted || '').col(14),
         address.col(address_col_width),
         subject.col(subject_col_width),
         number_to_human_size(size).rcol(6),
         flags.rcol(7)].join(' ')
+      {:uid => uid, :seqno => seqno, :row_text => row_text}
     rescue 
-      "#{id.to_s} : error extracting this header"
+      log "error extracting header for uid #{uid} seqno #{seqno}: #$!"
+      row_text =i "#{seqno.to_s} : error extracting this header"
+      {:uid => uid, :seqno => seqno, :row_text => row_text}
     end
 
     UNITS = [:b, :kb, :mb, :gb].freeze
@@ -246,6 +257,7 @@ module Vmail
                     @ids[@start_index..-1]
                   end
       log "search query got #{@ids.size} results" 
+      @message_list = [] # this will hold all the data extracted from these message envelopes
       res = fetch_envelopes(fetch_ids)
       add_more_message_line(res, fetch_ids[0])
     end
