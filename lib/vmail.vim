@@ -198,7 +198,6 @@ function! s:update()
 endfunction
 
 function! s:toggle_star() range
-  let n = 0
   let uid_set = (a:firstline - 2) . '..' . (a:lastline - 2)
   let flag_symbol = "[*]"
   " check if starred already
@@ -225,23 +224,19 @@ function! s:toggle_star() range
   if len(split(res, "\n")) > 2
     call feedkeys("\<cr>")
   endif
+  echom "done" 
 endfunction
 
 " flag can be Deleted or [Gmail]/Spam
-" both functions must renumber all the messages!
 func! s:delete_messages(flag) range
-  let lnum = a:firstline
-  let n = 0
-  let uids = []
-  while lnum <= a:lastline
-    let line =  getline(lnum)
-    let message_uid = matchstr(line, '^\d\+')
-    call add(uids, message_uid)
-    let lnum = lnum + 1
-  endwhile
-  let uid_set = join(uids, ",")
+  let uid_set = (a:firstline - 2) . '..' . (a:lastline - 2)
   let command = s:flag_command . uid_set . " +FLAGS " . a:flag
-  echo command
+  let nummsgs = (a:lastline - a:firstline + 1)
+  if nummsgs == 1
+    echom "deleting message" 
+  else
+    echom "deleting " . (a:lastline - a:firstline + 1) . " messages"
+  endif
   let res = system(command)
   setlocal modifiable
   exec a:firstline . "," . a:lastline . "delete"
@@ -249,11 +244,11 @@ func! s:delete_messages(flag) range
   write
   " if more than 2 lines change, vim forces us to look at a message.
   " dismiss it.
-  if len(uids) > 2
+  if nummsgs > 2
     call feedkeys("\<cr>")
   endif
-  call s:renumber_lines()
-  echo len(uids) . " message" . (len(uids) == 1 ? '' : 's') . " marked " . a:flag
+  redraw
+  echo nummsgs .  " message" . (nummsgs == 1 ? '' : 's') . " marked " . a:flag
 endfunc
 
 func! s:archive_messages() range
@@ -276,7 +271,6 @@ func! s:archive_messages() range
   write
   call s:focus_message_window()
   close
-  call s:renumber_lines()
   echo len(uids) . " message" . (len(uids) == 1 ? '' : 's') . " archived"
 endfunc
 

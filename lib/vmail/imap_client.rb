@@ -385,23 +385,15 @@ EOF
             @imap.uid_copy(uid_set, "[Gmail]/Trash")
           end
           res = @imap.uid_store(uid_set, action, [flg.to_sym])
+          remove_uid_set_from_cached_lists(uid_set)
           reload_mailbox
         end
-        # delete from internal @ids and @message_list
-        uid_set.each {|uid| 
-          @message_list.
-            select {|row| row[:uid] == uid}.
-            each {|row| 
-              seqno = row[:seqno]
-              @ids.delete seqno
-              @message_list.delete(row)
-            }
-        }
       elsif flg == '[Gmail]/Spam'
         log "Marking as spam index_range: #{index_range.inspect}; uid_set: #{uid_set.inspect}"
         Thread.new do 
           @imap.uid_copy(uid_set, "[Gmail]/Spam")
           res = @imap.uid_store(uid_set, action, [:Deleted])
+          remove_uid_set_from_cached_lists(uid_set)
           reload_mailbox
         end
         "#{id} deleted"
@@ -419,6 +411,21 @@ EOF
       uids = @message_list[eval(index_range_as_string)].map {|row| row[:uid]}
       log "converted index_range #{index_range_as_string} to uids #{uids.inspect}"
       uids
+    end
+
+    def remove_uid_set_from_cached_lists(uid_set)
+      # delete from cached @ids and @message_list
+      uid_set.each {|uid| 
+        @message_list.
+          select {|row| row[:uid] == uid}.
+          each {|row| 
+            seqno = row[:seqno]
+            log "deleting seqno #{seqno} from @ids"
+            @ids.delete seqno
+            log "deleting msg uid #{row[:uid]} from @message_list"
+            @message_list.delete(row)
+          }
+      }
     end
 
     def move_to(id_set, mailbox)
