@@ -700,6 +700,7 @@ endfunc
 
 func! s:message_list_window_mappings()
   noremap <silent> <buffer> <cr> :call <SID>show_message()<CR>
+  noremap <silent> <buffer> <LeftMouse> :call <SID>show_message()<CR>
   noremap <silent> <buffer> q :qal!<cr>
 
   noremap <silent> <buffer> <leader>* :call <SID>toggle_star()<CR>
