@@ -537,7 +537,7 @@ function! s:more_messages()
   let line = getline(line('.'))
   let uid = matchstr(line, '^\d\+')
   let command = s:more_messages_command . uid
-  echo command
+  echo "fetching more messages. please wait..."
   let res = system(command)
   setlocal modifiable
   let lines =  split(res, "\n")
