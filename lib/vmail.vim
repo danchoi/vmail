@@ -519,7 +519,7 @@ function! s:compose_message()
 endfunction
 
 function! s:compose_forward()
-  let command = s:forward_template_command . s:current_message_index
+  let command = s:forward_template_command 
   call s:open_compose_window(command)
 "  call search("^to:") 
 "  normal A

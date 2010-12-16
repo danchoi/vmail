@@ -332,11 +332,8 @@ module Vmail
       "> Load #{[100, remaining].min} more messages. #{remaining} remaining.\n" + res
     end
 
-    def show_message(index, raw=false, forwarded=false)
+    def show_message(index, raw=false)
       log "showing message at #{index}" 
-      if forwarded
-        return @current_message.split(/\n-{20,}\n/, 2)[1]
-      end
       return @current_mail.to_s if raw 
       index = index.to_i
       return @current_message if index == @current_message_index 
@@ -510,7 +507,6 @@ EOF
 
     def reply_template(replyall=false)
       log "sending reply template"
-      # TODO
       # user reply_template class
       reply_headers = Vmail::ReplyTemplate.new(@current_mail, @username, @name, replyall).reply_headers
       body = reply_headers.delete(:body)
@@ -523,8 +519,8 @@ EOF
       "\n\n#@signature"
     end
 
-    def forward_template(id)
-      original_body = show_message(id, false, true)
+    def forward_template
+      original_body = @current_message.split(/\n-{20,}\n/, 2)[1]
       new_message_template + 
         "\n---------- Forwarded message ----------\n" +
         original_body + signature
