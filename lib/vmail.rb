@@ -1,3 +1,4 @@
+require 'vmail/version'
 require 'vmail/options'
 require 'vmail/imap_client'
 
@@ -5,6 +6,7 @@ module Vmail
   extend self
 
   def start
+    puts "starting vmail #{Vmail::VERSION}"
 
     vim = ENV['VMAIL_VIM'] || 'vim'
 
