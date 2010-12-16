@@ -143,6 +143,7 @@ module Vmail
 
     def format_list_row(fetch_data, max_id=nil)
       id = fetch_data.seqno
+      log fetch_data
       envelope = fetch_data.attr["ENVELOPE"]
       size = fetch_data.attr["RFC822.SIZE"]
       flags = fetch_data.attr["FLAGS"]
