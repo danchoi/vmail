@@ -128,21 +128,11 @@ module Vmail
         @imap.fetch(id_set, ["FLAGS", "ENVELOPE", "RFC822.SIZE", "UID" ])
       end
       log "extracting headers"
-      lines = results.
-        sort_by {|x| 
-          begin
-            Time.parse(x.attr['ENVELOPE'].date) 
-          rescue ArgumentError
-            Time.now
-          end
-        }.
-        map {|x| 
-          row_data = extract_row_data(x, max_id)
-          @message_list << row_data
-          row_data[:row_text]
-        }
-      log "returning #{lines.size} new rows" 
-      return lines.join("\n")
+      new_message_rows = results.map {|x| extract_row_data(x, max_id) }
+      # put new rows before the current ones
+      @message_list.unshift(*new_message_rows)
+      log "returning #{new_message_rows.size} new rows" 
+      return new_message_rows.map {|x| x[:row_text]}.join("\n")
     end
 
     # TODO extract this to another class or module and write unit tests
