@@ -280,7 +280,6 @@ module Vmail
         x = [(@start_index - limit), 0].max
         y = [@start_index - 1, 0].max
         @start_index = x
-        log "fetch_envelopes @ids[#{x}..#{y}]"
         res = fetch_envelopes(@ids[x..y]) 
         add_more_message_line(res, @ids[x])
       end
