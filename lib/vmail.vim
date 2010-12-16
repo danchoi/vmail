@@ -187,7 +187,7 @@ function! s:update()
   if len(split(res, "\n", '')) > 0
     setlocal modifiable
     let line = line('$')
-    put =res
+    $put =res
     setlocal nomodifiable
     write
     let num = len(split(res, '\n', ''))
