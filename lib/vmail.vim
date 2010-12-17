@@ -681,6 +681,7 @@ func! s:message_window_mappings()
   nnoremap <silent> <buffer> <Leader>m :call <SID>focus_list_window()<cr>:call <SID>mailbox_window()<CR>
   nnoremap <silent> <buffer> <Leader>A :call <SID>save_attachments()<cr>
   nnoremap <silent> <buffer> <Space> :call <SID>maximize_window()<cr>
+  noremap <silent> <buffer> <leader>vp :call <SID>focus_list_window()<cr>:call <SID>append_messages_to_file()<CR>
   nnoremap <silent> <buffer> <Leader>s :call <SID>focus_list_window()<cr>:call <SID>search_query()<cr>
 
 endfunc
