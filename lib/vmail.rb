@@ -63,7 +63,7 @@ module Vmail
 
     # invoke vim
     vimscript = File.expand_path("../vmail.vim", __FILE__)
-    vim_command = "DRB_URI='#{drb_uri}' VMAIL_CONTACTS_FILE=#{contacts_file} VMAIL_MAILBOX=#{String.shellescape(mailbox)} VMAIL_QUERY=#{String.shellescape(query.join(' '))} #{vim} -S #{vimscript} #{buffer_file}"
+    vim_command = "DRB_URI=#{drb_uri} VMAIL_CONTACTS_FILE=#{contacts_file} VMAIL_MAILBOX=#{String.shellescape(mailbox)} VMAIL_QUERY=#{String.shellescape(query.join(' '))} #{vim} -S #{vimscript} #{buffer_file}"
     puts vim_command
     system(vim_command)
 

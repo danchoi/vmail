@@ -8,7 +8,7 @@ let s:append_file = ''
 
 let s:drb_uri = $DRB_URI
 
-let s:client_script = "vmail_client " . s:drb_uri . " "
+let s:client_script = "vmail_client " . shellescape(s:drb_uri) . " "
 let s:set_window_width_command = s:client_script . "window_width= "
 let s:list_mailboxes_command = s:client_script . "list_mailboxes "
 let s:show_message_command = s:client_script . "show_message "
