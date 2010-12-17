@@ -10,6 +10,7 @@ require 'logger'
 
 module Vmail
   class ImapClient
+    DIVIDER_WIDTH = 46
 
     MailboxAliases = { 'sent' => '[Gmail]/Sent Mail',
       'all' => '[Gmail]/All Mail',
@@ -370,7 +371,7 @@ module Vmail
       size = fetch_data.attr["RFC822.SIZE"]
       @current_message = <<-EOF
 #{@mailbox} seqno:#{envelope_data[:seqno]} uid:#{uid} #{number_to_human_size size} #{format_parts_info(formatter.list_parts)}
-----------------------------------------------
+#{divider '-'}
 #{format_headers(formatter.extract_headers)}
 
 #{out}
@@ -520,8 +521,7 @@ EOF
       log "append to file range #{index_range.inspect} to file: #{file}"
       index_range.each do |idx|
         message = show_message(idx)
-        divider = "#{'=' * 39}\n"
-        File.open(file, 'a') {|f| f.puts(divider + message + "\n\n")}
+        File.open(file, 'a') {|f| f.puts(divider('=') + "\n" + message + "\n\n")}
         subject = (message[/^subject:(.*)/,1] || '').strip
         log "appended message '#{subject}'"
       end
@@ -573,6 +573,10 @@ EOF
       new_message_template(subject) + 
         "\n---------- Forwarded message ----------\n" +
         original_body + signature
+    end
+
+    def divider(str)
+      str * DIVIDER_WIDTH
     end
 
     def deliver(text)
