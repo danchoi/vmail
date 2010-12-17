@@ -158,7 +158,7 @@ spam, or archive. Use `v` to start marking a range of lines (the vertical
 position of the cursor doesn't matter).  Then type any of the above commands to
 perform an action on all the messages you selected.
 
-To save you keystorkes, vmail provides alternative key mappings for
+To save you keystrokes, vmail provides alternative key mappings for
 `,*`, `,#`, and `,!`:
 
 * star: `,*` &rarr; `,8`
