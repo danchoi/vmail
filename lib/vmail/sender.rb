@@ -1,4 +1,4 @@
-require 'vmail/options'
+require 'vmail/send_options'
 require 'vmail/imap_client'
 
 module Vmail
@@ -6,7 +6,7 @@ module Vmail
     extend self
 
     def send
-      opts = Vmail::Options.new(ARGV)
+      opts = Vmail::SendOptions.new(ARGV)
       config = opts.config.merge 'logile' => STDERR
       imap_client = Vmail::ImapClient.new config
       imap_client.deliver STDIN.read
