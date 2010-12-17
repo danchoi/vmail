@@ -8,3 +8,8 @@ Thu Dec 16 20:33:46 EST 2010
 
 - let vmailsend take an ARGV of filenames, so use can use globs, etc.
   and send a bunch of emails at once.
+------------------------------------------------------------------------
+Fri Dec 17 11:24:05 EST 2010
+
+- when showing seqno in message window, get it from the fetched
+  envelope of the message instead of from the message_list item.
