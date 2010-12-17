@@ -711,7 +711,6 @@ func! s:message_list_window_mappings()
   noremap <silent> <buffer> q :qal!<cr>
 
   noremap <silent> <buffer> <leader>* :call <SID>toggle_star()<CR>
-  nmap <silent> <buffer> s <leader>*
   noremap <silent> <buffer> <leader># :call <SID>delete_messages("Deleted")<CR>
   nmap <silent> <buffer> <leader>d <leader>#
 
