@@ -66,6 +66,12 @@ module Vmail
       select_mailbox(@mailbox, true)
     end
 
+    def clear_cached_message
+      @current_mail = nil
+      @current_message_index = nil
+      @current_message = nil
+    end
+
     def get_highest_message_id
       # get highest message ID
       res = @imap.fetch([1,"*"], ["ENVELOPE"])
@@ -276,9 +282,7 @@ module Vmail
                   end
       log "search query got #{@ids.size} results" 
       @message_list = [] # this will hold all the data extracted from these message envelopes
-      @current_mail = nil
-      @current_message_index = nil
-      @current_message = nil
+      clear_cached_message
       res = fetch_envelopes(fetch_ids)
       add_more_message_line(res, fetch_ids[0])
     end
@@ -405,8 +409,8 @@ EOF
           log @imap.uid_store(uid_set, action, [flg.to_sym])
           remove_uid_set_from_cached_lists(uid_set)
           reload_mailbox
+          clear_cached_message
         end
-
       elsif flg == '[Gmail]/Spam'
         log "Marking as spam index_range: #{index_range.inspect}; uid_set: #{uid_set.inspect}"
         Thread.new do 
@@ -416,6 +420,7 @@ EOF
           log @imap.uid_store(uid_set, action, [:Deleted])
           remove_uid_set_from_cached_lists(uid_set)
           reload_mailbox
+          clear_cached_message
         end
         "#{id} deleted"
       else
@@ -487,6 +492,7 @@ EOF
         log @imap.uid_store(uid_set, '+FLAGS', [:Deleted])
         remove_uid_set_from_cached_lists(uid_set)
         reload_mailbox
+        clear_cached_message
         log "moved uid_set #{uid_set.inspect} to #{mailbox}"
       end
     end
