@@ -375,7 +375,7 @@ vmail.
 Note that when vmail uses MacVim, the terminal window in which you invoke vmail
 will show vmail's logging output while MacVim is running. To quit vmail in
 MacVim mode, you will have to press CTRL-c in this window to stop the vmail
-process in after quitting the MacVim app.
+process after quitting the MacVim app.
 
 ## vmail file byproducts
 
