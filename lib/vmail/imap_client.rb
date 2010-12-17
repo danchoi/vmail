@@ -336,9 +336,6 @@ module Vmail
       log "add_more_message_line for start_id #{start_id}"
       if @all_search
         return res if start_id.nil?
-        if start_id <= 1
-          return res
-        end
         remaining = start_id - 1
       else # filter search
         remaining = (@ids.index(start_id) || 1) - 1
