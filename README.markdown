@@ -361,6 +361,9 @@ Here are some example search queries.
     # example of date range and multiple conditions
     before 30-nov-2010 since 1-nov-2010 from prx.org  
 
+    # search for all messages since 1-nov-2010 larger than 10k
+    since 1-nov-2010 larger 10000
+
 Tip: When you're entering your search query, `<C-u>` clears the query line.
 
 Power-Tip: When you're at the search query prompt, `<C-f>` opens a mini-editor
