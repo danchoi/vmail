@@ -246,7 +246,7 @@ split window, etc.) Resume editing. Send by typing `,vs`.
 At any point, you can quit the composition window by typing `q` in normal mode.
 
 You can also use `vmailsend` from the command line to send a message that
-you've compmosed with correct headers and saved to a file, like so:
+you've composed with correct headers and saved to a file, like so:
 
     vmailsend < my_message.txt
 
