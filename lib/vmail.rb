@@ -56,15 +56,21 @@ module Vmail
     puts "query: #{query.inspect}"
     
     buffer_file = "vmailbuffer"
-    puts "using buffer file: #{buffer_file}"
-    File.open(buffer_file, "w") do |file|
-      file.puts "fetching messages. please wait..."  
-    end
-
     # invoke vim
     vimscript = File.expand_path("../vmail.vim", __FILE__)
     vim_command = "DRB_URI=#{drb_uri} VMAIL_CONTACTS_FILE=#{contacts_file} VMAIL_MAILBOX=#{String.shellescape(mailbox)} VMAIL_QUERY=#{String.shellescape(query.join(' '))} #{vim} -S #{vimscript} #{buffer_file}"
     puts vim_command
+
+    puts "using buffer file: #{buffer_file}"
+    File.open(buffer_file, "w") do |file|
+      file.puts "vmail starting with values:"
+      file.puts "- drb uri: #{drb_uri}"
+      file.puts "- mailbox: #{mailbox}"
+      file.puts "- query: #{query.join(' ')}"
+      file.puts
+      file.puts "fetching messages. please wait..."  
+    end
+
     system(vim_command)
 
     if vim == 'mvim'
