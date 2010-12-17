@@ -635,7 +635,7 @@ func! s:maximize_window()
 endfunc
 
 func! s:open_href()
-  call search("http:", 'c')
+  call search("http", 'c')
   let href = matchstr(getline(line('.')), 'http\S\+')
   let command = s:browser_command . " '" . href . "'"
   call system(command)
