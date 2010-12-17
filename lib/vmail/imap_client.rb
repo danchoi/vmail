@@ -270,7 +270,7 @@ module Vmail
       log "@all_search #{@all_search}"
       @query = query
       log "search query: #{@query.inspect}"
-      @ids = reconnect_if_necessary do
+      @ids = reconnect_if_necessary(180) do # increase timeout to 3 minutes
         @imap.search(@query.join(' '))
       end
       # save ids in @ids, because filtered search relies on it
@@ -341,17 +341,18 @@ module Vmail
         end
         remaining = start_id - 1
       else # filter search
-        remaining = @ids.index(start_id) - 1
+        remaining = (@ids.index(start_id) || 1) - 1
       end
       if remaining < 1
         log "none remaining"
-        return res
+        return "showing all matches\n" + res
       end
       log "remaining messages: #{remaining}"
       ">  Load #{[100, remaining].min} more messages. #{remaining} remaining.\n" + res
     end
 
     def show_message(index, raw=false)
+      return if index.to_i < 0
       log "showing message at #{index}" 
       return @current_mail.to_s if raw 
       index = index.to_i

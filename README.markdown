@@ -359,7 +359,7 @@ Here are some example search queries.
     body "unix philosophy"  
 
     # example of date range and multiple conditions
-    before 30-Nov-2010 since 1-Nov-2010 from prx.org  
+    before 30-nov-2010 since 1-nov-2010 from prx.org  
 
 Tip: When you're entering your search query, `<C-u>` clears the query line.
 

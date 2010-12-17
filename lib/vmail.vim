@@ -88,6 +88,9 @@ function! s:show_message(stay_in_message_list)
   redraw
   " substract 2: because lines numbers start at 1 & messages start at line 2
   let s:current_message_index = line('.') - 2
+  if s:current_message_index < 0
+    return
+  endif
   let command = s:show_message_command . s:current_message_index
   echom "Loading message. Please wait..."
   redrawstatus
