@@ -152,7 +152,7 @@ To mark a message spam, put the cursor on it and type `,!`. This moves the
 message to to the `spam` mailbox.
 
 You can use range selections in the message list when you star, delete, mark as
-spam, or archive. Use `<C-v>` to start marking a range of lines (the vertical
+spam, or archive. Use `v` to start marking a range of lines (the vertical
 position of the cursor doesn't matter).  Then type any of the above commands to
 perform an action on all the messages you selected.
 
