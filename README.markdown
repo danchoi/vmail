@@ -1,6 +1,6 @@
 # vmail
 
-vmail is a Vim interface to Gmail. Here are some (outdated) screenshots:
+vmail is a Vim interface to Gmail. 
 
 Why vmail? Because some people love using Vim 1000 times more than using
 a web browser or a GUI mail program. 
