@@ -56,8 +56,11 @@ module Vmail
       reconnect_if_necessary do 
         log @imap.select(mailbox)
       end
+      log "done"
       @mailbox = mailbox
+      log "getting mailbox status"
       get_mailbox_status
+      log "getting highest message id"
       get_highest_message_id
       return "OK"
     end
@@ -746,7 +749,7 @@ trap("INT") {
   require 'timeout'
   puts "closing imap connection"  
   begin
-    Timeout::timeout(5) do 
+    Timeout::timeout(10) do 
       $gmail.close
     end
   rescue Timeout::Error
