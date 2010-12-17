@@ -118,7 +118,7 @@ module Vmail
     end
 
     # id_set may be a range, array, or string
-    def fetch_envelopes(id_set, are_uids=false)
+    def fetch_envelopes(id_set, are_uids=false, is_update=false)
       log "fetch_envelopes: #{id_set.inspect}"
       if id_set.is_a?(String)
         id_set = id_set.split(',')
@@ -148,8 +148,16 @@ module Vmail
             each {|old_row_data| old_row_data[:row_text] = new_row_data[:row_text]}
         }
       else
-        # put new rows after the current ones
-        @message_list = @message_list.concat new_message_rows
+
+        if is_update
+          log "adding messages from update to end of list"
+          @message_list = @message_list.concat new_message_rows
+        else
+          # this adds old messages to the top of the list
+          # put new rows before the current ones
+          log "adding more messages to head of list"
+          @message_list = new_message_rows + @message_list
+        end
       end
       log "returning #{new_message_rows.size} new rows" 
       return new_message_rows.
@@ -293,7 +301,7 @@ module Vmail
       @ids = @ids + new_ids
       log "update: new uids: #{new_ids.inspect}"
       if !new_ids.empty?
-        res = fetch_envelopes(new_ids)
+        res = fetch_envelopes(new_ids, false, true)
         res
       end
     end
