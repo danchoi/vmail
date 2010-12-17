@@ -292,7 +292,12 @@ endfunc
 func! s:append_messages_to_file() range
   let uid_set = (a:firstline - 2) . '..' . (a:lastline - 2)
   let nummsgs = (a:lastline - a:firstline + 1)
-  let s:append_file = input("print messages to file: ", s:append_file)
+  let append_file = input("print messages to file: ", s:append_file)
+  if append_file == ''
+    echom "canceled"
+    return
+  endif
+  let s:append_file = append_file
   let command = s:append_to_file_command . s:append_file . ' ' . uid_set 
   echo "appending " . nummsgs . " message" . (nummsgs == 1 ? '' : 's') . " to " . s:append_file . ". please wait..."
   let res = system(command)
