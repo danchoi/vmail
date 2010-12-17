@@ -536,12 +536,12 @@ EOF
     end
 
 
-    def new_message_template(subject = nil)
+    def new_message_template(subject = nil, append_signature = true)
       headers = {'from' => "#{@name} <#{@username}>",
         'to' => nil,
         'subject' => subject
       }
-      format_headers(headers) + "\n\n" + signature
+      format_headers(headers) + (append_signature ? ("\n\n" + signature) : "\n\n")
     end
 
     def format_headers(hash)
@@ -577,7 +577,8 @@ EOF
       if subject !~ /Fwd: /
         subject = "Fwd: #{subject}"
       end
-      new_message_template(subject) + 
+
+      new_message_template(subject, false) + 
         "\n---------- Forwarded message ----------\n" +
         original_body + signature
     end
