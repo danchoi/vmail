@@ -146,8 +146,8 @@ module Vmail
             each {|old_row_data| old_row_data[:row_text] = new_row_data[:row_text]}
         }
       else
-        # put new rows before the current ones
-        @message_list.unshift(*new_message_rows)
+        # put new rows after the current ones
+        @message_list = @message_list.concat new_message_rows
       end
       log "returning #{new_message_rows.size} new rows" 
       return new_message_rows.
@@ -201,7 +201,9 @@ module Vmail
                    (date_formatted || '').col(14),
                    address.col(address_col_width),
                    subject.col(subject_col_width), 
-                   number_to_human_size(size).rcol(6) ].join(' ')
+                   number_to_human_size(size).rcol(6),
+                   "#{seqno}:#{uid}"
+      ].join(' ')
       {:uid => uid, :seqno => seqno, :row_text => row_text}
     rescue 
       log "error extracting header for uid #{uid} seqno #{seqno}: #$!"
@@ -339,10 +341,13 @@ module Vmail
       log "showing message at #{index}" 
       return @current_mail.to_s if raw 
       index = index.to_i
-      return @current_message if index == @current_message_index 
+      if index == @current_message_index 
+        return @current_message 
+      end
       envelope_data = @message_list[index]
+      seqno = envelope_data[:seqno]
       uid = envelope_data[:uid] 
-      log "fetching uid #{uid}"
+      log "showing message seqno: #{seqno} uid #{uid}"
       fetch_data = reconnect_if_necessary do 
         @imap.uid_fetch(uid, ["FLAGS", "RFC822", "RFC822.SIZE"])[0]
       end
@@ -569,14 +574,6 @@ EOF
       mail.delivery_method(*smtp_settings)
       log mail.deliver!
       "message '#{mail.subject}' sent"
-    end
-
-    # TODO
-    def resume_draft
-      # chop off top three lines (this is hackey, fix later)
-      # text = text.split("\n")[3..-1].join("\n")
-      # delete date: field
-      # text = text.sub("^date:\s*$", "")
     end
 
     def new_mail_from_input(text)

@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+
+begin
+  require 'vmail/sender'
+rescue LoadError
+  require 'rubygems'
+  require 'vmail/sender'
+end
+
+Vmail::Sender.send
+

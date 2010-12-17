@@ -23,11 +23,6 @@ module Vmail
       {'from' => "#@name <#@username>", 'to' => primary_recipient, 'cc' => cc, 'subject' => subject, :body => body}
     end
 
-    # just stick this here
-    def forward_headers
-
-    end
-
     def primary_recipient
       from = @mail.header['from']
       reply_to = @mail.header['reply-to']
