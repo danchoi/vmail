@@ -263,7 +263,7 @@ module Vmail
       end
       log "@all_search #{@all_search}"
       @query = query
-      log "search query: #@query.inspect"
+      log "search query: #{@query.inspect}"
       @ids = reconnect_if_necessary do
         @imap.search(@query.join(' '))
       end
