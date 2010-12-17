@@ -7,8 +7,6 @@ method = ARGV.shift
 if method == 'deliver' || method == 'save_draft'
   text = STDIN.read
   puts server.send(method, text)
-elsif method == 'show_help'
-  puts File.expand_path("../../README.markdown", __FILE__)
 else
   puts server.send(method, *ARGV)
 end

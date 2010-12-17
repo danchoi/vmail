@@ -92,13 +92,15 @@ module Vmail
       end
     end
 
-    # depend on lynx
+    # depend on lynx or whatever is set by the VMAIL_HTML_PART_READER
+    # variable
     def format_html_body(part)
+      html_tool = ENV['VMAIL_HTML_PART_READER'] || 'lynx -stdin -dump'
       html = part.body.decoded.gsub("\r", '')
-      stdin, stdout, stderr = Open3.popen3("lynx -stdin -dump")
+      stdin, stdout, stderr = Open3.popen3(html_tool)
       stdin.puts html
       stdin.close
-      output = stdout.read
+      output = "[vmail: html part translated into plaintext by '#{html_tool}']\n\n" + stdout.read
       charset = part.content_type_parameters && part.content_type_parameters['charset']
       if charset && charset != 'UTF-8'
         Iconv.conv('UTF-8//TRANSLIT//IGNORE', charset, output) 
