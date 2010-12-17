@@ -75,7 +75,7 @@ module Vmail
 
     puts "closing imap connection"  
     begin
-      Timeout::timeout(5) do 
+      Timeout::timeout(10) do 
         $gmail.close
       end
     rescue Timeout::Error
