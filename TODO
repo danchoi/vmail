@@ -6,3 +6,5 @@ Thu Dec 16 20:33:46 EST 2010
   maybe send over the subject line or something and make sure they
   match.
 
+- let vmailsend take an ARGV of filenames, so use can use globs, etc.
+  and send a bunch of emails at once.
