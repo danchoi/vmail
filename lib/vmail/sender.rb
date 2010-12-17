@@ -1,7 +1,8 @@
+require 'vmail/options'
 require 'vmail/imap_client'
 
 module Vmail
-  class Sender
+  module Sender
     extend self
 
     def send

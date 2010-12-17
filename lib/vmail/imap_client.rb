@@ -85,10 +85,12 @@ module Vmail
     end
 
     def prime_connection
+      return if @ids.nil? || @ids.empty?
       reconnect_if_necessary(4) do 
         # this is just to prime the IMAP connection
         # It's necessary for some reason before update and deliver. 
         log "priming connection for delivering"
+        
         res = @imap.fetch(@ids[-1], ["ENVELOPE"])
         if res.nil?
           # just go ahead, just log
@@ -572,8 +574,16 @@ EOF
       prime_connection
       mail = new_mail_from_input(text)
       mail.delivery_method(*smtp_settings)
-      log mail.deliver!
-      "message '#{mail.subject}' sent"
+      res = mail.deliver!
+      log res.inspect
+      log "\n"
+      msg = if res.is_a?(Mail::Message)
+        "message '#{mail.subject}' sent"
+      else
+        "failed to deliver message '#{mail.subject}'"
+      end
+      log msg
+      msg
     end
 
     def new_mail_from_input(text)
@@ -585,8 +595,7 @@ EOF
         key, value = *line.split(/:\s*/, 2)
         headers[key] = value
       end
-      log "headers: #{headers.inspect}"
-      log "delivering: #{headers.inspect}"
+      log "delivering message with headers: #{headers.to_yaml}"
       mail.from = headers['from'] || @username
       mail.to = headers['to'] #.split(/,\s+/)
       mail.cc = headers['cc'] #&& headers['cc'].split(/,\s+/)
