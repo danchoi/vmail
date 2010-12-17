@@ -691,6 +691,10 @@ func! s:message_window_mappings()
   nnoremap <silent> <buffer> <leader>*  :call <SID>focus_list_window()<cr>:call <SID>toggle_star()<cr>
   noremap <silent> <buffer> <leader>! :call <SID>focus_list_window()<cr>:call <SID>delete_messages("[Gmail]/Spam")<CR>
   noremap <silent> <buffer> <leader>e :call <SID>focus_list_window()<cr>:call <SID>archive_messages()<CR>
+  " alt mappings for lazy hands
+  nmap <silent> <buffer> <leader>8 <leader>*
+  nmap <silent> <buffer> <leader>3 <leader>#
+  nmap <silent> <buffer> <leader>1 <leader>!
 
   nnoremap <silent> <buffer> <Leader>b :call <SID>focus_list_window()<cr>call <SID>move_to_mailbox(0)<CR>
   nnoremap <silent> <buffer> <Leader>B :call <SID>focus_list_window()<cr>call <SID>move_to_mailbox(1)<CR>
@@ -712,10 +716,13 @@ func! s:message_list_window_mappings()
 
   noremap <silent> <buffer> <leader>* :call <SID>toggle_star()<CR>
   noremap <silent> <buffer> <leader># :call <SID>delete_messages("Deleted")<CR>
-  nmap <silent> <buffer> <leader>d <leader>#
-
   noremap <silent> <buffer> <leader>! :call <SID>delete_messages("[Gmail]/Spam")<CR>
   noremap <silent> <buffer> <leader>e :call <SID>archive_messages()<CR>
+  " alt mappings for lazy hands
+  nmap <silent> <buffer> <leader>8 <leader>*
+  nmap <silent> <buffer> <leader>3 <leader>#
+  nmap <silent> <buffer> <leader>1 <leader>!
+
   "open a link browser (os x)
   "autocmd CursorMoved <buffer> call <SID>show_message(0)
   noremap <silent> <buffer> <leader>vp :call <SID>append_messages_to_file()<CR>

@@ -158,6 +158,15 @@ spam, or archive. Use `v` to start marking a range of lines (the vertical
 position of the cursor doesn't matter).  Then type any of the above commands to
 perform an action on all the messages you selected.
 
+To save you keystorkes, vmail provides alternative key mappings for
+`,*`, `,#`, and `,!`:
+
+* star: `,*` &rarr; `,8`
+* trash/delete: `,#` &rarr; `,3`
+* mark spam: `,!` &rarr; `,1`
+
+These save you from having to press the SHIFT key in each key sequence.
+
 ## Checking for new messages
 
 To check for new messages in the current mailbox, press `u` in normal mode and

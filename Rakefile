@@ -15,6 +15,16 @@ task :web do
   end
 end
 
+desc "build website locally"
+task :weblocal do
+  require 'vmail/version'
+  version = Vmail::VERSION
+  Dir.chdir("website") do
+    `ruby gen.rb #{version} > vmail.html`
+    `open vmail.html`
+  end
+end
+
 desc "git push and rake release bumped version"
 task :bumped do
   puts `git push && rake release`
