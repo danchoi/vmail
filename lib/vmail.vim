@@ -153,6 +153,9 @@ function! s:show_raw()
 endfunction
 
 function! s:focus_list_window()
+  if bufwinnr(s:listbufnr) == winnr() && exists("s:syntax_coloring_set")
+    return
+  end
   let winnr = bufwinnr(s:listbufnr) 
   if winnr == -1
     " create window
@@ -167,11 +170,13 @@ function! s:focus_list_window()
     " colorize whole line
     syn match VmailBufferFlagged /^*.*/hs=s
     exec "hi def VmailBufferFlagged " . g:vmail_flagged_color
+    let s:syntax_coloring_set = 1
   endif
-  " vertically center the cursor line
-  " normal z.
-  call feedkeys("\<c-l>") " prevents screen artifacts when user presses return too fast
+  "
+  " call feedkeys("\<c-l>") " prevents screen artifacts when user presses return too fast
+  " turn this off though, because it causes an annoying flash
 endfunction
+
 
 function! s:focus_message_window()
   let winnr = bufwinnr(s:message_window_bufnr)
@@ -197,6 +202,8 @@ endfunc
 
 " gets new messages since last update
 function! s:update()
+  call s:focus_list_window()
+  redraw
   let command = s:update_command
   echo "checking for new messages. please wait..."
   let res = system(command)
@@ -207,14 +214,13 @@ function! s:update()
     setlocal nomodifiable
     write
     let num = len(split(res, '\n', ''))
-    redraw
     call cursor(line + 1, 0)
     normal z.
     redraw
-    echo "you have " . num . " new message" . (num == 1 ? '' : 's') . "!" 
+    echom "you have " . num . " new message" . (num == 1 ? '' : 's') . "!" 
   else
     redraw
-    echo "no new messages"
+    echom "no new messages"
   endif
 endfunction
 
@@ -702,7 +708,7 @@ func! s:message_window_mappings()
   nnoremap <silent> <buffer> <Leader>b :call <SID>focus_list_window()<cr>call <SID>move_to_mailbox(0)<CR>
   nnoremap <silent> <buffer> <Leader>B :call <SID>focus_list_window()<cr>call <SID>move_to_mailbox(1)<CR>
   nnoremap <silent> <buffer> <leader>e  :call <SID>focus_list_window()<cr>:call <SID>archive_messages()<cr>
-  nnoremap <silent> <buffer> u :call <SID>focus_list_window()<cr>:call <SID>update()<CR>
+  nnoremap <silent> <buffer> u :call <SID>update()<CR>
   nnoremap <silent> <buffer> <Leader>m :call <SID>focus_list_window()<cr>:call <SID>mailbox_window()<CR>
   nnoremap <silent> <buffer> <Leader>A :call <SID>save_attachments()<cr>
   nnoremap <silent> <buffer> <Space> :call <SID>maximize_window()<cr>
