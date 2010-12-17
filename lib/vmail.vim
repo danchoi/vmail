@@ -178,6 +178,18 @@ function! s:focus_message_window()
   endif
 endfunction
 
+func! s:close_message_window()
+  if winnr('$') > 1
+    close
+  else
+    call s:focus_list_window()
+    wincmd p
+    close
+    normal z.
+  endif
+endfunc
+
+
 " gets new messages since last update
 function! s:update()
   let command = s:update_command
@@ -653,17 +665,6 @@ func! s:show_help()
   call system(command)
   "let helpfile = system(s:show_help_command)
   "exec "split " . helpfile
-endfunc
-
-func! s:close_message_window()
-  if winnr('$') > 1
-    close
-  else
-    call s:focus_list_window()
-    wincmd p
-    close
-    normal z.
-  endif
 endfunc
 
 " -------------------------------------------------------------------------------- 
