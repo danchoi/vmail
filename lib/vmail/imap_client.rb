@@ -75,8 +75,13 @@ module Vmail
     def get_highest_message_id
       # get highest message ID
       res = @imap.fetch([1,"*"], ["ENVELOPE"])
-      @num_messages = res[-1].seqno
-      log "HIGHEST ID: #@num_messages"
+      if res 
+        @num_messages = res[-1].seqno
+        log "HIGHEST ID: #@num_messages"
+      else
+        @num_messages = 1
+        log "NO HIGHEST ID: setting @num_messages to 1"
+      end
     end
 
     def get_mailbox_status
