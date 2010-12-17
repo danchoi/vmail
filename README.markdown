@@ -106,7 +106,9 @@ this number by passing in a number after the mailbox name:
 
 The first screen vmail shows you is a list of messages. You can view a message
 by moving the cursor line to it and pressing ENTER. This will split the screen
-and show the message content in the bottom pane.
+and show the message content in the bottom pane. Pressing ENTER will also move
+the cursor to the message window. If you want to view a message but keep the
+cursor in the list window, type `l` instead of ENTER.
 
 To full-screen the message, press SPACE when the cursor is in the message window.
 You can also use the standard Vim key sequence `C-w C-o`.
