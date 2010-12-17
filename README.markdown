@@ -2,8 +2,10 @@
 
 vmail is a Vim interface to Gmail. 
 
-Why vmail? Because some people are 1000 times more efficient and happy in Vim
+Why vmail? Because some people are 1000 times more efficient and happy in [Vim][vim]
 than in any web browser or GUI program. 
+
+[vim]:http://www.vim.org/
 
 ## Prerequisites
 
