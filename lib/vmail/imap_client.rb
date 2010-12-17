@@ -701,10 +701,10 @@ EOF
     rescue IOError, Errno::EADDRNOTAVAIL, Timeout::Error
       log "error: #{$!}"
       log "attempting to reconnect"
+      close
       log(revive_connection)
       # hope this isn't an endless loop
       reconnect_if_necessary do 
-        close
         block.call
       end
     rescue
