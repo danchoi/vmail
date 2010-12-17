@@ -67,7 +67,7 @@ function! s:create_message_window()
   close
 endfunction
 
-function! s:show_message()
+function! s:show_message(stay_in_message_list)
   let line = getline(line("."))
   if match(line, '^>  Load') != -1
     setlocal modifiable
@@ -99,9 +99,11 @@ function! s:show_message()
   " critical: don't call execute 'normal \<cr>'
   " call feedkeys("<cr>") 
   1delete
-  normal 1
-  normal jk
   setlocal nomodifiable
+  normal 1Gjk
+  if a:stay_in_message_list
+    call s:focus_list_window()
+  end
   redraw
 endfunction
 
@@ -703,8 +705,9 @@ func! s:message_window_mappings()
 endfunc
 
 func! s:message_list_window_mappings()
-  noremap <silent> <buffer> <cr> :call <SID>show_message()<CR>
-  noremap <silent> <buffer> <LeftMouse> :call <SID>show_message()<CR>
+  noremap <silent> <buffer> <cr> :call <SID>show_message(0)<CR>
+  noremap <silent> <buffer> <LeftMouse> :call <SID>show_message(0)<CR>
+  nnoremap <silent> <buffer> l :call <SID>show_message(1)<CR>
   noremap <silent> <buffer> q :qal!<cr>
 
   noremap <silent> <buffer> <leader>* :call <SID>toggle_star()<CR>
@@ -715,7 +718,7 @@ func! s:message_list_window_mappings()
   noremap <silent> <buffer> <leader>! :call <SID>delete_messages("[Gmail]/Spam")<CR>
   noremap <silent> <buffer> <leader>e :call <SID>archive_messages()<CR>
   "open a link browser (os x)
-  "autocmd CursorMoved <buffer> call <SID>show_message()
+  "autocmd CursorMoved <buffer> call <SID>show_message(0)
   noremap <silent> <buffer> <leader>vp :call <SID>append_messages_to_file()<CR>
   noremap <silent> <buffer> u :call <SID>update()<CR>
   noremap <silent> <buffer> <Leader>s :call <SID>search_query()<CR>
@@ -723,9 +726,9 @@ func! s:message_list_window_mappings()
   noremap <silent> <buffer> <Leader>b :call <SID>move_to_mailbox(0)<CR>
   noremap <silent> <buffer> <Leader>B :call <SID>move_to_mailbox(1)<CR>
   noremap <silent> <buffer> <Leader>c :call <SID>compose_message()<CR>
-  noremap <silent> <buffer> <Leader>r :call <SID>show_message()<cr>:call <SID>compose_reply(0)<CR>
-  noremap <silent> <buffer> <Leader>a :call <SID>show_message()<cr>:call <SID>compose_reply(1)<CR>
-  noremap <silent> <buffer> <Leader>f :call <SID>show_message()<cr>:call <SID>compose_forward()<CR><cr>
+  noremap <silent> <buffer> <Leader>r :call <SID>show_message(0)<cr>:call <SID>compose_reply(0)<CR>
+  noremap <silent> <buffer> <Leader>a :call <SID>show_message(0)<cr>:call <SID>compose_reply(1)<CR>
+  noremap <silent> <buffer> <Leader>f :call <SID>show_message(0)<cr>:call <SID>compose_forward()<CR><cr>
   noremap <silent> <buffer> <c-j> :call <SID>show_next_message_in_list()<cr>
   noremap <silent> <buffer> <c-k> :call <SID>show_previous_message_in_list()<cr>
   nnoremap <silent> <buffer> <Space> :call <SID>maximize_window()<cr>
