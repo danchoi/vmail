@@ -203,9 +203,8 @@ module Vmail
                    (date_formatted || '').col(14),
                    address.col(address_col_width),
                    subject.col(subject_col_width), 
-                   number_to_human_size(size).rcol(6),
-                   "#{seqno}:#{uid}"
-      ].join(' ')
+                   number_to_human_size(size).rcol(6)
+      ].join(' | ')
       {:uid => uid, :seqno => seqno, :row_text => row_text}
     rescue 
       log "error extracting header for uid #{uid} seqno #{seqno}: #$!"
