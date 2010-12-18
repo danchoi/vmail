@@ -13,3 +13,10 @@ Fri Dec 17 11:24:05 EST 2010
 
 - when showing seqno in message window, get it from the fetched
   envelope of the message instead of from the message_list item.
+
+------------------------------------------------------------------------
+Sat Dec 18 09:08:47 EST 2010
+
+- use IMAP EXISTS command to check for updates.
+
+
