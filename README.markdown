@@ -228,17 +228,15 @@ You're responsible for filling in the `to:` and the `subject:` fields.
 You can add a `cc:` and `bcc:` field if you want.
 
 
-When you fill in the recipient addresses, you can use Vim autocompletion if you
-generated a `vmail-contacts.txt` file. Start typing a name or email address,
-then press `C-x C-u` to invoke autocompletion.
-
-Tip: Use `C-y` instead of ENTER to select a match. This will prevent you from
-creating a blank line in the middle of the email headers.
+When you fill in the recipient addresses, you can use Vim autocompletion
+if you generated a `vmail-contacts.txt` file. Start typing a name or
+email address, then press `C-x C-u` to invoke autocompletion. Select a
+matching email address with `C-n`, `C-p`, or `C-u` and then press SPACE
+or any other character (such as a `,`) to continue typing.
 
 Make sure your email addresses are separated by commas and that they all
-ultimately appear on the **same, unbroken line** for each field. Vim will
-probably break long lines automatically as you type them, so for now (pending a
-future enhancement), you'll have to rejoin the lines if breaks get inserted.
+ultimately appear on the **same, unbroken line** for each field. Rejoin
+the lines if breaks get inserted.
 
 After you fill in the headers, write your message.  Make sure there is a
 blank line between the headers and the body of your message.
