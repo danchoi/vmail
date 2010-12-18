@@ -317,7 +317,7 @@ attachments intact.  This feature will be implemented in the near future.
 `,vp` from the message list prints (appends) the text content of all the selected
 messages to a file.
 
-## Invoking your web browser 
+## Opening hyperlinks and HTML parts in your web browser
 
 When you're reading a message, `,o` opens the first hyperlink in the email
 message on or after the cursor in your web browser. `,O` opens all the
