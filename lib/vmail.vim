@@ -661,11 +661,40 @@ func! s:maximize_window()
   endif
 endfunc
 
-func! s:open_href()
-  call search('https\?:', 'c')
-  let href = matchstr(getline(line('.')), 'https\?:\S\+')
-  let command = s:browser_command . " '" . href . "'"
-  call system(command)
+" not DRY enough, but fix that later
+func! s:open_href(all) range
+  let n = 0
+  " range version
+  if a:firstline < a:lastline
+    let lnum = a:firstline
+    while lnum <= a:lastline
+      let href = matchstr(getline(lnum), 'https\?:\S\+')
+      if href != ""
+        let command = s:browser_command . " '" . href . "' &"
+        call system(command)
+        let n += 1
+      endif
+      let lnum += 1
+    endwhile
+    echom 'opened '.n.' links' 
+    return
+  end
+  let line = search('https\?:', 'cw')
+  if line && a:all
+    while line
+      let href = matchstr(getline(line('.')), 'https\?:\S\+')
+      let command = s:browser_command . " '" . href . "' &"
+      call system(command)
+      let n += 1
+      let line = search('https\?:', 'W')
+    endwhile
+    echom 'opened '.n.' links' 
+  else
+    let href = matchstr(getline(line('.')), 'https\?:\S\+')
+    let command = s:browser_command . " '" . href . "' &"
+    call system(command)
+    echom 'opened '.href
+  endif
 endfunc
 
 " -------------------------------------------------------------------------------- 
@@ -759,7 +788,8 @@ func! s:global_mappings()
   " NOTE send_message is a global mapping, so user can load a saved
   " message from a file and send it
   nnoremap <silent> <leader>vs :call <SID>send_message()<CR>
-  noremap <silent> <leader>o :call <SID>open_href()<cr> 
+  noremap <silent> <leader>o :call <SID>open_href(0)<cr> 
+  noremap <silent> <leader>O :call <SID>open_href(1)<cr> 
   noremap <silent> <leader>? :call <SID>show_help()<cr>
 endfunc
 

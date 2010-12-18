@@ -317,8 +317,12 @@ messages to a file.
 
 ## Invoking your web browser 
 
-When you're reading a message, `,o` opens the first hyperlink in the document
-on or after the cursor in your web browser. 
+When you're reading a message, `,o` opens the first hyperlink in the email
+message on or after the cursor in your web browser. `,O` opens all the
+hyperlinks in the message (probably in multiple browser tabs, depending on how
+you set up your web browser). If you first select a range of text with
+hyperlinks in it, both `,o` and `,O` will open all the hyperlinks in those
+selected lines in your browser.
 
 When you're reading a message with an html mail part, `,h` saves that part to a
 local file (`part.html`) and opens it in your web browser.
