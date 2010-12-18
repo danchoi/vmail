@@ -439,6 +439,11 @@ vmail gem is downloaded from).
 [github]:https://github.com/danchoi/vmail
 [rubygems]:https://rubygems.org/gems/vmail
 
+## Redrawing the screen
+
+If you run commands in very fast succession, the screen may get messed up. In
+that case, just force a redraw of the Vim screen with `C-l`.
+
 ## Customizing colors
 
 By default, vmail highlights starred messages in bold green against a black
