@@ -737,7 +737,8 @@ EOF
 
     def self.daemon(config)
       $gmail = self.start(config)
-      DRb.start_service(nil, $gmail)
+      use_uri = config['drb_uri'] || nil # redundant but explicit
+      DRb.start_service(use_uri, $gmail)
       uri = DRb.uri
       puts "starting gmail service at #{uri}"
       uri
