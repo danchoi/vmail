@@ -40,7 +40,6 @@ installation command again.
 
     gem install vmail
 
-
 ## Configuration file
 
 To run vmail, create a yaml file called `.vmailrc` and save it either in the
@@ -64,8 +63,10 @@ You can omit the password key-value pair if you'd rather not have the password
 saved in the file. In that case, you'll prompted for the password each time you
 start vmail.
 
-If you are behind a firewall that blocks IMAP, there are additional
-configuration options that you can use. See below.
+If you are behind a firewall that blocks IMAP, see these [additional
+configuration options][firewall] that you can use.
+
+[firewall]:https://github.com/danchoi/vmail/wiki/How-to-use-vmail-behind-a-firewall-that-blocks-IMAP
 
 ## Contacts autocompletion
 
@@ -431,25 +432,6 @@ vmail gem is downloaded from).
 
 [github]:https://github.com/danchoi/vmail
 [rubygems]:https://rubygems.org/gems/vmail
-
-## Additional configuration options
-
-The default IMAP server vmail uses is `imap.gmail.com` and the default port is
-`993`. If you want to change these values, e.g, because you are behind a
-firewall which blocks IMAP, you can change these values by adding two lines in
-your .vmailrc, like so:
-
-    server: localhost
-    port: 2999
-
-Then you can create an SSH tunnel, e.g.
-
-    ssh -f user@example.com -L 2999:imap.gmail.com:993 -N
-
-(Thanks to [Dave Bolton][davebolton] for this patch.)
-
-[davebolton]:https://github.com/lightningdb
-
 
 ## Customizing colors
 
