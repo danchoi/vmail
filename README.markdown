@@ -465,6 +465,8 @@ Type `:help highlight-args` in Vim for more details.
 
 Please file bug reports and feature requests in the [vmail github issue tracker][tracker].
 
+You can also vote up existing feature requests on the issue tracker.
+
 vmail is very young and in beta, so there are bound to be bugs and issues.
 But in a few weeks, with your help, vmail will become stable.
 
