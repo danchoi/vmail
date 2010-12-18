@@ -309,7 +309,7 @@ module Vmail
       }
       # TODO change this. will throw error now
       max_seqno = @message_list[-1][:seqno]
-      log "lookind for seqnos > #{max_seqno}"
+      log "looking for seqnos > #{max_seqno}"
       new_ids = ids.select {|seqno| seqno > max_seqno}
       @ids = @ids + new_ids
       log "update: new uids: #{new_ids.inspect}"
