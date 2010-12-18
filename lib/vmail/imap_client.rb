@@ -715,7 +715,7 @@ EOF
       Timeout::timeout(timeout) do
         block.call
       end
-    rescue IOError, Errno::EADDRNOTAVAIL, Timeout::Error
+    rescue IOError, Errno::EADDRNOTAVAIL, Errno::ECONNRESET, Timeout::Error
       log "error: #{$!}"
       log "attempting to reconnect"
       close
