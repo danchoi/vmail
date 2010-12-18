@@ -29,7 +29,8 @@ let s:save_attachments_command = s:client_script . "save_attachments "
 let s:open_html_part_command = s:client_script . "open_html_part "
 let s:show_help_command = s:client_script . "show_help"
 
-let s:message_bufname = "MessageWindow"
+let s:message_bufname = "current_message.txt"
+let s:compose_message_bufname = "compose_message.txt"
 
 function! VmailStatusLine()
   return "%<%f\ " . s:mailbox . " " . s:query . "%r%=%-14.(%l,%c%V%)\ %P"
@@ -59,11 +60,10 @@ endfunction
 " the message display buffer window
 function! s:create_message_window() 
   exec "split " . s:message_bufname
-  setlocal buftype=nofile
-  " setlocal noswapfile
-  " setlocal nobuflisted
+  setlocal modifiable 
   let s:message_window_bufnr = bufnr('%')
   call s:message_window_mappings()
+  write
   close
 endfunction
 
@@ -96,13 +96,12 @@ function! s:show_message(stay_in_message_list)
   redrawstatus
   let res = system(command)
   call s:focus_message_window()
-  setlocal modifiable
   1,$delete
   put =res
   " critical: don't call execute 'normal \<cr>'
   " call feedkeys("<cr>") 
   1delete
-  setlocal nomodifiable
+  write
   normal 1Gjk
   if a:stay_in_message_list
     call s:focus_list_window()
@@ -575,7 +574,7 @@ func! s:open_compose_window(command)
   redraw
   echo a:command
   let res = system(a:command)
-  split compose_message.txt
+  split s:compose_message_bufname
   setlocal modifiable
   wincmd p 
   close!

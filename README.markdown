@@ -317,7 +317,7 @@ messages to a file.
 ## Invoking your web browser 
 
 When you're reading a message, `,o` opens the first hyperlink in the document
-on or after the cursor in your normal web browser.
+on or after the cursor in your web browser. 
 
 When you're reading a message with an html mail part, `,h` saves that part to a
 local file (`vmail-htmlpart.html`) and opens it in your normal web browser.
@@ -328,6 +328,12 @@ browser vmail invokes by setting the VMAIL_BROWSER environmental variable
 before you start vmail, e.g.:
 
     export VMAIL_BROWSER='elinks'
+
+Also, if your Vim has `netrw` (`:help netrw`), you can open a hyperlink
+directly in same Vim window by putting the cursor at the beginning of a
+hyperlink and typing `gf`, or `C-w f` if you want to open the webpage in a
+split window. 
+
 
 ## Search queries
 
@@ -395,13 +401,15 @@ process after quitting the MacVim app.
 
 ## vmail file byproducts
 
-vmail generates a few file byproducts when it is running. It generates a
-temporary `vmailbuffer` file in the current directory to hold the message
-list. This should get deleted automatically when vmail quits.
+vmail generates a few files in the current directory when it is running: 
 
-vmail also creates a `compose_message.txt` file if you save the buffer for a
-new message.  vmail creates a `vmail-htmlpart.html` file in the current
-directory if you open an HTML mail part from vmail. 
+* `vmailbuffer` holds the message list. This file should get deleted automatically when vmail quits.
+
+* `current_message.txt` holds the current message being shown. Not deleted on quit.
+
+* `compose_message.txt` is created if you save the buffer for a new message. Not deleted on quit.
+
+* `part.html` is created if you open an HTML mail part from vmail. 
 
 Finally, vmail logs output to a `vmail.log` file which it creates in the
 current directory. You can tail this file in a separate terminal window to see
