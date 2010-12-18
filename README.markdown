@@ -321,7 +321,7 @@ When you're reading a message, `,o` opens the first hyperlink in the document
 on or after the cursor in your web browser. 
 
 When you're reading a message with an html mail part, `,h` saves that part to a
-local file (`vmail-htmlpart.html`) and opens it in your normal web browser.
+local file (`part.html`) and opens it in your web browser.
 
 By default, the vmail uses the command `open` to launch your web browser. In OS X,
 this opens URLs and HTML files in the default web browser.  You can change the
