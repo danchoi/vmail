@@ -302,10 +302,10 @@ composition window:
     I think you'll find this stuff interesting.
     
 
-The `attach:` block is a YAML list. The items are paths (either relative or
-absolute) to the files you want to attach to your message. Note that you can
-also specify a directory, in which case vmail attaches every file it finds in
-that directory.
+The `attach:` block is a YAML list. The items are paths (either relative to the
+current directory or absolute) to the files you want to attach to your message.
+Note that you can also specify a directory, in which case vmail attaches every
+file it finds in that directory.
 
 One thing vmail doesn't do yet is let you forward a message with all its
 attachments intact.  This feature will be implemented in the near future. 
