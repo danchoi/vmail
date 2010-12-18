@@ -473,5 +473,7 @@ vmail users, please add them to the [vmail wiki][wiki].
 ## How to contact the developer
 
 My name is Daniel Choi. I am based in Cambridge, MA, and you can email me at dhchoi@gmail.com.
+You can [follow me on Twitter][twitter] too.
 
+[twitter]:http://twitter.com/#!/danchoi
 
