@@ -21,6 +21,10 @@ Your Gmail account should be [IMAP-enabled][gmailimap].
 
 [gmailimap]:http://mail.google.com/support/bin/answer.py?hl=en&answer=77695
 
+If you want to use `elinks` to display HTML parts, [here's how][elinks-tip].
+
+[elinks-tip]:https://github.com/danchoi/vmail/wiki/How-to-use-elinks-to-display-html-parts-of-emails
+
 ## Installation
 
     gem install vmail
