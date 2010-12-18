@@ -661,7 +661,8 @@ func! s:maximize_window()
   endif
 endfunc
 
-" not DRY enough, but fix that later
+" maybe not DRY enough, but fix that later
+" also, come up with a more precise regex pattern for matching hyperlinks
 func! s:open_href(all) range
   let n = 0
   " range version
