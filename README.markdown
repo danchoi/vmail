@@ -446,8 +446,8 @@ Then you can create an SSH tunnel, e.g.
 ## Customizing colors
 
 By default, vmail highlights starred messages in bold green against a black
-background. You can customize this setting by adding a line to your ~/.vimrc
-file like so:
+background. You can customize this setting by adding a line to your `~/.vimrc`
+(not `.vmailrc`) file like so:
     
     let g:vmail_flagged_color = "ctermfg=yellow ctermbg=black cterm=bold"
 
