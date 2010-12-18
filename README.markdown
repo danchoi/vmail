@@ -419,8 +419,6 @@ vmail generates a few files in the current directory when it is running:
 
 * `current_message.txt` holds the current message being shown. Not deleted on quit.
 
-* `compose_message.txt` is created if you save the buffer for a new message. Not deleted on quit.
-
 * `part.html` is created if you open an HTML mail part from vmail. 
 
 Finally, vmail logs output to a `vmail.log` file which it creates in the

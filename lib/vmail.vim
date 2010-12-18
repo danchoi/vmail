@@ -30,7 +30,6 @@ let s:open_html_part_command = s:client_script . "open_html_part "
 let s:show_help_command = s:client_script . "show_help"
 
 let s:message_bufname = "current_message.txt"
-let s:compose_message_bufname = "compose_message.txt"
 
 function! VmailStatusLine()
   return "%<%f\ " . s:mailbox . " " . s:query . "%r%=%-14.(%l,%c%V%)\ %P"
@@ -574,7 +573,7 @@ func! s:open_compose_window(command)
   redraw
   echo a:command
   let res = system(a:command)
-  split s:compose_message_bufname
+  new
   setlocal modifiable
   wincmd p 
   close!
