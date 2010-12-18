@@ -269,7 +269,8 @@ you've composed with correct headers and saved to a file, like so:
 
     vmailsend < my_message.txt
 
-vmailsend uses your `.vmailrc` configuration.
+vmailsend uses your `.vmailrc` configuration and assumes that you saved your
+password in it. 
 
 ## Attachments
 
