@@ -41,8 +41,11 @@ module Vmail
 
     def close
       log "closing connection"
-      @imap.close rescue Net::IMAP::BadResponseError
-      @imap.disconnect rescue IOError
+      Timeout::timeout(10) do
+        @imap.close rescue Net::IMAP::BadResponseError
+        @imap.disconnect rescue IOError
+      end
+    rescue Timeout::Error
     end
 
     def select_mailbox(mailbox, force=false)
