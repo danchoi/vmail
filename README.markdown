@@ -441,8 +441,8 @@ vmail gem is downloaded from).
 
 ## Redrawing the screen
 
-If you run commands in very fast succession, the screen may get messed up. In
-that case, just force a redraw of the Vim screen with `C-l`.
+If you run commands in very fast succession, the screen may get a little messed
+up. In that case, just force a redraw of the Vim screen with `C-l`.
 
 ## Customizing colors
 
