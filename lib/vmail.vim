@@ -686,7 +686,7 @@ endfunc
 " maybe not DRY enough, but fix that later
 " also, come up with a more precise regex pattern for matching hyperlinks
 func! s:open_href(all) range
-  let pattern = 'https\?:[^\s>)\]]\+'
+  let pattern = 'https\?:[^ >)\]]\+'
   let n = 0
   " range version
   if a:firstline < a:lastline
