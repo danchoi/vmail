@@ -492,8 +492,8 @@ function! s:select_mailbox()
   let s:mailbox = mailbox
   let s:query = "100 all"
   let command = s:select_mailbox_command . shellescape(s:mailbox)
-  echo "selecting mailbox ". s:mailbox ". please wait..."
-
+  redraw
+  echom "selecting mailbox ". s:mailbox ". please wait..."
   call system(command)
   redraw
   " now get latest 100 messages
