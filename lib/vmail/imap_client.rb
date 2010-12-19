@@ -425,7 +425,7 @@ module Vmail
 
 #{formatter.process_body}
 EOF
-      log "storing message_cache[[#{@mailbox}, #{uid}]]"
+      # log "storing message_cache[[#{@mailbox}, #{uid}]]"
       d = {:mail => mail, :size => size, :message_text => message_text}
       message_cache[[@mailbox, uid]] = d
     rescue
