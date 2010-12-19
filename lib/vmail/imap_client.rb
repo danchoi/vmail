@@ -38,6 +38,12 @@ module Vmail
     # TODO come up with a way to purge periodically
     def message_cache
       @message_cache ||= {}
+      size = @message_cache.values.reduce(0) {|sum, x| sum + x[:size]}
+      if size > 2_000_000 # TODO make this configurable
+        log "PRUNING MESSAGE CACHE; message cache is consuming #{number_to_human_size size}"
+        @message_cache.keys[0, @message_cache.size / 2].each {|k| @message_cache.delete(k)}
+      end
+      @message_cache
     end
 
     def open
@@ -249,7 +255,7 @@ module Vmail
     # borrowed from ActionView/Helpers
     def number_to_human_size(number)
       if number.to_i < 1024
-        "#{number} b"
+        number = 1024 # round up to 1kh
       else
         max_exp = UNITS.size - 1
         exponent = (Math.log(number) / Math.log(1024)).to_i # Convert to base 1024
@@ -406,6 +412,7 @@ module Vmail
       uid = envelope_data[:uid] 
       return if message_cache[[@mailbox, uid]] 
       fetch_data = reconnect_if_necessary do 
+        # log "@imap.uid_fetch #{uid}"
         @imap.uid_fetch(uid, ["FLAGS", "RFC822", "RFC822.SIZE"])[0] 
       end
       size = fetch_data.attr["RFC822.SIZE"]
@@ -422,7 +429,7 @@ EOF
       d = {:mail => mail, :size => size, :message_text => message_text}
       message_cache[[@mailbox, uid]] = d
     rescue
-      msg = "Error encountered parsing message #{uid}:\n#{$!}\n#{$!.backtrace.join("\n")}"
+      msg = "Error encountered parsing message index #{index} seqno #{seqno} uid #{uid}:\n#{$!}\n#{$!.backtrace.join("\n")}"
       log msg
     end
 
