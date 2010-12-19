@@ -68,7 +68,7 @@ module Vmail
         return
       end
       log "selecting mailbox #{mailbox.inspect}"
-      reconnect_if_necessary do 
+      reconnect_if_necessary(15) do 
         log @imap.select(mailbox)
       end
       log "done"
