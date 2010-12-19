@@ -46,6 +46,19 @@ module Vmail
       @message_cache
     end
 
+    # keys are [mailbox, limit, query]
+    def message_list_cache
+      @message_list_cache ||= {}
+    end
+
+    def current_message_list_cache
+      (message_list_cache[[@mailbox, @limit, @query]] ||= [])
+    end
+
+    def current_message_list_cache=(val)
+      message_list_cache[[@mailbox, @limit, @query]] ||= val
+    end
+
     def open
       @imap = Net::IMAP.new(@imap_server, @imap_port, true, nil, false)
       @imap.login(@username, @password)
@@ -148,15 +161,20 @@ module Vmail
     end
 
     # id_set may be a range, array, or string
-    def fetch_envelopes(id_set, are_uids=false, is_update=false)
-      log "fetch_envelopes: #{id_set.inspect}"
+    def fetch_row_text(id_set, are_uids=false, is_update=false)
+      log "fetch_row_text: #{id_set.inspect}"
       if id_set.is_a?(String)
         id_set = id_set.split(',')
       end
       if id_set.to_a.empty?
-        log "empty set"
+        log "- empty set"
         return ""
       end
+      new_message_rows = fetch_envelopes(id_set, are_uids, is_update)
+      new_message_rows.map {|x| x[:row_text]}.join("\n")
+    end
+
+    def fetch_envelopes(id_set, are_uids, is_update)
       results = reconnect_if_necessary do 
         if are_uids
           @imap.uid_fetch(id_set, ["FLAGS", "ENVELOPE", "RFC822.SIZE", "UID" ])
@@ -168,32 +186,33 @@ module Vmail
         error = "expected fetch results but got nil"
         log(error) && raise(error)
       end
-      log "extracting headers"
+      log "- extracting headers"
+      log "- current message list cache has #{current_message_list_cache.size} items"
       new_message_rows = results.map {|x| extract_row_data(x) }
       if are_uids
         # replace old row_text values
         new_message_rows.each {|new_row_data|
-          @message_list.
+          current_message_list_cache.
             select {|old_row_data| old_row_data[:uid] == new_row_data[:uid]}.
             each {|old_row_data| old_row_data[:row_text] = new_row_data[:row_text]}
         }
       else
-
         if is_update
-          log "adding messages from update to end of list"
-          @message_list = @message_list.concat new_message_rows
+          log "- adding messages from update to end of list"
+          current_message_list_cache.concat new_message_rows
         else
           # this adds old messages to the top of the list
           # put new rows before the current ones
-          log "adding more messages to head of list"
-          @message_list = new_message_rows + @message_list
+          log "- adding more messages to head of list"
+          self.current_message_list_cache.unshift(*new_message_rows)
         end
       end
-      log "returning #{new_message_rows.size} new rows" 
-      return new_message_rows.
-        map {|x| x[:row_text]}.
-        join("\n")
+      log "- new current message list cache has #{current_message_list_cache.size} items"
+      # current_message_list_cache is automatically cached to keyed message_list_cache
+      log "- returning #{new_message_rows.size} new rows and caching result"  
+      new_message_rows
     end
+
 
     # TODO extract this to another class or module and write unit tests
     def extract_row_data(fetch_data)
@@ -290,9 +309,17 @@ module Vmail
         query.unshift "1:#@num_messages"
         @all_search = false
       end
-      log "@all_search #{@all_search}"
-      @query = query
+      @query = query.map {|x| x.to_s.downcase}
+      @limit = limit
       log "search query: #{@query.inspect}"
+      if !current_message_list_cache.empty?
+        log "- CACHE HIT"
+        res = current_message_list_cache.map {|x| x[:row_text]}.join("\n")
+        return add_more_message_line(res, current_message_list_cache[0][:seqno])
+      end
+      log "- CACHE MISS"
+      log "- @all_search #{@all_search}"
+      @query = query
       @ids = reconnect_if_necessary(180) do # increase timeout to 3 minutes
         @imap.search(@query.join(' '))
       end
@@ -303,10 +330,11 @@ module Vmail
                     @start_index = [@ids.length - limit, 0].max
                     @ids[@start_index..-1]
                   end
-      log "search query got #{@ids.size} results" 
-      @message_list = [] # this will hold all the data extracted from these message envelopes
+      log "- search query got #{@ids.size} results" 
+      # this will hold all the data extracted from these message envelopes
+      current_message_list_cache = [] 
       clear_cached_message
-      res = fetch_envelopes(fetch_ids)
+      res = fetch_row_text(fetch_ids)
       add_more_message_line(res, fetch_ids[0])
     end
 
@@ -323,26 +351,26 @@ module Vmail
         @imap.search(update_query.join(' ')) 
       }
       # TODO change this. will throw error now
-      max_seqno = @message_list[-1][:seqno]
+      max_seqno = current_message_list_cache[-1][:seqno]
       log "looking for seqnos > #{max_seqno}"
       new_ids = ids.select {|seqno| seqno > max_seqno}
       @ids = @ids + new_ids
       log "update: new uids: #{new_ids.inspect}"
       if !new_ids.empty?
-        res = fetch_envelopes(new_ids, false, true)
+        res = fetch_row_text(new_ids, false, true)
         res
       end
     end
 
     # gets 100 messages prior to id
     def more_messages(limit=100)
-      message_id = @message_list[0][:seqno]
+      message_id = current_message_list_cache[0][:seqno]
       log "more_messages: message_id #{message_id}"
       message_id = message_id.to_i
       if @all_search 
         x = [(message_id - limit), 0].max
         y = [message_id - 1, 0].max
-        res = fetch_envelopes((x..y))
+        res = fetch_row_text((x..y))
         add_more_message_line(res, x)
       else
         # filter search query
@@ -350,7 +378,7 @@ module Vmail
         x = [(@start_index - limit), 0].max
         y = [@start_index - 1, 0].max
         @start_index = x
-        res = fetch_envelopes(@ids[x..y]) 
+        res = fetch_row_text(@ids[x..y]) 
         add_more_message_line(res, @ids[x])
       end
     end
@@ -381,7 +409,8 @@ module Vmail
 
       prefetch_adjacent(index)
 
-      envelope_data = @message_list[index]
+      log "show message index #{index}"
+      envelope_data = current_message_list_cache[index]
       seqno = envelope_data[:seqno]
       uid = envelope_data[:uid] 
       log "showing message index: #{index} seqno: #{seqno} uid #{uid}"
@@ -406,7 +435,7 @@ module Vmail
     end
 
     def fetch_and_cache(index)
-      envelope_data = @message_list[index]
+      envelope_data = current_message_list_cache[index]
       return unless envelope_data
       seqno = envelope_data[:seqno]
       uid = envelope_data[:uid] 
@@ -492,16 +521,16 @@ EOF
       raise "expecting String" unless index_range_as_string.is_a?(String)
       raise "expecting a range as string" unless index_range_as_string =~ /^\d+\.\.\d+$/ 
       log "converting index_range #{index_range_as_string} to uids"
-      uids = @message_list[eval(index_range_as_string)].map {|row| row[:uid]}
+      uids = current_message_list_cache[eval(index_range_as_string)].map {|row| row[:uid]}
       log "converted index_range #{index_range_as_string} to uids #{uids.inspect}"
       uids
     end
 
     def remove_uid_set_from_cached_lists(uid_set)
-      # delete from cached @ids and @message_list
+      # delete from cached @ids and current_message_list_cache
       seqnos_to_delete = []
       uid_set.each {|uid| 
-        row = @message_list.detect {|row| row[:uid] == uid}
+        row = current_message_list_cache.detect {|row| row[:uid] == uid}
         seqno = row[:seqno]
         log "deleting seqno #{seqno} from @ids"
         @ids.delete seqno
@@ -509,17 +538,17 @@ EOF
       }
       log "seqnos_to_delete: #{seqnos_to_delete.inspect}"
       seqnos_to_delete.reverse.each do |seqno|
-        startsize = @message_list.size 
+        startsize = current_message_list_cache.size 
         log "deleting row with seqno #{seqno}"
-        @message_list = @message_list.delete_if {|x| x[:seqno] == seqno}
-        endsize = @message_list.size
+        current_message_list_cache = current_message_list_cache.delete_if {|x| x[:seqno] == seqno}
+        endsize = current_message_list_cache.size
         log "deleted #{startsize - endsize} rows"
       end
       # now we need to decrement all the higher sequence numbers!
       basenum = seqnos_to_delete.min  # this is the lowested seqno deleted
       diff = seqnos_to_delete.size # substract this from all seqnos >= basenum
       changes = []
-      @message_list.each do |row|
+      current_message_list_cache.each do |row|
         if row[:seqno] >= basenum
           changes << "#{row[:seqno]}->#{row[:seqno] - diff}"
           row[:seqno] -= diff
