@@ -245,7 +245,7 @@ module Vmail
       ].join(' | ')
       {:uid => uid, :seqno => seqno, :row_text => row_text}
     rescue 
-      log "error extracting header for uid #{uid} seqno #{seqno}: #$!"
+      log "error extracting header for uid #{uid} seqno #{seqno}: #$!\n#{$!.backtrace}"
       row_text = "#{seqno.to_s} : error extracting this header"
       {:uid => uid, :seqno => seqno, :row_text => row_text}
     end
@@ -255,7 +255,7 @@ module Vmail
     # borrowed from ActionView/Helpers
     def number_to_human_size(number)
       if number.to_i < 1024
-        number = 1024 # round up to 1kh
+        "<1kb" # round up to 1kh
       else
         max_exp = UNITS.size - 1
         exponent = (Math.log(number) / Math.log(1024)).to_i # Convert to base 1024
