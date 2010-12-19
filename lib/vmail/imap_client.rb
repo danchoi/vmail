@@ -35,7 +35,7 @@ module Vmail
     end
 
     # holds mail objects keyed by [mailbox, uid]
-    # TODO don't cache a mail if too large; or come up with a way to purge
+    # TODO come up with a way to purge periodically
     def message_cache
       @message_cache ||= {}
     end
@@ -385,46 +385,51 @@ module Vmail
                x
              else 
                log "- fetching and storing to message_cache[[#{@mailbox}, #{uid}]]"
-               fetch_and_cache(uid)
+               fetch_and_cache(index)
              end
-      # pre-fetch prev and next
 
+      # make this more DRY later by directly using a ref to the hash
       mail = data[:mail]
-      size = data[:size]
+      size = data[:size] 
       @current_message_index = index
       @current_mail = mail # used later to show raw message or extract attachments if any
-      formatter = Vmail::MessageFormatter.new(mail)
-      out = formatter.process_body 
-      @current_message = <<-EOF
-#{@mailbox} seqno:#{envelope_data[:seqno]} uid:#{uid} #{number_to_human_size size} #{format_parts_info(formatter.list_parts)}
-#{divider '-'}
-#{format_headers(formatter.extract_headers)}
-
-#{out}
-EOF
+      @current_message = data[:message_text]
     rescue
       log "parsing error"
       "Error encountered parsing this message:\n#{$!}\n#{$!.backtrace.join("\n")}"
     end
 
-    def fetch_and_cache(uid)
+    def fetch_and_cache(index)
+      envelope_data = @message_list[index]
+      return unless envelope_data
+      seqno = envelope_data[:seqno]
+      uid = envelope_data[:uid] 
       return if message_cache[[@mailbox, uid]] 
       fetch_data = reconnect_if_necessary do 
         @imap.uid_fetch(uid, ["FLAGS", "RFC822", "RFC822.SIZE"])[0] 
       end
-      d = {:mail => Mail.new(fetch_data.attr['RFC822']), :size => fetch_data.attr["RFC822.SIZE"]}
+      size = fetch_data.attr["RFC822.SIZE"]
+      mail = Mail.new(fetch_data.attr['RFC822'])
+      formatter = Vmail::MessageFormatter.new(mail)
+      message_text = <<-EOF
+#{@mailbox} seqno:#{envelope_data[:seqno]} uid:#{uid} #{number_to_human_size size} #{format_parts_info(formatter.list_parts)}
+#{divider '-'}
+#{format_headers(formatter.extract_headers)}
+
+#{formatter.process_body}
+EOF
       log "storing message_cache[[#{@mailbox}, #{uid}]]"
+      d = {:mail => mail, :size => size, :message_text => message_text}
       message_cache[[@mailbox, uid]] = d
-      d
+    rescue
+      msg = "Error encountered parsing message #{uid}:\n#{$!}\n#{$!.backtrace.join("\n")}"
+      log msg
     end
 
     def prefetch_adjacent(index)
       Thread.new do 
         [index + 1, index - 1].each do |idx|
-          envelope_data = @message_list[idx]
-          next unless envelope_data
-          uid = envelope_data[:uid] 
-          fetch_and_cache(uid)
+          fetch_and_cache(idx)
         end
       end
     end
