@@ -743,9 +743,9 @@ func! s:message_window_mappings()
   nmap <silent> <buffer> <leader>3 <leader>#
   nmap <silent> <buffer> <leader>1 <leader>!
 
-  nnoremap <silent> <buffer> <Leader>b :call <SID>focus_list_window()<cr>call <SID>move_to_mailbox(0)<CR>
-  nnoremap <silent> <buffer> <Leader>B :call <SID>focus_list_window()<cr>call <SID>move_to_mailbox(1)<CR>
-  nnoremap <silent> <buffer> <leader>e  :call <SID>focus_list_window()<cr>:call <SID>archive_messages()<cr>
+  nnoremap <silent> <buffer> <Leader>b :call <SID>focus_list_window()<cr>:call <SID>move_to_mailbox(0)<CR>
+  nnoremap <silent> <buffer> <Leader>B :call <SID>focus_list_window()<cr>:call <SID>move_to_mailbox(1)<CR>
+
   nnoremap <silent> <buffer> u :call <SID>update()<CR>
   nnoremap <silent> <buffer> <Leader>m :call <SID>focus_list_window()<cr>:call <SID>mailbox_window()<CR>
   nnoremap <silent> <buffer> <Leader>A :call <SID>save_attachments()<cr>
