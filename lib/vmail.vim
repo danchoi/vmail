@@ -686,12 +686,13 @@ endfunc
 " maybe not DRY enough, but fix that later
 " also, come up with a more precise regex pattern for matching hyperlinks
 func! s:open_href(all) range
+  let pattern = 'https\?:[^\s>)\]]\+'
   let n = 0
   " range version
   if a:firstline < a:lastline
     let lnum = a:firstline
     while lnum <= a:lastline
-      let href = matchstr(getline(lnum), 'https\?:\S\+')
+      let href = matchstr(getline(lnum), pattern)
       if href != ""
         let command = s:browser_command . " '" . href . "' &"
         call system(command)
@@ -702,10 +703,10 @@ func! s:open_href(all) range
     echom 'opened '.n.' links' 
     return
   end
-  let line = search('https\?:', 'cw')
+  let line = search(pattern, 'cw')
   if line && a:all
     while line
-      let href = matchstr(getline(line('.')), 'https\?:\S\+')
+      let href = matchstr(getline(line('.')), pattern)
       let command = s:browser_command . " '" . href . "' &"
       call system(command)
       let n += 1
@@ -713,7 +714,7 @@ func! s:open_href(all) range
     endwhile
     echom 'opened '.n.' links' 
   else
-    let href = matchstr(getline(line('.')), 'https\?:\S\+')
+    let href = matchstr(getline(line('.')), pattern)
     let command = s:browser_command . " '" . href . "' &"
     call system(command)
     echom 'opened '.href
