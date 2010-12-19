@@ -493,7 +493,7 @@ function! s:select_mailbox()
   let s:query = "100 all"
   let command = s:select_mailbox_command . shellescape(s:mailbox)
   redraw
-  echom "selecting mailbox ". s:mailbox ". please wait..."
+  echom "selecting mailbox: ". s:mailbox . ". please wait..."
   call system(command)
   redraw
   " now get latest 100 messages
@@ -509,7 +509,8 @@ function! s:select_mailbox()
   setlocal nomodifiable
   write
   normal z.
-  echom "done"
+  redraw
+  echom "current mailbox: ". s:mailbox 
 endfunction
 
 func! s:search_query()
@@ -739,6 +740,11 @@ func! s:show_help()
   "let helpfile = system(s:show_help_command)
   "exec "split " . helpfile
 endfunc
+
+" -------------------------------------------------------------------------------- 
+" CONVENIENCE FUNCS
+
+
 
 " -------------------------------------------------------------------------------- 
 " MAPPINGS

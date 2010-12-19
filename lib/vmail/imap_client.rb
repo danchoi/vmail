@@ -363,6 +363,8 @@ module Vmail
       if !new_ids.empty?
         res = fetch_row_text(new_ids, false, true)
         res
+      else
+        nil
       end
     end
 
