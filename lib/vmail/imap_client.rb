@@ -28,10 +28,16 @@ module Vmail
       @mailbox = nil
       @logger = Logger.new(config['logfile'] || STDERR)
       @logger.level = Logger::DEBUG
-      @current_mail = nil
-      @current_message_index = nil
       @imap_server = config['server'] || 'imap.gmail.com'
       @imap_port = config['port'] || 993
+      @current_mail = nil
+      @current_message_index = nil
+    end
+
+    # holds mail objects keyed by [mailbox, uid]
+    # TODO don't cache a mail if too large; or come up with a way to purge
+    def message_cache
+      @message_cache ||= {}
     end
 
     def open
@@ -361,7 +367,6 @@ module Vmail
 
     def show_message(index, raw=false)
       return if index.to_i < 0
-      log "showing message at #{index}" 
       return @current_mail.to_s if raw 
       index = index.to_i
       if index == @current_message_index 
@@ -370,18 +375,31 @@ module Vmail
       envelope_data = @message_list[index]
       seqno = envelope_data[:seqno]
       uid = envelope_data[:uid] 
-      log "showing message seqno: #{seqno} uid #{uid}"
-      fetch_data = reconnect_if_necessary do 
-        @imap.uid_fetch(uid, ["FLAGS", "RFC822", "RFC822.SIZE"])[0]
-      end
-      res = fetch_data.attr["RFC822"]
-      mail = Mail.new(res) 
+      log "showing message index: #{index} seqno: #{seqno} uid #{uid}"
+
+      data = if x = message_cache[[@mailbox, uid]]
+               log "message cache hit"
+               x
+             else 
+               fetch_data = reconnect_if_necessary do 
+                 @imap.uid_fetch(uid, ["FLAGS", "RFC822", "RFC822.SIZE"])[0] 
+               end
+               d = {:mail => Mail.new(fetch_data.attr['RFC822']), :size => fetch_data.attr["RFC822.SIZE"]}
+               log "message cache miss"
+               if d[:size] < 100_000
+                 log "storing message_cache[[#{@mailbox}, #{uid}]]"
+                 message_cache[[@mailbox, uid]] = d
+               else
+                 log "messaging too big to cache"
+               end
+               d
+             end
+      mail = data[:mail]
+      size = data[:size]
       @current_message_index = index
       @current_mail = mail # used later to show raw message or extract attachments if any
-      log "saving current mail with parts: #{@current_mail.parts.inspect}"
       formatter = Vmail::MessageFormatter.new(mail)
       out = formatter.process_body 
-      size = fetch_data.attr["RFC822.SIZE"]
       @current_message = <<-EOF
 #{@mailbox} seqno:#{envelope_data[:seqno]} uid:#{uid} #{number_to_human_size size} #{format_parts_info(formatter.list_parts)}
 #{divider '-'}
@@ -391,7 +409,7 @@ module Vmail
 EOF
     rescue
       log "parsing error"
-      "Error encountered parsing this message:\n#{$!}"
+      "Error encountered parsing this message:\n#{$!}\n#{$!.backtrace.join("\n")}"
     end
 
     def format_parts_info(parts)
