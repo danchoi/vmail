@@ -52,6 +52,7 @@ function! s:create_list_window()
   setlocal cursorline
   " we need the bufnr to find the window later
   let s:listbufnr = bufnr('%')
+  let s:listbufname = bufname('%')
   setlocal statusline=%!VmailStatusLine()
   call s:message_list_window_mappings()
 endfunction
@@ -110,29 +111,51 @@ endfunction
 
 " from message window
 function! s:show_next_message()
-  call s:focus_list_window()
-  execute "normal j"
-  execute "normal \<cr>"
+  let fullscreen = (bufwinnr(s:listbufnr) == -1) " we're in full screen message mode
+  if fullscreen
+    3split
+    exec 'b'. s:listbufnr
+  else
+    call s:focus_list_window()
+  end
+  normal j
+  call s:show_message(1)
+  normal zz
+  wincmd p
+  redraw
 endfunction
 
 function! s:show_previous_message()
-  call s:focus_list_window()
-  execute "normal k" 
+  set lazyredraw " why doesn't this work? Keep it in anyway
+  let fullscreen = (bufwinnr(s:listbufnr) == -1) " we're in full screen message mode
+  if fullscreen
+    3split 
+    exec 'b'. s:listbufnr
+  else
+    call s:focus_list_window()
+  end
+  normal k
   if line('.') != 1
-    execute "normal \<cr>"
+    call s:show_message(1)
   endif
+  normal zz
+  wincmd p
+  redraw
 endfunction
+
 
 " from message list window
 function! s:show_next_message_in_list()
   if line('.') != line('$')
-    call feedkeys("j\<cr>\<cr>") 
+    normal j
+    call s:show_message(1)
   endif
 endfunction
 
 function! s:show_previous_message_in_list()
   if line('.') != 1
-    call feedkeys("k\<cr>\<cr>") 
+    normal k
+    call s:show_message(1)
   endif
 endfunction
 
@@ -720,7 +743,7 @@ endfunc
 " MAPPINGS
 
 func! s:message_window_mappings()
-  noremap <silent> <buffer> <cr> :call <SID>focus_list_window()<CR> 
+  noremap <silent> <buffer> <cr> <C-W>=:call <SID>focus_list_window()<CR> 
   noremap <silent> <buffer> <Leader>r :call <SID>compose_reply(0)<CR>
   noremap <silent> <buffer> <Leader>a :call <SID>compose_reply(1)<CR>
   noremap <silent> <buffer> <Leader>R :call <SID>show_raw()<cr>
