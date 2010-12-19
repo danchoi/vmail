@@ -138,6 +138,8 @@ top of the list that looks something like this:
 
 Put the cursor on this line and press ENTER to load more of these messages.
 
+Tip: To go straight to the top line and load more messages, type `gg<ENTER>`.
+
 Unread messages are marked with a `+` symbol.
 
 To view the raw RFC822 version of a message, type `,R` while viewing the message.
