@@ -372,28 +372,23 @@ module Vmail
       if index == @current_message_index 
         return @current_message 
       end
+
+      prefetch_adjacent(index)
+
       envelope_data = @message_list[index]
       seqno = envelope_data[:seqno]
       uid = envelope_data[:uid] 
       log "showing message index: #{index} seqno: #{seqno} uid #{uid}"
 
       data = if x = message_cache[[@mailbox, uid]]
-               log "message cache hit"
+               log "- message cache hit"
                x
              else 
-               fetch_data = reconnect_if_necessary do 
-                 @imap.uid_fetch(uid, ["FLAGS", "RFC822", "RFC822.SIZE"])[0] 
-               end
-               d = {:mail => Mail.new(fetch_data.attr['RFC822']), :size => fetch_data.attr["RFC822.SIZE"]}
-               log "message cache miss"
-               if d[:size] < 100_000
-                 log "storing message_cache[[#{@mailbox}, #{uid}]]"
-                 message_cache[[@mailbox, uid]] = d
-               else
-                 log "messaging too big to cache"
-               end
-               d
+               log "- fetching and storing to message_cache[[#{@mailbox}, #{uid}]]"
+               fetch_and_cache(uid)
              end
+      # pre-fetch prev and next
+
       mail = data[:mail]
       size = data[:size]
       @current_message_index = index
@@ -410,6 +405,28 @@ EOF
     rescue
       log "parsing error"
       "Error encountered parsing this message:\n#{$!}\n#{$!.backtrace.join("\n")}"
+    end
+
+    def fetch_and_cache(uid)
+      return if message_cache[[@mailbox, uid]] 
+      fetch_data = reconnect_if_necessary do 
+        @imap.uid_fetch(uid, ["FLAGS", "RFC822", "RFC822.SIZE"])[0] 
+      end
+      d = {:mail => Mail.new(fetch_data.attr['RFC822']), :size => fetch_data.attr["RFC822.SIZE"]}
+      log "storing message_cache[[#{@mailbox}, #{uid}]]"
+      message_cache[[@mailbox, uid]] = d
+      d
+    end
+
+    def prefetch_adjacent(index)
+      Thread.new do 
+        [index + 1, index - 1].each do |idx|
+          envelope_data = @message_list[idx]
+          next unless envelope_data
+          uid = envelope_data[:uid] 
+          fetch_and_cache(uid)
+        end
+      end
     end
 
     def format_parts_info(parts)
