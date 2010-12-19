@@ -52,16 +52,12 @@ module Vmail
     end
 
     def current_message_list_cache
-      # last key is the non uid_set part of query
-      (message_list_cache[[@mailbox, @limit, @query[1..-1]]] ||= [])
+      # third key is the non id_set/range part of query
+      (message_list_cache[[@mailbox, @limit, @query[1..-1], @all_search]] ||= [])
     end
 
     def current_message_list_cache=(val)
-      message_list_cache[[@mailbox, @limit, @query[1..-1]]] ||= val
-    end
-
-    def clear_message_list_caches_for_current_mailbox
-      message_list_cache.delete_if  {|k, v| k[0] == @mailbox}
+      message_list_cache[[@mailbox, @limit, @query[1..-1], @all_search]] ||= val
     end
 
     def open
@@ -120,7 +116,9 @@ module Vmail
       end
     end
 
+    # not used for anything
     def get_mailbox_status
+      return
       @status = @imap.status(@mailbox,  ["MESSAGES", "RECENT", "UNSEEN"])
       log "mailbox status: #{@status.inspect}"
     end
@@ -308,8 +306,7 @@ module Vmail
         # form a sequence range
         query.unshift [[@num_messages - limit.to_i + 1 , 1].max, @num_messages].join(':')
         @all_search = true
-      else
-        # this is a special query search
+      else # this is a special query search
         # set the target range to the whole set
         query.unshift "1:#@num_messages"
         @all_search = false
@@ -324,7 +321,6 @@ module Vmail
         return add_more_message_line(res, current_message_list_cache[0][:seqno])
       end
       log "- CACHE MISS" 
-      clear_message_list_caches_for_current_mailbox
       log "- @all_search #{@all_search}"
       @query = query
       @ids = reconnect_if_necessary(180) do # increase timeout to 3 minutes
@@ -352,6 +348,7 @@ module Vmail
       reload_mailbox
       update_query = @query.dup
       # set a new range filter
+      # this may generate a negative rane, e.g., "19893:19992" but that seems harmless
       update_query[0] = "#{old_num_messages}:#{@num_messages}"
       ids = reconnect_if_necessary { 
         log "search #update_query"
