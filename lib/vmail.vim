@@ -84,8 +84,8 @@ function! s:show_message(stay_in_message_list)
   write
   " this just clears the command line and prevents the screen from
   " moving up when the next echo statement executes:
-  call feedkeys(":\<cr>") 
-  redraw
+  " call feedkeys(":\<cr>") 
+  " redraw
   " substract 2: because lines numbers start at 1 & messages start at line 2
   let s:current_message_index = line('.') - 2
   if s:current_message_index < 0
