@@ -52,11 +52,16 @@ module Vmail
     end
 
     def current_message_list_cache
-      (message_list_cache[[@mailbox, @limit, @query]] ||= [])
+      # last key is the non uid_set part of query
+      (message_list_cache[[@mailbox, @limit, @query[1..-1]]] ||= [])
     end
 
     def current_message_list_cache=(val)
-      message_list_cache[[@mailbox, @limit, @query]] ||= val
+      message_list_cache[[@mailbox, @limit, @query[1..-1]]] ||= val
+    end
+
+    def clear_message_list_caches_for_current_mailbox
+      message_list_cache.delete_if  {|k, v| k[0] == @mailbox}
     end
 
     def open
@@ -315,9 +320,11 @@ module Vmail
       if !current_message_list_cache.empty?
         log "- CACHE HIT"
         res = current_message_list_cache.map {|x| x[:row_text]}.join("\n")
+        @ids = current_message_list_cache.map {|x| x[:seqno]}
         return add_more_message_line(res, current_message_list_cache[0][:seqno])
       end
-      log "- CACHE MISS"
+      log "- CACHE MISS" 
+      clear_message_list_caches_for_current_mailbox
       log "- @all_search #{@all_search}"
       @query = query
       @ids = reconnect_if_necessary(180) do # increase timeout to 3 minutes
@@ -343,7 +350,7 @@ module Vmail
       old_num_messages = @num_messages
       # we need to re-select the mailbox to get the new highest id
       reload_mailbox
-      update_query = @query
+      update_query = @query.dup
       # set a new range filter
       update_query[0] = "#{old_num_messages}:#{@num_messages}"
       ids = reconnect_if_necessary { 
@@ -372,8 +379,7 @@ module Vmail
         y = [message_id - 1, 0].max
         res = fetch_row_text((x..y))
         add_more_message_line(res, x)
-      else
-        # filter search query
+      else # filter search query
         log "@start_index #@start_index"
         x = [(@start_index - limit), 0].max
         y = [@start_index - 1, 0].max
@@ -540,7 +546,7 @@ EOF
       seqnos_to_delete.reverse.each do |seqno|
         startsize = current_message_list_cache.size 
         log "deleting row with seqno #{seqno}"
-        current_message_list_cache = current_message_list_cache.delete_if {|x| x[:seqno] == seqno}
+        current_message_list_cache.delete_if {|x| x[:seqno] == seqno}
         endsize = current_message_list_cache.size
         log "deleted #{startsize - endsize} rows"
       end
