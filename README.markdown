@@ -116,12 +116,15 @@ and show the message content in the bottom pane. Pressing ENTER will also move
 the cursor to the message window. If you want to look at a message but keep the
 cursor in the list window, type `l` (as in `l`ook) instead of ENTER.
 
-To full-screen the message, press SPACE when the cursor is in the message window.
-You can also use the standard Vim key sequence `C-w C-o`.
-To go back to the split view, press ENTER.
+To full-screen the message, press SPACE when the cursor is in the message
+window.  You can also use the standard Vim key sequence `C-w C-o`.  To go back
+to the split view, press SPACE or ENTER. (ENTER moves the cursor to the list
+window.)
 
-You can full-screen the list window by pressing SPACE while the cursor is in it.
-You can also use the standard Vim key sequence `C-w C-o`.
+You can full-screen the list window by pressing SPACE while the cursor is in
+it.  You can also use the standard Vim key sequence `C-w C-o`.  To go back to
+the split view, press SPACE or ENTER. (ENTER opens a message and moves the
+cursor to the message window.)
 
 In the split view, you can jump between the two panes by just pressing ENTER
 from either window.
