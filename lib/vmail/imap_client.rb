@@ -414,7 +414,6 @@ module Vmail
 
       prefetch_adjacent(index)
 
-      log "show message index #{index}"
       envelope_data = current_message_list_cache[index]
       seqno = envelope_data[:seqno]
       uid = envelope_data[:uid] 
