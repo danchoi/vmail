@@ -548,6 +548,7 @@ EOF
           end
         end
 
+        clear_cached_message
       end
     end
 
