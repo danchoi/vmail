@@ -67,10 +67,16 @@ You can omit the password key-value pair if you'd rather not have the password
 saved in the file. In that case, you'll prompted for the password each time you
 start vmail.
 
+If you want to configure vmail with multiple Gmail accounts and switch between
+them, here's a [bash script][multiaccount] for that.
+
+[multiaccount]:https://gist.github.com/743626
+
 If you are behind a firewall that blocks IMAP, see these [additional
 configuration options][firewall] that you can use.
 
 [firewall]:https://github.com/danchoi/vmail/wiki/How-to-use-vmail-behind-a-firewall-that-blocks-IMAP
+
 
 ## Contacts autocompletion
 
