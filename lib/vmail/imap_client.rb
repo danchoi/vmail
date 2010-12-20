@@ -418,7 +418,8 @@ module Vmail
 
       envelope_data = current_message_list_cache[index]
       log envelope_data.inspect
-      envelope_data[:row_text] = envelope_data[:row_text].gsub(/^+ /, '  ').gsub(/^*+/, '* ') # mark as read in cache
+      # TODO factor this gsubbing stuff out into own function
+      envelope_data[:row_text] = envelope_data[:row_text].gsub(/^\+ /, '  ').gsub(/^\*\+/, '* ') # mark as read in cache
       seqno = envelope_data[:seqno]
       uid = envelope_data[:uid] 
       log "showing message index: #{index} seqno: #{seqno} uid #{uid}"
@@ -460,6 +461,11 @@ module Vmail
           res = @imap.uid_fetch(uid, ["FLAGS", "RFC822", "RFC822.SIZE"])
         end
         res[0] 
+      end
+      # TODO keep these marked unread; test this
+      if envelope_data[:row_text] =~ /^\*?\+/ # not seen
+        log "reflagging index #{index} uid #{uid} as not seen"
+        flag("#{index}..#{index}", '-FLAGS', :Seen) # change flag() method to accept a single index later
       end
       size = fetch_data.attr["RFC822.SIZE"]
       mail = Mail.new(fetch_data.attr['RFC822'])
@@ -531,6 +537,7 @@ EOF
           log "@imap.uid_store #{uid_set.inspect} #{action} [#{flg.to_sym}]"
           log @imap.uid_store(uid_set, action, [flg.to_sym])
         end
+
         # mark cached versions of the rows with flag/unflag
         uid_set.each do |uid|
           envelope_data = current_message_list_cache.detect {|x| x[:uid] == uid}
