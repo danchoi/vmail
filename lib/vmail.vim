@@ -1,5 +1,5 @@
 if !exists("g:vmail_flagged_color")
-  let g:vmail_flagged_color = "ctermfg=green ctermbg=black guifg=green guibg=grey"
+  let g:vmail_flagged_color = "ctermfg=green guifg=green guibg=grey"
 endif
 let s:mailbox = $VMAIL_MAILBOX
 let s:query = $VMAIL_QUERY
@@ -811,7 +811,7 @@ func! s:message_list_window_mappings()
 "  nmap <silent> <buffer> <leader>1 <leader>!
 
   "open a link browser (os x)
-  "autocmd CursorMoved <buffer> call <SID>show_message(0)
+  autocmd CursorMoved <buffer> :redraw!
   noremap <silent> <buffer> <leader>vp :call <SID>append_messages_to_file()<CR>
   noremap <silent> <buffer> u :call <SID>update()<CR>
   noremap <silent> <buffer> <Leader>s :call <SID>search_query()<CR>

@@ -79,3 +79,7 @@ message cache is consuming 6mb
 
 - redesign the whole message cache system with unit testing
 
+- remap u in message window so that user can undo when editing or
+  annotating the message
+
+
