@@ -414,9 +414,11 @@ module Vmail
         return @current_message 
       end
 
-      prefetch_adjacent(index)
+      prefetch_adjacent(index) # TODO mark these as unread
 
       envelope_data = current_message_list_cache[index]
+      log envelope_data.inspect
+      envelope_data[:row_text] = envelope_data[:row_text].gsub(/^+ /, '  ').gsub(/^*+/, '* ') # mark as read in cache
       seqno = envelope_data[:seqno]
       uid = envelope_data[:uid] 
       log "showing message index: #{index} seqno: #{seqno} uid #{uid}"
@@ -529,6 +531,16 @@ EOF
           log "@imap.uid_store #{uid_set.inspect} #{action} [#{flg.to_sym}]"
           log @imap.uid_store(uid_set, action, [flg.to_sym])
         end
+        # mark cached versions of the rows with flag/unflag
+        uid_set.each do |uid|
+          envelope_data = current_message_list_cache.detect {|x| x[:uid] == uid}
+          if action == '+FLAGS' && flg == 'Flagged'
+            envelope_data[:row_text] = envelope_data[:row_text].gsub(/^\+ /, '*+').gsub(/^  /, '* ') # mark as read in cache
+          elsif action == '-FLAGS' && flg == 'Flagged'
+            envelope_data[:row_text] = envelope_data[:row_text].gsub(/^\*\+/, '+ ').gsub(/^\* /, '  ') # mark as read in cache
+          end
+        end
+
       end
     end
 

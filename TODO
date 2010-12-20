@@ -32,4 +32,5 @@ Mon Dec 20 08:14:54 EST 2010
 - after switching into a cached mailbox, check for update? or at least
   show when the mailbox was last updated.
 
-
+- bug: mark as read a message, should update the cached version in
+  current message list cache
