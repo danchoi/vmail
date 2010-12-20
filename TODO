@@ -47,4 +47,8 @@ Mon Dec 20 08:14:54 EST 2010
 
 - create an easy way to turn a regular / search into a mailbox search
 
+- set ANSWERED flags and widen the flags column
+
+- a way to label message (from Unix) and add label colors - make this
+  truly orthogonal to mailboxes, unlike gmail.
 
