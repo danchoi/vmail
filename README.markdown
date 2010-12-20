@@ -398,18 +398,17 @@ Typing `,?` will open this webpage in a browser.
 
 ## Using vmail with MacVim
 
-vmail uses standard Vim by default, but vmail also works with MacVim, but not
-perfectly. In particular, there seems to be a bug in MacVim that prevents
-vmail's status line activity messages from appearing properly. Nonetheless,
-most of vmail is functional in MacVim.
-
 To use MacVim as your vmail Vim engine, `export VMAIL_VIM=mvim` before starting
 vmail.
 
 Note that when vmail uses MacVim, the terminal window in which you invoke vmail
 will show vmail's logging output while MacVim is running. To quit vmail in
-MacVim mode, you will have to press CTRL-c in this window to stop the vmail
-process after quitting the MacVim app.
+MacVim mode, first quit the MacVim window running vmail, and then press CTRL-c
+in the original terminal window to stop the vmail process after quitting the
+MacVim app.
+
+There seems to be a bug in MacVim that prevent some the status line messages
+from becoming visible, but this is minor issue. 
 
 ## vmail file byproducts
 
