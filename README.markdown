@@ -387,10 +387,10 @@ Here are some example search queries.
 
 Tip: When you're entering your search query, `<C-u>` clears the query line.
 
-Power-Tip: When you're at the search query prompt, `<C-f>` opens a mini-editor
-that contains the current query plus a history of previous vmail search
-queries. You can edit any line in this mini-editor and press ENTER to perform
-the query on that line.
+Power-Tip: When you're at the search query prompt, `C-p` and `C-n` let you
+navigate the search query history. `<C-f>` opens a mini-editor that contains
+the current query plus a history of previous vmail search queries. You can edit
+any line in this mini-editor and press ENTER to perform the query on that line.
 
 ## Getting help
 
