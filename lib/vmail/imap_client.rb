@@ -428,7 +428,11 @@ module Vmail
                log "- fetching and storing to message_cache[[#{@mailbox}, #{uid}]]"
                fetch_and_cache(index)
              end
-
+      if data.nil?
+        # retry, though this is a hack!
+        log "- data is nil. retrying..."
+        return show_message(index, raw)
+      end
       # make this more DRY later by directly using a ref to the hash
       mail = data[:mail]
       size = data[:size] 
