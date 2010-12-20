@@ -62,7 +62,8 @@ module Vmail
 
     def open
       @imap = Net::IMAP.new(@imap_server, @imap_port, true, nil, false)
-      @imap.login(@username, @password)
+      log @imap.login(@username, @password)
+      list_mailboxes # prefetch mailbox list
     end
 
     def close
@@ -152,6 +153,7 @@ module Vmail
         map {|name| MailboxAliases.invert[name] || name}
       @mailboxes.delete("INBOX")
       @mailboxes.unshift("INBOX")
+      log "loaded mailboxes: #{@mailboxes.inspect}"
       @mailboxes.join("\n")
     end
 
