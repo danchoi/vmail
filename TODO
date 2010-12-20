@@ -33,4 +33,7 @@ Mon Dec 20 08:14:54 EST 2010
   show when the mailbox was last updated.
 
 - bug: mark as read a message, should update the cached version in
-  current message list cache
+  current message list cache. FIXED
+
+- refactor all the flagging business into tighter code
+
