@@ -76,3 +76,6 @@ D, [2010-12-20T10:00:25.637020 #16797] DEBUG -- : PRUNING MESSAGE CACHE;
 message cache is consuming 6mb
 
 
+- still some message cache sync issues
+
+
