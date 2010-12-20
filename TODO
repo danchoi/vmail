@@ -42,4 +42,5 @@ Mon Dec 20 08:14:54 EST 2010
 - if the top line in the list is in a range, it can get deleted. don't
   allow this. (minor)
 
-
+- allow range commands from command prompt, such as VDelete, etc.
+  because you can show line numbers and these may be useful.
