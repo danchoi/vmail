@@ -677,10 +677,15 @@ func! s:save_attachments()
 endfunc
 " -------------------------------------------------------------------------------- 
 
-func! s:maximize_window()
+func! s:toggle_maximize_window()
   if winnr('$') > 1
     only
     " normal z.
+  elseif bufwinnr(s:listbufnr) == winnr()
+    call s:show_message(1)
+  else " we're in the message window
+    call s:focus_list_window()
+    wincmd p
   endif
 endfunc
 
@@ -779,7 +784,7 @@ func! s:message_window_mappings()
   nnoremap <silent> <buffer> u :call <SID>update()<CR>
   nnoremap <silent> <buffer> <Leader>m :call <SID>focus_list_window()<cr>:call <SID>mailbox_window()<CR>
   nnoremap <silent> <buffer> <Leader>A :call <SID>save_attachments()<cr>
-  nnoremap <silent> <buffer> <Space> :call <SID>maximize_window()<cr>
+  nnoremap <silent> <buffer> <Space> :call <SID>toggle_maximize_window()<cr>
   noremap <silent> <buffer> <leader>vp :call <SID>focus_list_window()<cr>:call <SID>append_messages_to_file()<CR>
   nnoremap <silent> <buffer> <Leader>s :call <SID>focus_list_window()<cr>:call <SID>search_query()<cr>
 
@@ -814,7 +819,7 @@ func! s:message_list_window_mappings()
   noremap <silent> <buffer> <Leader>f :call <SID>show_message(0)<cr>:call <SID>compose_forward()<CR><cr>
   noremap <silent> <buffer> <c-j> :call <SID>show_next_message_in_list()<cr>
   noremap <silent> <buffer> <c-k> :call <SID>show_previous_message_in_list()<cr>
-  nnoremap <silent> <buffer> <Space> :call <SID>maximize_window()<cr>
+  nnoremap <silent> <buffer> <Space> :call <SID>toggle_maximize_window()<cr>
 endfunc
 
 func! s:compose_window_mappings()
