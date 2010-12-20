@@ -399,7 +399,7 @@ Typing `,?` will open this webpage in a browser.
 ## Using vmail with MacVim
 
 To use MacVim as your vmail Vim engine, `export VMAIL_VIM=mvim` before starting
-vmail.
+vmail or put this command in your `~/.bash_profile`.
 
 Note that when vmail uses MacVim, the terminal window in which you invoke vmail
 will show vmail's logging output while MacVim is running. To quit vmail in
