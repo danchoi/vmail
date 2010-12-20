@@ -52,3 +52,27 @@ Mon Dec 20 08:14:54 EST 2010
 - a way to label message (from Unix) and add label colors - make this
   truly orthogonal to mailboxes, unlike gmail.
 
+- sent message mailbox not always updating
+
+incompatible character encodings: UTF-8 and US-ASCII
+/Users/choi/.rvm/gems/ruby-1.9.2-p0@vmail/gems/vmail-1.0.0/lib/vmail/imap_client.rb:474:in
+`fetch_and_cache'
+/Users/choi/.rvm/gems/ruby-1.9.2-p0@vmail/gems/vmail-1.0.0/lib/vmail/imap_client.rb:432:in
+`show_message'
+/Users/choi/.rvm/rubies/ruby-1.9.2-p0/lib/ruby/1.9.1/drb/drb.rb:1558:in
+`perform_without_block'
+/Users/choi/.rvm/rubies/ruby-1.9.2-p0/lib/ruby/1.9.1/drb/drb.rb:1518:in
+`perform'
+/Users/choi/.rvm/rubies/ruby-1.9.2-p0/lib/ruby/1.9.1/drb/drb.rb:1592:in
+`block (2 levels) in main_loop'
+/Users/choi/.rvm/rubies/ruby-1.9.2-p0/lib/ruby/1.9.1/drb/drb.rb:1588:in
+`loop'
+/Users/choi/.rvm/rubies/ruby-1.9.2-p0/lib/ruby/1.9.1/drb/drb.rb:1588:in
+`block in main_loop'
+D, [2010-12-20T10:00:21.954632 #16797] DEBUG -- : parsing error
+D, [2010-12-20T10:00:25.286781 #16797] DEBUG -- : PRUNING MESSAGE CACHE;
+message cache is consuming 6mb
+D, [2010-12-20T10:00:25.637020 #16797] DEBUG -- : PRUNING MESSAGE CACHE;
+message cache is consuming 6mb
+
+
