@@ -801,9 +801,12 @@ func! s:message_list_window_mappings()
   noremap <silent> <buffer> <leader>! :call <SID>delete_messages("[Gmail]/Spam")<CR>
   noremap <silent> <buffer> <leader>e :call <SID>archive_messages()<CR>
   " alt mappings for lazy hands
-  nmap <silent> <buffer> <leader>8 <leader>*
-  nmap <silent> <buffer> <leader>3 <leader>#
-  nmap <silent> <buffer> <leader>1 <leader>!
+  noremap <silent> <buffer> <leader>8 :call <SID>toggle_star()<CR>
+  noremap <silent> <buffer> <leader>3 :call <SID>delete_messages("Deleted")<CR>
+  noremap <silent> <buffer> <leader>1 :call <SID>delete_messages("[Gmail]/Spam")<CR>
+"  nmap <silent> <buffer> <leader>8 <leader>*
+"  nmap <silent> <buffer> <leader>3 <leader>#
+"  nmap <silent> <buffer> <leader>1 <leader>!
 
   "open a link browser (os x)
   "autocmd CursorMoved <buffer> call <SID>show_message(0)

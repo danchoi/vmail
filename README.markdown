@@ -176,9 +176,7 @@ To save you keystrokes, vmail provides alternative key mappings for
 * trash/delete: `,#` &rarr; `,3`
 * mark spam: `,!` &rarr; `,1`
 
-These save you from having to press the SHIFT key in each case. But note that
-these shortcuts do not work with range selections (I don't know why yet). So
-please use the SHIFT-keyed versions of these commands if you're using a range.
+These save you from having to press the SHIFT key in each case. 
 
 ## Checking for new messages
 
