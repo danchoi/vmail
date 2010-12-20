@@ -452,7 +452,12 @@ module Vmail
       return if message_cache[[@mailbox, uid]] 
       fetch_data = reconnect_if_necessary do 
         # log "@imap.uid_fetch #{uid}"
-        @imap.uid_fetch(uid, ["FLAGS", "RFC822", "RFC822.SIZE"])[0] 
+        res = @imap.uid_fetch(uid, ["FLAGS", "RFC822", "RFC822.SIZE"])
+        if res.nil?
+          # retry one more time ( find a more elegant way to do this )
+          res = @imap.uid_fetch(uid, ["FLAGS", "RFC822", "RFC822.SIZE"])
+        end
+        res[0] 
       end
       size = fetch_data.attr["RFC822.SIZE"]
       mail = Mail.new(fetch_data.attr['RFC822'])
