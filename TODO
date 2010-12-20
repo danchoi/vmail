@@ -24,3 +24,7 @@ Mon Dec 20 08:14:54 EST 2010
 
 - make the 100 list batch limit adjustable, through some flag or env
   variable
+
+- starring from msg window should keep the cursor there
+
+- starred messages should be indicated as such in msg window
