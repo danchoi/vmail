@@ -21,14 +21,6 @@ module Vmail
       quote_header = "On #{date.strftime('%a, %b %d, %Y at %I:%M %p')}, #{sender} wrote:\n\n"
       body = quote_header + formatter.process_body.gsub(/^(?=>)/, ">").gsub(/^(?!>)/, "> ")
       {'from' => "#@name <#@username>", 'to' => primary_recipient, 'cc' => cc, 'subject' => subject, :body => body}
-    rescue NoMethodError
-      # a total hack TODO but stopgap
-      if try_again
-        sleep 0.3
-        return reply_headers(false) # try one more time
-      else
-        raise
-      end
     end
 
     def primary_recipient

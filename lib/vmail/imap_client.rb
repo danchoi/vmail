@@ -100,6 +100,7 @@ module Vmail
     end
 
     def clear_cached_message
+      log "CLEARING CACHED MESSAGE"
       @current_mail = nil
       @current_message_index = nil
       @current_message = nil
@@ -441,6 +442,7 @@ module Vmail
       mail = data[:mail]
       size = data[:size] 
       @current_message_index = index
+      log "- setting @current_mail"
       @current_mail = mail # used later to show raw message or extract attachments if any
       @current_message = data[:message_text]
     rescue
@@ -549,7 +551,6 @@ EOF
           end
         end
 
-        clear_cached_message
       end
     end
 
@@ -677,12 +678,15 @@ EOF
 
     def reply_template(replyall=false)
       log "sending reply template"
+      if @current_mail.nil?
+        log "- missing @current mail!"
+        return nil
+      end
       # user reply_template class
       reply_headers = Vmail::ReplyTemplate.new(@current_mail, @username, @name, replyall).reply_headers
       body = reply_headers.delete(:body)
       format_headers(reply_headers) + "\n\n\n" + body + signature
     end
-
 
     def signature
       return '' unless @signature
