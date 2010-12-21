@@ -10,7 +10,7 @@ module Vmail
       @mail = Mail.new(mail)
     end
 
-    def reply_headers
+    def reply_headers(try_again = true)
       formatter = Vmail::MessageFormatter.new(@mail)
       headers = formatter.extract_headers
       subject = headers['subject']
@@ -21,6 +21,15 @@ module Vmail
       quote_header = "On #{date.strftime('%a, %b %d, %Y at %I:%M %p')}, #{sender} wrote:\n\n"
       body = quote_header + formatter.process_body.gsub(/^(?=>)/, ">").gsub(/^(?!>)/, "> ")
       {'from' => "#@name <#@username>", 'to' => primary_recipient, 'cc' => cc, 'subject' => subject, :body => body}
+    rescue NoMethodError
+      # a total hack TODO but stopgap
+      if try_again
+        log "reply_headers trying again STOPGAP"
+        sleep 0.3
+        return reply_headers(false) # try one more time
+      else
+        raise
+      end
     end
 
     def primary_recipient
