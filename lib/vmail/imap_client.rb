@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require 'drb'
 require 'vmail/string_ext'
 require 'yaml'
@@ -484,6 +485,8 @@ EOF
     rescue
       msg = "Error encountered parsing message index #{index} seqno #{seqno} uid #{uid}:\n#{$!}\n#{$!.backtrace.join("\n")}"
       log msg
+      log log message_text
+      msg
     end
 
     def prefetch_adjacent(index)

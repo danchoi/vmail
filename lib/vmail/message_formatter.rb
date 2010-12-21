@@ -26,7 +26,7 @@ module Vmail
     end
 
     def process_body(target = @mail)
-      if target.header['Content-Type'].to_s =~ /multipart\/mixed/
+      out = if target.header['Content-Type'].to_s =~ /multipart\/mixed/
         target.parts.map {|part| 
           if part.multipart?
             part = find_text_or_html_part(target.parts)
@@ -41,6 +41,7 @@ module Vmail
       else
         format_part(target)
       end
+      out
     end
 
     def format_part(part)
@@ -84,7 +85,7 @@ module Vmail
 
     def format_text_body(part)
       text = part.body.decoded.gsub("\r", '')
-      charset = part.content_type_parameters && part.content_type_parameters['charset']
+      charset = (part.content_type_parameters && part.content_type_parameters['charset']) || encoding
       if charset && charset != 'UTF-8'
         Iconv.conv('UTF-8//TRANSLIT//IGNORE', charset, text)
       else
@@ -130,11 +131,11 @@ module Vmail
       @encoding ||= @mail.header.charset || 'UTF-8'
     end
 
-    def utf8(string)
+    def utf8(string, this_encoding = encoding)
       return '' unless string
-      out = if encoding && encoding.upcase != 'UTF-8' 
-              Iconv.conv('UTF-8//TRANSLIT/IGNORE', encoding, string)
-            elsif encoding.upcase == 'UTF-8' 
+      out = if this_encoding && this_encoding.upcase != 'UTF-8' 
+              Iconv.conv('UTF-8//TRANSLIT/IGNORE', this_encoding, string)
+            elsif this_encoding.upcase == 'UTF-8' 
               string 
             else
               # assume UTF-8
