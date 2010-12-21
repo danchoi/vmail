@@ -98,6 +98,7 @@ function! s:show_message(stay_in_message_list)
   redrawstatus
   let res = system(command)
   call s:focus_message_window()
+  set modifiable
   1,$delete
   put =res
   " critical: don't call execute 'normal \<cr>'
@@ -128,7 +129,6 @@ function! s:show_next_message()
 endfunction
 
 function! s:show_previous_message()
-  set lazyredraw " why doesn't this work? Keep it in anyway
   let fullscreen = (bufwinnr(s:listbufnr) == -1) " we're in full screen message mode
   if fullscreen
     3split 
