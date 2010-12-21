@@ -1,4 +1,3 @@
-require 'vmail/message_formatter'
 require 'mail'
 require 'time'
 
@@ -12,20 +11,21 @@ module Vmail
 
     def reply_headers(try_again = true)
       formatter = Vmail::MessageFormatter.new(@mail)
-      headers = formatter.extract_headers
-      subject = headers['subject']
+      @orig_headers = formatter.extract_headers
+      subject = @orig_headers['subject']
       if subject !~ /Re: /
         subject = "Re: #{subject}"
       end
-      date = headers['date'].is_a?(String) ? Time.parse(headers['date']) : headers['date']
-      quote_header = "On #{date.strftime('%a, %b %d, %Y at %I:%M %p')}, #{sender} wrote:\n\n"
+      date = @orig_headers['date'].is_a?(String) ? Time.parse(@orig_headers['date']) : @orig_headers['date']
+      quote_header = date ? "On #{date.strftime('%a, %b %d, %Y at %I:%M %p')}, #{sender} wrote:\n\n" : "#{sender} wrote:\n\n"
       body = quote_header + formatter.process_body.gsub(/^(?=>)/, ">").gsub(/^(?!>)/, "> ")
       {'from' => "#@name <#@username>", 'to' => primary_recipient, 'cc' => cc, 'subject' => subject, :body => body}
     end
 
     def primary_recipient
-      from = @mail.header['from']
-      reply_to = @mail.header['reply-to']
+      reply_headers unless @orig_headers
+      from = @orig_headers['from']
+      reply_to = @orig_headers['reply-to']
       [ reply_to, from ].flatten.compact.map(&:to_s)[0]
     end
 

@@ -44,6 +44,13 @@ installation command again.
 
     gem install vmail
 
+If you ever want to uninstall vmail from your system, just execute this command:
+
+    gem uninstall vmail
+
+... and all traces of vmail will removed, except the few files it creates
+during execution (see below).
+
 ## Configuration file
 
 To run vmail, create a yaml file called `.vmailrc` and save it either in the

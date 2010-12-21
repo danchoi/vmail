@@ -1,6 +1,4 @@
 require 'drb'
-require 'vmail/message_formatter'
-require 'vmail/reply_template'
 require 'vmail/string_ext'
 require 'yaml'
 require 'mail'

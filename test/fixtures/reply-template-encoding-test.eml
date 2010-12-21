@@ -1,0 +1,40 @@
+Return-Path: <bjorn.anon@gmail.com>
+Received: by 10.213.2.204 with SMTP id 12cs17792ebk; Tue, 21 Dec 2010 05:40:30 -0800
+Received: from mr.google.com ([10.229.226.72]) by 10.229.226.72 with SMTP id iv8mr5009442qcb.204.1292938829929 (num_hops = 1); Tue, 21 Dec 2010 05:40:29 -0800
+Received: by 10.229.226.72 with SMTP id iv8mr5009442qcb.204.1292938829911; Tue, 21 Dec 2010 05:40:29 -0800
+Received: by 10.229.49.20 with HTTP; Tue, 21 Dec 2010 05:40:09 -0800
+Date: Tue, 21 Dec 2010 14:40:09 +0100
+From: =?ISO-8859-1?Q?bj=F6rn?= <bjorn.anon@gmail.com>
+To: dhchoi@gmail.com
+Message-ID: <AANLkTim-YQ=ZknU9kTn6E+gFz2fuYwPATH0p8awLeW4+@mail.gmail.com>
+Subject: MacVim and vmail
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Delivered-To: dhchoi@gmail.com
+Received-SPF: pass (google.com: domain of bjorn.anon@gmail.com designates
+ 10.229.226.72 as permitted sender) client-ip=10.229.226.72;
+Authentication-Results: mr.google.com; spf=pass (google.com: domain of
+ bjorn.anon@gmail.com designates 10.229.226.72 as permitted sender)
+ smtp.mail=bjorn.anon@gmail.com; dkim=pass
+ header.i=bjorn.anon@gmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=gamma;
+ h=domainkey-signature:received:mime-version:received:from:date
+ :message-id:subject:to:content-type:content-transfer-encoding;
+ bh=tGJ8CJFcQHFOWkIFqkJNeTR7/cdlltnCQhqqvmM0/J0=;
+ b=XT4QNhPsFHy/c+dd6FqJwhCDGmdBCwnvZqXuG9URh1KGlGBtU0DJX41HW9kZyrAvXj
+ aOxp55FueAXyXUZQm15P2A8/9SrYvMOc9hWOS5Se9a4mlnYqXXcp+W2oE5DqEKGb7YlH
+ ap6btHS1XLryXkO8SjZc+scMk50wqjDzQL7hU=
+DomainKey-Signature: a=rsa-sha1; c=nofws; d=gmail.com; s=gamma;
+ h=mime-version:from:date:message-id:subject:to:content-type
+ :content-transfer-encoding;
+ b=D73071TdLGB8O2FMAVeQM8P3FCKldlkhJ1x4cZsa3IBg7Kt39PfVl975M/fopHbUHL
+ ctStLGhrRByypG6+elo0PnHPOwMqnRLN7Smt4yY2DgyJ5IIdFF8HVNswMbRaIJ2kAzYj
+ Ni3lTZC0BwwlBcMfL3/hIxAHTMKTf5oWQgZyA=
+
+Hi Daniel,=0D
+=0D
+I saw the following on your vmail page:=0D
+Best wishes,=0D
+Bj=F6rn=

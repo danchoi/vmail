@@ -132,15 +132,17 @@ module Vmail
 
     def utf8(string)
       return '' unless string
-      return string unless encoding
-      if encoding && encoding != 'UTF-8'
-        Iconv.conv('UTF-8//TRANSLIT/IGNORE', encoding, string)
-      else
-        string
-      end
+      out = if encoding && encoding.upcase != 'UTF-8' 
+              Iconv.conv('UTF-8//TRANSLIT/IGNORE', encoding, string)
+            elsif encoding.upcase == 'UTF-8' 
+              string 
+            else
+              # assume UTF-8
+              Iconv.conv('US-ASCII//TRANSLIT/IGNORE', 'UTF-8', string)
+            end
+      out
     rescue
-      puts $!
-      string
+      "[error: #$!]"
     end
   end
 end
