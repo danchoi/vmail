@@ -358,10 +358,11 @@ module Vmail
       }
       # TODO change this. will throw error now
       max_seqno = current_message_list_cache[-1][:seqno]
-      log "looking for seqnos > #{max_seqno}"
+      log "- got seqnos: #{ids.inspect}"
+      log "- getting seqnos > #{max_seqno}"
       new_ids = ids.select {|seqno| seqno > max_seqno}
       @ids = @ids + new_ids
-      log "update: new uids: #{new_ids.inspect}"
+      log "- update: new uids: #{new_ids.inspect}"
       if !new_ids.empty?
         res = fetch_row_text(new_ids, false, true)
         res
