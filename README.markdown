@@ -419,7 +419,7 @@ will show vmail's logging output while MacVim is running. To quit vmail in
 MacVim mode, first quit the MacVim window running vmail, and then press CTRL-c
 in the original terminal window to stop the vmail process.
 
-There seems to be a bug in MacVim that prevent some the status line messages
+There seems to be a bug in MacVim that prevent some of the status line messages
 from becoming visible, but this is minor issue. 
 
 ## vmail file byproducts
