@@ -24,7 +24,6 @@ module Vmail
     rescue NoMethodError
       # a total hack TODO but stopgap
       if try_again
-        log "reply_headers trying again STOPGAP"
         sleep 0.3
         return reply_headers(false) # try one more time
       else
