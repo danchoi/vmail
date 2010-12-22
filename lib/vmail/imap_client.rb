@@ -136,7 +136,7 @@ module Vmail
       reconnect_if_necessary(4) do 
         # this is just to prime the IMAP connection
         # It's necessary for some reason before update and deliver. 
-        log "priming connection for delivering"
+        log "priming connection"
         
         res = @imap.fetch(@ids[-1], ["ENVELOPE"])
         if res.nil?
