@@ -75,9 +75,6 @@ function! s:show_message(stay_in_message_list)
     call s:more_messages()
     return
   endif
-  " remove the unread flag +
-  " TODO!
-  "  tetset  
   let newline = substitute(line, '^\V*+', '* ', '')
   let newline = substitute(newline, '^\V+ ', '  ', '')
   setlocal modifiable
