@@ -147,7 +147,8 @@ module Vmail
     end
 
     def list_mailboxes
-      @mailboxes ||= (@imap.list("[Gmail]/", "%") + @imap.list("", "%")).
+      log 'loading mailboxes...'
+      @mailboxes ||= ((@imap.list("[Gmail]/", "%") || []) + (@imap.list("", "%")) || []).
         select {|struct| struct.attr.none? {|a| a == :Noselect} }.
         map {|struct| struct.name}.
         map {|name| MailboxAliases.invert[name] || name}
