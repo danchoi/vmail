@@ -417,6 +417,10 @@ module Vmail
         return @current_message 
       end
 
+      if index >= current_message_list_cache.size
+        index -= 1
+        log "index beyond bounds, setting index to #{index}"
+      end
       prefetch_adjacent(index) # TODO mark these as unread
 
       envelope_data = current_message_list_cache[index]
