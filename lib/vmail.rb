@@ -39,9 +39,6 @@ module Vmail
 
     server = DRbObject.new_with_uri drb_uri
 
-    # TODO this is useless if we're using mvim
-    server.window_width = `stty size`.strip.split(' ')[1]
-
     mailbox = if ARGV[0] =~ /^\d+/ 
                 "INBOX"
               else 
