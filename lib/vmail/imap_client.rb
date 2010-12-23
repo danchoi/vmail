@@ -409,6 +409,7 @@ module Vmail
     end
 
     def show_message(index, raw=false)
+      log "show message: #{index}; current message list cache size: #{current_message_list_cache.size}"
       return if index.to_i < 0
       return @current_mail.to_s if raw 
       index = index.to_i
@@ -419,7 +420,9 @@ module Vmail
       prefetch_adjacent(index) # TODO mark these as unread
 
       envelope_data = current_message_list_cache[index]
-      log envelope_data.inspect
+      if envelope_data.nil?
+        log "missing envelope_data at index #{index}"
+      end
       # TODO factor this gsubbing stuff out into own function
       envelope_data[:row_text] = envelope_data[:row_text].gsub(/^\+ /, '  ').gsub(/^\*\+/, '* ') # mark as read in cache
       seqno = envelope_data[:seqno]

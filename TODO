@@ -82,4 +82,11 @@ message cache is consuming 6mb
 - remap u in message window so that user can undo when editing or
   annotating the message
 
+------------------------------------------------------------------------
+Thu Dec 23 08:40:57 EST 2010
+
+* make more robust by putting message UID on message list line,
+* offscreen to the right, and send this over to imap client for any
+* action.
+
 
