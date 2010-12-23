@@ -719,7 +719,7 @@ EOF
     def deliver(text)
       # parse the text. The headers are yaml. The rest is text body.
       require 'net/smtp'
-      prime_connection
+      # prime_connection
       mail = new_mail_from_input(text)
       mail.delivery_method(*smtp_settings)
       res = mail.deliver!
