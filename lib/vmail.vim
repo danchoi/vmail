@@ -808,6 +808,7 @@ func! s:message_list_window_mappings()
   "open a link browser (os x)
   " autocmd CursorMoved <buffer> :redraw!
   noremap <silent> <buffer> <leader>vp :call <SID>append_messages_to_file()<CR>
+  nnoremap <silent> <buffer> <Leader>u :call <SID>update()<CR>
   noremap <silent> <buffer> u :call <SID>update()<CR>
   noremap <silent> <buffer> <Leader>s :call <SID>search_query()<CR>
   noremap <silent> <buffer> <Leader>m :call <SID>mailbox_window()<CR>
