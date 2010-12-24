@@ -192,8 +192,9 @@ These save you from having to press the SHIFT key in each case.
 
 ## Checking for new messages
 
-To check for new messages in the current mailbox, press `u` in normal mode and
-watch the status line.
+To check for new messages in the current mailbox, press `u` in normal
+mode if you're in the message list window or `,u` if you are in the
+message window. Watch the status line.
  
 ## Switching mailboxes, moving messages, copying messages to another mailbox
 
