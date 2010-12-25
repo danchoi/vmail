@@ -484,9 +484,9 @@ vmail users, please add them to the [vmail wiki][wiki].
 
 ## How to contact the developer
 
-My name is Daniel Choi. I am based in Cambridge, MA, and you can email me at
-dhchoi@gmail.com.  You can [follow me on Twitter][twitter] too.  A big shout
-out goes to my funny, smart, and supportive fellow hacker alums of
+My name is Daniel Choi. I am based in Cambridge, Massachusetts, USA, and you
+can email me at dhchoi@gmail.com.  You can [follow me on Twitter][twitter] too.
+A big shout out goes to my funny, smart, and supportive fellow hacker alums of
 [Betahouse][betahouse].
 
 [betahouse]:http://betahouse.org/
