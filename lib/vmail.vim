@@ -12,6 +12,7 @@ let g:loaded_vmail = 1
 if !exists("g:vmail_flagged_color")
   let g:vmail_flagged_color = "ctermfg=green guifg=green guibg=grey"
 endif
+let s:vmail_home = $VMAIL_HOME
 let s:mailbox = $VMAIL_MAILBOX
 let s:query = $VMAIL_QUERY
 let s:browser_command = $VMAIL_BROWSER
@@ -40,7 +41,7 @@ let s:save_attachments_command = s:client_script . "save_attachments "
 let s:open_html_part_command = s:client_script . "open_html_part "
 let s:show_help_command = s:client_script . "show_help"
 
-let s:message_bufname = "current_message.txt"
+let s:message_bufname = s:vmail_home . "/current_message.txt"
 
 function! VmailStatusLine()
   return "%<%f\ " . s:mailbox . " " . s:query . "%r%=%-14.(%l,%c%V%)\ %Y %P"
