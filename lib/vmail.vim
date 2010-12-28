@@ -223,9 +223,11 @@ endfunc
 
 " gets new messages since last update
 function! s:update()
+  echo "Checking for new messages. Please wait..."
+
   let command = s:update_command
-  echo "checking for new messages. please wait..."
   let res = system(command)
+
   if len(split(res, "\n", '')) > 0
     setlocal modifiable
     let line = line('$')
@@ -236,10 +238,10 @@ function! s:update()
     call cursor(line + 1, 0)
     normal z.
     redraw
-    echom "you have " . num . " new message" . (num == 1 ? '' : 's') . "!"
+    echom "You have " . num . " new message" . (num == 1 ? '' : 's') . "!"
   else
     redraw
-    echom "no new messages"
+    echom "No new messages."
   endif
 endfunction
 
