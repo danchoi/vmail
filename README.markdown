@@ -92,8 +92,8 @@ configuration options][firewall] that you can use.
 ## Contacts autocompletion
 
 vmail uses Vim autocompletion to help you auto-complete email addresses.
-To use this feature, generate a `vmail-contacts.txt` file in the current or
-home directory. This is a simple list of your email contacts.
+To use this feature, generate a `vmail-contacts.txt` file in `VMAIL_HOME`
+(`$HOME/.vmail` by default). This is a simple list of your email contacts.
 Invoking vmail with the `-g` option generates this file for you by
 collecting all the recipients and cc's from your last 500 sent
 emails. You can adjust this number by using `-g` with a number argument.
