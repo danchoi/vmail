@@ -83,6 +83,9 @@ module Vmail
             require 'vmail/contacts_extractor'
             extractor = ContactsExtractor.new(@config['username'], @config['password'])
 
+            # Use the default contacts file if none was specified.
+            @contacts_file ||= DEFAULT_CONTACTS_FILENAME
+
             File.open(@contacts_file, 'w') do |file|
               extractor.extract(@max_messages_to_scan) do |address|
                 STDERR.print '.'
