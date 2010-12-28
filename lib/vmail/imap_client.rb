@@ -491,10 +491,11 @@ EOF
       d = {:mail => mail, :size => size, :message_text => message_text}
       message_cache[[@mailbox, uid]] = d
     rescue
-      msg = "Error encountered parsing message index #{index} seqno #{seqno} uid #{uid}:\n#{$!}\n#{$!.backtrace.join("\n")}"
+      msg = "Error encountered parsing message index #{index} seqno #{seqno} uid #{uid}:\n#{$!}\n#{$!.backtrace.join("\n")}" + 
+        "\n\nRaw message:\n\n" + mail.to_s
       log msg
-      log log message_text
-      msg
+      log message_text
+      {:message_text => msg}
     end
 
     def prefetch_adjacent(index)
