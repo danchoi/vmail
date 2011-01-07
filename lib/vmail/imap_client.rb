@@ -30,7 +30,7 @@ module Vmail
       @imap_server = config['server'] || 'imap.gmail.com'
       @imap_port = config['port'] || 993
       @current_mail = nil
-      @current_message_index = nil
+      @current_message_uid = nil
     end
 
     # holds mail objects keyed by [mailbox, uid]
@@ -43,20 +43,6 @@ module Vmail
         @message_cache.keys[0, @message_cache.size / 2].each {|k| @message_cache.delete(k)}
       end
       @message_cache
-    end
-
-    # keys are [mailbox, limit, query]
-    def message_list_cache
-      @message_list_cache ||= {}
-    end
-
-    def current_message_list_cache
-      # third key is the non id_set/range part of query
-      (message_list_cache[[@mailbox, @limit, @query[1..-1], @all_search]] ||= [])
-    end
-
-    def current_message_list_cache=(val)
-      message_list_cache[[@mailbox, @limit, @query[1..-1], @all_search]] ||= val
     end
 
     def open
@@ -101,7 +87,7 @@ module Vmail
     def clear_cached_message
       log "CLEARING CACHED MESSAGE"
       @current_mail = nil
-      @current_message_index = nil
+      @current_message_uid = nil
       @current_message = nil
     end
 
@@ -193,28 +179,7 @@ module Vmail
         log(error) && raise(error)
       end
       log "- extracting headers"
-      log "- current message list cache has #{current_message_list_cache.size} items"
       new_message_rows = results.map {|x| extract_row_data(x) }
-      if are_uids
-        # replace old row_text values
-        new_message_rows.each {|new_row_data|
-          current_message_list_cache.
-            select {|old_row_data| old_row_data[:uid] == new_row_data[:uid]}.
-            each {|old_row_data| old_row_data[:row_text] = new_row_data[:row_text]}
-        }
-      else
-        if is_update
-          log "- adding messages from update to end of list"
-          current_message_list_cache.concat new_message_rows
-        else
-          # this adds old messages to the top of the list
-          # put new rows before the current ones
-          log "- adding more messages to head of list"
-          self.current_message_list_cache.unshift(*new_message_rows)
-        end
-      end
-      log "- new current message list cache has #{current_message_list_cache.size} items"
-      # current_message_list_cache is automatically cached to keyed message_list_cache
       log "- returning #{new_message_rows.size} new rows and caching result"  
       new_message_rows
     end
@@ -318,13 +283,6 @@ module Vmail
       @query = query.map {|x| x.to_s.downcase}
       @limit = limit
       log "search query: #{@query.inspect}"
-      if !current_message_list_cache.empty?
-        log "- CACHE HIT"
-        res = current_message_list_cache.map {|x| x[:row_text]}.join("\n")
-        @ids = current_message_list_cache.map {|x| x[:seqno]}
-        return add_more_message_line(res, current_message_list_cache[0][:seqno])
-      end
-      log "- CACHE MISS" 
       log "- @all_search #{@all_search}"
       @query = query
       @ids = reconnect_if_necessary(180) do # increase timeout to 3 minutes
@@ -338,13 +296,12 @@ module Vmail
                     @ids[@start_index..-1]
                   end
       log "- search query got #{@ids.size} results" 
-      # this will hold all the data extracted from these message envelopes
-      current_message_list_cache = [] 
       clear_cached_message
       res = fetch_row_text(fetch_ids)
       add_more_message_line(res, fetch_ids[0])
     end
 
+    # TODO chage update and more_messages to so we don't depend on current_message_list_cache
     def update
       prime_connection
       old_num_messages = @num_messages
@@ -375,6 +332,7 @@ module Vmail
 
     # gets 100 messages prior to id
     def more_messages(limit=100)
+      # TODO delete this current_message_list_cache 
       message_id = current_message_list_cache[0][:seqno]
       log "more_messages: message_id #{message_id}"
       message_id = message_id.to_i
@@ -409,47 +367,37 @@ module Vmail
       ">  Load #{[100, remaining].min} more messages. #{remaining} remaining.\n" + res
     end
 
-    def show_message(index, raw=false)
-      log "show message: #{index}; current message list cache size: #{current_message_list_cache.size}"
-      return if index.to_i < 0
+    def show_message(uid, raw=false)
+      log "show message: #{uid}"
       return @current_mail.to_s if raw 
-      index = index.to_i
-      if index == @current_message_index 
+      uid = uid.to_i
+      if uid == @current_message_uid 
         return @current_message 
       end
 
-      if index >= current_message_list_cache.size
-        index -= 1
-        log "index beyond bounds, setting index to #{index}"
-      end
-      prefetch_adjacent(index) # TODO mark these as unread
+      #prefetch_adjacent(index) # deprecated
 
-      envelope_data = current_message_list_cache[index]
-      if envelope_data.nil?
-        log "missing envelope_data at index #{index}"
-      end
-      # TODO factor this gsubbing stuff out into own function
-      envelope_data[:row_text] = envelope_data[:row_text].gsub(/^\+ /, '  ').gsub(/^\*\+/, '* ') # mark as read in cache
-      seqno = envelope_data[:seqno]
-      uid = envelope_data[:uid] 
-      log "showing message index: #{index} seqno: #{seqno} uid #{uid}"
+      # TODO keep state in vim buffers, instead of on Vmail Ruby client
+      # envelope_data[:row_text] = envelope_data[:row_text].gsub(/^\+ /, '  ').gsub(/^\*\+/, '* ') # mark as read in cache
+      #seqno = envelope_data[:seqno]
 
+      log "showing message uid: #{uid}"
       data = if x = message_cache[[@mailbox, uid]]
                log "- message cache hit"
                x
              else 
                log "- fetching and storing to message_cache[[#{@mailbox}, #{uid}]]"
-               fetch_and_cache(index)
+               fetch_and_cache(uid)
              end
       if data.nil?
         # retry, though this is a hack!
         log "- data is nil. retrying..."
-        return show_message(index, raw)
+        return show_message(uid, raw)
       end
       # make this more DRY later by directly using a ref to the hash
       mail = data[:mail]
       size = data[:size] 
-      @current_message_index = index
+      @current_message_uid = uid
       log "- setting @current_mail"
       @current_mail = mail # used later to show raw message or extract attachments if any
       @current_message = data[:message_text]
@@ -458,14 +406,11 @@ module Vmail
       "Error encountered parsing this message:\n#{$!}\n#{$!.backtrace.join("\n")}"
     end
 
-    def fetch_and_cache(index)
-      envelope_data = current_message_list_cache[index]
-      return unless envelope_data
-      seqno = envelope_data[:seqno]
-      uid = envelope_data[:uid] 
-      return if message_cache[[@mailbox, uid]] 
+    def fetch_and_cache(uid)
+      if data = message_cache[[@mailbox, uid]] 
+        return data
+      end
       fetch_data = reconnect_if_necessary do 
-        # log "@imap.uid_fetch #{uid}"
         res = @imap.uid_fetch(uid, ["FLAGS", "RFC822", "RFC822.SIZE"])
         if res.nil?
           # retry one more time ( find a more elegant way to do this )
@@ -473,16 +418,11 @@ module Vmail
         end
         res[0] 
       end
-      # TODO keep these marked unread; test this
-      if envelope_data[:row_text] =~ /^\*?\+/ # not seen
-        log "reflagging index #{index} uid #{uid} as not seen"
-        flag("#{index}..#{index}", '-FLAGS', :Seen) # change flag() method to accept a single index later
-      end
       size = fetch_data.attr["RFC822.SIZE"]
       mail = Mail.new(fetch_data.attr['RFC822'])
       formatter = Vmail::MessageFormatter.new(mail)
       message_text = <<-EOF
-#{@mailbox} seqno:#{envelope_data[:seqno]} uid:#{uid} #{number_to_human_size size} #{format_parts_info(formatter.list_parts)}
+#{@mailbox} uid:#{uid} #{number_to_human_size size} #{format_parts_info(formatter.list_parts)}
 #{divider '-'}
 #{format_headers(formatter.extract_headers)}
 
@@ -492,13 +432,14 @@ EOF
       d = {:mail => mail, :size => size, :message_text => message_text}
       message_cache[[@mailbox, uid]] = d
     rescue
-      msg = "Error encountered parsing message index #{index} seqno #{seqno} uid #{uid}:\n#{$!}\n#{$!.backtrace.join("\n")}" + 
+      msg = "Error encountered parsing message uid  #{uid}:\n#{$!}\n#{$!.backtrace.join("\n")}" + 
         "\n\nRaw message:\n\n" + mail.to_s
       log msg
       log message_text
       {:message_text => msg}
     end
 
+    # deprecated
     def prefetch_adjacent(index)
       Thread.new do 
         [index + 1, index - 1].each do |idx|
@@ -516,11 +457,11 @@ EOF
 
     # id_set is a string comming from the vim client
     # action is -FLAGS or +FLAGS
-    def flag(index_range, action, flg)
-      uid_set = uids_from_index_range(index_range)
+    def flag(uid_set, action, flg)
+      uid_set = uid_set.split(',').map(&:to_i)
       log "flag #{uid_set.inspect} #{flg} #{action}"
       if flg == 'Deleted'
-        log "Deleting index_range: #{index_range.inspect}; uid_set: #{uid_set.inspect}"
+        log "Deleting uid_set: #{uid_set.inspect}"
         # for delete, do in a separate thread because deletions are slow
         Thread.new do 
           unless @mailbox == '[Gmail]/Trash'
@@ -529,87 +470,32 @@ EOF
           end
           log "@imap.uid_store #{uid_set.inspect} #{action} [#{flg.to_sym}]"
           log @imap.uid_store(uid_set, action, [flg.to_sym])
-          remove_uid_set_from_cached_lists(uid_set)
           reload_mailbox
           clear_cached_message
         end
       elsif flg == '[Gmail]/Spam'
-        log "Marking as spam index_range: #{index_range.inspect}; uid_set: #{uid_set.inspect}"
+        log "Marking as spam uid_set: #{uid_set.inspect}"
         Thread.new do 
           log "@imap.uid_copy #{uid_set.inspect} to spam"
           log @imap.uid_copy(uid_set, "[Gmail]/Spam")
           log "@imap.uid_store #{uid_set.inspect} #{action} [:Deleted]"
           log @imap.uid_store(uid_set, action, [:Deleted])
-          remove_uid_set_from_cached_lists(uid_set)
           reload_mailbox
           clear_cached_message
         end
         "#{id} deleted"
       else
-        log "Flagging index_range: #{index_range.inspect}; uid_set: #{uid_set.inspect}"
+        log "Flagging uid_set: #{uid_set.inspect}"
         Thread.new do
           log "@imap.uid_store #{uid_set.inspect} #{action} [#{flg.to_sym}]"
           log @imap.uid_store(uid_set, action, [flg.to_sym])
         end
-
-        # mark cached versions of the rows with flag/unflag
-        uid_set.each do |uid|
-          envelope_data = current_message_list_cache.detect {|x| x[:uid] == uid}
-          if action == '+FLAGS' && flg == 'Flagged'
-            envelope_data[:row_text] = envelope_data[:row_text].gsub(/^\+ /, '*+').gsub(/^  /, '* ') # mark as read in cache
-          elsif action == '-FLAGS' && flg == 'Flagged'
-            envelope_data[:row_text] = envelope_data[:row_text].gsub(/^\*\+/, '+ ').gsub(/^\* /, '  ') # mark as read in cache
-          end
-        end
-
       end
     end
 
-    def uids_from_index_range(index_range_as_string)
-      raise "expecting String" unless index_range_as_string.is_a?(String)
-      raise "expecting a range as string" unless index_range_as_string =~ /^\d+\.\.\d+$/ 
-      log "converting index_range #{index_range_as_string} to uids"
-      uids = current_message_list_cache[eval(index_range_as_string)].map {|row| row[:uid]}
-      log "converted index_range #{index_range_as_string} to uids #{uids.inspect}"
-      uids
-    end
-
-    def remove_uid_set_from_cached_lists(uid_set)
-      # delete from cached @ids and current_message_list_cache
-      seqnos_to_delete = []
-      uid_set.each {|uid| 
-        row = current_message_list_cache.detect {|row| row[:uid] == uid}
-        seqno = row[:seqno]
-        log "deleting seqno #{seqno} from @ids"
-        @ids.delete seqno
-        seqnos_to_delete << seqno
-      }
-      log "seqnos_to_delete: #{seqnos_to_delete.inspect}"
-      seqnos_to_delete.reverse.each do |seqno|
-        startsize = current_message_list_cache.size 
-        log "deleting row with seqno #{seqno}"
-        current_message_list_cache.delete_if {|x| x[:seqno] == seqno}
-        endsize = current_message_list_cache.size
-        log "deleted #{startsize - endsize} rows"
-      end
-      # now we need to decrement all the higher sequence numbers!
-      basenum = seqnos_to_delete.min  # this is the lowested seqno deleted
-      diff = seqnos_to_delete.size # substract this from all seqnos >= basenum
-      changes = []
-      current_message_list_cache.each do |row|
-        if row[:seqno] >= basenum
-          changes << "#{row[:seqno]}->#{row[:seqno] - diff}"
-          row[:seqno] -= diff
-        end
-      end
-      log "seqno decremented: #{changes.join(";")}"
-    rescue
-      log "error removing uid set from cached lists"
-      log $!
-    end
-
-    def move_to(id_set, mailbox)
-      log "move #{id_set.inspect} to #{mailbox}"
+    def move_to(uid_set, mailbox)
+      uid_set = uid_set.split(',').map(&:to_i)
+      log "move #{uid_set.inspect} to #{mailbox}"
       if mailbox == 'all'
         log "archiving messages"
       end
@@ -617,25 +503,22 @@ EOF
         mailbox = MailboxAliases[mailbox]
       end
       create_if_necessary mailbox
-      log "getting uids form index range #{id_set}"
-      uid_set = uids_from_index_range(id_set)
       log "moving uid_set: #{uid_set.inspect} to #{mailbox}"
       Thread.new do 
         log @imap.uid_copy(uid_set, mailbox)
         log @imap.uid_store(uid_set, '+FLAGS', [:Deleted])
-        remove_uid_set_from_cached_lists(uid_set)
         reload_mailbox
         clear_cached_message
         log "moved uid_set #{uid_set.inspect} to #{mailbox}"
       end
     end
 
-    def copy_to(id_set, mailbox)
+    def copy_to(uid_set, mailbox)
+      uid_set = uid_set.split(',').map(&:to_i)
       if MailboxAliases[mailbox]
         mailbox = MailboxAliases[mailbox]
       end
       create_if_necessary mailbox
-      uid_set = uids_from_index_range(id_set)
       log "copying #{uid_set.inspect} to #{mailbox}"
       Thread.new do 
         log @imap.uid_copy(uid_set, mailbox)
@@ -654,6 +537,7 @@ EOF
       end
     end
 
+    # TODO change to use UIDs
     def append_to_file(file, index_range_as_string)
       raise "expecting a range as string" unless index_range_as_string =~ /^\d+\.\.\d+$/ 
       index_range = eval(index_range_as_string)
@@ -666,7 +550,6 @@ EOF
       end
       "printed #{index_range.to_a.size} message#{index_range.to_a.size == 1 ? '' : 's'} to #{file.strip}"
     end
-
 
     def new_message_template(subject = nil, append_signature = true)
       headers = {'from' => "#{@name} <#{@username}>",

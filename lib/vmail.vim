@@ -85,13 +85,10 @@ function! s:show_message(stay_in_message_list)
   " moving up when the next echo statement executes:
   " call feedkeys(":\<cr>") 
   " redraw
-  " substract 2: because lines numbers start at 1 & messages start at line 2
-  let s:current_message_index = line('.') - 2
-  if s:current_message_index < 0
-    return
-  endif
-  let command = s:show_message_command . s:current_message_index
-  echom "Loading message. Please wait..."
+
+  let s:uid = matchstr(line, '\d\+$')
+  let command = s:show_message_command . s:uid
+  echom "Loading message ". s:uid .". Please wait..."
   redrawstatus
   let res = system(command)
   call s:focus_message_window()
@@ -243,15 +240,15 @@ function! s:update()
 endfunction
 
 function! s:toggle_star() range
-  let uid_set = (a:firstline - 2) . '..' . (a:lastline - 2)
-  let nummsgs = (a:lastline - a:firstline + 1)
+  let uid_set = s:collect_uids(a:firstline, a:lastline)
+  let nummsgs = len(uid_set)
   let flag_symbol = "^*"
   " check if starred already
   let action = " +FLAGS"
   if (match(getline(a:firstline), flag_symbol) != -1)
     let action = " -FLAGS"
   endif
-  let command = s:flag_command . uid_set . action . " Flagged" 
+  let command = s:flag_command . join(uid_set, ',') . action . " Flagged" 
   if nummsgs == 1
     echom "toggling flag on message" 
   else
@@ -288,13 +285,13 @@ endfunction
 
 " flag can be Deleted or [Gmail]/Spam
 func! s:delete_messages(flag) range
-  let uid_set = (a:firstline - 2) . '..' . (a:lastline - 2)
-  let command = s:flag_command . uid_set . " +FLAGS " . a:flag
-  let nummsgs = (a:lastline - a:firstline + 1)
+  let uid_set = s:collect_uids(a:firstline, a:lastline)
+  let nummsgs = len(uid_set)
+  let command = s:flag_command . join(uid_set, ',') . " +FLAGS " . a:flag
   if nummsgs == 1
     echom "deleting message" 
   else
-    echom "deleting " . (a:lastline - a:firstline + 1) . " messages"
+    echom "deleting " . nummsgs . " messages"
   endif
   let res = system(command)
   setlocal modifiable
@@ -311,9 +308,9 @@ func! s:delete_messages(flag) range
 endfunc
 
 func! s:archive_messages() range
-  let uid_set = (a:firstline - 2) . '..' . (a:lastline - 2)
-  let command = s:move_to_command . uid_set . ' ' . "all"
-  let nummsgs = (a:lastline - a:firstline + 1)
+  let uid_set = s:collect_uids(a:firstline, a:lastline)
+  let nummsgs = len(uid_set)
+  let command = s:move_to_command . join(uid_set, ',') . ' ' . "all"
   echo "archiving message" . (nummsgs == 1 ? '' : 's')
   let res = system(command)
   setlocal modifiable
@@ -331,15 +328,15 @@ endfunc
 
 " append text bodies of a set of messages to a file
 func! s:append_messages_to_file() range
-  let uid_set = (a:firstline - 2) . '..' . (a:lastline - 2)
-  let nummsgs = (a:lastline - a:firstline + 1)
+  let uid_set = s:collect_uids(a:firstline, a:lastline)
+  let nummsgs = len(uid_set)
   let append_file = input("print messages to file: ", s:append_file)
   if append_file == ''
     echom "canceled"
     return
   endif
   let s:append_file = append_file
-  let command = s:append_to_file_command . s:append_file . ' ' . uid_set 
+  let command = s:append_to_file_command . s:append_file . ' ' . join(uid_set, ',')
   echo "appending " . nummsgs . " message" . (nummsgs == 1 ? '' : 's') . " to " . s:append_file . ". please wait..."
   let res = system(command)
   echo res
@@ -350,8 +347,9 @@ endfunc
 " move to another mailbox
 function! s:move_to_mailbox(copy) range
   let s:copy_to_mailbox = a:copy
-  let s:uid_set = (a:firstline - 2) . '..' . (a:lastline - 2)
-  let s:nummsgs = (a:lastline - a:firstline + 1)
+  let uid_set = s:collect_uids(a:firstline, a:lastline)
+  let s:nummsgs = len(uid_set)
+  let s:uid_set = join(uid_set, ',')
   " now prompt use to select mailbox
   if !exists("s:mailboxes")
     call s:get_mailbox_list()
@@ -746,7 +744,16 @@ endfunc
 " -------------------------------------------------------------------------------- 
 " CONVENIENCE FUNCS
 
-
+function! s:collect_uids(startline, endline)
+  let uid_set = []
+  let lnum = a:startline
+  while lnum <= a:endline
+    let uid = matchstr(getline(lnum), '\d\+$')
+    call add(uid_set, uid)
+    let lnum += 1
+  endwhile
+  return uid_set
+endfunc
 
 " -------------------------------------------------------------------------------- 
 " MAPPINGS
