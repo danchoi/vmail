@@ -48,9 +48,9 @@ module Vmail
         begin
           opts.parse!(argv)
           if @config_file && File.exists?(@config_file)
-            puts "using config file: #{@config_file}"
+            STDERR.puts "using config file: #{@config_file}"
           else
-            puts <<EOF
+            STDERR.puts <<EOF
 
 Missing config file! 
 
@@ -59,11 +59,13 @@ EOF
             exit(1)
           end
 
-          if @contacts_file.nil?
-            puts "No contacts file found for auto-completion. See help for how to generate it."
-            sleep 0.5
-          else
-            puts "using contacts file: #{@contacts_file}"
+          if STDOUT.tty?
+            if @contacts_file.nil?
+              STDERR.puts "No contacts file found for auto-completion. See help for how to generate it."
+              sleep 0.5
+            else
+              STDERR.puts "using contacts file: #{@contacts_file}"
+            end
           end
 
           @config = YAML::load(File.read(@config_file))

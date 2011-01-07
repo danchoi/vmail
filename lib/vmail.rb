@@ -1,6 +1,7 @@
 require 'vmail/version'
 require 'vmail/options'
 require 'vmail/imap_client'
+require 'vmail/query'
 require 'vmail/message_formatter'
 require 'vmail/reply_template'
 
@@ -80,19 +81,13 @@ module Vmail
   # non-interactive mode
   def tool_mode
     check_lynx
-
     opts = Vmail::Options.new(ARGV)
     opts.config
     config = opts.config
     config.merge! 'logfile' => 'vmail.log'
     mailbox, query = parse_query
     imap_client  = Vmail::ImapClient.new config
-    puts mailbox
-    puts query.inspect
     limit = query.shift
-    puts limit
-    puts query
-
     imap_client.with_open do |vmail| 
       vmail.select_mailbox mailbox
       vmail.search limit, *query
@@ -111,15 +106,13 @@ module Vmail
   end
 
   def parse_query
+    STDERR.puts ARGV.inspect
     mailbox = if ARGV[0] =~ /^\d+/ 
                 "INBOX"
               else 
                 ARGV.shift || 'INBOX' 
               end
-    query = ARGV.empty? ? [100, 'ALL'] : ARGV
-    if query.size == 1 && query[0] =~ /^\d/
-      query << "ALL"
-    end
+    query = Vmail::Query.parse(ARGV)
     [mailbox, query]
   end
 

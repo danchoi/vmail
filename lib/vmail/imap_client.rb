@@ -276,10 +276,9 @@ module Vmail
       flags.join('')
     end
 
-    def search(limit, *query)
-      limit = limit.to_i
-      limit = 100 if limit.to_s !~ /^\d+$/
-      query = ['ALL'] if query.empty?
+    def search(query)
+      query = Vmail::Query.parse(query)
+      limit = query.shift.to_i
       if query.size == 1 && query[0].downcase == 'all'
         # form a sequence range
         query.unshift [[@num_messages - limit.to_i + 1 , 1].max, @num_messages].join(':')
