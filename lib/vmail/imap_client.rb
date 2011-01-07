@@ -278,10 +278,14 @@ module Vmail
 
     def search(query)
       query = Vmail::Query.parse(query)
-      limit = query.shift.to_i
+      @limit = query.shift.to_i
+      # a limit of zero is effectively no limit
+      if @limit == 0
+        @limit = @num_messages
+      end
       if query.size == 1 && query[0].downcase == 'all'
         # form a sequence range
-        query.unshift [[@num_messages - limit.to_i + 1 , 1].max, @num_messages].join(':')
+        query.unshift [[@num_messages - @limit + 1 , 1].max, @num_messages].join(':')
         @all_search = true
       else # this is a special query search
         # set the target range to the whole set
@@ -289,7 +293,6 @@ module Vmail
         @all_search = false
       end
       @query = query.map {|x| x.to_s.downcase}
-      @limit = limit
       query_string = Vmail::Query.args2string(@query)
       log "search query: #{@query} > #{query_string.inspect}"
       log "- @all_search #{@all_search}"
@@ -301,7 +304,7 @@ module Vmail
       fetch_ids = if @all_search
                     @ids
                   else #filtered search
-                    @start_index = [@ids.length - limit, 0].max
+                    @start_index = [@ids.length - @limit, 0].max
                     @ids[@start_index..-1]
                   end
       self.max_seqno = @ids[-1]

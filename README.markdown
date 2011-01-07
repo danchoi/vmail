@@ -120,6 +120,11 @@ this number by passing in a number after the mailbox name:
 
     vmail inbox 700 subject unix
 
+Passing in 0 as the number of messages returns all messages that match
+the query:
+
+    vmail inbox 0 subject unix # => returns all matching messages
+
 ## Viewing messages
 
 The first screen vmail shows you is a list of messages. You can view a message
