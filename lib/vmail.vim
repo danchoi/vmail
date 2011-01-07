@@ -75,6 +75,11 @@ function! s:show_message(stay_in_message_list)
     call s:more_messages()
     return
   endif
+  let s:uid = matchstr(line, '\d\+$')
+  if s:uid == ""
+    return
+  end
+  " mark as read
   let newline = substitute(line, '^\V*+', '* ', '')
   let newline = substitute(newline, '^\V+ ', '  ', '')
   setlocal modifiable
@@ -85,8 +90,6 @@ function! s:show_message(stay_in_message_list)
   " moving up when the next echo statement executes:
   " call feedkeys(":\<cr>") 
   " redraw
-
-  let s:uid = matchstr(line, '\d\+$')
   let command = s:show_message_command . s:uid
   echom "Loading message ". s:uid .". Please wait..."
   redrawstatus
