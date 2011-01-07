@@ -20,6 +20,8 @@ module Vmail
       'trash' => '[Gmail]/Trash'
     }
 
+    attr_accessor :max_seqno # of current mailbox
+
     def initialize(config)
       @username, @password = config['username'], config['password']
       @name = config['name']
@@ -122,7 +124,6 @@ module Vmail
         # this is just to prime the IMAP connection
         # It's necessary for some reason before update and deliver. 
         log "priming connection"
-        
         res = @imap.fetch(@ids[-1], ["ENVELOPE"])
         if res.nil?
           # just go ahead, just log
@@ -294,10 +295,16 @@ module Vmail
                     @start_index = [@ids.length - limit, 0].max
                     @ids[@start_index..-1]
                   end
-      log "- search query got #{@ids.size} results" 
+      self.max_seqno = @ids[-1]
+      log "- search query got #{@ids.size} results; max seqno: #{self.max_seqno}" 
       clear_cached_message
       res = fetch_row_text(fetch_ids)
       add_more_message_line(res, fetch_ids[0])
+    end
+
+    def decrement_max_seqno(num)
+      log "Decremented max seqno from #{self.max_seqno} to #{self.max_seqno - num}"
+      self.max_seqno -= num
     end
 
     # TODO chage update and more_messages to so we don't depend on current_message_list_cache
@@ -314,11 +321,9 @@ module Vmail
         log "search #update_query"
         @imap.search(update_query.join(' ')) 
       }
-      # TODO change this. will throw error now
-      max_seqno = current_message_list_cache[-1][:seqno]
       log "- got seqnos: #{ids.inspect}"
-      log "- getting seqnos > #{max_seqno}"
-      new_ids = ids.select {|seqno| seqno > max_seqno}
+      log "- getting seqnos > #{self.max_seqno}"
+      new_ids = ids.select {|seqno| seqno > self.max_seqno}
       @ids = @ids + new_ids
       log "- update: new uids: #{new_ids.inspect}"
       if !new_ids.empty?
@@ -461,6 +466,7 @@ EOF
       log "flag #{uid_set.inspect} #{flg} #{action}"
       if flg == 'Deleted'
         log "Deleting uid_set: #{uid_set.inspect}"
+        decrement_max_seqno(uid_set.size)
         # for delete, do in a separate thread because deletions are slow
         Thread.new do 
           unless @mailbox == '[Gmail]/Trash'
@@ -474,6 +480,7 @@ EOF
         end
       elsif flg == '[Gmail]/Spam'
         log "Marking as spam uid_set: #{uid_set.inspect}"
+        decrement_max_seqno(uid_set.size)
         Thread.new do 
           log "@imap.uid_copy #{uid_set.inspect} to spam"
           log @imap.uid_copy(uid_set, "[Gmail]/Spam")
@@ -494,6 +501,7 @@ EOF
 
     def move_to(uid_set, mailbox)
       uid_set = uid_set.split(',').map(&:to_i)
+      decrement_max_seqno(uid_set.size)
       log "move #{uid_set.inspect} to #{mailbox}"
       if mailbox == 'all'
         log "archiving messages"
