@@ -7,5 +7,9 @@ rescue LoadError
   require 'vmail'
 end
 
-Vmail.start
+if STDOUT.tty?
+  Vmail.start
+else
+  Vmail.tool_mode
+end
 

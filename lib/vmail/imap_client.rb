@@ -33,6 +33,7 @@ module Vmail
       @imap_port = config['port'] || 993
       @current_mail = nil
       @current_message_uid = nil
+      @width = 140
     end
 
     # holds mail objects keyed by [mailbox, uid]
@@ -50,6 +51,14 @@ module Vmail
       @imap = Net::IMAP.new(@imap_server, @imap_port, true, nil, false)
       log @imap.login(@username, @password)
       list_mailboxes # prefetch mailbox list
+    end
+
+    # expects a block, closes on finish
+    def with_open
+      @imap = Net::IMAP.new(@imap_server, @imap_port, true, nil, false)
+      log @imap.login(@username, @password)
+      yield self
+      close
     end
 
     def close
@@ -299,7 +308,11 @@ module Vmail
       log "- search query got #{@ids.size} results; max seqno: #{self.max_seqno}" 
       clear_cached_message
       res = fetch_row_text(fetch_ids)
-      add_more_message_line(res, fetch_ids[0])
+      if STDOUT.tty?
+        add_more_message_line(res, fetch_ids[0])
+      else
+        puts res
+      end
     end
 
     def decrement_max_seqno(num)

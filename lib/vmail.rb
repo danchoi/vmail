@@ -11,18 +11,14 @@ module Vmail
     puts "starting vmail #{Vmail::VERSION}"
 
     vim = ENV['VMAIL_VIM'] || 'vim'
-
     ENV['VMAIL_BROWSER'] ||= 'open'
 
-    # check for lynx
-    if `which lynx` == ''
-      puts "You need to install lynx on your system in order to see html-only messages"
-      sleep 3
-    end
+    check_lynx
+
     opts = Vmail::Options.new(ARGV)
     opts.config
-
     config = opts.config
+
     contacts_file = opts.contacts_file
 
     logfile = (vim == 'mvim') ? STDERR : 'vmail.log'
@@ -39,18 +35,9 @@ module Vmail
 
     server = DRbObject.new_with_uri drb_uri
 
-    mailbox = if ARGV[0] =~ /^\d+/ 
-                "INBOX"
-              else 
-                ARGV.shift || 'INBOX' 
-              end
-
+    mailbox, query = parse_query
     server.select_mailbox mailbox
 
-    query = ARGV.empty? ? [100, 'ALL'] : ARGV
-    if query.size == 1 && query[0] =~ /^\d/
-      query << "ALL"
-    end
     puts "mailbox: #{mailbox}"
     puts "query: #{query.inspect}"
     
@@ -89,5 +76,52 @@ module Vmail
     puts "bye"
     exit
   end
+
+  # non-interactive mode
+  def tool_mode
+    check_lynx
+
+    opts = Vmail::Options.new(ARGV)
+    opts.config
+    config = opts.config
+    config.merge! 'logfile' => 'vmail.log'
+    mailbox, query = parse_query
+    imap_client  = Vmail::ImapClient.new config
+    puts mailbox
+    puts query.inspect
+    limit = query.shift
+    puts limit
+    puts query
+
+    imap_client.with_open do |vmail| 
+      vmail.select_mailbox mailbox
+      vmail.search limit, *query
+    end 
+  end
+
+
+  private
+
+  def check_lynx
+    # TODO check for elinks, or firefox (how do we parse VMAIL_HTML_PART_REDAER to determine?)
+    if `which lynx` == ''
+      STDERR.puts "You need to install lynx on your system in order to see html-only messages"
+      sleep 3
+    end
+  end
+
+  def parse_query
+    mailbox = if ARGV[0] =~ /^\d+/ 
+                "INBOX"
+              else 
+                ARGV.shift || 'INBOX' 
+              end
+    query = ARGV.empty? ? [100, 'ALL'] : ARGV
+    if query.size == 1 && query[0] =~ /^\d/
+      query << "ALL"
+    end
+    [mailbox, query]
+  end
+
 end
 
