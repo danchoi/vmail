@@ -497,7 +497,7 @@ function! s:select_mailbox()
   " now get latest 100 messages
   call s:focus_list_window()  
   setlocal modifiable
-  let command = s:search_command . "100 all"
+  let command = s:search_command . shellescape("100 all")
   echo "loading messages..."
   let res = system(command)
   1,$delete
@@ -527,16 +527,7 @@ function! s:do_search()
   " close message window if open
   call s:focus_message_window()
   close
-  " if query doesn't start with a number, set max returned to 100
-  let limit = 100
-  let imap_query = s:query
-  if match(s:query, '^\d') == 0
-    let query_chunks = split(s:query, '\s')
-    let limit = remove(query_chunks, 0)
-    let imap_query = join(query_chunks, ' ')
-  end
-  let s:query = limit . ' ' . imap_query
-  let command = s:search_command . limit . ' ' . shellescape(imap_query)
+  let command = s:search_command . shellescape(s:query)
   redraw
   call s:focus_list_window()  
   setlocal modifiable

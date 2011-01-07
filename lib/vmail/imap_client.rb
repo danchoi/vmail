@@ -235,7 +235,7 @@ module Vmail
       mid_width = @width - 38
       address_col_width = (mid_width * 0.3).ceil
       subject_col_width = (mid_width * 0.7).floor
-      identifier = [@mailbox, [seqno.to_i, uid.to_i].join(':')].join(';')
+      identifier = [(MailboxAliases.invert[@mailbox] || @mailbox), [seqno.to_i, uid.to_i].join(':')].join(';')
       row_text = [ flags.col(2),
                    (date_formatted || '').col(14),
                    address.col(address_col_width),
@@ -290,11 +290,12 @@ module Vmail
       end
       @query = query.map {|x| x.to_s.downcase}
       @limit = limit
-      log "search query: #{@query.inspect}"
+      query_string = Vmail::Query.args2string(@query)
+      log "search query: #{@query} > #{query_string.inspect}"
       log "- @all_search #{@all_search}"
       @query = query
       @ids = reconnect_if_necessary(180) do # increase timeout to 3 minutes
-        @imap.search(@query.join(' '))
+        @imap.search(query_string)
       end
       # save ids in @ids, because filtered search relies on it
       fetch_ids = if @all_search
@@ -312,6 +313,8 @@ module Vmail
       else
         puts res
       end
+    rescue
+      log "ERROR:\n#{$!.inspect}\n#{$!.backtrace.join("\n")}"
     end
 
     def decrement_max_seqno(num)
@@ -330,7 +333,7 @@ module Vmail
       update_query[0] = "#{old_num_messages}:#{@num_messages}"
       ids = reconnect_if_necessary { 
         log "search #update_query"
-        @imap.search(update_query.join(' ')) 
+        @imap.search(Vmail::Query.args2string(update_query))
       }
       log "- got seqnos: #{ids.inspect}"
       log "- getting seqnos > #{self.max_seqno}"

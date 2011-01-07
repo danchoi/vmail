@@ -37,23 +37,24 @@ module Vmail
     server = DRbObject.new_with_uri drb_uri
 
     mailbox, query = parse_query
+    query_string = Vmail::Query.args2string query
     server.select_mailbox mailbox
 
-    puts "mailbox: #{mailbox}"
-    puts "query: #{query.inspect}"
+    STDERR.puts "mailbox: #{mailbox}"
+    STDERR.puts "query: #{query.inspect} => #{query_string}"
     
     buffer_file = "vmailbuffer"
     # invoke vim
     vimscript = File.expand_path("../vmail.vim", __FILE__)
-    vim_command = "DRB_URI=#{drb_uri} VMAIL_CONTACTS_FILE=#{contacts_file} VMAIL_MAILBOX=#{String.shellescape(mailbox)} VMAIL_QUERY=#{String.shellescape(query.join(' '))} #{vim} -S #{vimscript} #{buffer_file}"
-    puts vim_command
+    vim_command = "DRB_URI=#{drb_uri} VMAIL_CONTACTS_FILE=#{contacts_file} VMAIL_MAILBOX=#{String.shellescape(mailbox)} VMAIL_QUERY=#{String.shellescape(query_string)} #{vim} -S #{vimscript} #{buffer_file}"
+    STDERR.puts vim_command
 
-    puts "using buffer file: #{buffer_file}"
+    STDERR.puts "using buffer file: #{buffer_file}"
     File.open(buffer_file, "w") do |file|
       file.puts "vmail starting with values:"
       file.puts "- drb uri: #{drb_uri}"
       file.puts "- mailbox: #{mailbox}"
-      file.puts "- query: #{query.join(' ')}"
+      file.puts "- query: #{query_string}"
       file.puts
       file.puts "fetching messages. please wait..."  
     end
@@ -66,7 +67,7 @@ module Vmail
 
     File.delete(buffer_file)
 
-    puts "closing imap connection"  
+    STDERR.puts "closing imap connection"  
     begin
       Timeout::timeout(10) do 
         $gmail.close
@@ -87,13 +88,11 @@ module Vmail
     config.merge! 'logfile' => 'vmail.log'
     mailbox, query = parse_query
     imap_client  = Vmail::ImapClient.new config
-    limit = query.shift
     imap_client.with_open do |vmail| 
       vmail.select_mailbox mailbox
-      vmail.search limit, *query
+      vmail.search query
     end 
   end
-
 
   private
 
@@ -106,7 +105,6 @@ module Vmail
   end
 
   def parse_query
-    STDERR.puts ARGV.inspect
     mailbox = if ARGV[0] =~ /^\d+/ 
                 "INBOX"
               else 
