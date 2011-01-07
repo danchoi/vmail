@@ -34,7 +34,6 @@ module Vmail
     end
 
     # holds mail objects keyed by [mailbox, uid]
-    # TODO come up with a way to purge periodically
     def message_cache
       @message_cache ||= {}
       size = @message_cache.values.reduce(0) {|sum, x| sum + x[:size]}
@@ -183,7 +182,6 @@ module Vmail
       log "- returning #{new_message_rows.size} new rows and caching result"  
       new_message_rows
     end
-
 
     # TODO extract this to another class or module and write unit tests
     def extract_row_data(fetch_data)
@@ -538,7 +536,6 @@ EOF
       end
     end
 
-    # TODO change to use UIDs
     def append_to_file(file, uid_set)
       uid_set = uid_set.split(',').map(&:to_i)
       log "append to file uid set #{uid_set.inspect} to file: #{file}"
@@ -642,7 +639,6 @@ EOF
       # attachments are added as a snippet of YAML after a blank line
       # after the headers, and followed by a blank line
       if (attachments = raw_body.split(/\n\s*\n/, 2)[0]) =~ /^attach(ment|ments)*:/
-        # TODO
         files = YAML::load(attachments).values.flatten
         log "attach: #{files}"
         files.each do |file|
