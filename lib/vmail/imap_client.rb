@@ -226,7 +226,7 @@ module Vmail
       mid_width = @width - 38
       address_col_width = (mid_width * 0.3).ceil
       subject_col_width = (mid_width * 0.7).floor
-      identifier = [@mailbox, seqno.to_i, uid.to_i].join(':')
+      identifier = [@mailbox, [seqno.to_i, uid.to_i].join(':')],join(';')
       row_text = [ flags.col(2),
                    (date_formatted || '').col(14),
                    address.col(address_col_width),
