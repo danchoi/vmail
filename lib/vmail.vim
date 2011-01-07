@@ -552,7 +552,8 @@ endfunction
 
 function! s:more_messages()
   let line = getline(line('.'))
-  let command = s:more_messages_command 
+  let seqno = get(split(matchstr(line, '\d\+:\d\+$'), ':'), 0)
+  let command = s:more_messages_command . seqno
   echo "fetching more messages. please wait..."
   let res = system(command)
   setlocal modifiable

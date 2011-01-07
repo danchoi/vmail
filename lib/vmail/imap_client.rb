@@ -227,12 +227,13 @@ module Vmail
       mid_width = @width - 38
       address_col_width = (mid_width * 0.3).ceil
       subject_col_width = (mid_width * 0.7).floor
+      seqno_uid = [seqno.to_i, uid.to_i].join(':')
       row_text = [ flags.col(2),
                    (date_formatted || '').col(14),
                    address.col(address_col_width),
                    subject.col(subject_col_width), 
                    number_to_human_size(size).rcol(7), 
-                   uid.to_s.rcol(10)
+                   seqno_uid.to_s
       ].join(' | ')
       {:uid => uid, :seqno => seqno, :row_text => row_text}
     rescue 
@@ -331,14 +332,13 @@ module Vmail
     end
 
     # gets 100 messages prior to id
-    def more_messages(limit=100)
-      # TODO delete this current_message_list_cache 
-      message_id = current_message_list_cache[0][:seqno]
+    def more_messages(message_id, limit=100)
       log "more_messages: message_id #{message_id}"
       message_id = message_id.to_i
       if @all_search 
         x = [(message_id - limit), 0].max
         y = [message_id - 1, 0].max
+
         res = fetch_row_text((x..y))
         add_more_message_line(res, x)
       else # filter search query
@@ -351,20 +351,20 @@ module Vmail
       end
     end
 
-    def add_more_message_line(res, start_id)
-      log "add_more_message_line for start_id #{start_id}"
+    def add_more_message_line(res, start_seqno)
+      log "add_more_message_line for start_seqno #{start_seqno}"
       if @all_search
-        return res if start_id.nil?
-        remaining = start_id - 1
+        return res if start_seqno.nil?
+        remaining = start_seqno - 1
       else # filter search
-        remaining = (@ids.index(start_id) || 1) - 1
+        remaining = (@ids.index(start_seqno) || 1) - 1
       end
       if remaining < 1
         log "none remaining"
         return "showing all matches\n" + res
       end
       log "remaining messages: #{remaining}"
-      ">  Load #{[100, remaining].min} more messages. #{remaining} remaining.\n" + res
+      ">  Load #{[100, remaining].min} more messages. #{remaining} remaining. end seqno: #{start_seqno}\n" + res
     end
 
     def show_message(uid, raw=false)
@@ -418,6 +418,7 @@ module Vmail
         end
         res[0] 
       end
+      # USE THIS
       size = fetch_data.attr["RFC822.SIZE"]
       mail = Mail.new(fetch_data.attr['RFC822'])
       formatter = Vmail::MessageFormatter.new(mail)
@@ -429,7 +430,7 @@ module Vmail
 #{formatter.process_body}
 EOF
       # log "storing message_cache[[#{@mailbox}, #{uid}]]"
-      d = {:mail => mail, :size => size, :message_text => message_text}
+      d = {:mail => mail, :size => size, :message_text => message_text, :seqno => fetch_data.seqno}
       message_cache[[@mailbox, uid]] = d
     rescue
       msg = "Error encountered parsing message uid  #{uid}:\n#{$!}\n#{$!.backtrace.join("\n")}" + 
