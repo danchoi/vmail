@@ -561,7 +561,6 @@ function! s:more_messages()
   call append(0, lines)
   " execute "normal Gdd\<c-y>" 
   setlocal nomodifiable
-
 endfunction
 
 " --------------------------------------------------------------------------------  

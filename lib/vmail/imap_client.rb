@@ -226,13 +226,13 @@ module Vmail
       mid_width = @width - 38
       address_col_width = (mid_width * 0.3).ceil
       subject_col_width = (mid_width * 0.7).floor
-      seqno_uid = [seqno.to_i, uid.to_i].join(':')
+      identifier = [@mailbox, seqno.to_i, uid.to_i].join(':')
       row_text = [ flags.col(2),
                    (date_formatted || '').col(14),
                    address.col(address_col_width),
                    subject.col(subject_col_width), 
                    number_to_human_size(size).rcol(7), 
-                   seqno_uid.to_s
+                   identifier.to_s
       ].join(' | ')
       {:uid => uid, :seqno => seqno, :row_text => row_text}
     rescue 
