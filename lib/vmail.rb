@@ -87,10 +87,11 @@ module Vmail
     config = opts.config
     config.merge! 'logfile' => 'vmail.log'
     mailbox, query = parse_query
+    query_string = Vmail::Query.args2string query
     imap_client  = Vmail::ImapClient.new config
     imap_client.with_open do |vmail| 
       vmail.select_mailbox mailbox
-      vmail.search query
+      vmail.search query_string
     end 
   end
 
