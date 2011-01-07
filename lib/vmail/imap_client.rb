@@ -539,17 +539,16 @@ EOF
     end
 
     # TODO change to use UIDs
-    def append_to_file(file, index_range_as_string)
-      raise "expecting a range as string" unless index_range_as_string =~ /^\d+\.\.\d+$/ 
-      index_range = eval(index_range_as_string)
-      log "append to file range #{index_range.inspect} to file: #{file}"
-      index_range.each do |idx|
-        message = show_message(idx)
+    def append_to_file(file, uid_set)
+      uid_set = uid_set.split(',').map(&:to_i)
+      log "append to file uid set #{uid_set.inspect} to file: #{file}"
+      uid_set.each do |uid|
+        message = show_message(uid)
         File.open(file, 'a') {|f| f.puts(divider('=') + "\n" + message + "\n\n")}
         subject = (message[/^subject:(.*)/,1] || '').strip
         log "appended message '#{subject}'"
       end
-      "printed #{index_range.to_a.size} message#{index_range.to_a.size == 1 ? '' : 's'} to #{file.strip}"
+      "printed #{uid_set.size} message#{uid_set.size == 1 ? '' : 's'} to #{file.strip}"
     end
 
     def new_message_template(subject = nil, append_signature = true)
