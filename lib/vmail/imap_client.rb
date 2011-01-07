@@ -326,6 +326,7 @@ module Vmail
       @ids = @ids + new_ids
       log "- update: new uids: #{new_ids.inspect}"
       if !new_ids.empty?
+        self.max_seqno = new_ids[-1]
         res = fetch_row_text(new_ids, false, true)
         res
       else
