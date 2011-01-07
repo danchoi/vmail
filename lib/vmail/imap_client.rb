@@ -307,7 +307,6 @@ module Vmail
       self.max_seqno -= num
     end
 
-    # TODO chage update and more_messages to so we don't depend on current_message_list_cache
     def update
       prime_connection
       old_num_messages = @num_messages
