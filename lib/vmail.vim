@@ -161,7 +161,7 @@ endfunction
 
 " invoked from withint message window
 function! s:show_raw()
-  let command = s:show_message_command . s:current_message_index . ' raw'
+  let command = s:show_message_command . s:uid . ' raw'
   echo command
   setlocal modifiable
   1,$delete
