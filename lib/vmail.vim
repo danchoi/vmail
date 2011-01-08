@@ -286,7 +286,7 @@ function! s:toggle_star() range
   endif
 endfunction
 
-" flag can be Deleted or [Gmail]/Spam
+" flag can be Deleted or spam
 func! s:delete_messages(flag) range
   let uid_set = s:collect_uids(a:firstline, a:lastline)
   let nummsgs = len(uid_set)
@@ -769,7 +769,7 @@ func! s:message_window_mappings()
 
   nnoremap <silent> <buffer> <leader>#  :close<cr>:call <SID>focus_list_window()<cr>:call <SID>delete_messages("Deleted")<cr>
   nnoremap <silent> <buffer> <leader>*  :call <SID>focus_list_window()<cr>:call <SID>toggle_star()<cr>
-  noremap <silent> <buffer> <leader>! :call <SID>focus_list_window()<cr>:call <SID>delete_messages("[Gmail]/Spam")<CR>
+  noremap <silent> <buffer> <leader>! :call <SID>focus_list_window()<cr>:call <SID>delete_messages("spam")<CR>
   noremap <silent> <buffer> <leader>e :call <SID>focus_list_window()<cr>:call <SID>archive_messages()<CR>
   " alt mappings for lazy hands
   nmap <silent> <buffer> <leader>8 <leader>*
@@ -796,12 +796,12 @@ func! s:message_list_window_mappings()
 
   noremap <silent> <buffer> <leader>* :call <SID>toggle_star()<CR>
   noremap <silent> <buffer> <leader># :call <SID>delete_messages("Deleted")<CR>
-  noremap <silent> <buffer> <leader>! :call <SID>delete_messages("[Gmail]/Spam")<CR>
+  noremap <silent> <buffer> <leader>! :call <SID>delete_messages("spam")<CR>
   noremap <silent> <buffer> <leader>e :call <SID>archive_messages()<CR>
   " alt mappings for lazy hands
   noremap <silent> <buffer> <leader>8 :call <SID>toggle_star()<CR>
   noremap <silent> <buffer> <leader>3 :call <SID>delete_messages("Deleted")<CR>
-  noremap <silent> <buffer> <leader>1 :call <SID>delete_messages("[Gmail]/Spam")<CR>
+  noremap <silent> <buffer> <leader>1 :call <SID>delete_messages("spam")<CR>
 "  nmap <silent> <buffer> <leader>8 <leader>*
 "  nmap <silent> <buffer> <leader>3 <leader>#
 "  nmap <silent> <buffer> <leader>1 <leader>!

@@ -173,6 +173,9 @@ module Vmail
       end
       new_message_rows = fetch_envelopes(id_set, are_uids, is_update)
       new_message_rows.map {|x| x[:row_text]}.join("\n")
+    rescue # Encoding::CompatibilityError (only in 1.9.2)
+      log "Error in fetch_row_text:\n#{$!}\n#{$!.backtrace}"
+      new_message_rows.map {|x| Iconv.conv('US-ASCII//TRANSLIT//IGNORE', 'UTF-8', x[:row_text])}.join("\n")
     end
 
     def fetch_envelopes(id_set, are_uids, is_update)
@@ -496,7 +499,7 @@ EOF
           reload_mailbox
           clear_cached_message
         end
-      elsif flg == '[Gmail]/Spam'
+      elsif flg == 'spam' || flg == '[Gmail]/Spam'
         log "Marking as spam uid_set: #{uid_set.inspect}"
         decrement_max_seqno(uid_set.size)
         Thread.new do 

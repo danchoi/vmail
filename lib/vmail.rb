@@ -80,12 +80,11 @@ module Vmail
   end
 
   # non-interactive mode
-  def tool_mode
+  def noninteractive_list_messages
     check_lynx
     opts = Vmail::Options.new(ARGV)
     opts.config
-    config = opts.config
-    config.merge! 'logfile' => 'vmail.log'
+    config = opts.config.merge 'logfile' => 'vmail.log'
     mailbox, query = parse_query
     query_string = Vmail::Query.args2string query
     imap_client  = Vmail::ImapClient.new config
@@ -93,6 +92,27 @@ module Vmail
       vmail.select_mailbox mailbox
       vmail.search query_string
     end 
+  end
+
+  # batch processing mode
+  def batch_run
+    check_lynx
+    opts = Vmail::Options.new(ARGV)
+    opts.config
+    config = opts.config.merge 'logfile' => 'vmail.log'
+    # no search query args, but command args
+
+    imap_client  = Vmail::ImapClient.new config
+
+    lines = STDIN.readlines.reverse
+    imap_client.with_open do |vmail| 
+
+      uids = lines.map {|x| x[/\d+$/,1]}
+      vmail.select_mailbox mailbox
+      # vmail.flag
+    end 
+    
+    # get the messages uids from STDIN
   end
 
   private
