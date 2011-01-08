@@ -103,20 +103,25 @@ module Vmail
     # no search query args, but command args
     imap_client  = Vmail::ImapClient.new config
     lines = STDIN.readlines# .reverse
-    mailbox = lines.shift
+    mailbox = lines.shift.chomp
     puts "mailbox: #{mailbox}"
     uid_set = lines.map do |line| 
       line[/(\d+)\s*$/,1].to_i
     end
-    puts "uid set: #{uid_set.inspect}"
-
-    return # TODO
+    commands = {
+      'delete' => ["flag", "+FLAGS", "Deleted"]
+    }
+    args = commands[ARGV.first]
+    command = args.shift
     imap_client.with_open do |vmail| 
+      puts "selecting mailbox: #{mailbox}"
       vmail.select_mailbox mailbox
-      # vmail.flag
-    end 
-    
-    # get the messages uids from STDIN
+      uid_set.each do |uid|
+        params = [uid.to_s] + args
+        puts "executing: #{command} #{params.join(' ')}"
+        vmail.send command, *params
+      end
+    end
   end
 
   private

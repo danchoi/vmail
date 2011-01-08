@@ -91,10 +91,12 @@ module Vmail
     end
 
     def reload_mailbox
+      return unless STDIN.tty?
       select_mailbox(@mailbox, true)
     end
 
     def clear_cached_message
+      return unless STDIN.tty?
       log "CLEARING CACHED MESSAGE"
       @current_mail = nil
       @current_message_uid = nil
@@ -325,6 +327,7 @@ module Vmail
     end
 
     def decrement_max_seqno(num)
+      return unless STDIN.tty?
       log "Decremented max seqno from #{self.max_seqno} to #{self.max_seqno - num}"
       self.max_seqno -= num
     end
@@ -484,13 +487,13 @@ EOF
     # id_set is a string comming from the vim client
     # action is -FLAGS or +FLAGS
     def flag(uid_set, action, flg)
+      log "flag #{uid_set} #{flg} #{action}"
       uid_set = uid_set.split(',').map(&:to_i)
-      log "flag #{uid_set.inspect} #{flg} #{action}"
       if flg == 'Deleted'
         log "Deleting uid_set: #{uid_set.inspect}"
         decrement_max_seqno(uid_set.size)
         # for delete, do in a separate thread because deletions are slow
-        Thread.new do 
+        spawn_thread_if_tty do 
           unless @mailbox == '[Gmail]/Trash'
             log "@imap.uid_copy #{uid_set.inspect} to trash"
             log @imap.uid_copy(uid_set, "[Gmail]/Trash")
@@ -503,7 +506,7 @@ EOF
       elsif flg == 'spam' || flg == '[Gmail]/Spam'
         log "Marking as spam uid_set: #{uid_set.inspect}"
         decrement_max_seqno(uid_set.size)
-        Thread.new do 
+        spawn_thread_if_tty do 
           log "@imap.uid_copy #{uid_set.inspect} to spam"
           log @imap.uid_copy(uid_set, "[Gmail]/Spam")
           log "@imap.uid_store #{uid_set.inspect} #{action} [:Deleted]"
@@ -514,7 +517,7 @@ EOF
         "#{id} deleted"
       else
         log "Flagging uid_set: #{uid_set.inspect}"
-        Thread.new do
+        spawn_thread_if_tty do
           log "@imap.uid_store #{uid_set.inspect} #{action} [#{flg.to_sym}]"
           log @imap.uid_store(uid_set, action, [flg.to_sym])
         end
@@ -533,7 +536,7 @@ EOF
       end
       create_if_necessary mailbox
       log "moving uid_set: #{uid_set.inspect} to #{mailbox}"
-      Thread.new do 
+      spawn_thread_if_tty do 
         log @imap.uid_copy(uid_set, mailbox)
         log @imap.uid_store(uid_set, '+FLAGS', [:Deleted])
         reload_mailbox
@@ -549,9 +552,19 @@ EOF
       end
       create_if_necessary mailbox
       log "copying #{uid_set.inspect} to #{mailbox}"
-      Thread.new do 
+      spawn_thread_if_tty do 
         log @imap.uid_copy(uid_set, mailbox)
         log "copied uid_set #{uid_set.inspect} to #{mailbox}"
+      end
+    end
+
+    def spawn_thread_if_tty 
+      if STDIN.tty?
+        Thread.new do 
+          yield
+        end
+      else
+        yield
       end
     end
 
