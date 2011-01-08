@@ -238,7 +238,7 @@ module Vmail
       mid_width = @width - 38
       address_col_width = (mid_width * 0.3).ceil
       subject_col_width = (mid_width * 0.7).floor
-      identifier = [(MailboxAliases.invert[@mailbox] || @mailbox), [seqno.to_i, uid.to_i].join(':')].join(';')
+      identifier = [seqno.to_i, uid.to_i].join(':')
       row_text = [ flags.col(2),
                    (date_formatted || '').col(14),
                    address.col(address_col_width),
@@ -317,7 +317,8 @@ module Vmail
       if STDOUT.tty?
         add_more_message_line(res, fetch_ids[0])
       else
-        puts res
+        # non interactive mode
+        puts [@mailbox, res].join("\n")
       end
     rescue
       log "ERROR:\n#{$!.inspect}\n#{$!.backtrace.join("\n")}"

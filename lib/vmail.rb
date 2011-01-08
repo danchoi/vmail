@@ -101,13 +101,17 @@ module Vmail
     opts.config
     config = opts.config.merge 'logfile' => 'vmail.log'
     # no search query args, but command args
-
     imap_client  = Vmail::ImapClient.new config
+    lines = STDIN.readlines# .reverse
+    mailbox = lines.shift
+    puts "mailbox: #{mailbox}"
+    uid_set = lines.map do |line| 
+      line[/(\d+)\s*$/,1].to_i
+    end
+    puts "uid set: #{uid_set.inspect}"
 
-    lines = STDIN.readlines.reverse
+    return # TODO
     imap_client.with_open do |vmail| 
-
-      uids = lines.map {|x| x[/\d+$/,1]}
       vmail.select_mailbox mailbox
       # vmail.flag
     end 
