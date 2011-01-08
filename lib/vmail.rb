@@ -143,6 +143,5 @@ module Vmail
     query = Vmail::Query.parse(ARGV)
     [mailbox, query]
   end
-
 end
 
