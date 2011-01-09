@@ -111,7 +111,7 @@ startup by passing in the mailbox name as an argument:
 
     vmail starred
 
-You can also pass in search parameters:
+You can also pass in search parameters after specifying the mailbox:
 
     vmail important from barackobama@whitehouse.gov
 
@@ -365,7 +365,6 @@ directly in same Vim window by putting the cursor at the beginning of a
 hyperlink and typing `gf`, or `C-w f` if you want to open the webpage in a
 split window. 
 
-
 ## Search queries
 
 vmail can generate a message list by performing an IMAP search on the current mailbox.
@@ -410,6 +409,36 @@ Power-Tip: When you're at the search query prompt, `C-p` and `C-n` let you
 navigate the search query history. `<C-f>` opens a mini-editor that contains
 the current query plus a history of previous vmail search queries. You can edit
 any line in this mini-editor and press ENTER to perform the query on that line.
+
+## Command line mode and batch processing
+
+You can invoke vmail in non-interactive mode to perform batch
+processing.
+
+If you redirect vmail's output from STDOUT to a file, vmail will output
+the message list resulting from a search query to a file.
+
+    vmail inbox 100 from monit > monit-emails.txt 
+
+You can open this file in any text editor to make sure that the search
+query produced the expected result. Then you can perform the following
+batch operations on the message list:
+
+    # deletes all the messages in the message list
+    vmail rm < monit-emails.txt
+
+    # marks all the messages in the message list as spam
+    vmail spam < monit-emails.txt
+
+    # moves all the messages in the message list to the 'monit' mailbox
+    vmail mv monit < monit-emails.txt
+
+    # copies all the messages in the message list to the 'monit' mailbox
+    vmail cp monit < monit-emails.txt
+
+    # prints all the messages in the message list to 'monit.txt' 
+    vmail cat monit.txt < monit-emails.txt
+
 
 ## Getting help
 
