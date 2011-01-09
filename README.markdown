@@ -418,26 +418,26 @@ processing.
 If you redirect vmail's output from STDOUT to a file, vmail will output
 the message list resulting from a search query to a file.
 
-    vmail inbox 100 from monit > monit-emails.txt 
+    vmail inbox 100 from monit > message-list.txt 
 
 You can open this file in any text editor to make sure that the search
 query produced the expected result. Then you can perform the following
 batch operations on the message list:
 
     # deletes all the messages in the message list
-    vmail rm < monit-emails.txt
+    vmail rm < message-list.txt
 
     # marks all the messages in the message list as spam
-    vmail spam < monit-emails.txt
+    vmail spam < message-list.txt
 
     # moves all the messages in the message list to the 'monit' mailbox
-    vmail mv monit < monit-emails.txt
+    vmail mv monit < message-list.txt
 
     # copies all the messages in the message list to the 'monit' mailbox
-    vmail cp monit < monit-emails.txt
+    vmail cp monit < message-list.txt
 
-    # prints all the messages in the message list to 'monit.txt' 
-    vmail print monit.txt < monit-emails.txt
+    # prints the text content of all the messages in the message list to 'monit.txt' 
+    vmail print messages.txt < message-list.txt
 
 
 ## Getting help
