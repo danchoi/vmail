@@ -109,15 +109,21 @@ module Vmail
       line[/(\d+)\s*$/,1].to_i
     end
     commands = {
-      'delete' => ["flag", "+FLAGS", "Deleted"]
+      'rm' => ["flag", "+FLAGS", "Deleted"],
+      'spam' => ["flag", "+FLAGS", "spam"],
+      'mv' => ["move_to"],
+      'cp' => ["copy_to"]
     }
     args = commands[ARGV.first]
+    if args.nil?
+      abort "command '#{args.inspect}' not recognized"
+    end
     command = args.shift
     imap_client.with_open do |vmail| 
       puts "selecting mailbox: #{mailbox}"
       vmail.select_mailbox mailbox
-      uid_set.each do |uid|
-        params = [uid.to_s] + args
+      uid_set.each_slice(5) do |uid_set|
+        params = [uid_set.join(',')] + args + ARGV[1..-1]
         puts "executing: #{command} #{params.join(' ')}"
         vmail.send command, *params
       end

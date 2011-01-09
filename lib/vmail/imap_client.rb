@@ -514,7 +514,6 @@ EOF
           reload_mailbox
           clear_cached_message
         end
-        "#{id} deleted"
       else
         log "Flagging uid_set: #{uid_set.inspect}"
         spawn_thread_if_tty do
