@@ -410,10 +410,11 @@ navigate the search query history. `<C-f>` opens a mini-editor that contains
 the current query plus a history of previous vmail search queries. You can edit
 any line in this mini-editor and press ENTER to perform the query on that line.
 
-## Command line mode and batch processing
+## Command-line mode and batch processing
 
-You can invoke vmail in non-interactive mode to perform batch
-processing.
+You can invoke vmail in non-interactive command-line mode. This is very
+useful for batch processing and for using vmail in Unix pipelines and
+automated scripts.
 
 If you redirect vmail's output from STDOUT to a file, vmail will output
 the message list resulting from a search query to a file.
