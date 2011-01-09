@@ -416,8 +416,8 @@ You can invoke vmail in non-interactive command-line mode. This is very
 useful for batch processing and for using vmail in Unix pipelines and
 automated scripts.
 
-If you redirect vmail's output from STDOUT to a file, vmail will output
-the message list resulting from a search query to a file.
+If you redirect vmail's output from STDOUT to a file or a program, vmail will
+output the message list resulting from a search query to a file.
 
     vmail inbox 100 from monit > message-list.txt 
 
