@@ -440,6 +440,7 @@ batch operations on the message list:
     # prints the text content of all the messages in the message list to messages.txt
     vmail print messages.txt < message-list.txt
 
+Non-interactive mode assumes that `.vmailrc` contains your Gmail password.
 
 ## Getting help
 
