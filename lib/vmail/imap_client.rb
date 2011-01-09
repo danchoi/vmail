@@ -578,7 +578,7 @@ EOF
       end
     end
 
-    def append_to_file(file, uid_set)
+    def append_to_file(uid_set, file)
       uid_set = uid_set.split(',').map(&:to_i)
       log "append to file uid set #{uid_set.inspect} to file: #{file}"
       uid_set.each do |uid|

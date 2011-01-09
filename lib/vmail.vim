@@ -339,7 +339,7 @@ func! s:append_messages_to_file() range
     return
   endif
   let s:append_file = append_file
-  let command = s:append_to_file_command . s:append_file . ' ' . join(uid_set, ',')
+  let command = s:append_to_file_command . join(uid_set, ',') . ' ' . s:append_file 
   echo "appending " . nummsgs . " message" . (nummsgs == 1 ? '' : 's') . " to " . s:append_file . ". please wait..."
   let res = system(command)
   echo res

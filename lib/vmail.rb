@@ -112,7 +112,8 @@ module Vmail
       'rm' => ["flag", "+FLAGS", "Deleted"],
       'spam' => ["flag", "+FLAGS", "spam"],
       'mv' => ["move_to"],
-      'cp' => ["copy_to"]
+      'cp' => ["copy_to"],
+      'cat' => ["append_to_file"]
     }
     args = commands[ARGV.first]
     if args.nil?
