@@ -437,7 +437,7 @@ batch operations on the message list:
     # copies all the messages in the message list to the 'monit' mailbox
     vmail cp monit < message-list.txt
 
-    # prints the text content of all the messages in the message list to messages.txt
+    # appends the text content of all the messages in the message list to messages.txt
     vmail print messages.txt < message-list.txt
 
 Non-interactive mode assumes that `.vmailrc` contains your Gmail password.
