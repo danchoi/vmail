@@ -437,7 +437,7 @@ batch operations on the message list:
     vmail cp monit < monit-emails.txt
 
     # prints all the messages in the message list to 'monit.txt' 
-    vmail cat monit.txt < monit-emails.txt
+    vmail print monit.txt < monit-emails.txt
 
 
 ## Getting help
