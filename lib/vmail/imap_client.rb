@@ -274,7 +274,8 @@ module Vmail
     FLAGMAP = {:Flagged => '*'}
     # flags is an array like [:Flagged, :Seen]
     def format_flags(flags)
-      flags = flags.map {|flag| FLAGMAP[flag] || flag}
+      # other flags like "Old" should be hidden here
+      flags = flags.map {|flag| FLAGMAP[flag]}
       if flags.delete(:Seen).nil?
         flags << '+' # unread
       end
@@ -448,17 +449,18 @@ module Vmail
       end
       # USE THIS
       size = fetch_data.attr["RFC822.SIZE"]
+      flags = fetch_data.attr["FLAGS"]
       mail = Mail.new(fetch_data.attr['RFC822'])
       formatter = Vmail::MessageFormatter.new(mail)
       message_text = <<-EOF
-#{@mailbox} uid:#{uid} #{number_to_human_size size} #{format_parts_info(formatter.list_parts)}
+#{@mailbox} uid:#{uid} #{number_to_human_size size} #{flags.inspect} #{format_parts_info(formatter.list_parts)}
 #{divider '-'}
 #{format_headers(formatter.extract_headers)}
 
 #{formatter.process_body}
 EOF
       # log "storing message_cache[[#{@mailbox}, #{uid}]]"
-      d = {:mail => mail, :size => size, :message_text => message_text, :seqno => fetch_data.seqno}
+      d = {:mail => mail, :size => size, :message_text => message_text, :seqno => fetch_data.seqno, :flags => flags}
       message_cache[[@mailbox, uid]] = d
     rescue
       msg = "Error encountered parsing message uid  #{uid}:\n#{$!}\n#{$!.backtrace.join("\n")}" + 
