@@ -527,6 +527,12 @@ A big shout out goes to my funny, smart, and supportive fellow hacker alums of
 
 [betahouse]:http://betahouse.org/
 
-
 [twitter]:http://twitter.com/#!/danchoi
+
+## Help wanted: screencaster
+
+The vmail project needs someone to make a good screencast introduction to
+vmail. (I'm very bad at making screencasts.) Please let me know once you've
+posted it somewhere so I can link to it.  Feel free to put a plug in the
+screencast for your own company or blog. 
 
