@@ -35,10 +35,13 @@ desc "Run tests"
 task :test do 
   $:.unshift File.expand_path("test")
   require 'test_helper'
-  require 'time_format_test'
-  require 'message_formatter_test'
-  require 'reply_template_test'
-  require 'base64_test'
+  Dir.chdir("test") do 
+    Dir['*_test.rb'].each do |x|
+      puts "requiring #{x}"
+      require x
+    end
+  end
+
   MiniTest::Unit.autorun
 end
 

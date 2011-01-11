@@ -675,10 +675,10 @@ EOF
         headers[key] = value
       end
       log "delivering message with headers: #{headers.to_yaml}"
-      mail.from = headers['from'] || @username
-      mail.to = headers['to'] #.split(/,\s+/)
-      mail.cc = headers['cc'] #&& headers['cc'].split(/,\s+/)
-      mail.bcc = headers['bcc'] #&& headers['cc'].split(/,\s+/)
+      mail.from = quote_addresses(headers['from']) || @username
+      mail.to = quote_addresses(headers['to']) #.split(/,\s+/)
+      mail.cc = quote_addresses(headers['cc']) #&& headers['cc'].split(/,\s+/)
+      mail.bcc = quote_addresses(headers['bcc']) #&& headers['cc'].split(/,\s+/)
       mail.subject = headers['subject']
       mail.from ||= @username
       # attachments are added as a snippet of YAML after a blank line
