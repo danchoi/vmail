@@ -6,9 +6,12 @@ require 'mail'
 require 'net/imap'
 require 'time'
 require 'logger'
+require 'vmail/address_quoter'
 
 module Vmail
   class ImapClient
+    include Vmail::AddressQuoter
+
     DIVIDER_WIDTH = 46
 
     MailboxAliases = { 'sent' => '[Gmail]/Sent Mail',
@@ -672,13 +675,17 @@ EOF
       headers = {}
       raw_headers.split("\n").each do |line|
         key, value = *line.split(/:\s*/, 2)
+        log [key, value].join(':')
+        if %w(from to cc bcc).include?(key)
+          value = quote_addresses(value)
+        end
         headers[key] = value
       end
       log "delivering message with headers: #{headers.to_yaml}"
-      mail.from = quote_addresses(headers['from']) || @username
-      mail.to = quote_addresses(headers['to']) #.split(/,\s+/)
-      mail.cc = quote_addresses(headers['cc']) #&& headers['cc'].split(/,\s+/)
-      mail.bcc = quote_addresses(headers['bcc']) #&& headers['cc'].split(/,\s+/)
+      mail.from = headers['from'] || @username
+      mail.to = headers['to'] #.split(/,\s+/)
+      mail.cc = headers['cc'] #&& headers['cc'].split(/,\s+/)
+      mail.bcc = headers['bcc'] #&& headers['cc'].split(/,\s+/)
       mail.subject = headers['subject']
       mail.from ||= @username
       # attachments are added as a snippet of YAML after a blank line

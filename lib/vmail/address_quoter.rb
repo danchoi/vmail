@@ -8,7 +8,8 @@ module Vmail
         # then   ["Jones, Rich A.", "richjones@gmail.com"]
         email_addrs << "\"#{match.first}\" <#{match.last}>"
       end
-      email_addrs.join(", ") 
+      res = email_addrs.join(", ") 
+      res
     end
 
   end
