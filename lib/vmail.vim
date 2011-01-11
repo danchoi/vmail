@@ -640,7 +640,7 @@ function! s:send_message()
   echo "sending message"
   call system(s:deliver_command, mail)
   redraw
-  echo "sent! press q to go back to message list"
+  echo "sent! press ,q to go back to message list"
   redraw
 endfunction
 
