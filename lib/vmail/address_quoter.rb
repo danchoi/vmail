@@ -2,6 +2,7 @@ module Vmail
   module AddressQuoter
 
     def quote_addresses(string)
+      return string
       email_addrs = []
       string.scan(/\s*(.*?)\s*<(.+?)>(?:,|\Z)/) do |match|
         # yields ["Bob Smith", "bobsmith@gmail.com"]
