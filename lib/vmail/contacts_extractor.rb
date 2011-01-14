@@ -34,7 +34,7 @@ class ContactsExtractor
           name = address_struct.name
           if name 
             name = Mail::Encodings.unquote_and_convert_to(name, 'UTF-8') 
-            yield "#{name} <#{email}>"
+            yield %Q("#{name}" <#{email}>)
           else
             yield email
           end

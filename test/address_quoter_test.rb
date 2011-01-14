@@ -24,4 +24,11 @@ class AddressQuoterTest < MiniTest::Unit::TestCase
     expected = %q("Bob Smith" <bobsmith@gmail.com>, "Jones, Rich A." <richjones@gmail.com>, peterbaker@gmail.com)
     assert_equal expected, quote_addresses(string)  
   end
+
+  def test_quoting_already_quoted
+    string = %q(Bob Smith <bobsmith@gmail.com>, "Jones, Rich A." <richjones@gmail.com>, peterbaker@gmail.com)
+    expected = %q("Bob Smith" <bobsmith@gmail.com>, "Jones, Rich A." <richjones@gmail.com>, peterbaker@gmail.com)
+    assert_equal expected, quote_addresses(string)  
+  end
+
 end

@@ -18,7 +18,14 @@ module Vmail
       end
       
       #Quote the names
-      addrs.map { |addr| addr.gsub(/^(.*) (<.*)/, '"\1" \2') }.join(', ')
+      addrs.map { |addr| 
+        # a little hackish
+        if addr =~ /"/
+          addr
+        else
+          addr.gsub(/^(.*) (<.*)/, '"\1" \2') 
+        end
+      }.join(', ')
     end
     
   end

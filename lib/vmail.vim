@@ -622,7 +622,8 @@ function! CompleteContact(findstart, base)
     " model regex: match at beginning of line, or inside < > wrapping
     " email addr
     "  '\(^ho\|<ho\)'
-    let regex = shellescape('\(^' . a:base . '\|<' . a:base . '\)')
+    " let regex = shellescape('\(^' . a:base . '\|<' . a:base . '\)')
+    let regex = shellescape(a:base)
     let matches = system("grep -i " . regex  . " " . $VMAIL_CONTACTS_FILE)
     return split(matches, "\n")
   endif
