@@ -23,7 +23,5 @@ class AddressQuoterTest < MiniTest::Unit::TestCase
     string = "Bob Smith <bobsmith@gmail.com>, Jones, Rich A. <richjones@gmail.com>, peterbaker@gmail.com"
     expected = %q("Bob Smith" <bobsmith@gmail.com>, "Jones, Rich A." <richjones@gmail.com>, peterbaker@gmail.com)
     assert_equal expected, quote_addresses(string)  
-
   end
-
 end
