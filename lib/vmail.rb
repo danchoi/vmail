@@ -12,7 +12,15 @@ module Vmail
     puts "starting vmail #{Vmail::VERSION}"
 
     vim = ENV['VMAIL_VIM'] || 'vim'
-    ENV['VMAIL_BROWSER'] ||= RUBY_PLATFORM.downcase.include?('linux') ? 'gnome-open' : 'open'
+    ENV['VMAIL_BROWSER'] ||= if RUBY_PLATFORM.downcase.include?('linux') 
+                               if `which gnome-open`.size > 0 ?
+                                 'gnome-open' 
+                               else
+                                 'kfmclient-exec'
+                               end
+                             else
+                               'open'
+                             end
 
     check_lynx
 
