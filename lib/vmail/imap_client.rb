@@ -360,7 +360,7 @@ module Vmail
         res = fetch_row_text(new_ids, false, true)
         res
       else
-        nil
+        ''
       end
     end
 
