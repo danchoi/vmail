@@ -210,11 +210,11 @@ endfunction
 
 func! s:close_message_window()
   if winnr('$') > 1
-    close
+    close!
   else
     call s:focus_list_window()
     wincmd p
-    close
+    close!
     normal z.
   endif
 endfunc
