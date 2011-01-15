@@ -13,7 +13,7 @@ module Vmail
 
     vim = ENV['VMAIL_VIM'] || 'vim'
     ENV['VMAIL_BROWSER'] ||= if RUBY_PLATFORM.downcase.include?('linux') 
-                               if `which gnome-open`.size > 0 ?
+                               if `which gnome-open`.size > 0 
                                  'gnome-open' 
                                else
                                  'kfmclient-exec'
