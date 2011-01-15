@@ -563,13 +563,13 @@ EOF
       end
     end
 
-    def spawn_thread_if_tty 
+    def spawn_thread_if_tty(&block) 
       if STDIN.tty?
         Thread.new do 
-          yield
+          reconnect_if_necessary(10, &block)
         end
       else
-        yield
+        block.call
       end
     end
 
