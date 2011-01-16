@@ -13,15 +13,20 @@ module Vmail
 
     vim = ENV['VMAIL_VIM'] || 'vim'
     ENV['VMAIL_BROWSER'] ||= if RUBY_PLATFORM.downcase.include?('linux') 
-                               if `which gnome-open`.size > 0 
-                                 'gnome-open' 
+                               tools = ['gnome-open', 'kfmclient-exec', 'konqueror']
+                               tool = tools.detect { |tool|
+                                 `which #{tool}`.size > 0
+                               }
+                               if tool.nil?
+                                 puts "Can't find a VMAIL_BROWSER tool on your system. Please report this issue."
                                else
-                                 'kfmclient-exec'
+                                 tool
                                end
                              else
                                'open'
                              end
 
+    puts "setting VMAIL_BROWSER to '#{ENV['VMAIL_BROWSER']}'"
     check_lynx
 
     opts = Vmail::Options.new(ARGV)
