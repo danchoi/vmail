@@ -17,7 +17,8 @@ class ContactsExtractor
 
   def extract(limit = 500)
     open do |imap|
-      mailbox = '[Gmail]/Sent Mail'
+      set_mailbox_prefix
+      mailbox = "[#@prefix]/Sent Mail"
       STDERR.puts "selecting #{mailbox}"
       imap.select(mailbox)
       STDERR.puts "fetching last #{limit} sent messages"
@@ -41,6 +42,11 @@ class ContactsExtractor
         end
       end
     end
+  end
+
+  def set_mailbox_prefix
+    mailboxes = ((@imap.list("[#@prefix]/", "%") || []) + (@imap.list("", "*")) || []).map {|struct| struct.name}
+    @prefix = mailboxes.detect {|m| m =~ /^\[Google Mail\]/}  ?  "Google Mail" : "Gmail" 
   end
 end
 end
