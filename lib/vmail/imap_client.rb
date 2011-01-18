@@ -28,7 +28,6 @@ module Vmail
       @current_mail = nil
       @current_message_uid = nil
       @width = 140
-      @prefix = "Gmail" 
     end
 
     # holds mail objects keyed by [mailbox, uid]
@@ -140,28 +139,36 @@ module Vmail
 
     def list_mailboxes
       log 'loading mailboxes...'
-      @mailboxes ||= ((@imap.list("[#@prefix]/", "%") || []) + (@imap.list("", "*")) || []).
+      @mailboxes ||= (@imap.list("", "*") || []).
         select {|struct| struct.attr.none? {|a| a == :Noselect} }.
         map {|struct| struct.name}.uniq
       @mailboxes.delete("INBOX")
       @mailboxes.unshift("INBOX")
       log "loaded mailboxes: #{@mailboxes.inspect}"
-      if @mailboxes.detect {|m| m =~ /^\[Google Mail\]/}
-        @prefix = "Google Mail"
-      end
       @mailboxes = @mailboxes.map {|name| mailbox_aliases.invert[name] || name}
       @mailboxes.join("\n")
     end
 
+    # do this just once
     def mailbox_aliases
-      { "sent" => "[#@prefix]/Sent Mail",
-        "all" => "[#@prefix]/All Mail",
-        "starred" => "[#@prefix]/Starred",
-        "important" => "[#@prefix]/Important",
-        "drafts" => "[#@prefix]/Drafts",
-        "spam" => "[#@prefix]/Spam",
-        "trash" => "[#@prefix]/Trash"
-      }
+      return @mailbox_aliases if @mailbox_aliases
+      aliases = {"sent" => "Sent Mail",
+                 "all" => "All Mail",
+                 "starred" => "Starred",
+                 "important" => "Important",
+                 "drafts" => "Drafts",
+                 "spam" => "Spam",
+                 "trash" => "Trash"}
+      @mailbox_aliases = {}
+      aliases.each do |shortname, fullname|
+        [ "[Gmail]", "[Google Mail" ].each do |prefix|
+          if @mailboxes.include?( "#{prefix}/#{fullname}" )
+            @mailbox_aliases[shortname] =  "#{prefix}/#{fullname}"
+          end
+        end
+      end
+      log "setting aliases to #{@mailbox_aliases.inspect}"
+      @mailbox_aliases
     end
 
     # called internally, not by vim client
@@ -215,7 +222,7 @@ module Vmail
       envelope = fetch_data.attr["ENVELOPE"]
       size = fetch_data.attr["RFC822.SIZE"]
       flags = fetch_data.attr["FLAGS"]
-      address_struct = if @mailbox == "[#@prefix]/Sent Mail"
+      address_struct = if @mailbox == mailbox_aliases['sent'] 
                          structs = envelope.to || envelope.cc
                          structs.nil? ? nil : structs.first 
                        else
@@ -228,7 +235,7 @@ module Vmail
                 else
                   [Mail::Encodings.unquote_and_convert_to(address_struct.mailbox, 'UTF-8'), Mail::Encodings.unquote_and_convert_to(address_struct.host, 'UTF-8')].join('@') 
                 end
-      if @mailbox == "[#@prefix]/Sent Mail" && envelope.to && envelope.cc
+      if @mailbox == mailbox_aliases['sent'] && envelope.to && envelope.cc
         total_recips = (envelope.to + envelope.cc).size
         address += " + #{total_recips - 1}"
       end
@@ -506,21 +513,21 @@ EOF
         decrement_max_seqno(uid_set.size)
         # for delete, do in a separate thread because deletions are slow
         spawn_thread_if_tty do 
-          unless @mailbox == "[#@prefix]/Trash"
-            log "@imap.uid_copy #{uid_set.inspect} to [#@prefix]/Trash"
-            log @imap.uid_copy(uid_set, "[#@prefix]/Trash")
+          unless @mailbox == mailbox_aliases['trash']
+            log "@imap.uid_copy #{uid_set.inspect} to #{mailbox_aliases['trash']}"
+            log @imap.uid_copy(uid_set, mailbox_aliases['trash'])
           end
           log "@imap.uid_store #{uid_set.inspect} #{action} [#{flg.to_sym}]"
           log @imap.uid_store(uid_set, action, [flg.to_sym])
           reload_mailbox
           clear_cached_message
         end
-      elsif flg == 'spam' || flg == "[#@prefix]/Spam"
+      elsif flg == 'spam' || flg == mailbox_aliases['spam'] 
         log "Marking as spam uid_set: #{uid_set.inspect}"
         decrement_max_seqno(uid_set.size)
         spawn_thread_if_tty do 
-          log "@imap.uid_copy #{uid_set.inspect} to [#@prefix]/Spam"
-          log @imap.uid_copy(uid_set, "[#@prefix]/Spam")
+          log "@imap.uid_copy #{uid_set.inspect} to #{mailbox_aliases['spam']}"
+          log @imap.uid_copy(uid_set, mailbox_aliases['spam']) 
           log "@imap.uid_store #{uid_set.inspect} #{action} [:Deleted]"
           log @imap.uid_store(uid_set, action, [:Deleted])
           reload_mailbox
