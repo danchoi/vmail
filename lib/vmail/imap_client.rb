@@ -14,15 +14,6 @@ module Vmail
 
     DIVIDER_WIDTH = 46
 
-    MailboxAliases = { 'sent' => '[Gmail]/Sent Mail',
-      'all' => '[Gmail]/All Mail',
-      'starred' => '[Gmail]/Starred',
-      'important' => '[Gmail]/Important',
-      'drafts' => '[Gmail]/Drafts',
-      'spam' => '[Gmail]/Spam',
-      'trash' => '[Gmail]/Trash'
-    }
-
     attr_accessor :max_seqno # of current mailbox
 
     def initialize(config)
@@ -37,6 +28,7 @@ module Vmail
       @current_mail = nil
       @current_message_uid = nil
       @width = 140
+      @prefix = "Gmail" 
     end
 
     # holds mail objects keyed by [mailbox, uid]
@@ -74,8 +66,8 @@ module Vmail
     end
 
     def select_mailbox(mailbox, force=false)
-      if MailboxAliases[mailbox]
-        mailbox = MailboxAliases[mailbox]
+      if mailbox_aliases[mailbox]
+        mailbox = mailbox_aliases[mailbox]
       end
       if mailbox == @mailbox && !force
         return
@@ -148,14 +140,28 @@ module Vmail
 
     def list_mailboxes
       log 'loading mailboxes...'
-      @mailboxes ||= ((@imap.list("[Gmail]/", "%") || []) + (@imap.list("", "*")) || []).
+      @mailboxes ||= ((@imap.list("[#@prefix]/", "%") || []) + (@imap.list("", "*")) || []).
         select {|struct| struct.attr.none? {|a| a == :Noselect} }.
         map {|struct| struct.name}.
-        map {|name| MailboxAliases.invert[name] || name}
+        map {|name| mailbox_aliases.invert[name] || name}
       @mailboxes.delete("INBOX")
       @mailboxes.unshift("INBOX")
       log "loaded mailboxes: #{@mailboxes.inspect}"
+      if @mailboxes.detect {|m| m =~ /^\[Google Mail\]/}
+        @prefix = "Google Mail"
+      end
       @mailboxes.join("\n")
+    end
+
+    def mailbox_aliases
+      { "sent" => "[#@prefix]/Sent Mail",
+        "all" => "[#@prefix]/All Mail",
+        "starred" => "[#@prefix]/Starred",
+        "important" => "[#@prefix]/Important",
+        "drafts" => "[#@prefix]/Drafts",
+        "spam" => "[#@prefix]/Spam",
+        "trash" => "[#@prefix]/Trash"
+      }
     end
 
     # called internally, not by vim client
@@ -209,7 +215,7 @@ module Vmail
       envelope = fetch_data.attr["ENVELOPE"]
       size = fetch_data.attr["RFC822.SIZE"]
       flags = fetch_data.attr["FLAGS"]
-      address_struct = if @mailbox == '[Gmail]/Sent Mail' 
+      address_struct = if @mailbox == "[#@prefix]/Sent Mail"
                          structs = envelope.to || envelope.cc
                          structs.nil? ? nil : structs.first 
                        else
@@ -222,7 +228,7 @@ module Vmail
                 else
                   [Mail::Encodings.unquote_and_convert_to(address_struct.mailbox, 'UTF-8'), Mail::Encodings.unquote_and_convert_to(address_struct.host, 'UTF-8')].join('@') 
                 end
-      if @mailbox == '[Gmail]/Sent Mail' && envelope.to && envelope.cc
+      if @mailbox == "[#@prefix]/Sent Mail" && envelope.to && envelope.cc
         total_recips = (envelope.to + envelope.cc).size
         address += " + #{total_recips - 1}"
       end
@@ -500,21 +506,21 @@ EOF
         decrement_max_seqno(uid_set.size)
         # for delete, do in a separate thread because deletions are slow
         spawn_thread_if_tty do 
-          unless @mailbox == '[Gmail]/Trash'
-            log "@imap.uid_copy #{uid_set.inspect} to trash"
-            log @imap.uid_copy(uid_set, "[Gmail]/Trash")
+          unless @mailbox == "[#@prefix]/Trash"
+            log "@imap.uid_copy #{uid_set.inspect} to [#@prefix]/Trash"
+            log @imap.uid_copy(uid_set, "[#@prefix]/Trash")
           end
           log "@imap.uid_store #{uid_set.inspect} #{action} [#{flg.to_sym}]"
           log @imap.uid_store(uid_set, action, [flg.to_sym])
           reload_mailbox
           clear_cached_message
         end
-      elsif flg == 'spam' || flg == '[Gmail]/Spam'
+      elsif flg == 'spam' || flg == "[#@prefix]/Spam"
         log "Marking as spam uid_set: #{uid_set.inspect}"
         decrement_max_seqno(uid_set.size)
         spawn_thread_if_tty do 
-          log "@imap.uid_copy #{uid_set.inspect} to spam"
-          log @imap.uid_copy(uid_set, "[Gmail]/Spam")
+          log "@imap.uid_copy #{uid_set.inspect} to [#@prefix]/Spam"
+          log @imap.uid_copy(uid_set, "[#@prefix]/Spam")
           log "@imap.uid_store #{uid_set.inspect} #{action} [:Deleted]"
           log @imap.uid_store(uid_set, action, [:Deleted])
           reload_mailbox
@@ -536,8 +542,8 @@ EOF
       if mailbox == 'all'
         log "archiving messages"
       end
-      if MailboxAliases[mailbox]
-        mailbox = MailboxAliases[mailbox]
+      if mailbox_aliases[mailbox]
+        mailbox = mailbox_aliases[mailbox]
       end
       create_if_necessary mailbox
       log "moving uid_set: #{uid_set.inspect} to #{mailbox}"
@@ -552,8 +558,8 @@ EOF
 
     def copy_to(uid_set, mailbox)
       uid_set = uid_set.split(',').map(&:to_i)
-      if MailboxAliases[mailbox]
-        mailbox = MailboxAliases[mailbox]
+      if mailbox_aliases[mailbox]
+        mailbox = mailbox_aliases[mailbox]
       end
       create_if_necessary mailbox
       log "copying #{uid_set.inspect} to #{mailbox}"
@@ -574,7 +580,7 @@ EOF
     end
 
     def create_if_necessary(mailbox)
-      current_mailboxes = mailboxes.map {|m| MailboxAliases[m] || m}
+      current_mailboxes = mailboxes.map {|m| mailbox_aliases[m] || m}
       if !current_mailboxes.include?(mailbox)
         log "current mailboxes: #{current_mailboxes.inspect}"
         log "creating mailbox #{mailbox}"
