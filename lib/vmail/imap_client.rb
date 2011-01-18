@@ -142,7 +142,7 @@ module Vmail
       log 'loading mailboxes...'
       @mailboxes ||= ((@imap.list("[#@prefix]/", "%") || []) + (@imap.list("", "*")) || []).
         select {|struct| struct.attr.none? {|a| a == :Noselect} }.
-        map {|struct| struct.name}
+        map {|struct| struct.name}.uniq
       @mailboxes.delete("INBOX")
       @mailboxes.unshift("INBOX")
       log "loaded mailboxes: #{@mailboxes.inspect}"
