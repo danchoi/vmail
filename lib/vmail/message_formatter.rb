@@ -90,7 +90,7 @@ module Vmail
         Iconv.conv('UTF-8//TRANSLIT//IGNORE', charset, text)
       else
         #Ensure compatible encoding in case of fall through
-        text.force_encoding("UTF-8")
+        text.encode("UTF-8")
       end
     end
 
