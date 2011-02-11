@@ -663,6 +663,12 @@ EOF
       str * DIVIDER_WIDTH
     end
 
+    SENT_MESSAGES_FILE = "sent-messages.txt"
+
+    def backup_sent_message(message)
+      File.open(SENT_MESSAGES_FILE, "a") {|f| f.write(divider('-') + "\n" + message.to_s)}
+    end
+
     def deliver(text)
       # parse the text. The headers are yaml. The rest is text body.
       require 'net/smtp'
@@ -673,9 +679,10 @@ EOF
       log res.inspect
       log "\n"
       msg = if res.is_a?(Mail::Message)
-        "Message '#{mail.subject}' sent"
+        "Message '#{mail.subject}' sent and saved to #{SENT_MESSAGES_FILE}"
+        backup_sent_message mail.to_s
       else
-        "Failed to deliver message '#{mail.subject}'"
+        "Failed to deliver message '#{mail.subject}'!"
       end
       log msg
       msg

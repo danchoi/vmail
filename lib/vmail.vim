@@ -574,6 +574,8 @@ func! s:open_compose_window(command)
   let res = system(a:command)
   split compose_message.txt
   setlocal modifiable
+  " TODO maybe later save backups?
+  setlocal buftype=nowrite
   if winnr('$') > 1
     wincmd p 
     close!
@@ -584,7 +586,6 @@ func! s:open_compose_window(command)
   call s:compose_window_mappings()
   setlocal completefunc=CompleteContact
   normal 1G
-  write!
 endfunc
 
 func! s:turn_into_compose_window()
@@ -629,11 +630,12 @@ endfunc
 function! s:send_message()
   let mail = join(getline(1,'$'), "\n")
   echo "Sending message"
-  call system(s:deliver_command, mail)
+  let res = call system(s:deliver_command, mail)
+  if match(res, '^Failed') == -1
+    call s:close_and_focus_list_window()
+  endif
   redraw
-  call s:close_and_focus_list_window()
-  redraw
-  echom "Message sent!"
+  echom res
 endfunction
 
 " -------------------------------------------------------------------------------- 
