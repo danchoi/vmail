@@ -463,7 +463,7 @@ vmail generates a few files in the current directory when it is running:
 
 * `current_message.txt` holds the current message being shown. Not deleted on quit.
 
-* `compose_message.txt` holds the current message being shown. Not deleted on quit.
+* `sent-messages.txt` will contain copies of any messages you send from vmail
 
 * `part.html` is created if you open an HTML mail part from vmail. 
 

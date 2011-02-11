@@ -630,12 +630,12 @@ endfunc
 function! s:send_message()
   let mail = join(getline(1,'$'), "\n")
   echo "Sending message"
-  let res = call system(s:deliver_command, mail)
+  let res = system(s:deliver_command, mail)
   if match(res, '^Failed') == -1
     call s:close_and_focus_list_window()
   endif
   redraw
-  echom res
+  echom substitute(res, '[\s\r\n]\+$', '', '')
 endfunction
 
 " -------------------------------------------------------------------------------- 

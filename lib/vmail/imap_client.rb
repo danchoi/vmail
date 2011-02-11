@@ -665,8 +665,19 @@ EOF
 
     SENT_MESSAGES_FILE = "sent-messages.txt"
 
+    def format_sent_message(mail)
+      formatter = Vmail::MessageFormatter.new(mail)
+      message_text = <<-EOF
+Sent Message #{self.format_parts_info(formatter.list_parts)}
+
+#{format_headers(formatter.extract_headers)}
+
+#{formatter.process_body}
+EOF
+    end
+
     def backup_sent_message(message)
-      File.open(SENT_MESSAGES_FILE, "a") {|f| f.write(divider('-') + "\n" + message.to_s)}
+      File.open(SENT_MESSAGES_FILE, "a") {|f| f.write(divider('-') + "\n" + format_sent_message(message))}
     end
 
     def deliver(text)
@@ -679,8 +690,8 @@ EOF
       log res.inspect
       log "\n"
       msg = if res.is_a?(Mail::Message)
+        backup_sent_message mail
         "Message '#{mail.subject}' sent and saved to #{SENT_MESSAGES_FILE}"
-        backup_sent_message mail.to_s
       else
         "Failed to deliver message '#{mail.subject}'!"
       end
