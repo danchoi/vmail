@@ -289,20 +289,15 @@ func! s:delete_messages(flag) range
   let nummsgs = len(uid_set)
   let command = s:flag_command . join(uid_set, ',') . " +FLAGS " . a:flag
   if nummsgs == 1
-    echom "deleting message" 
+    echom "Deleting message" 
   else
-    echom "deleting " . nummsgs . " messages"
+    echom "Deleting " . nummsgs . " messages"
   endif
   let res = system(command)
   setlocal modifiable
-  exec a:firstline . "," . a:lastline . "delete"
+  exec "silent " . a:firstline . "," . a:lastline . "delete"
   setlocal nomodifiable
   write
-  " if more than 2 lines change, vim forces us to look at a message.
-  " dismiss it.
-  if nummsgs > 2
-  "  call feedkeys("\<cr>")
-  endif
   redraw
   echo nummsgs .  " message" . (nummsgs == 1 ? '' : 's') . " marked " . a:flag
 endfunc
@@ -311,15 +306,12 @@ func! s:archive_messages() range
   let uid_set = s:collect_uids(a:firstline, a:lastline)
   let nummsgs = len(uid_set)
   let command = s:move_to_command . join(uid_set, ',') . ' ' . "all"
-  echo "archiving message" . (nummsgs == 1 ? '' : 's')
+  echo "Archiving message" . (nummsgs == 1 ? '' : 's')
   let res = system(command)
   setlocal modifiable
-  exec a:firstline . "," . a:lastline . "delete"
+  exec "silent " . a:firstline . "," . a:lastline . "delete"
   setlocal nomodifiable
   write
-  if nummsgs > 2
-    call feedkeys("\<cr>")
-  endif
   redraw
   echo nummsgs . " message" . (nummsgs == 1 ? '' : 's') . " archived"
 endfunc
@@ -385,13 +377,10 @@ function! s:complete_move_to_mailbox()
   let res = system(command)
   setlocal modifiable
   if !s:copy_to_mailbox
-    exec s:firstline . "," . s:lastline . "delete"
+    exec "silent " . s:firstline . "," . s:lastline . "delete"
   end
   setlocal nomodifiable
   write
-  if s:nummsgs > 2
-    call feedkeys("\<cr>")
-  endif
   redraw
   echo s:nummsgs .  " message" . (s:nummsgs == 1 ? '' : 's') . ' ' . (s:copy_to_mailbox ? 'copied' : 'moved') . ' to ' . mailbox 
 endfunction
@@ -497,7 +486,7 @@ function! s:select_mailbox()
   let command = s:search_command . shellescape("100 all")
   echo "loading messages..."
   let res = system(command)
-  1,$delete
+  silent 1,$delete
   silent! put! =res
   execute "normal Gdd\<c-y>" 
   normal G
@@ -641,7 +630,8 @@ function! s:send_message()
   echo "sending message"
   call system(s:deliver_command, mail)
   redraw
-  echo "sent! press ,q to go back to message list"
+  close!
+  echom "Message sent!"
   redraw
 endfunction
 
@@ -771,7 +761,7 @@ func! s:message_window_mappings()
 
   nnoremap <silent> <buffer> <leader>#  :close<cr>:call <SID>focus_list_window()<cr>:call <SID>delete_messages("Deleted")<cr>
   nnoremap <silent> <buffer> <leader>*  :call <SID>focus_list_window()<cr>:call <SID>toggle_star()<cr>
-  noremap <silent> <buffer> <leader>! :call <SID>focus_list_window()<cr>:call <SID>delete_messages("spam")<CR>
+  noremap <silent> <buffer> <leader>! :close<cr>:call <SID>focus_list_window()<cr>:call <SID>delete_messages("spam")<CR>
   noremap <silent> <buffer> <leader>e :call <SID>focus_list_window()<cr>:call <SID>archive_messages()<CR>
   " alt mappings for lazy hands
   nmap <silent> <buffer> <leader>8 <leader>*
