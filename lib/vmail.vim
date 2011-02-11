@@ -223,7 +223,7 @@ endfunc
 " gets new messages since last update
 function! s:update()
   let command = s:update_command
-  echo "Checking for new messages. please wait..."
+  echo "Checking for new messages. Please wait..."
   let res = system(command)
   if len(split(res, "\n", '')) > 0
     setlocal modifiable
@@ -329,7 +329,7 @@ func! s:append_messages_to_file() range
   endif
   let s:append_file = append_file
   let command = s:append_to_file_command . join(uid_set, ',') . ' ' . s:append_file 
-  echo "Appending " . nummsgs . " message" . (nummsgs == 1 ? '' : 's') . " to " . s:append_file . ". please wait..."
+  echo "Appending " . nummsgs . " message" . (nummsgs == 1 ? '' : 's') . " to " . s:append_file . ". Please wait..."
   let res = system(command)
   echo res
   redraw
@@ -477,7 +477,7 @@ function! s:select_mailbox()
   let s:query = "100 all"
   let command = s:select_mailbox_command . shellescape(s:mailbox)
   redraw
-  echom "Selecting mailbox: ". s:mailbox . ". please wait..."
+  echom "Selecting mailbox: ". s:mailbox . ". Please wait..."
   call system(command)
   redraw
   " now get latest 100 messages
@@ -517,7 +517,7 @@ function! s:do_search()
   redraw
   call s:focus_list_window()  
   setlocal modifiable
-  echo "Running query on " . s:mailbox . ": " . s:query . ". please wait..."
+  echo "Running query on " . s:mailbox . ": " . s:query . ". Please wait..."
   let res = system(command)
   silent! 1,$delete
   silent! put! =res
@@ -531,7 +531,7 @@ function! s:more_messages()
   let line = getline(line('.'))
   let seqno = get(split(matchstr(line, '\d\+:\d\+$'), ':'), 0)
   let command = s:more_messages_command . seqno
-  echo "Fetching more messages. please wait..."
+  echo "Fetching more messages. Please wait..."
   let res = system(command)
   setlocal modifiable
   let lines =  split(res, "\n")
