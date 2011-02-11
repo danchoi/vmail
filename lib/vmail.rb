@@ -61,14 +61,12 @@ module Vmail
     vimscript = File.expand_path("../vmail.vim", __FILE__)
     vim_command = "DRB_URI=#{drb_uri} VMAIL_CONTACTS_FILE=#{contacts_file} VMAIL_MAILBOX=#{String.shellescape(mailbox)} VMAIL_QUERY=#{String.shellescape(query_string)} #{vim} -S #{vimscript} #{buffer_file}"
     STDERR.puts vim_command
-
     STDERR.puts "Using buffer file: #{buffer_file}"
     File.open(buffer_file, "w") do |file|
-      file.puts "Vmail starting with values:"
+      file.puts "Vmail starting with values:\n"
       file.puts "- drb uri: #{drb_uri}"
       file.puts "- mailbox: #{mailbox}"
-      file.puts "- query: #{query_string}"
-      file.puts
+      file.puts "- query: #{query_string}\n"
       file.puts "Fetching messages. please wait..."  
     end
 
