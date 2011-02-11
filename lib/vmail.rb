@@ -10,7 +10,7 @@ module Vmail
 
   def start
     puts "Starting vmail #{Vmail::VERSION}"
-    if  Gem::Version.new("1.9.0") > Gem::Version.new(RUBY_VERSION)
+    if  "1.9.0" > RUBY_VERSION
       puts "This version of vmail requires Ruby version 1.9.0 or higher (1.9.2 is recommended)"
       exit
     end
