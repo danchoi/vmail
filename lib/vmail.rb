@@ -9,7 +9,7 @@ module Vmail
   extend self
 
   def start
-    puts "starting vmail #{Vmail::VERSION}"
+    puts "Starting vmail #{Vmail::VERSION}"
 
     vim = ENV['VMAIL_VIM'] || 'vim'
     ENV['VMAIL_BROWSER'] ||= if RUBY_PLATFORM.downcase.include?('linux') 
@@ -26,7 +26,7 @@ module Vmail
                                'open'
                              end
 
-    puts "setting VMAIL_BROWSER to '#{ENV['VMAIL_BROWSER']}'"
+    puts "Setting VMAIL_BROWSER to '#{ENV['VMAIL_BROWSER']}'"
     check_lynx
 
     opts = Vmail::Options.new(ARGV)
@@ -38,7 +38,7 @@ module Vmail
     logfile = (vim == 'mvim') ? STDERR : 'vmail.log'
     config.merge! 'logfile' => logfile
 
-    puts "starting vmail imap client for #{config['username']}"
+    puts "Starting vmail imap client for #{config['username']}"
 
     drb_uri = begin 
                 Vmail::ImapClient.daemon config
@@ -53,8 +53,8 @@ module Vmail
     query_string = Vmail::Query.args2string query
     server.select_mailbox mailbox
 
-    STDERR.puts "mailbox: #{mailbox}"
-    STDERR.puts "query: #{query.inspect} => #{query_string}"
+    STDERR.puts "Mailbox: #{mailbox}"
+    STDERR.puts "Query: #{query.inspect} => #{query_string}"
     
     buffer_file = "vmailbuffer"
     # invoke vim
@@ -62,14 +62,14 @@ module Vmail
     vim_command = "DRB_URI=#{drb_uri} VMAIL_CONTACTS_FILE=#{contacts_file} VMAIL_MAILBOX=#{String.shellescape(mailbox)} VMAIL_QUERY=#{String.shellescape(query_string)} #{vim} -S #{vimscript} #{buffer_file}"
     STDERR.puts vim_command
 
-    STDERR.puts "using buffer file: #{buffer_file}"
+    STDERR.puts "Using buffer file: #{buffer_file}"
     File.open(buffer_file, "w") do |file|
-      file.puts "vmail starting with values:"
+      file.puts "Vmail starting with values:"
       file.puts "- drb uri: #{drb_uri}"
       file.puts "- mailbox: #{mailbox}"
       file.puts "- query: #{query_string}"
       file.puts
-      file.puts "fetching messages. please wait..."  
+      file.puts "Fetching messages. please wait..."  
     end
 
     system(vim_command)
@@ -80,15 +80,15 @@ module Vmail
 
     File.delete(buffer_file)
 
-    STDERR.puts "closing imap connection"  
+    STDERR.puts "Closing imap connection"  
     begin
       Timeout::timeout(10) do 
         $gmail.close
       end
     rescue Timeout::Error
-      puts "close connection attempt timed out"
+      puts "Close connection attempt timed out"
     end
-    puts "bye"
+    puts "Bye"
     exit
   end
 
@@ -130,15 +130,15 @@ module Vmail
     }
     args = commands[ARGV.first]
     if args.nil?
-      abort "command '#{args.inspect}' not recognized"
+      abort "Command '#{args.inspect}' not recognized"
     end
     command = args.shift
     imap_client.with_open do |vmail| 
-      puts "selecting mailbox: #{mailbox}"
+      puts "Selecting mailbox: #{mailbox}"
       vmail.select_mailbox mailbox
       uid_set.each_slice(5) do |uid_set|
         params = [uid_set.join(',')] + args + ARGV[1..-1]
-        puts "executing: #{command} #{params.join(' ')}"
+        puts "Executing: #{command} #{params.join(' ')}"
         vmail.send command, *params
       end
     end
