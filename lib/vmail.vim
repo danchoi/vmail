@@ -618,19 +618,20 @@ function! CompleteContact(findstart, base)
   endif
 endfun
 
-function! s:cancel_compose()
+func! s:close_and_focus_list_window()
   call s:focus_list_window()
   wincmd p
   close!
   normal z.
-endfunction
+endfunc
+
 
 function! s:send_message()
   let mail = join(getline(1,'$'), "\n")
   echo "sending message"
   call system(s:deliver_command, mail)
   redraw
-  close!
+  call s:close_and_focus_list_window()
   echom "Message sent!"
   redraw
 endfunction
@@ -820,7 +821,7 @@ func! s:message_list_window_mappings()
 endfunc
 
 func! s:compose_window_mappings()
-  noremap <silent> <buffer> <leader>q :call <SID>cancel_compose()<cr>
+  noremap <silent> <buffer> <leader>q :call <SID>close_and_focus_list_window()<cr>
   setlocal ai
   " setlocal textwidth=72
   autocmd CursorMoved <buffer> call <SID>toggle_textwidth()
