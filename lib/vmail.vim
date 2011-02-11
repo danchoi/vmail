@@ -228,9 +228,9 @@ function! s:update()
   if len(split(res, "\n", '')) > 0
     setlocal modifiable
     let line = line('$')
-    $put =res
+    silent $put =res
     setlocal nomodifiable
-    write
+    write!
     let num = len(split(res, '\n', ''))
     call cursor(line + 1, 0)
     normal z.
@@ -275,9 +275,6 @@ function! s:toggle_star() range
   endwhile
   setlocal nomodifiable
   write
-  if nummsgs > 2
-    " call feedkeys("\<cr>")
-  endif
   redraw
   if nummsgs == 1
     echom "toggled flag on message" 
@@ -501,7 +498,7 @@ function! s:select_mailbox()
   echo "loading messages..."
   let res = system(command)
   1,$delete
-  put! =res
+  silent! put! =res
   execute "normal Gdd\<c-y>" 
   normal G
   setlocal nomodifiable
@@ -533,9 +530,9 @@ function! s:do_search()
   setlocal modifiable
   echo "running query on " . s:mailbox . ": " . s:query . ". please wait..."
   let res = system(command)
-  1,$delete
-  put! =res
-  execute "normal Gdd\<c-y>" 
+  silent! 1,$delete
+  silent! put! =res
+  execute "silent normal Gdd\<c-y>" 
   setlocal nomodifiable
   write
   normal z.
@@ -586,16 +583,19 @@ func! s:open_compose_window(command)
   redraw
   echo a:command
   let res = system(a:command)
-  new
+  split compose_message.txt
   setlocal modifiable
-  wincmd p 
-  close!
-  1,$delete
-  put! =res
+  if winnr('$') > 1
+    wincmd p 
+    close!
+  endif
+  silent 1,$delete
+  silent put! =res
   call feedkeys("\<cr>")
   call s:compose_window_mappings()
   setlocal completefunc=CompleteContact
   normal 1G
+  write!
 endfunc
 
 func! s:turn_into_compose_window()
