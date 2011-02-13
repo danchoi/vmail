@@ -35,7 +35,7 @@ module Vmail
       @message_cache ||= {}
       size = @message_cache.values.reduce(0) {|sum, x| sum + x[:size]}
       if size > 2_000_000 # TODO make this configurable
-        log "PRUNING MESSAGE CACHE; message cache is consuming #{number_to_human_size size}"
+        log "Pruning message cache; message cache is consuming #{number_to_human_size size}"
         @message_cache.keys[0, @message_cache.size / 2].each {|k| @message_cache.delete(k)}
       end
       @message_cache
@@ -56,7 +56,7 @@ module Vmail
     end
 
     def close
-      log "closing connection"
+      log "Closing connection"
       Timeout::timeout(10) do
         @imap.close rescue Net::IMAP::BadResponseError
         @imap.disconnect rescue IOError
@@ -71,15 +71,15 @@ module Vmail
       if mailbox == @mailbox && !force
         return
       end
-      log "selecting mailbox #{mailbox.inspect}"
+      log "Selecting mailbox #{mailbox.inspect}"
       reconnect_if_necessary(15) do 
         log @imap.select(mailbox)
       end
-      log "done"
+      log "Done"
       @mailbox = mailbox
-      log "getting mailbox status"
+      log "Getting mailbox status"
       get_mailbox_status
-      log "getting highest message id"
+      log "Getting highest message id"
       get_highest_message_id
       return "OK"
     end
@@ -113,13 +113,13 @@ module Vmail
     def get_mailbox_status
       return
       @status = @imap.status(@mailbox,  ["MESSAGES", "RECENT", "UNSEEN"])
-      log "mailbox status: #{@status.inspect}"
+      log "Mailbox status: #{@status.inspect}"
     end
 
     def revive_connection
-      log "reviving connection"
+      log "Reviving connection"
       open
-      log "reselecting mailbox #@mailbox"
+      log "Reselecting mailbox #@mailbox"
       @imap.select(@mailbox)
     end
 
@@ -128,11 +128,11 @@ module Vmail
       reconnect_if_necessary(4) do 
         # this is just to prime the IMAP connection
         # It's necessary for some reason before update and deliver. 
-        log "priming connection"
+        log "Priming connection"
         res = @imap.fetch(@ids[-1], ["ENVELOPE"])
         if res.nil?
           # just go ahead, just log
-          log "priming connection didn't work, connection seems broken, but still going ahead..."
+          log "Priming connection didn't work, connection seems broken, but still going ahead..."
         end
       end 
     end
@@ -144,7 +144,7 @@ module Vmail
         map {|struct| struct.name}.uniq
       @mailboxes.delete("INBOX")
       @mailboxes.unshift("INBOX")
-      log "loaded mailboxes: #{@mailboxes.inspect}"
+      log "Loaded mailboxes: #{@mailboxes.inspect}"
       @mailboxes = @mailboxes.map {|name| mailbox_aliases.invert[name] || name}
       @mailboxes.join("\n")
     end
@@ -167,7 +167,7 @@ module Vmail
           end
         end
       end
-      log "setting aliases to #{@mailbox_aliases.inspect}"
+      log "Setting aliases to #{@mailbox_aliases.inspect}"
       @mailbox_aliases
     end
 
@@ -181,7 +181,7 @@ module Vmail
 
     # id_set may be a range, array, or string
     def fetch_row_text(id_set, are_uids=false, is_update=false)
-      log "fetch_row_text: #{id_set.inspect}"
+      log "Fetch_row_text: #{id_set.inspect}"
       if id_set.is_a?(String)
         id_set = id_set.split(',')
       end
@@ -205,7 +205,7 @@ module Vmail
         end
       end
       if results.nil?
-        error = "expected fetch results but got nil"
+        error = "Expected fetch results but got nil"
         log(error) && raise(error)
       end
       log "- extracting headers"
@@ -229,7 +229,7 @@ module Vmail
                          envelope.from.first
                        end
       address = if address_struct.nil?
-                  "unknown"
+                  "Unknown"
                 elsif address_struct.name
                   "#{Mail::Encodings.unquote_and_convert_to(address_struct.name, 'UTF-8')} <#{[address_struct.mailbox, address_struct.host].join('@')}>"
                 else
@@ -266,7 +266,7 @@ module Vmail
       ].join(' | ')
       {:uid => uid, :seqno => seqno, :row_text => row_text}
     rescue 
-      log "error extracting header for uid #{uid} seqno #{seqno}: #$!\n#{$!.backtrace}"
+      log "Error extracting header for uid #{uid} seqno #{seqno}: #$!\n#{$!.backtrace}"
       row_text = "#{seqno.to_s} : error extracting this header"
       {:uid => uid, :seqno => seqno, :row_text => row_text}
     end
@@ -317,7 +317,7 @@ module Vmail
       end
       @query = query.map {|x| x.to_s.downcase}
       query_string = Vmail::Query.args2string(@query)
-      log "search query: #{@query} > #{query_string.inspect}"
+      log "Search query: #{@query} > #{query_string.inspect}"
       log "- @all_search #{@all_search}"
       @query = query
       @ids = reconnect_if_necessary(180) do # increase timeout to 3 minutes
@@ -360,7 +360,7 @@ module Vmail
       # this may generate a negative rane, e.g., "19893:19992" but that seems harmless
       update_query[0] = "#{old_num_messages}:#{@num_messages}"
       ids = reconnect_if_necessary { 
-        log "search #update_query"
+        log "Search #update_query"
         @imap.search(Vmail::Query.args2string(update_query))
       }
       log "- got seqnos: #{ids.inspect}"
@@ -379,7 +379,7 @@ module Vmail
 
     # gets 100 messages prior to id
     def more_messages(message_id, limit=100)
-      log "more_messages: message_id #{message_id}"
+      log "More_messages: message_id #{message_id}"
       message_id = message_id.to_i
       if @all_search 
         x = [(message_id - limit), 0].max
@@ -398,7 +398,7 @@ module Vmail
     end
 
     def add_more_message_line(res, start_seqno)
-      log "add_more_message_line for start_seqno #{start_seqno}"
+      log "Add_more_message_line for start_seqno #{start_seqno}"
       if @all_search
         return res if start_seqno.nil?
         remaining = start_seqno - 1
@@ -406,15 +406,15 @@ module Vmail
         remaining = (@ids.index(start_seqno) || 1) - 1
       end
       if remaining < 1
-        log "none remaining"
-        return "showing all matches\n" + res
+        log "None remaining"
+        return "Showing all matches\n" + res
       end
-      log "remaining messages: #{remaining}"
+      log "Remaining messages: #{remaining}"
       ">  Load #{[100, remaining].min} more messages. #{remaining} remaining.\n" + res
     end
 
     def show_message(uid, raw=false)
-      log "show message: #{uid}"
+      log "Show message: #{uid}"
       return @current_mail.to_s if raw 
       uid = uid.to_i
       if uid == @current_message_uid 
@@ -427,7 +427,7 @@ module Vmail
       # envelope_data[:row_text] = envelope_data[:row_text].gsub(/^\+ /, '  ').gsub(/^\*\+/, '* ') # mark as read in cache
       #seqno = envelope_data[:seqno]
 
-      log "showing message uid: #{uid}"
+      log "Showing message uid: #{uid}"
       data = if x = message_cache[[@mailbox, uid]]
                log "- message cache hit"
                x
@@ -448,7 +448,7 @@ module Vmail
       @current_mail = mail # used later to show raw message or extract attachments if any
       @current_message = data[:message_text]
     rescue
-      log "parsing error"
+      log "Parsing error"
       "Error encountered parsing this message:\n#{$!}\n#{$!.backtrace.join("\n")}"
     end
 
@@ -476,7 +476,7 @@ module Vmail
 
 #{formatter.process_body}
 EOF
-      # log "storing message_cache[[#{@mailbox}, #{uid}]]"
+      # log "Storing message_cache[[#{@mailbox}, #{uid}]]"
       d = {:mail => mail, :size => size, :message_text => message_text, :seqno => fetch_data.seqno, :flags => flags}
       message_cache[[@mailbox, uid]] = d
     rescue
@@ -506,7 +506,7 @@ EOF
     # id_set is a string comming from the vim client
     # action is -FLAGS or +FLAGS
     def flag(uid_set, action, flg)
-      log "flag #{uid_set} #{flg} #{action}"
+      log "Flag #{uid_set} #{flg} #{action}"
       uid_set = uid_set.split(',').map(&:to_i)
       if flg == 'Deleted'
         log "Deleting uid_set: #{uid_set.inspect}"
@@ -545,21 +545,21 @@ EOF
     def move_to(uid_set, mailbox)
       uid_set = uid_set.split(',').map(&:to_i)
       decrement_max_seqno(uid_set.size)
-      log "move #{uid_set.inspect} to #{mailbox}"
+      log "Move #{uid_set.inspect} to #{mailbox}"
       if mailbox == 'all'
-        log "archiving messages"
+        log "Archiving messages"
       end
       if mailbox_aliases[mailbox]
         mailbox = mailbox_aliases[mailbox]
       end
       create_if_necessary mailbox
-      log "moving uid_set: #{uid_set.inspect} to #{mailbox}"
+      log "Moving uid_set: #{uid_set.inspect} to #{mailbox}"
       spawn_thread_if_tty do 
         log @imap.uid_copy(uid_set, mailbox)
         log @imap.uid_store(uid_set, '+FLAGS', [:Deleted])
         reload_mailbox
         clear_cached_message
-        log "moved uid_set #{uid_set.inspect} to #{mailbox}"
+        log "Moved uid_set #{uid_set.inspect} to #{mailbox}"
       end
     end
 
@@ -569,10 +569,10 @@ EOF
         mailbox = mailbox_aliases[mailbox]
       end
       create_if_necessary mailbox
-      log "copying #{uid_set.inspect} to #{mailbox}"
+      log "Copying #{uid_set.inspect} to #{mailbox}"
       spawn_thread_if_tty do 
         log @imap.uid_copy(uid_set, mailbox)
-        log "copied uid_set #{uid_set.inspect} to #{mailbox}"
+        log "Copied uid_set #{uid_set.inspect} to #{mailbox}"
       end
     end
 
@@ -589,8 +589,8 @@ EOF
     def create_if_necessary(mailbox)
       current_mailboxes = mailboxes.map {|m| mailbox_aliases[m] || m}
       if !current_mailboxes.include?(mailbox)
-        log "current mailboxes: #{current_mailboxes.inspect}"
-        log "creating mailbox #{mailbox}"
+        log "Current mailboxes: #{current_mailboxes.inspect}"
+        log "Creating mailbox #{mailbox}"
         log @imap.create(mailbox) 
         @mailboxes = nil # force reload ...
         list_mailboxes
@@ -599,14 +599,14 @@ EOF
 
     def append_to_file(uid_set, file)
       uid_set = uid_set.split(',').map(&:to_i)
-      log "append to file uid set #{uid_set.inspect} to file: #{file}"
+      log "Append to file uid set #{uid_set.inspect} to file: #{file}"
       uid_set.each do |uid|
         message = show_message(uid)
         File.open(file, 'a') {|f| f.puts(divider('=') + "\n" + message + "\n\n")}
         subject = (message[/^subject:(.*)/,1] || '').strip
-        log "appended message '#{subject}'"
+        log "Appended message '#{subject}'"
       end
-      "printed #{uid_set.size} message#{uid_set.size == 1 ? '' : 's'} to #{file.strip}"
+      "Printed #{uid_set.size} message#{uid_set.size == 1 ? '' : 's'} to #{file.strip}"
     end
 
     def new_message_template(subject = nil, append_signature = true)
@@ -629,7 +629,7 @@ EOF
     end
 
     def reply_template(replyall=false)
-      log "sending reply template"
+      log "Sending reply template"
       if @current_mail.nil?
         log "- missing @current mail!"
         return nil
@@ -663,6 +663,23 @@ EOF
       str * DIVIDER_WIDTH
     end
 
+    SENT_MESSAGES_FILE = "sent-messages.txt"
+
+    def format_sent_message(mail)
+      formatter = Vmail::MessageFormatter.new(mail)
+      message_text = <<-EOF
+Sent Message #{self.format_parts_info(formatter.list_parts)}
+
+#{format_headers(formatter.extract_headers)}
+
+#{formatter.process_body}
+EOF
+    end
+
+    def backup_sent_message(message)
+      File.open(SENT_MESSAGES_FILE, "a") {|f| f.write(divider('-') + "\n" + format_sent_message(message))}
+    end
+
     def deliver(text)
       # parse the text. The headers are yaml. The rest is text body.
       require 'net/smtp'
@@ -673,9 +690,10 @@ EOF
       log res.inspect
       log "\n"
       msg = if res.is_a?(Mail::Message)
-        "message '#{mail.subject}' sent"
+        backup_sent_message mail
+        "Message '#{mail.subject}' sent and saved to #{SENT_MESSAGES_FILE}"
       else
-        "failed to deliver message '#{mail.subject}'"
+        "Failed to deliver message '#{mail.subject}'!"
       end
       log msg
       msg
@@ -694,7 +712,7 @@ EOF
         end
         headers[key] = value
       end
-      log "delivering message with headers: #{headers.to_yaml}"
+      log "Delivering message with headers: #{headers.to_yaml}"
       mail.from = headers['from'] || @username
       mail.to = headers['to'] #.split(/,\s+/)
       mail.cc = headers['cc'] #&& headers['cc'].split(/,\s+/)
@@ -705,7 +723,7 @@ EOF
       # after the headers, and followed by a blank line
       if (attachments = raw_body.split(/\n\s*\n/, 2)[0]) =~ /^attach(ment|ments)*:/
         files = YAML::load(attachments).values.flatten
-        log "attach: #{files}"
+        log "Attach: #{files}"
         files.each do |file|
           if File.directory?(file)
             Dir.glob("#{file}/*").each {|f| mail.add_file(f) if File.size?(f)}
@@ -726,24 +744,24 @@ EOF
     end
 
     def save_attachments(dir)
-      log "save_attachments #{dir}"
+      log "Save_attachments #{dir}"
       if !@current_mail
-        log "missing a current message"
+        log "Missing a current message"
       end
       return unless dir && @current_mail
       attachments = @current_mail.attachments
       `mkdir -p #{dir}`
       saved = attachments.map do |x|
         path = File.join(dir, x.filename)
-        log "saving #{path}"
+        log "Saving #{path}"
         File.open(path, 'wb') {|f| f.puts x.decoded}
         path
       end
-      "saved:\n" + saved.map {|x| "- #{x}"}.join("\n")
+      "Saved:\n" + saved.map {|x| "- #{x}"}.join("\n")
     end
 
     def open_html_part
-      log "open_html_part"
+      log "Open_html_part"
       log @current_mail.parts.inspect
       multipart = @current_mail.parts.detect {|part| part.multipart?}
       html_part = if multipart 
@@ -761,7 +779,7 @@ EOF
     end
 
     def window_width=(width)
-      log "setting window width to #{width}"
+      log "Setting window width to #{width}"
       @width = width.to_i
     end
    
@@ -790,8 +808,8 @@ EOF
         block.call
       end
     rescue IOError, Errno::EADDRNOTAVAIL, Errno::ECONNRESET, Timeout::Error
-      log "error: #{$!}"
-      log "attempting to reconnect"
+      log "Error: #{$!}"
+      log "Attempting to reconnect"
       close
       log(revive_connection)
       # hope this isn't an endless loop
@@ -799,7 +817,7 @@ EOF
         block.call
       end
     rescue
-      log "error: #{$!}"
+      log "Error: #{$!}"
       raise
     end
 
@@ -814,7 +832,7 @@ EOF
       use_uri = config['drb_uri'] || nil # redundant but explicit
       DRb.start_service(use_uri, $gmail)
       uri = DRb.uri
-      puts "starting gmail service at #{uri}"
+      puts "Starting gmail service at #{uri}"
       uri
     end
   end
@@ -822,13 +840,13 @@ end
 
 trap("INT") { 
   require 'timeout'
-  puts "closing imap connection"  
+  puts "Closing imap connection"  
   begin
     Timeout::timeout(10) do 
       $gmail.close
     end
   rescue Timeout::Error
-    puts "close connection attempt timed out"
+    puts "Close connection attempt timed out"
   end
   exit
 }

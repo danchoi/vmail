@@ -48,7 +48,7 @@ module Vmail
         begin
           opts.parse!(argv)
           if @config_file && File.exists?(@config_file)
-            STDERR.puts "using config file: #{@config_file}"
+            STDERR.puts "Using config file: #{@config_file}"
           else
             STDERR.puts <<EOF
 
@@ -64,7 +64,7 @@ EOF
               STDERR.puts "No contacts file found for auto-completion. See help for how to generate it."
               sleep 0.5
             else
-              STDERR.puts "using contacts file: #{@contacts_file}"
+              STDERR.puts "Using contacts file: #{@contacts_file}"
             end
           end
 
@@ -84,13 +84,13 @@ EOF
               end
             end
             STDERR.print "\n"
-            puts "saved file to #{DEFAULT_CONTACTS_FILENAME}"
-            puts "sorting address..."
+            puts "Saved file to #{DEFAULT_CONTACTS_FILENAME}"
+            puts "Sorting address..."
             cmd = "sort #{DEFAULT_CONTACTS_FILENAME} | uniq > vmail-tmp.txt" 
             cmd2 = "mv vmail-tmp.txt #{DEFAULT_CONTACTS_FILENAME}"
             `#{cmd}`
             `#{cmd2}`
-            puts "done"
+            puts "Done"
             exit
           end
 

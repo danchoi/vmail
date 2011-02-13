@@ -3,7 +3,7 @@ require 'net/imap'
 module Vmail
 class ContactsExtractor
   def initialize(username, password)
-    puts "logging as #{username}"
+    puts "Logging as #{username}"
     @username, @password = username, password
   end
 
@@ -19,13 +19,13 @@ class ContactsExtractor
     open do |imap|
       set_mailbox_prefix
       mailbox = "[#@prefix]/Sent Mail"
-      STDERR.puts "selecting #{mailbox}"
+      STDERR.puts "Selecting #{mailbox}"
       imap.select(mailbox)
-      STDERR.puts "fetching last #{limit} sent messages"
+      STDERR.puts "Fetching last #{limit} sent messages"
       all_uids = imap.uid_search('ALL')
-      STDERR.puts "total messages: #{all_uids.size}"
+      STDERR.puts "Total messages: #{all_uids.size}"
       limit = [limit, all_uids.size].min
-      STDERR.puts "extracting addresses from #{limit} of them"
+      STDERR.puts "Extracting addresses from #{limit} of them"
       uids = all_uids[-limit ,limit]
       imap.uid_fetch(uids, ["FLAGS", "ENVELOPE"]).each do |fetch_data|
         recipients = fetch_data.attr["ENVELOPE"].to

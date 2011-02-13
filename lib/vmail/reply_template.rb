@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require 'mail'
 require 'time'
 
@@ -18,7 +19,9 @@ module Vmail
       end
       date = @orig_headers['date'].is_a?(String) ? Time.parse(@orig_headers['date']) : @orig_headers['date']
       quote_header = date ? "On #{date.strftime('%a, %b %d, %Y at %I:%M %p')}, #{sender} wrote:\n\n" : "#{sender} wrote:\n\n"
-      body = quote_header + formatter.process_body.gsub(/^(?=>)/, ">").gsub(/^(?!>)/, "> ")
+      body = quote_header + formatter.process_body
+      body.force_encoding("UTF-8")
+      body = body.gsub(/^(?=>)/, ">").gsub(/^(?!>)/, "> ")
       {'from' => "#@name <#@username>", 'to' => primary_recipient, 'cc' => cc, 'subject' => subject, :body => body}
     end
 

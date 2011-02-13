@@ -223,22 +223,22 @@ endfunc
 " gets new messages since last update
 function! s:update()
   let command = s:update_command
-  echo "checking for new messages. please wait..."
+  echo "Checking for new messages. Please wait..."
   let res = system(command)
   if len(split(res, "\n", '')) > 0
     setlocal modifiable
     let line = line('$')
-    $put =res
+    silent $put =res
     setlocal nomodifiable
-    write
+    write!
     let num = len(split(res, '\n', ''))
     call cursor(line + 1, 0)
     normal z.
     redraw
-    echom "you have " . num . " new message" . (num == 1 ? '' : 's') . "!" 
+    echom "You have " . num . " new message" . (num == 1 ? '' : 's') . "!" 
   else
     redraw
-    echom "no new messages"
+    echom "No new messages"
   endif
 endfunction
 
@@ -253,9 +253,9 @@ function! s:toggle_star() range
   endif
   let command = s:flag_command . join(uid_set, ',') . action . " Flagged" 
   if nummsgs == 1
-    echom "toggling flag on message" 
+    echom "Toggling flag on message" 
   else
-    echom "toggling flags on " . nummsgs . " messages"
+    echom "Toggling flags on " . nummsgs . " messages"
   endif
   " toggle * on lines
   let res = system(command)
@@ -275,14 +275,11 @@ function! s:toggle_star() range
   endwhile
   setlocal nomodifiable
   write
-  if nummsgs > 2
-    " call feedkeys("\<cr>")
-  endif
   redraw
   if nummsgs == 1
-    echom "toggled flag on message" 
+    echom "Toggled flag on message" 
   else
-    echom "toggled flags on " . nummsgs . " messages"
+    echom "Toggled flags on " . nummsgs . " messages"
   endif
 endfunction
 
@@ -292,20 +289,15 @@ func! s:delete_messages(flag) range
   let nummsgs = len(uid_set)
   let command = s:flag_command . join(uid_set, ',') . " +FLAGS " . a:flag
   if nummsgs == 1
-    echom "deleting message" 
+    echom "Deleting message" 
   else
-    echom "deleting " . nummsgs . " messages"
+    echom "Deleting " . nummsgs . " messages"
   endif
   let res = system(command)
   setlocal modifiable
-  exec a:firstline . "," . a:lastline . "delete"
+  exec "silent " . a:firstline . "," . a:lastline . "delete"
   setlocal nomodifiable
   write
-  " if more than 2 lines change, vim forces us to look at a message.
-  " dismiss it.
-  if nummsgs > 2
-  "  call feedkeys("\<cr>")
-  endif
   redraw
   echo nummsgs .  " message" . (nummsgs == 1 ? '' : 's') . " marked " . a:flag
 endfunc
@@ -314,15 +306,12 @@ func! s:archive_messages() range
   let uid_set = s:collect_uids(a:firstline, a:lastline)
   let nummsgs = len(uid_set)
   let command = s:move_to_command . join(uid_set, ',') . ' ' . "all"
-  echo "archiving message" . (nummsgs == 1 ? '' : 's')
+  echo "Archiving message" . (nummsgs == 1 ? '' : 's')
   let res = system(command)
   setlocal modifiable
-  exec a:firstline . "," . a:lastline . "delete"
+  exec "silent " . a:firstline . "," . a:lastline . "delete"
   setlocal nomodifiable
   write
-  if nummsgs > 2
-    call feedkeys("\<cr>")
-  endif
   redraw
   echo nummsgs . " message" . (nummsgs == 1 ? '' : 's') . " archived"
 endfunc
@@ -335,12 +324,12 @@ func! s:append_messages_to_file() range
   let nummsgs = len(uid_set)
   let append_file = input("print messages to file: ", s:append_file)
   if append_file == ''
-    echom "canceled"
+    echom "Canceled"
     return
   endif
   let s:append_file = append_file
   let command = s:append_to_file_command . join(uid_set, ',') . ' ' . s:append_file 
-  echo "appending " . nummsgs . " message" . (nummsgs == 1 ? '' : 's') . " to " . s:append_file . ". please wait..."
+  echo "Appending " . nummsgs . " message" . (nummsgs == 1 ? '' : 's') . " to " . s:append_file . ". Please wait..."
   let res = system(command)
   echo res
   redraw
@@ -384,17 +373,14 @@ function! s:complete_move_to_mailbox()
     let command = s:move_to_command . s:uid_set . ' ' . shellescape(mailbox)
   endif
   redraw
-  echo "moving uids ". s:uid_set . " to mailbox " . mailbox 
+  echo "Moving uids ". s:uid_set . " to mailbox " . mailbox 
   let res = system(command)
   setlocal modifiable
   if !s:copy_to_mailbox
-    exec s:firstline . "," . s:lastline . "delete"
+    exec "silent " . s:firstline . "," . s:lastline . "delete"
   end
   setlocal nomodifiable
   write
-  if s:nummsgs > 2
-    call feedkeys("\<cr>")
-  endif
   redraw
   echo s:nummsgs .  " message" . (s:nummsgs == 1 ? '' : 's') . ' ' . (s:copy_to_mailbox ? 'copied' : 'moved') . ' to ' . mailbox 
 endfunction
@@ -491,24 +477,24 @@ function! s:select_mailbox()
   let s:query = "100 all"
   let command = s:select_mailbox_command . shellescape(s:mailbox)
   redraw
-  echom "selecting mailbox: ". s:mailbox . ". please wait..."
+  echom "Selecting mailbox: ". s:mailbox . ". Please wait..."
   call system(command)
   redraw
   " now get latest 100 messages
   call s:focus_list_window()  
   setlocal modifiable
   let command = s:search_command . shellescape("100 all")
-  echo "loading messages..."
+  echo "Loading messages..."
   let res = system(command)
-  1,$delete
-  put! =res
+  silent 1,$delete
+  silent! put! =res
   execute "normal Gdd\<c-y>" 
   normal G
   setlocal nomodifiable
   write
   normal z.
   redraw
-  echom "current mailbox: ". s:mailbox 
+  echom "Current mailbox: ". s:mailbox 
 endfunction
 
 func! s:search_query()
@@ -531,11 +517,11 @@ function! s:do_search()
   redraw
   call s:focus_list_window()  
   setlocal modifiable
-  echo "running query on " . s:mailbox . ": " . s:query . ". please wait..."
+  echo "Running query on " . s:mailbox . ": " . s:query . ". Please wait..."
   let res = system(command)
-  1,$delete
-  put! =res
-  execute "normal Gdd\<c-y>" 
+  silent! 1,$delete
+  silent! put! =res
+  execute "silent normal Gdd\<c-y>" 
   setlocal nomodifiable
   write
   normal z.
@@ -545,7 +531,7 @@ function! s:more_messages()
   let line = getline(line('.'))
   let seqno = get(split(matchstr(line, '\d\+:\d\+$'), ':'), 0)
   let command = s:more_messages_command . seqno
-  echo "fetching more messages. please wait..."
+  echo "Fetching more messages. Please wait..."
   let res = system(command)
   setlocal modifiable
   let lines =  split(res, "\n")
@@ -586,12 +572,16 @@ func! s:open_compose_window(command)
   redraw
   echo a:command
   let res = system(a:command)
-  new
+  split compose_message.txt
   setlocal modifiable
-  wincmd p 
-  close!
-  1,$delete
-  put! =res
+  " TODO maybe later save backups?
+  setlocal buftype=nowrite
+  if winnr('$') > 1
+    wincmd p 
+    close!
+  endif
+  silent 1,$delete
+  silent put! =res
   call feedkeys("\<cr>")
   call s:compose_window_mappings()
   setlocal completefunc=CompleteContact
@@ -629,20 +619,23 @@ function! CompleteContact(findstart, base)
   endif
 endfun
 
-function! s:cancel_compose()
+func! s:close_and_focus_list_window()
   call s:focus_list_window()
   wincmd p
   close!
   normal z.
-endfunction
+endfunc
+
 
 function! s:send_message()
   let mail = join(getline(1,'$'), "\n")
-  echo "sending message"
-  call system(s:deliver_command, mail)
+  echo "Sending message"
+  let res = system(s:deliver_command, mail)
+  if match(res, '^Failed') == -1
+    call s:close_and_focus_list_window()
+  endif
   redraw
-  echo "sent! press ,q to go back to message list"
-  redraw
+  echom substitute(res, '[\s\r\n]\+$', '', '')
 endfunction
 
 " -------------------------------------------------------------------------------- 
@@ -771,7 +764,7 @@ func! s:message_window_mappings()
 
   nnoremap <silent> <buffer> <leader>#  :close<cr>:call <SID>focus_list_window()<cr>:call <SID>delete_messages("Deleted")<cr>
   nnoremap <silent> <buffer> <leader>*  :call <SID>focus_list_window()<cr>:call <SID>toggle_star()<cr>
-  noremap <silent> <buffer> <leader>! :call <SID>focus_list_window()<cr>:call <SID>delete_messages("spam")<CR>
+  noremap <silent> <buffer> <leader>! :close<cr>:call <SID>focus_list_window()<cr>:call <SID>delete_messages("spam")<CR>
   noremap <silent> <buffer> <leader>e :call <SID>focus_list_window()<cr>:call <SID>archive_messages()<CR>
   " alt mappings for lazy hands
   nmap <silent> <buffer> <leader>8 <leader>*
@@ -830,7 +823,7 @@ func! s:message_list_window_mappings()
 endfunc
 
 func! s:compose_window_mappings()
-  noremap <silent> <buffer> <leader>q :call <SID>cancel_compose()<cr>
+  noremap <silent> <buffer> <leader>q :call <SID>close_and_focus_list_window()<cr>
   setlocal ai
   " setlocal textwidth=72
   autocmd CursorMoved <buffer> call <SID>toggle_textwidth()

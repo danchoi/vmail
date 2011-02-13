@@ -11,8 +11,7 @@ than in any web browser or GUI program.
 
 * a Gmail account
 * a relatively recent version of Vim (vmail is developed against Vim 7.3)
-* Ruby with SSL support compiled in (vmail is developed using Ruby 1.9.2)
-* RubyGems (if Ruby version is older than 1.9)
+* Ruby 1.9.0 or higher with SSL support compiled in (vmail is developed using Ruby 1.9.2)
 * the `lynx` text-only-mode web browser is required to view HTML mail parts in vmail
 
 The current version of vmail assumes a Unix environment. I'll try to make later versions accommodate Windows.
@@ -463,6 +462,8 @@ vmail generates a few files in the current directory when it is running:
 * `vmailbuffer` holds the message list. This file should get deleted automatically when vmail quits.
 
 * `current_message.txt` holds the current message being shown. Not deleted on quit.
+
+* `sent-messages.txt` will contain copies of any messages you send from vmail
 
 * `part.html` is created if you open an HTML mail part from vmail. 
 
