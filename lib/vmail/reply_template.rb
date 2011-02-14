@@ -20,6 +20,7 @@ module Vmail
       date = @orig_headers['date'].is_a?(String) ? Time.parse(@orig_headers['date']) : @orig_headers['date']
       quote_header = date ? "On #{date.strftime('%a, %b %d, %Y at %I:%M %p')}, #{sender} wrote:\n\n" : "#{sender} wrote:\n\n"
       body = quote_header + formatter.process_body
+      body.encode("UTF-8", undef: :replace, replace: "??")
       body.force_encoding("UTF-8")
       body = body.gsub(/^(?=>)/, ">").gsub(/^(?!>)/, "> ")
       {'from' => "#@name <#@username>", 'to' => primary_recipient, 'cc' => cc, 'subject' => subject, :body => body}
