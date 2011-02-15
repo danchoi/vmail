@@ -20,6 +20,7 @@ module Vmail
       @username, @password = config['username'], config['password']
       @name = config['name']
       @signature = config['signature']
+      @always_cc = config['always_cc']
       @mailbox = nil
       @logger = Logger.new(config['logfile'] || STDERR)
       @logger.level = Logger::DEBUG
@@ -612,7 +613,8 @@ EOF
     def new_message_template(subject = nil, append_signature = true)
       headers = {'from' => "#{@name} <#{@username}>",
         'to' => nil,
-        'subject' => subject
+        'subject' => subject,
+        'cc' => @always_cc 
       }
       format_headers(headers) + (append_signature ? ("\n\n" + signature) : "\n\n")
     end
@@ -635,7 +637,7 @@ EOF
         return nil
       end
       # user reply_template class
-      reply_headers = Vmail::ReplyTemplate.new(@current_mail, @username, @name, replyall).reply_headers
+      reply_headers = Vmail::ReplyTemplate.new(@current_mail, @username, @name, replyall, @always_cc).reply_headers
       body = reply_headers.delete(:body)
       format_headers(reply_headers) + "\n\n\n" + body + signature
     end

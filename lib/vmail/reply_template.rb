@@ -5,8 +5,8 @@ require 'time'
 module Vmail
   class ReplyTemplate
 
-    def initialize(mail, username, name, replyall)
-      @username, @name, @replyall = username, name, replyall
+    def initialize(mail, username, name, replyall, always_cc=nil)
+      @username, @name, @replyall, @always_cc = username, name, replyall, always_cc
       @mail = Mail.new(mail)
     end
 
@@ -34,15 +34,15 @@ module Vmail
     end
 
     def cc
-      return nil unless @replyall
+      return nil unless (@replyall || @always_cc)
       cc = @mail.header['to'].value.split(/,\s*/) 
       if @mail.header['cc']
         cc += @mail.header['cc'].value.split(/,\s*/) 
       end
       cc = cc.flatten.compact.
-        select {|x| 
-          x.to_s[/<([^>]+)>/, 1] !~ /#{@username}/ && x.to_s[/^[^<]+/, 1] !~ /#{@name}/
-          }.join(', ')
+        select {|x| x.to_s[/<([^>]+)>/, 1] !~ /#{@username}/ && x.to_s[/^[^<]+/, 1] !~ /#{@name}/ }
+      cc << @always_cc
+      cc.join(', ')
     end
 
     def sender
