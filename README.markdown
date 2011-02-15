@@ -73,6 +73,10 @@ You can omit the password key-value pair if you'd rather not have the password
 saved in the file. In that case, you'll prompted for the password each time you
 start vmail.
 
+You can also add an `always_cc:` key-value pair. This will pre-insert
+whatever email address you specify in the `cc:` line of any email you
+start composing in vmail.
+
 If you want to configure vmail with multiple Gmail accounts, [here's how][multiaccount].
 
 [multiaccount]:https://github.com/danchoi/vmail/wiki/How-can-i-quickly-switch-between-multiple-accounts%3F
