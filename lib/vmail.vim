@@ -634,8 +634,8 @@ function! s:send_message()
   if match(res, '^Failed') == -1
     call s:close_and_focus_list_window()
   endif
-  redraw
   echom substitute(res, '[\s\r\n]\+$', '', '')
+  redraw
 endfunction
 
 " -------------------------------------------------------------------------------- 
