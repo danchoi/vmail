@@ -86,7 +86,7 @@ module Vmail
     def format_text_body(part)
       text = part.body.decoded.gsub("\r", '')
       charset = (part.content_type_parameters && part.content_type_parameters['charset']) || encoding
-      if charset && charset != 'UTF-8'
+      if (charset && charset != 'UTF-8') || (text.encoding != 'UTF-8')
         Iconv.conv('UTF-8//TRANSLIT//IGNORE', charset, text)
       else
         text
