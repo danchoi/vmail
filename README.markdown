@@ -523,7 +523,11 @@ But in a few weeks, with your help, vmail will become stable.
 
 [tracker]:https://github.com/danchoi/vmail/issues
 
-And if you have any tips or troubleshooting advice you want to share with other
+You can also join and comment in the [vmail-users Google Group][group].
+
+[group]:https://groups.google.com/group/vmail-users?hl=en
+
+If you have any tips or troubleshooting advice you want to share with other
 vmail users, please add them to the [vmail wiki][wiki].
 
 [wiki]:https://github.com/danchoi/vmail/wiki
