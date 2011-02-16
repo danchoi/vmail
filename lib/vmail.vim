@@ -61,9 +61,9 @@ endfunction
 function! s:create_message_window() 
   exec "split " . s:message_bufname
   setlocal modifiable 
+  setlocal buftype=nofile
   let s:message_window_bufnr = bufnr('%')
   call s:message_window_mappings()
-  write
   close
 endfunction
 
@@ -101,8 +101,8 @@ function! s:show_message(stay_in_message_list)
   " critical: don't call execute 'normal \<cr>'
   " call feedkeys("<cr>") 
   1delete
-  write
   normal 1Gjk
+  set nomodifiable
   if a:stay_in_message_list
     call s:focus_list_window()
   end
