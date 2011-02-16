@@ -492,6 +492,11 @@ vmail gem is downloaded from).
 [github]:https://github.com/danchoi/vmail
 [rubygems]:https://rubygems.org/gems/vmail
 
+
+## Quitting Vmail
+
+* `,qq` will quit Vmail from any window. It's equivalent to `:qall!`
+
 ## Redrawing the screen
 
 If you run commands in very fast succession, the screen may get a little messed

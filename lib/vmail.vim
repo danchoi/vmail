@@ -836,6 +836,7 @@ func! s:global_mappings()
   noremap <silent> <leader>o :call <SID>open_href(0)<cr> 
   noremap <silent> <leader>O :call <SID>open_href(1)<cr> 
   noremap <silent> <leader>? :call <SID>show_help()<cr>
+  noremap <silent> <leader>qq :qal!<cr>
 endfunc
 
 "TODO see if using LocalLeader and maplocalleader makes more sense
