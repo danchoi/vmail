@@ -16,6 +16,8 @@ than in any web browser or GUI program.
 
 To install Ruby 1.9.2, I recommend using the [RVM Version Manager][rvm].
 
+[rvm]:http://rvm.beginrescueend.com
+
 The current version of vmail assumes a Unix environment. 
 
 Your Gmail account should be [IMAP-enabled][gmailimap]. 
