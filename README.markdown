@@ -14,7 +14,9 @@ than in any web browser or GUI program.
 * Ruby 1.9.0 or higher with SSL support compiled in (vmail is developed using Ruby 1.9.2)
 * the `lynx` text-only-mode web browser is required to view HTML mail parts in vmail
 
-The current version of vmail assumes a Unix environment. I'll try to make later versions accommodate Windows.
+To install Ruby 1.9.2, I recommend using the [RVM Version Manager][rvm].
+
+The current version of vmail assumes a Unix environment. 
 
 Your Gmail account should be [IMAP-enabled][gmailimap]. 
 
