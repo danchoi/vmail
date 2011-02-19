@@ -202,7 +202,7 @@ function! s:focus_message_window()
   let winnr = bufwinnr(s:message_window_bufnr)
   if winnr == -1
     " create window
-    exec "botright split " . s:message_bufname
+    exec "rightbelow split " . s:message_bufname
   else
     exec winnr . "wincmd w"
   endif
@@ -346,7 +346,7 @@ function! s:move_to_mailbox(copy) range
   if !exists("s:mailboxes")
     call s:get_mailbox_list()
   endif
-  topleft split MailboxSelect
+  leftabove split MailboxSelect
   setlocal buftype=nofile
   setlocal noswapfile
   setlocal modifiable
@@ -426,7 +426,7 @@ endfunction
 
 function! s:mailbox_window()
   call s:get_mailbox_list()
-  topleft split MailboxSelect
+  leftabove split MailboxSelect
   setlocal buftype=nofile
   setlocal noswapfile
   setlocal modifiable
