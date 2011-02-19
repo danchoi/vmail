@@ -854,7 +854,7 @@ call s:focus_list_window() " to go list window
 call system(s:set_window_width_command . winwidth(1))
 
 " TODO complete this feature later. Don't release it half-baked
-" autocmd VimResized <buffer> call system(s:set_window_width_command . winwidth(1))
+autocmd VimResized <buffer> call system(s:set_window_width_command . winwidth(1))
 
 autocmd bufreadpost *.txt call <SID>turn_into_compose_window()
 
