@@ -26,6 +26,9 @@ module Vmail
       @logger.level = Logger::DEBUG
       @imap_server = config['server'] || 'imap.gmail.com'
       @imap_port = config['port'] || 993
+      @smtp_server = config['smtp_server'] || 'smtp.gmail.com'
+      @smtp_port = config['smtp_port'] || 587
+      @smtp_domain = config['smtp_domain'] || 'gmail.com'
       @current_mail = nil
       @current_message_uid = nil
       @width = 140
@@ -786,9 +789,9 @@ EOF
     end
    
     def smtp_settings
-      [:smtp, {:address => "smtp.gmail.com",
-      :port => 587,
-      :domain => 'gmail.com',
+      [:smtp, {:address => @smtp_server,
+      :port => @smtp_port,
+      :domain => @smtp_domain,
       :user_name => @username,
       :password => @password,
       :authentication => 'plain',
