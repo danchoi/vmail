@@ -161,6 +161,9 @@ module Vmail
                  "spam" => "Spam",
                  "trash" => "Trash"}
       @mailbox_aliases = {}
+      if @mailboxes.nil?
+        list_mailboxes
+      end
       aliases.each do |shortname, fullname|
         [ "[Gmail]", "[Google Mail" ].each do |prefix|
           if @mailboxes.include?( "#{prefix}/#{fullname}" )
