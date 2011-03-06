@@ -1,8 +1,10 @@
-# vmail
+# Vmail
 
-vmail is a Vim interface to Gmail. 
+Vmail is a Vim interface to Gmail. 
 
-Why vmail? Because some people are 1000 times more productive and happy in [Vim][vim]
+[screenshots]
+
+Why Vmail? Because some people are 1000 times more productive and happy in [Vim][vim]
 than in any web browser or GUI program. 
 
 [vim]:http://www.vim.org/
@@ -10,15 +12,15 @@ than in any web browser or GUI program.
 ## Prerequisites
 
 * a Gmail account
-* a relatively recent version of Vim (vmail is developed against Vim 7.3)
-* Ruby 1.9.0 or higher with SSL support compiled in (vmail is developed using Ruby 1.9.2)
-* the `lynx` text-only-mode web browser is required to view HTML mail parts in vmail
+* a relatively recent version of Vim (Vmail is developed against Vim 7.3)
+* Ruby 1.9.0 or higher with SSL support compiled in (Vmail is developed using Ruby 1.9.2)
+* the `lynx` text-only-mode web browser is required to view HTML mail parts in Vmail
 
 To install Ruby 1.9.2, I recommend using the [RVM Version Manager][rvm].
 
 [rvm]:http://rvm.beginrescueend.com
 
-The current version of vmail assumes a Unix environment. 
+The current version of Vmail assumes a Unix environment. 
 
 Your Gmail account should be [IMAP-enabled][gmailimap]. 
 
@@ -32,7 +34,7 @@ If you want to use `elinks` to display HTML parts, [here are instructions][elink
 
     gem install vmail
 
-Test your installation by typing `vmail -h`. You should see vmail's help.
+Test your installation by typing `vmail -h`. You should see Vmail's help.
 
 On some systems you may run into a PATH issue, where the system can't find the
 `vmail` command after installation. Please report this if you encounter this
@@ -42,22 +44,22 @@ problem, and mention what system you're using. You might want to try
 
 to see if that puts `vmail` on your PATH.
 
-vmail is evolving rapidly. To update to the latest version, simply run the
+Vmail is evolving rapidly. To update to the latest version, simply run the
 installation command again.
 
     gem install vmail
 
-If you ever want to uninstall vmail from your system, just execute this command:
+If you ever want to uninstall Vmail from your system, just execute this command:
 
     gem uninstall vmail
 
-... and all traces of vmail will removed, except the few files it creates
+... and all traces of Vmail will removed, except the few files it creates
 during execution (see below).
 
 ## Configuration file
 
-To run vmail, create a yaml file called `.vmailrc` and save it either in the
-current directory (the directory from which you launch vmail) or in your home
+To run Vmail, create a yaml file called `.vmailrc` and save it either in the
+current directory (the directory from which you launch Vmail) or in your home
 directory. 
 
 The `.vmailrc` file should look something like this. Substitute your own values.
@@ -67,7 +69,7 @@ The `.vmailrc` file should look something like this. Substitute your own values.
     name: Daniel Choi
     signature: |
       --
-      Sent from vmail. http://danielchoi.com/software/vmail.html
+      Sent from Vmail. http://danielchoi.com/software/vmail.html
 
 This file should be formatted in [YAML syntax][1].
 
@@ -75,13 +77,13 @@ This file should be formatted in [YAML syntax][1].
 
 You can omit the password key-value pair if you'd rather not have the password
 saved in the file. In that case, you'll prompted for the password each time you
-start vmail.
+start Vmail.
 
 You can also add an `always_cc:` key-value pair. This will pre-insert
 whatever email address you specify in the `cc:` line of any email you
-start composing in vmail.
+start composing in Vmail.
 
-If you want to configure vmail with multiple Gmail accounts, [here's how][multiaccount].
+If you want to configure Vmail with multiple Gmail accounts, [here's how][multiaccount].
 
 [multiaccount]:https://github.com/danchoi/vmail/wiki/How-can-i-quickly-switch-between-multiple-accounts%3F
 
@@ -93,27 +95,27 @@ configuration options][firewall] that you can use.
 
 ## Contacts autocompletion
 
-vmail uses Vim autocompletion to help you auto-complete email addresses.
+Vmail uses Vim autocompletion to help you auto-complete email addresses.
 To use this feature, generate a `vmail-contacts.txt` file in the current or
 home directory. This is a simple list of your email contacts.
-Invoking vmail with the `-g` option generates this file for you by
+Invoking Vmail with the `-g` option generates this file for you by
 collecting all the recipients and cc's from your last 500 sent
 emails. You can adjust this number by using `-g` with a number argument. 
 
-After vmail generates this file for you, you can edit it however and whenever
+After Vmail generates this file for you, you can edit it however and whenever
 you want, as long as there is one address per line.
 
-## Starting vmail
+## Starting Vmail
 
 Once you've created the configuration file and (optionally) the contacts file,
-you can start vmail with
+you can start Vmail with
 
     vmail
 
-This opens the vmail/Vim interface and shows you the last 100 messages in your
+This opens the Vmail/Vim interface and shows you the last 100 messages in your
 Gmail inbox.
 
-You can have vmail show messages from any other mailbox (a.k.a. label) on
+You can have Vmail show messages from any other mailbox (a.k.a. label) on
 startup by passing in the mailbox name as an argument:
 
     vmail starred
@@ -122,7 +124,7 @@ You can also pass in search parameters after specifying the mailbox:
 
     vmail important from barackobama@whitehouse.gov
 
-On startup, vmail loads 100 messages by default. You can increase or decrease
+On startup, Vmail loads 100 messages by default. You can increase or decrease
 this number by passing in a number after the mailbox name:
 
     vmail inbox 700 subject unix
@@ -134,7 +136,7 @@ the query:
 
 ## Viewing messages
 
-The first screen vmail shows you is a list of messages. You can view a message
+The first screen Vmail shows you is a list of messages. You can view a message
 by moving the cursor line to it and pressing ENTER. This will split the screen
 and show the message content in the bottom pane. Pressing ENTER will also move
 the cursor to the message window. If you want to look at a message but keep the
@@ -157,8 +159,8 @@ You can also use the standard Vim key sequence `C-w C-w`.
 You can use `<C-j>` or `,j` from either split window to show the next message.
 You can use `<C-k>` or `,k` to show the previous message. 
 
-vmail loads a certain number messages at a time, starting with the most recent.
-If there are more messages that vmail hasn't loaded, you'll see a line at the
+Vmail loads a certain number messages at a time, starting with the most recent.
+If there are more messages that Vmail hasn't loaded, you'll see a line at the
 top of the list that looks something like this:
 
     > Load 100 more messages. 156 remaining.
@@ -193,7 +195,7 @@ spam, or archive. Use `v` to start marking a range of lines (the vertical
 position of the cursor doesn't matter).  Then type any of the above commands to
 perform an action on all the messages you selected.
 
-To save you keystrokes, vmail provides alternative key mappings for
+To save you keystrokes, Vmail provides alternative key mappings for
 `,*`, `,#`, and `,!`:
 
 * star: `,*` &rarr; `,8`
@@ -230,7 +232,7 @@ message list, and type `,b`. You'll be prompted to select the target mailbox.
 To copy a message to another mailbox, put the cursor on the message in the
 message list, and type `,B`. You'll be prompted to select the target mailbox.
 
-If you type in the name of a target mailbox that doesn't exist yet, vmail will
+If you type in the name of a target mailbox that doesn't exist yet, Vmail will
 create it for you before performing a move or copy.
 
 ## Composing messages
@@ -276,10 +278,10 @@ draft to a local file with the standard Vim `:w` command:
 
     :w my_draft_filename.txt 
 
-Make sure you append *.txt to the filename, or else vmail won't recognize it as
+Make sure you append *.txt to the filename, or else Vmail won't recognize it as
 a potential email when you reload it.
 
-Make sure you don't use `:wq` unless you mean to quit vmail immediately. After
+Make sure you don't use `:wq` unless you mean to quit Vmail immediately. After
 you save the draft to a file, you can go back to the message list by typing `q`
 in normal mode.
 
@@ -300,7 +302,7 @@ password in it.
 
 ## Attachments
 
-The current version of vmail can handle attachments to a certain extent.
+The current version of Vmail can handle attachments to a certain extent.
 
 When you're viewing a message with attachments, you'll see something like this
 at the top of the message window:
@@ -317,7 +319,7 @@ at the top of the message window:
     see attached
 
 To download these attachments to a local directory, type `,A`. You'll be
-prompted for a directory path.  Then vmail will save all the attachments in the
+prompted for a directory path.  Then Vmail will save all the attachments in the
 message to this directory, creating the directory if necessary.
 
 To send attachments, add something like this to your new message in the message
@@ -337,10 +339,10 @@ composition window:
 
 The `attach:` block is a YAML list. The items are paths (either relative to the
 current directory or absolute) to the files you want to attach to your message.
-Note that you can also specify a directory, in which case vmail attaches every
+Note that you can also specify a directory, in which case Vmail attaches every
 file it finds in that directory.
 
-One thing vmail doesn't do yet is let you forward a message with all its
+One thing Vmail doesn't do yet is let you forward a message with all its
 attachments intact.  This feature will be implemented in the near future. 
 
 ## Printing messages to a file
@@ -360,10 +362,10 @@ selected lines in your browser.
 When you're reading a message with an html mail part, `,h` saves that part to a
 local file (`part.html`) and opens it in your web browser.
 
-By default, the vmail uses the command `open` to launch your web browser. In OS X,
+By default, the Vmail uses the command `open` to launch your web browser. In OS X,
 this opens URLs and HTML files in the default web browser.  You can change the
-browser vmail invokes by setting the VMAIL_BROWSER environmental variable
-before you start vmail, e.g.:
+browser Vmail invokes by setting the VMAIL_BROWSER environmental variable
+before you start Vmail, e.g.:
 
     export VMAIL_BROWSER='elinks'
 
@@ -374,7 +376,7 @@ split window.
 
 ## Search queries
 
-vmail can generate a message list by performing an IMAP search on the current mailbox.
+Vmail can generate a message list by performing an IMAP search on the current mailbox.
 From the message list window, type `,s`. This will prompt you for a search query. 
 The search query is an optional number specifying the number of messages to return, 
 followed by a valid IMAP search query.
@@ -414,16 +416,16 @@ Tip: When you're entering your search query, `<C-u>` clears the query line.
 
 Power-Tip: When you're at the search query prompt, `C-p` and `C-n` let you
 navigate the search query history. `<C-f>` opens a mini-editor that contains
-the current query plus a history of previous vmail search queries. You can edit
+the current query plus a history of previous Vmail search queries. You can edit
 any line in this mini-editor and press ENTER to perform the query on that line.
 
 ## Command-line mode and batch processing
 
-You can invoke vmail in non-interactive command-line mode. This is very
-useful for batch processing and for using vmail in Unix pipelines and
+You can invoke Vmail in non-interactive command-line mode. This is very
+useful for batch processing and for using Vmail in Unix pipelines and
 automated scripts.
 
-If you redirect vmail's output from STDOUT to a file or a program, vmail will
+If you redirect Vmail's output from STDOUT to a file or a program, Vmail will
 output the message list resulting from a search query to a file.
 
     vmail inbox 100 from monit > message-list.txt 
@@ -453,45 +455,45 @@ Non-interactive mode assumes that `.vmailrc` contains your Gmail password.
 
 Typing `,?` will open this webpage in a browser.
 
-## Using vmail with MacVim
+## Using Vmail with MacVim
 
-To use MacVim as your vmail Vim engine, `export VMAIL_VIM=mvim` before starting
-vmail or put this command in your `~/.bash_profile`.
+To use MacVim as your Vmail Vim engine, `export VMAIL_VIM=mvim` before starting
+Vmail or put this command in your `~/.bash_profile`.
 
-Note that when vmail uses MacVim, the terminal window in which you invoke vmail
-will show vmail's logging output while MacVim is running. To quit vmail in
-MacVim mode, first quit the MacVim window running vmail, and then press CTRL-c
-in the original terminal window to stop the vmail process.
+Note that when Vmail uses MacVim, the terminal window in which you invoke Vmail
+will show Vmail's logging output while MacVim is running. To quit Vmail in
+MacVim mode, first quit the MacVim window running Vmail, and then press CTRL-c
+in the original terminal window to stop the Vmail process.
 
-## vmail file byproducts
+## Vmail file byproducts
 
-vmail generates a few files in the current directory when it is running: 
+Vmail generates a few files in the current directory when it is running: 
 
-* `vmailbuffer` holds the message list. This file should get deleted automatically when vmail quits.
+* `vmailbuffer` holds the message list. This file should get deleted automatically when Vmail quits.
 
 * `current_message.txt` holds the current message being shown. Not deleted on quit.
 
-* `sent-messages.txt` will contain copies of any messages you send from vmail
+* `sent-messages.txt` will contain copies of any messages you send from Vmail
 
-* `part.html` is created if you open an HTML mail part from vmail. 
+* `part.html` is created if you open an HTML mail part from Vmail. 
 
-Finally, vmail logs output to a `vmail.log` file which it creates in the
+Finally, Vmail logs output to a `vmail.log` file which it creates in the
 current directory. You can tail this file in a separate terminal window to see
-what's going on behind the scenes as you use vmail.
+what's going on behind the scenes as you use Vmail.
 
 ## Is my Gmail password secure?
 
-In short, yes. vmail uses TLS ([Transport Layer Security][tls]) to perform IMAP
-and SMTP authentication. So vmail transmits your password securely over the
+In short, yes. Vmail uses TLS ([Transport Layer Security][tls]) to perform IMAP
+and SMTP authentication. So Vmail transmits your password securely over the
 network.
 
 [tls]:http://en.wikipedia.org/wiki/Transport_Layer_Security
 
-You can also be sure that the vmail code doesn't do anything nefarious with
-your Gmail password because vmail is open source. Anyone can inspect the source
-code of the copy of vmail that runs on your computer and inspect the latest
-vmail code at the [github repository][github] and at [rubygems.org][rubygems] (where the
-vmail gem is downloaded from). 
+You can also be sure that the Vmail code doesn't do anything nefarious with
+your Gmail password because Vmail is open source. Anyone can inspect the source
+code of the copy of Vmail that runs on your computer and inspect the latest
+Vmail code at the [github repository][github] and at [rubygems.org][rubygems] (where the
+`vmail` gem is downloaded from). 
 
 [github]:https://github.com/danchoi/vmail
 [rubygems]:https://rubygems.org/gems/vmail
@@ -508,7 +510,7 @@ up. In that case, just force a redraw of the Vim screen with `C-l`.
 
 ## Customizing colors
 
-By default, vmail highlights starred messages in bold green against a black
+By default, Vmail highlights starred messages in bold green against a black
 background. You can customize this setting by adding a line to your `~/.vimrc`
 (not `.vmailrc`) file like so:
     
@@ -518,12 +520,12 @@ Type `:help highlight-args` in Vim for more details.
 
 ## Bug reports, feature requests, user community
 
-Please file bug reports and feature requests in the [vmail github issue tracker][tracker].
+Please file bug reports and feature requests in the [Vmail github issue tracker][tracker].
 
 You can also vote up existing feature requests on the issue tracker.
 
-vmail is very young and in beta, so there are bound to be bugs and issues.
-But in a few weeks, with your help, vmail will become stable.
+Vmail is very young and in beta, so there are bound to be bugs and issues.
+But in a few weeks, with your help, Vmail will become stable.
 
 [tracker]:https://github.com/danchoi/vmail/issues
 
@@ -532,7 +534,7 @@ You can also join and comment in the [vmail-users Google Group][group].
 [group]:https://groups.google.com/group/vmail-users?hl=en
 
 If you have any tips or troubleshooting advice you want to share with other
-vmail users, please add them to the [vmail wiki][wiki].
+Vmail users, please add them to the [vmail wiki][wiki].
 
 [wiki]:https://github.com/danchoi/vmail/wiki
 

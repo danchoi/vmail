@@ -25,24 +25,26 @@ end
 
 
 desc "build and push website"
-task :web do
-  require 'vmail/version'
-  version = Vmail::VERSION
-  Dir.chdir("website") do
-    puts "updating website"
-    puts `./run.sh #{version}`
+task :web => :build_webpage do
+  puts "Building and pushing website"
+  Dir.chdir "../project-webpages" do
+    `scp out/vmail.html zoe2@instantwatcher.com:~/danielchoi.com/public/software/`
+    `rsync -avz out/images-vmail zoe2@instantwatcher.com:~/danielchoi.com/public/software/`
+    `rsync -avz out/stylesheets zoe2@instantwatcher.com:~/danielchoi.com/public/software/`
+    `rsync -avz out/lightbox2 zoe2@instantwatcher.com:~/danielchoi.com/public/software/`
+  end
+  `open http://danielchoi.com/software/vmail.html`
+end
+
+desc "build webpage"
+task :build_webpage do
+  `cp README.markdown ../project-webpages/src/vmail.README.markdown`
+  Dir.chdir "../project-webpages" do
+    puts `ruby gen.rb vmail #{Vmail::VERSION}`
+    #`open out/vmail.html`
   end
 end
 
-desc "build website locally"
-task :weblocal do
-  require 'vmail/version'
-  version = Vmail::VERSION
-  Dir.chdir("website") do
-    `ruby gen.rb #{version} > vmail.html`
-    `open vmail.html`
-  end
-end
 
 desc "git push and rake release bumped version"
 task :bumped do
