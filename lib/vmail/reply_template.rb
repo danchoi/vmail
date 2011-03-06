@@ -42,7 +42,7 @@ module Vmail
         cc += @mail.header['cc'].value.split(/,\s*/) 
       end
       cc = cc.flatten.compact.
-        select {|x| x !~ /#{@username}/ && x !~ /#{@always_cc}/ }
+        select {|x| x !~ /#{@username}/} 
       cc << @always_cc
       cc.join(', ')
     end
