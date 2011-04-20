@@ -29,10 +29,9 @@ module Vmail
     end
 
     def primary_recipient
-      reply_headers unless @orig_headers
       from = @orig_headers['from']
-      reply_to = @orig_headers['reply-to']
-      [ reply_to, from ].flatten.compact.map(&:to_s)[0]
+      reply_to = @mail.header['Reply-To']
+      (reply_to || from).to_s 
     end
 
     def cc

@@ -636,7 +636,6 @@ EOF
         log "- missing @current mail!"
         return nil
       end
-      # user reply_template class
       reply_headers = Vmail::ReplyTemplate.new(@current_mail, @username, @name, replyall, @always_cc).reply_headers
       body = reply_headers.delete(:body)
       format_headers(reply_headers) + "\n\n\n" + body + signature
