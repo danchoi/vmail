@@ -31,7 +31,7 @@ module Vmail
     def primary_recipient
       from = @orig_headers['from']
       reply_to = @mail.header['Reply-To']
-      (reply_to || from).to_s 
+      @primary_recipient = (reply_to || from).to_s 
     end
 
     def cc
@@ -43,7 +43,7 @@ module Vmail
       cc = cc.flatten.compact.
         select {|x| x !~ /#{@username}/} 
       cc << @always_cc
-      cc.join(', ')
+      cc.select {|x| x !~ /#{@primary_recipient}/}.join(', ')
     end
 
     def sender
