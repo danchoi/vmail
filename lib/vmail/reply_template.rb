@@ -36,7 +36,7 @@ module Vmail
 
     def cc
       return nil unless (@replyall || @always_cc)
-      cc = @mail.header['to'].value.split(/,\s*/) 
+      cc = @mail.header['to'] ? @mail.header['to'].value.split(/,\s*/) : []
       if @mail.header['cc']
         cc += @mail.header['cc'].value.split(/,\s*/) 
       end
