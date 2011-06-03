@@ -653,7 +653,7 @@ func! s:save_attachments()
   if !exists("s:savedir")
     let s:savedir = getcwd() . "/attachments"
   end
-  let s:savedir = input("save attachments to directory: ", s:savedir)
+  let s:savedir = input("save attachments to directory: ", s:savedir, "file")
   let command = s:save_attachments_command . s:savedir
   let res = system(command)
   echo res
