@@ -7,6 +7,7 @@ require 'net/imap'
 require 'time'
 require 'logger'
 require 'vmail/address_quoter'
+require 'vmail/database'
 
 module Vmail
   class ImapClient

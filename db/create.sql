@@ -1,12 +1,15 @@
-create table if folders (
+create table if not exists folders (
   name text
 );
 
 create table if not exists messages (
-  uid integer,
+  uid integer primary key,
   rfc822 text,
+  size integer,
+  flags text,
   subject text,
-  plaintext text,
+  sender text,
   date text,
-
+  plaintext text
 );
+

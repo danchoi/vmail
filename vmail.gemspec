@@ -23,4 +23,6 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'mail', '>= 2.2.12'
   s.add_dependency 'highline', '>= 1.6.1'
+  s.add_dependency 'sequel'
+  s.add_dependency 'sqlite3'
 end
