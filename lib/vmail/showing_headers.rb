@@ -14,7 +14,6 @@ module Vmail
 
     def fetch_and_cache_headers(id_set)
       results = reconnect_if_necessary do 
-        # TODO check if we've cached it?
         @imap.fetch(id_set, ["FLAGS", "ENVELOPE", "RFC822.SIZE", "UID" ])
       end
       if results.nil?
@@ -27,21 +26,20 @@ module Vmail
         recipients = ((envelope.to || []) + (envelope.cc || [])).map {|a| extract_address(a)}.join(', ')
         sender = extract_address envelope.from.first
         uid = x.attr["UID"]
-
-        params = {
-          subject: (subject || ''),
-          flags: x.attr['FLAGS'].join(','),
-          date: DateTime.parse(envelope.date).to_s,
-          size: x.attr['RFC822.SIZE'],
-          sender: sender,
-          recipients: recipients,
-          uid: uid,
-          mailbox: @mailbox,
-          # reminder to fetch these later
-          rfc822: nil, 
-          plaintext: nil 
-        }
         unless Message[mailbox: @mailbox, uid: uid]
+          params = {
+            subject: (subject || ''),
+            flags: x.attr['FLAGS'].join(','),
+            date: DateTime.parse(envelope.date).to_s,
+            size: x.attr['RFC822.SIZE'],
+            sender: sender,
+            recipients: recipients,
+            uid: uid,
+            mailbox: @mailbox,
+            # reminder to fetch these later
+            rfc822: nil, 
+            plaintext: nil 
+          }
           Message.create params
         end
         uid

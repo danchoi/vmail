@@ -10,5 +10,6 @@ create table if not exists messages (
   recipients text,
   date text,
   plaintext text
+
 );
 
