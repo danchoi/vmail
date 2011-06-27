@@ -11,9 +11,6 @@ module Vmail
     end
 
     def list_parts(parts = (@mail.parts.empty? ? [@mail] : @mail.parts))
-      if parts.empty?
-        return []
-      end
       lines = parts.map do |part|
         if part.multipart?
           list_parts(part.parts)
@@ -25,11 +22,7 @@ module Vmail
       lines.flatten
     end
 
-    def process_body(target = @mail)
-      find_plain_text_part
-    end
-
-    def find_plain_text_part(mail=@mail)
+    def plaintext_part(mail=@mail)
       part = find_text_part2(mail.body, mail.content_type)
       if part.nil?
         raise "Can't find plain text part"
@@ -58,7 +51,7 @@ module Vmail
           format_text_body(part) 
         when /message\/rfc/
           m = Mail.new(part.body.decoded)
-          process_body(m)
+          plaintext_part(m)
         else # just format_text on it anyway
           format_text_body(part) 
         end

@@ -49,7 +49,7 @@ module Vmail
 #{divider '-'}
 #{format_headers(formatter.extract_headers)}
 
-#{formatter.process_body}
+#{formatter.plaintext_part}
 EOF
       # 2 calls so we can see more fine grained exceptions
       message.update(:rfc822 => rfc822)

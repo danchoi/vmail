@@ -324,7 +324,7 @@ Sent Message #{self.format_parts_info(formatter.list_parts)}
 
 #{format_headers(formatter.extract_headers)}
 
-#{formatter.process_body}
+#{formatter.plaintext_part}
 EOF
     end
 

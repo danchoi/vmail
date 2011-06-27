@@ -19,7 +19,7 @@ module Vmail
       end
       date = @orig_headers['date'].is_a?(String) ? Time.parse(@orig_headers['date']) : @orig_headers['date']
       quote_header = date ? "On #{date.strftime('%a, %b %d, %Y at %I:%M %p')}, #{sender} wrote:\n\n" : "#{sender} wrote:\n\n"
-      body = quote_header + formatter.process_body
+      body = quote_header + formatter.plaintext_part
       begin
         body = body.gsub(/^(?=>)/, ">").gsub(/^(?!>)/, "> ")
       rescue
