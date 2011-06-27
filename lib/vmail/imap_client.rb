@@ -8,10 +8,18 @@ require 'time'
 require 'logger'
 require 'vmail/address_quoter'
 require 'vmail/database'
+require 'vmail/searching'
+require 'vmail/showing_headers'
+require 'vmail/showing_message'
+require 'vmail/flagging_and_moving'
 
 module Vmail
   class ImapClient
     include Vmail::AddressQuoter
+    include Vmail::Searching
+    include Vmail::ShowingHeaders
+    include Vmail::ShowingMessage
+    include Vmail::FlaggingAndMoving
 
     DIVIDER_WIDTH = 46
 
@@ -34,12 +42,8 @@ module Vmail
 
     # holds mail objects keyed by [mailbox, uid]
     def message_cache
+      # TODO change this to use SQLITE
       @message_cache ||= {}
-      size = @message_cache.values.reduce(0) {|sum, x| sum + x[:size]}
-      if size > 2_000_000 # TODO make this configurable
-        log "Pruning message cache; message cache is consuming #{number_to_human_size size}"
-        @message_cache.keys[0, @message_cache.size / 2].each {|k| @message_cache.delete(k)}
-      end
       @message_cache
     end
 
@@ -91,6 +95,8 @@ module Vmail
       select_mailbox(@mailbox, true)
     end
 
+    # TODO no need for this if all shown messages are stored in SQLITE3 
+    # and keyed by UID.
     def clear_cached_message
       return unless STDIN.tty?
       log "CLEARING CACHED MESSAGE"
@@ -181,114 +187,6 @@ module Vmail
       @mailboxes
     end
 
-    # id_set may be a range, array, or string
-    def fetch_row_text(id_set, are_uids=false, is_update=false)
-      log "Fetch_row_text: #{id_set.inspect}"
-      if id_set.is_a?(String)
-        id_set = id_set.split(',')
-      end
-      if id_set.to_a.empty?
-        log "- empty set"
-        return ""
-      end
-      new_message_rows = fetch_envelopes(id_set, are_uids, is_update)
-      new_message_rows.map {|x| x[:row_text]}.join("\n")
-    rescue # Encoding::CompatibilityError (only in 1.9.2)
-      log "Error in fetch_row_text:\n#{$!}\n#{$!.backtrace}"
-      new_message_rows.map {|x| Iconv.conv('US-ASCII//TRANSLIT//IGNORE', 'UTF-8', x[:row_text])}.join("\n")
-    end
-
-    def fetch_envelopes(id_set, are_uids, is_update)
-      results = reconnect_if_necessary do 
-        if are_uids
-          @imap.uid_fetch(id_set, ["FLAGS", "ENVELOPE", "RFC822.SIZE", "UID" ])
-        else
-          @imap.fetch(id_set, ["FLAGS", "ENVELOPE", "RFC822.SIZE", "UID" ])
-        end
-      end
-      if results.nil?
-        error = "Expected fetch results but got nil"
-        log(error) && raise(error)
-      end
-      log "- extracting headers"
-      new_message_rows = results.map {|x| extract_row_data(x) }
-      log "- returning #{new_message_rows.size} new rows and caching result"  
-      new_message_rows
-    end
-
-    # TODO extract this to another class or module and write unit tests
-    def extract_row_data(fetch_data)
-      seqno = fetch_data.seqno
-      uid = fetch_data.attr['UID']
-      # log "fetched seqno #{seqno} uid #{uid}"
-      envelope = fetch_data.attr["ENVELOPE"]
-      size = fetch_data.attr["RFC822.SIZE"]
-      flags = fetch_data.attr["FLAGS"]
-      address_struct = if @mailbox == mailbox_aliases['sent'] 
-                         structs = envelope.to || envelope.cc
-                         structs.nil? ? nil : structs.first 
-                       else
-                         envelope.from.first
-                       end
-      address = if address_struct.nil?
-                  "Unknown"
-                elsif address_struct.name
-                  "#{Mail::Encodings.unquote_and_convert_to(address_struct.name, 'UTF-8')} <#{[address_struct.mailbox, address_struct.host].join('@')}>"
-                else
-                  [Mail::Encodings.unquote_and_convert_to(address_struct.mailbox, 'UTF-8'), Mail::Encodings.unquote_and_convert_to(address_struct.host, 'UTF-8')].join('@') 
-                end
-      if @mailbox == mailbox_aliases['sent'] && envelope.to && envelope.cc
-        total_recips = (envelope.to + envelope.cc).size
-        address += " + #{total_recips - 1}"
-      end
-      date = begin 
-               Time.parse(envelope.date).localtime
-             rescue ArgumentError
-               Time.now
-             end
-
-      # TEMPORARY
-      # store in sqlite3
-      # TODO cache this and check cache before downloading message body
-      params = {
-        subject: (envelope.subject || ''),
-        flags: flags.join(','),
-        date: date.to_s,
-        size: size,
-        sender: address,
-        uid: uid,
-        mailbox: @mailbox,
-        rfc822: @current_mail.to_s,
-        plaintext: show_message(uid)
-      }
-      DB[:messages].insert params
-  
-      date_formatted = if date.year != Time.now.year
-                         date.strftime "%b %d %Y" rescue envelope.date.to_s 
-                       else 
-                         date.strftime "%b %d %I:%M%P" rescue envelope.date.to_s 
-                       end
-      subject = envelope.subject || ''
-      subject = Mail::Encodings.unquote_and_convert_to(subject, 'UTF-8')
-      flags = format_flags(flags)
-      mid_width = @width - 38
-      address_col_width = (mid_width * 0.3).ceil
-      subject_col_width = (mid_width * 0.7).floor
-      identifier = [seqno.to_i, uid.to_i].join(':')
-      row_text = [ flags.col(2),
-                   (date_formatted || '').col(14),
-                   address.col(address_col_width),
-                   subject.col(subject_col_width), 
-                   number_to_human_size(size).rcol(7), 
-                   identifier.to_s
-      ].join(' | ')
-      {:uid => uid, :seqno => seqno, :row_text => row_text}
-    rescue 
-      log "Error extracting header for uid #{uid} seqno #{seqno}: #$!\n#{$!.backtrace}"
-      row_text = "#{seqno.to_s} : error extracting this header"
-      {:uid => uid, :seqno => seqno, :row_text => row_text}
-    end
-
     UNITS = [:b, :kb, :mb, :gb].freeze
 
     # borrowed from ActionView/Helpers
@@ -306,61 +204,8 @@ module Vmail
     end
 
     FLAGMAP = {:Flagged => '*'}
-    # flags is an array like [:Flagged, :Seen]
-    def format_flags(flags)
-      # other flags like "Old" should be hidden here
-      flags = flags.map {|flag| FLAGMAP[flag] || flag}
-      flags.delete("Old")
-      if flags.delete(:Seen).nil?
-        flags << '+' # unread
-      end
-      flags.join('')
-    end
 
-    def search(query)
-      query = Vmail::Query.parse(query)
-      @limit = query.shift.to_i
-      # a limit of zero is effectively no limit
-      if @limit == 0
-        @limit = @num_messages
-      end
-      if query.size == 1 && query[0].downcase == 'all'
-        # form a sequence range
-        query.unshift [[@num_messages - @limit + 1 , 1].max, @num_messages].join(':')
-        @all_search = true
-      else # this is a special query search
-        # set the target range to the whole set
-        query.unshift "1:#@num_messages"
-        @all_search = false
-      end
-      @query = query.map {|x| x.to_s.downcase}
-      query_string = Vmail::Query.args2string(@query)
-      log "Search query: #{@query} > #{query_string.inspect}"
-      log "- @all_search #{@all_search}"
-      @query = query
-      @ids = reconnect_if_necessary(180) do # increase timeout to 3 minutes
-        @imap.search(query_string)
-      end
-      # save ids in @ids, because filtered search relies on it
-      fetch_ids = if @all_search
-                    @ids
-                  else #filtered search
-                    @start_index = [@ids.length - @limit, 0].max
-                    @ids[@start_index..-1]
-                  end
-      self.max_seqno = @ids[-1]
-      log "- search query got #{@ids.size} results; max seqno: #{self.max_seqno}" 
-      clear_cached_message
-      res = fetch_row_text(fetch_ids)
-      if STDOUT.tty?
-        add_more_message_line(res, fetch_ids[0])
-      else
-        # non interactive mode
-        puts [@mailbox, res].join("\n")
-      end
-    rescue
-      log "ERROR:\n#{$!.inspect}\n#{$!.backtrace.join("\n")}"
-    end
+
 
     def decrement_max_seqno(num)
       return unless STDIN.tty?
@@ -368,6 +213,7 @@ module Vmail
       self.max_seqno -= num
     end
 
+    # TODO why not just reload the current page?
     def update
       prime_connection
       old_num_messages = @num_messages
@@ -404,18 +250,18 @@ module Vmail
         y = [message_id - 1, 0].max
 
         res = fetch_row_text((x..y))
-        add_more_message_line(res, x)
+        with_more_message_line(res, x)
       else # filter search query
         log "@start_index #@start_index"
         x = [(@start_index - limit), 0].max
         y = [@start_index - 1, 0].max
         @start_index = x
         res = fetch_row_text(@ids[x..y]) 
-        add_more_message_line(res, @ids[x])
+        with_more_message_line(res, @ids[x])
       end
     end
 
-    def add_more_message_line(res, start_seqno)
+    def with_more_message_line(res, start_seqno)
       log "Add_more_message_line for start_seqno #{start_seqno}"
       if @all_search
         return res if start_seqno.nil?
@@ -429,154 +275,6 @@ module Vmail
       end
       log "Remaining messages: #{remaining}"
       ">  Load #{[100, remaining].min} more messages. #{remaining} remaining.\n" + res
-    end
-
-    def show_message(uid, raw=false)
-      log "Show message: #{uid}"
-      return @current_mail.to_s if raw 
-      uid = uid.to_i
-      if uid == @current_message_uid 
-        return @current_message 
-      end
-
-      log "Showing message uid: #{uid}"
-      data = if x = message_cache[[@mailbox, uid]]
-               log "- message cache hit"
-               x
-             else 
-               log "- fetching and storing to message_cache[[#{@mailbox}, #{uid}]]"
-               fetch_and_cache(uid)
-             end
-      if data.nil?
-        # retry, though this is a hack!
-        log "- data is nil. retrying..."
-        return show_message(uid, raw)
-      end
-      # make this more DRY later by directly using a ref to the hash
-      mail = data[:mail]
-      size = data[:size] 
-      @current_message_uid = uid
-      log "- setting @current_mail"
-      @current_mail = mail # used later to show raw message or extract attachments if any
-      @current_message = data[:message_text]
-    rescue
-      log "Parsing error"
-      "Error encountered parsing this message:\n#{$!}\n#{$!.backtrace.join("\n")}"
-    end
-
-    def fetch_and_cache(uid)
-      if data = message_cache[[@mailbox, uid]] 
-        return data
-      end
-      fetch_data = reconnect_if_necessary do 
-        res = @imap.uid_fetch(uid, ["FLAGS", "RFC822", "RFC822.SIZE"])
-        if res.nil?
-          # retry one more time ( find a more elegant way to do this )
-          res = @imap.uid_fetch(uid, ["FLAGS", "RFC822", "RFC822.SIZE"])
-        end
-        res[0] 
-      end
-      # USE THIS
-      size = fetch_data.attr["RFC822.SIZE"]
-      flags = fetch_data.attr["FLAGS"]
-      mail = Mail.new(fetch_data.attr['RFC822'])
-      formatter = Vmail::MessageFormatter.new(mail)
-      message_text = <<-EOF
-#{@mailbox} uid:#{uid} #{number_to_human_size size} #{flags.inspect} #{format_parts_info(formatter.list_parts)}
-#{divider '-'}
-#{format_headers(formatter.extract_headers)}
-
-#{formatter.process_body}
-EOF
-      # log "Storing message_cache[[#{@mailbox}, #{uid}]]"
-      d = {:mail => mail, :size => size, :message_text => message_text, :seqno => fetch_data.seqno, :flags => flags}
-      message_cache[[@mailbox, uid]] = d
-    rescue
-      msg = "Error encountered parsing message uid  #{uid}:\n#{$!}\n#{$!.backtrace.join("\n")}" + 
-        "\n\nRaw message:\n\n" + mail.to_s
-      log msg
-      log message_text
-      {:message_text => msg}
-    end
-
-    def format_parts_info(parts)
-      lines = parts.select {|part| part !~ %r{text/plain}}
-      if lines.size > 0
-        "\n#{lines.join("\n")}"
-      end
-    end
-
-    # id_set is a string comming from the vim client
-    # action is -FLAGS or +FLAGS
-    def flag(uid_set, action, flg)
-      log "Flag #{uid_set} #{flg} #{action}"
-      uid_set = uid_set.split(',').map(&:to_i)
-      if flg == 'Deleted'
-        log "Deleting uid_set: #{uid_set.inspect}"
-        decrement_max_seqno(uid_set.size)
-        # for delete, do in a separate thread because deletions are slow
-        spawn_thread_if_tty do 
-          unless @mailbox == mailbox_aliases['trash']
-            log "@imap.uid_copy #{uid_set.inspect} to #{mailbox_aliases['trash']}"
-            log @imap.uid_copy(uid_set, mailbox_aliases['trash'])
-          end
-          log "@imap.uid_store #{uid_set.inspect} #{action} [#{flg.to_sym}]"
-          log @imap.uid_store(uid_set, action, [flg.to_sym])
-          reload_mailbox
-          clear_cached_message
-        end
-      elsif flg == 'spam' || flg == mailbox_aliases['spam'] 
-        log "Marking as spam uid_set: #{uid_set.inspect}"
-        decrement_max_seqno(uid_set.size)
-        spawn_thread_if_tty do 
-          log "@imap.uid_copy #{uid_set.inspect} to #{mailbox_aliases['spam']}"
-          log @imap.uid_copy(uid_set, mailbox_aliases['spam']) 
-          log "@imap.uid_store #{uid_set.inspect} #{action} [:Deleted]"
-          log @imap.uid_store(uid_set, action, [:Deleted])
-          reload_mailbox
-          clear_cached_message
-        end
-      else
-        log "Flagging uid_set: #{uid_set.inspect}"
-        spawn_thread_if_tty do
-          log "@imap.uid_store #{uid_set.inspect} #{action} [#{flg.to_sym}]"
-          log @imap.uid_store(uid_set, action, [flg.to_sym])
-        end
-      end
-    end
-
-    def move_to(uid_set, mailbox)
-      uid_set = uid_set.split(',').map(&:to_i)
-      decrement_max_seqno(uid_set.size)
-      log "Move #{uid_set.inspect} to #{mailbox}"
-      if mailbox == 'all'
-        log "Archiving messages"
-      end
-      if mailbox_aliases[mailbox]
-        mailbox = mailbox_aliases[mailbox]
-      end
-      create_if_necessary mailbox
-      log "Moving uid_set: #{uid_set.inspect} to #{mailbox}"
-      spawn_thread_if_tty do 
-        log @imap.uid_copy(uid_set, mailbox)
-        log @imap.uid_store(uid_set, '+FLAGS', [:Deleted])
-        reload_mailbox
-        clear_cached_message
-        log "Moved uid_set #{uid_set.inspect} to #{mailbox}"
-      end
-    end
-
-    def copy_to(uid_set, mailbox)
-      uid_set = uid_set.split(',').map(&:to_i)
-      if mailbox_aliases[mailbox]
-        mailbox = mailbox_aliases[mailbox]
-      end
-      create_if_necessary mailbox
-      log "Copying #{uid_set.inspect} to #{mailbox}"
-      spawn_thread_if_tty do 
-        log @imap.uid_copy(uid_set, mailbox)
-        log "Copied uid_set #{uid_set.inspect} to #{mailbox}"
-      end
     end
 
     def spawn_thread_if_tty(&block) 
@@ -679,10 +377,6 @@ Sent Message #{self.format_parts_info(formatter.list_parts)}
 EOF
     end
 
-    def backup_sent_message(message)
-      File.open(SENT_MESSAGES_FILE, "a") {|f| f.write(divider('-') + "\n" + format_sent_message(message))}
-    end
-
     def deliver(text)
       # parse the text. The headers are yaml. The rest is text body.
       require 'net/smtp'
@@ -693,7 +387,6 @@ EOF
       log res.inspect
       log "\n"
       msg = if res.is_a?(Mail::Message)
-        backup_sent_message mail
         "Message '#{mail.subject}' sent and saved to #{SENT_MESSAGES_FILE}"
       else
         "Failed to deliver message '#{mail.subject}'!"
