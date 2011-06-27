@@ -41,12 +41,6 @@ module Vmail
       @width = 140
     end
 
-    # holds mail objects keyed by [mailbox, uid]
-    def message_cache
-      # TODO change this to use SQLITE
-      @message_cache ||= {}
-      @message_cache
-    end
 
     def open
       @imap = Net::IMAP.new(@imap_server, @imap_port, true, nil, false)
