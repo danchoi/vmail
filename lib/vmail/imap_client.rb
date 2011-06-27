@@ -261,22 +261,6 @@ module Vmail
       end
     end
 
-    def with_more_message_line(res, start_seqno)
-      log "Add_more_message_line for start_seqno #{start_seqno}"
-      if @all_search
-        return res if start_seqno.nil?
-        remaining = start_seqno - 1
-      else # filter search
-        remaining = (@ids.index(start_seqno) || 1) - 1
-      end
-      if remaining < 1
-        log "None remaining"
-        return "Showing all matches\n" + res
-      end
-      log "Remaining messages: #{remaining}"
-      ">  Load #{[100, remaining].min} more messages. #{remaining} remaining.\n" + res
-    end
-
     def spawn_thread_if_tty(&block) 
       if STDIN.tty?
         Thread.new do 
