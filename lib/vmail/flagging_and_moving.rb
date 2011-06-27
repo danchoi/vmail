@@ -4,7 +4,7 @@ module Vmail
     # flags is an array like [:Flagged, :Seen]
     def format_flags(flags)
       # other flags like "Old" should be hidden here
-      flags = flags.map {|flag| FLAGMAP[flag] || flag}
+      flags = flags.split(',').map {|flag| FLAGMAP[flag] || flag}
       flags.delete("Old")
       if flags.delete(:Seen).nil?
         flags << '+' # unread

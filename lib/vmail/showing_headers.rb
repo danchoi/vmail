@@ -2,17 +2,14 @@ module Vmail
   module ShowingHeaders
     # id_set may be a range, array, or string
     def fetch_row_text(uid_set)
-      log "Fetch_row_text: #{uid_set.inspect}"
       if uid_set.is_a?(String)
         uid_set = uid_set.split(',')
       end
       if uid_set.to_a.empty?
-        log "- empty set"
         return ""
       end
-      puts "fetching messages from sqlite3: #{uid_set.inspect}"
       messages = uid_set.map {|uid| Message[mailbox: @mailbox, uid: uid] }
-      message.map {|m| format_header_for_list(m)}
+      messages.map {|m| format_header_for_list(m)}.join("\n")
     end
 
     def fetch_and_cache_headers(id_set)
@@ -34,10 +31,10 @@ module Vmail
         params = {
           subject: (subject || ''),
           flags: x.attr['FLAGS'].join(','),
-          date: DateTime.parse(envelope.date),
+          date: DateTime.parse(envelope.date).to_s,
           size: x.attr['RFC822.SIZE'],
           sender: sender,
-          sender: recipients,
+          recipients: recipients,
           uid: uid,
           mailbox: @mailbox,
           # reminder to fetch these later
@@ -63,10 +60,11 @@ module Vmail
     end
 
     def format_header_for_list(message)
-      formatted_date = if message.date.year != Time.now.year
-                         message.date.strftime "%b %d %Y" 
+      date = DateTime.parse(message.date)
+      formatted_date = if date.year != Time.now.year
+                         date.strftime "%b %d %Y" 
                        else 
-                         message.date.strftime "%b %d %I:%M%P"
+                         date.strftime "%b %d %I:%M%P"
                        end
       address = if @mailbox == mailbox_aliases['sent']
                   message.recipients
