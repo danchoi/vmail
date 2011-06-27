@@ -1,6 +1,6 @@
 
 create table if not exists messages (
-  uid integer primary key,
+  uid integer,
   mailbox text,
   rfc822 text,
   size integer,

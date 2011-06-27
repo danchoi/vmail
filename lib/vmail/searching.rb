@@ -37,6 +37,7 @@ module Vmail
       clear_cached_message
 
       uids = fetch_and_cache_headers(fetch_ids)
+      log "UIDS: #{uids}"
       res = fetch_row_text uids
 
       if STDOUT.tty?

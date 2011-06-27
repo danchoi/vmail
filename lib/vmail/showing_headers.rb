@@ -10,6 +10,7 @@ module Vmail
         log "- empty set"
         return ""
       end
+      puts "fetching messages from sqlite3: #{uid_set.inspect}"
       messages = uid_set.map {|uid| Message[mailbox: @mailbox, uid: uid] }
       message.map {|m| format_header_for_list(m)}
     end
@@ -23,19 +24,19 @@ module Vmail
         error = "Expected fetch results but got nil"
         log(error) && raise(error)
       end
-      # TODO see if we can get message_uid (the other uid) ?
-      results.each do |x| 
-        # Store in sqlite3
+      results.map do |x| 
+        envelope = x.attr["ENVELOPE"]
         subject = Mail::Encodings.unquote_and_convert_to(envelope.subject, 'UTF-8')
-        recipients = (envelope.to + envelope.cc).map {|a| extract_address(a)}.join(', ')
+        recipients = ((envelope.to || []) + (envelope.cc || [])).map {|a| extract_address(a)}.join(', ')
         sender = extract_address envelope.from.first
+        uid = x.attr["UID"]
 
         params = {
           subject: (subject || ''),
-          flags: flags.join(','),
-          date: date.to_s,
-          size: size,
-          sender: address,
+          flags: x.attr['FLAGS'].join(','),
+          date: DateTime.parse(envelope.date),
+          size: x.attr['RFC822.SIZE'],
+          sender: sender,
           sender: recipients,
           uid: uid,
           mailbox: @mailbox,
@@ -43,7 +44,10 @@ module Vmail
           rfc822: nil, 
           plaintext: nil 
         }
-        DB[:messages].insert params
+        unless Message[mailbox: @mailbox, uid: uid]
+          Message.create params
+        end
+        uid
       end
     end
 
