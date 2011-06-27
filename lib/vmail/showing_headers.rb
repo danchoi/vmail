@@ -1,20 +1,14 @@
 module Vmail
   module ShowingHeaders
     # id_set may be a range, array, or string
-    def fetch_row_text(uid_set)
-      if uid_set.is_a?(String)
-        uid_set = uid_set.split(',')
-      end
-      if uid_set.to_a.empty?
-        return ""
-      end
-      messages = uid_set.map {|uid| Message[mailbox: @mailbox, uid: uid] }
+    def fetch_row_text(message_ids)
+      messages = message_ids.map {|message_id| Message[message_id] }
       messages.map {|m| format_header_for_list(m)}.join("\n")
     end
 
     def fetch_and_cache_headers(id_set)
       results = reconnect_if_necessary do 
-        @imap.fetch(id_set, ["FLAGS", "ENVELOPE", "RFC822.SIZE", "UID" ])
+        @imap.fetch(id_set, ["FLAGS", "ENVELOPE", "RFC822.SIZE", "UID"])
       end
       if results.nil?
         error = "Expected fetch results but got nil"
@@ -22,11 +16,16 @@ module Vmail
       end
       results.map do |x| 
         envelope = x.attr["ENVELOPE"]
+        message_id = envelope.message_id
         subject = Mail::Encodings.unquote_and_convert_to(envelope.subject, 'UTF-8')
         recipients = ((envelope.to || []) + (envelope.cc || [])).map {|a| extract_address(a)}.join(', ')
         sender = extract_address envelope.from.first
         uid = x.attr["UID"]
-        unless Message[mailbox: @mailbox, uid: uid]
+        message = Message[message_id]
+        unless message
+          message = Message.new
+          message.message_id = message_id
+          message.save
           params = {
             subject: (subject || ''),
             flags: x.attr['FLAGS'].join(','),
@@ -34,15 +33,19 @@ module Vmail
             size: x.attr['RFC822.SIZE'],
             sender: sender,
             recipients: recipients,
-            uid: uid,
-            mailbox: @mailbox,
             # reminder to fetch these later
             rfc822: nil, 
             plaintext: nil 
           }
-          Message.create params
+          message.update params
         end
-        uid
+
+        unless message.labels.include?(@label)
+          Labeling.create(message_id: message.message_id,
+                         uid: uid,
+                         label_id: @label.id)
+        end
+        message_id
       end
     end
 
@@ -78,7 +81,7 @@ module Vmail
                    address.col(address_col_width),
                    message.subject.col(subject_col_width), 
                    number_to_human_size(message.size).rcol(7), 
-                   message.uid ].join(' | ')
+                   message.message_id ].join(' | ')
     end
 
     def with_more_message_line(res, start_seqno)

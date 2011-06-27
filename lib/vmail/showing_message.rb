@@ -1,36 +1,41 @@
 module Vmail
   module ShowingMessage
-    # holds mail objects keyed by [mailbox, uid]
-    def cached_full_message?(uid)
-      m = Message[uid: uid, mailbox: @mailbox]
-      m && !m.plaintext.nil?
+
+    def current_message
+      return unless @cur_message_id
+      Message[@cur_message_id]
     end
 
-    def show_message(uid, raw=false)
-      uid = uid.to_i
-      log "Show message: #{uid}"
-      return @current_message.rfc822 if raw 
-      log "Showing message uid: #{uid}"
-      res = fetch_and_cache(uid)
+    def cached_full_message?(message_id)
+      m = Message[message_id]
+      m && !m.plaintext.nil? && m
+    end
+
+    def show_message(message_id, raw=false)
+      log "Show message: #{message_id}"
+      return current_message.rfc822 if raw 
+      log "Showing message message_id: #{message_id}"
+      res = fetch_and_cache(message_id)
       if res.nil?
         # retry, though this is a hack!
         log "- data is nil. retrying..."
-        return show_message(uid, raw)
+        return show_message(message_id, raw)
       end
       res
     end
 
-    def fetch_and_cache(uid)
-      if data = cached_full_message?(uid)
+    def fetch_and_cache(message_id)
+      if message = cached_full_message?(message_id)
         log "- full message cache hit"        
-        return data
+        return message.plaintext
       end
       log "- full message cache miss"        
+      labeling = Labeling[message_id: message_id, label_id: @label.id]
+      uid = labeling.uid
+
       fetch_data = reconnect_if_necessary do 
-        res = @imap.uid_fetch(uid, ["FLAGS", "RFC822", "RFC822.SIZE"])
-        if res.nil?
-          # retry one more time ( find a more elegant way to do this )
-          res = @imap.uid_fetch(uid, ["FLAGS", "RFC822", "RFC822.SIZE"])
+        res = retry_once do
+          @imap.uid_fetch(uid, ["FLAGS", "RFC822", "RFC822.SIZE"])
         end
         res[0] 
       end
@@ -38,9 +43,9 @@ module Vmail
       rfc822 = Mail.new(fetch_data.attr['RFC822'])
       formatter = Vmail::MessageFormatter.new rfc822
 
-      message = Message[uid: uid, mailbox: @mailbox]
+      message = Message[message_id]
       message_text = <<-EOF
-#{@mailbox} uid:#{uid} #{number_to_human_size message.size} #{message.flags} #{format_parts_info(formatter.list_parts)}
+#{message_id} #{number_to_human_size message.size} #{message.flags} #{format_parts_info(formatter.list_parts)}
 #{divider '-'}
 #{format_headers(formatter.extract_headers)}
 
@@ -50,13 +55,11 @@ EOF
       # /home/choi/.rvm/gems/ruby-1.9.2-p180@vmail/gems/sequel-3.24.1/lib/sequel/model/base.rb:982:in `pk'
       # /home/choi/.rvm/gems/ruby-1.9.2-p180@vmail/gems/sequel-3.24.1/lib/sequel/model/base.rb:991
 
-      @current_message = message.update (
-        :rfc822 => rfc822,
-        :plaintext => message_text
-      )
+      message.update(:rfc822 => rfc822, :plaintext => message_text)
+      @cur_message_id = message.message_id
       message_text
     rescue
-      msg = "Error encountered parsing message uid #{uid} [#{@mailbox}]:\n#{$!}\n#{$!.backtrace.join("\n")}" 
+      msg = "Error encountered parsing message message_id #{message_id} [#{@mailbox}]:\n#{$!}\n#{$!.backtrace.join("\n")}" 
       log msg
       msg
     end

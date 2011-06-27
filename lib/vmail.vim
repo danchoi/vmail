@@ -75,7 +75,7 @@ function! s:show_message(stay_in_message_list)
     call s:more_messages()
     return
   endif
-  let s:uid = matchstr(line, '\d\+$')
+  let s:uid = shellescape(matchstr(line, '\S\+$'))
   if s:uid == ""
     return
   end
@@ -736,8 +736,8 @@ function! s:collect_uids(startline, endline)
   let uid_set = []
   let lnum = a:startline
   while lnum <= a:endline
-    let uid = matchstr(getline(lnum), '\d\+$')
-    call add(uid_set, uid)
+    let uid = matchstr(getline(lnum), '\S\+$')
+    call add(shellescape(uid_set), uid)
     let lnum += 1
   endwhile
   return uid_set

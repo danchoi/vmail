@@ -36,7 +36,7 @@ module Vmail
       @logger.level = Logger::DEBUG
       @imap_server = config['server'] || 'imap.gmail.com'
       @imap_port = config['port'] || 993
-      @current_message = nil
+      current_message = nil
       @width = 140
     end
 
@@ -76,7 +76,10 @@ module Vmail
         log @imap.select(mailbox)
       end
       log "Done"
+
       @mailbox = mailbox
+      @label = Label[name: @mailbox] || Label.create(name: @mailbox)
+
       log "Getting mailbox status"
       get_mailbox_status
       log "Getting highest message id"
@@ -94,7 +97,7 @@ module Vmail
     def clear_cached_message
       return unless STDIN.tty?
       log "CLEARING CACHED MESSAGE"
-      @current_message = nil
+      current_message = nil
     end
 
     def get_highest_message_id
@@ -288,7 +291,7 @@ module Vmail
 
     def reply_template(replyall=false)
       log "Sending reply template"
-      reply_headers = Vmail::ReplyTemplate.new(@current_message.rfc822, @username, @name, replyall, @always_cc).reply_headers
+      reply_headers = Vmail::ReplyTemplate.new(current_message.rfc822, @username, @name, replyall, @always_cc).reply_headers
       body = reply_headers.delete(:body)
       format_headers(reply_headers) + "\n\n\n" + body + signature
     end
@@ -299,7 +302,7 @@ module Vmail
     end
 
     def forward_template
-      original_body = @current_message.split(/\n-{20,}\n/, 2)[1]
+      original_body = current_message.split(/\n-{20,}\n/, 2)[1]
       formatter = Vmail::MessageFormatter.new(@current_mail)
       headers = formatter.extract_headers
       subject = headers['subject']
