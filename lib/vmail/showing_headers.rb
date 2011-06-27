@@ -27,12 +27,16 @@ module Vmail
       results.each do |x| 
         # Store in sqlite3
         subject = Mail::Encodings.unquote_and_convert_to(envelope.subject, 'UTF-8')
+        recipients = (envelope.to + envelope.cc).map {|a| extract_address(a)}.join(', ')
+        sender = extract_address envelope.from.first
+
         params = {
           subject: (subject || ''),
           flags: flags.join(','),
           date: date.to_s,
           size: size,
           sender: address,
+          sender: recipients,
           uid: uid,
           mailbox: @mailbox,
           # reminder to fetch these later
@@ -43,14 +47,7 @@ module Vmail
       end
     end
 
-    def format_header_for_list(message)
-      envelope = fetch_data.attr["ENVELOPE"]
-      address_struct = if @mailbox == mailbox_aliases['sent'] 
-                         structs = envelope.to || envelope.cc
-                         structs.nil? ? nil : structs.first 
-                       else
-                         envelope.from.first
-                       end
+    def extract_address(address_struct)
       address = if address_struct.nil?
                   "Unknown"
                 elsif address_struct.name
@@ -58,15 +55,21 @@ module Vmail
                 else
                   [Mail::Encodings.unquote_and_convert_to(address_struct.mailbox, 'UTF-8'), Mail::Encodings.unquote_and_convert_to(address_struct.host, 'UTF-8')].join('@') 
                 end
-      if @mailbox == mailbox_aliases['sent'] && envelope.to && envelope.cc
-        total_recips = (envelope.to + envelope.cc).size
-        address += " + #{total_recips - 1}"
-      end
+
+    end
+
+    def format_header_for_list(message)
       formatted_date = if message.date.year != Time.now.year
                          message.date.strftime "%b %d %Y" 
                        else 
                          message.date.strftime "%b %d %I:%M%P"
                        end
+      address = if @mailbox == mailbox_aliases['sent']
+                  message.recipients
+                else
+                  message.sender
+                end
+
       mid_width = @width - 38
       address_col_width = (mid_width * 0.3).ceil
       subject_col_width = (mid_width * 0.7).floor

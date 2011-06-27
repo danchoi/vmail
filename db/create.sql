@@ -7,6 +7,7 @@ create table if not exists messages (
   flags text,
   subject text,
   sender text,
+  recipients text,
   date text,
   plaintext text
 );
