@@ -36,8 +36,7 @@ module Vmail
       @logger.level = Logger::DEBUG
       @imap_server = config['server'] || 'imap.gmail.com'
       @imap_port = config['port'] || 993
-      @current_mail = nil
-      @current_message_uid = nil
+      @current_message = nil
       @width = 140
     end
 
@@ -95,8 +94,6 @@ module Vmail
     def clear_cached_message
       return unless STDIN.tty?
       log "CLEARING CACHED MESSAGE"
-      @current_mail = nil
-      @current_message_uid = nil
       @current_message = nil
     end
 
@@ -291,11 +288,7 @@ module Vmail
 
     def reply_template(replyall=false)
       log "Sending reply template"
-      if @current_mail.nil?
-        log "- missing @current mail!"
-        return nil
-      end
-      reply_headers = Vmail::ReplyTemplate.new(@current_mail, @username, @name, replyall, @always_cc).reply_headers
+      reply_headers = Vmail::ReplyTemplate.new(@current_message.rfc822, @username, @name, replyall, @always_cc).reply_headers
       body = reply_headers.delete(:body)
       format_headers(reply_headers) + "\n\n\n" + body + signature
     end
