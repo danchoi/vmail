@@ -26,23 +26,28 @@ module Vmail
     end
 
     def process_body(target = @mail)
-      out = if target.header['Content-Type'].to_s =~ /multipart\/mixed/
-        target.parts.map {|part| 
-          if part.multipart?
-            part = find_text_or_html_part(target.parts)
-            format_part(part) 
-          else
-            format_part(part) 
-          end
-        }.join("\n#{'-' * 39}\n")
-      elsif target.header['Content-Type'].to_s =~ /multipart\/alternative/
-        part = find_text_or_html_part(target.parts)
-        format_part(part) 
-      else
-        format_part(target)
-      end
-      out
+      find_plain_text_part
     end
+
+    def find_plain_text_part(mail=@mail)
+      part = find_text_part2(mail.body, mail.content_type)
+      if part.nil?
+        raise "Can't find plain text part"
+      end
+      format_part part
+    end
+
+    # helper method
+    def find_text_part2(part, content_type)
+      if part.multipart?  
+        part.parts.map {|p| find_text_part2(p, p.content_type)}.compact.first
+      elsif content_type =~ %r[^text/plain] || 
+        content_type =~ %r[text/plain] ||
+        content_type =~ %r[message/rfc]
+        part
+      end
+    end
+
 
     def format_part(part)
       if part && part.respond_to?(:header)
@@ -65,33 +70,9 @@ module Vmail
       "[error:] #{$!}"
     end
 
-    def find_text_or_html_part(parts = @mail.parts)
-      if parts.empty?
-        return @mail
-      end
-      part = parts.detect {|part| part.multipart?}
-      if part
-        find_text_or_html_part(part.parts)
-      else
-        # no multipart part
-        part = parts.detect {|part| (part.header["Content-Type"].to_s =~ /text\/plain/) }
-        if part
-          return part
-        else
-          parts.first
-        end
-      end
-    end
 
     def format_text_body(part)
-      text = part.body.decoded.gsub("\r", '')
-      charset = (part.content_type_parameters && part.content_type_parameters['charset']) || encoding
-      if (charset && charset != 'UTF-8') 
-        text.force_encoding(charset)
-      else
-        text
-      end
-      text.encode("UTF-8", undef: :replace, replace: "??", invalid: :replace)
+      part.body.decoded.gsub("\r", '')
     end
 
     # depend on lynx or whatever is set by the VMAIL_HTML_PART_READER

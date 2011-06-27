@@ -51,11 +51,9 @@ module Vmail
 
 #{formatter.process_body}
 EOF
-      # FIXME error is no primary key associated with model
-      # /home/choi/.rvm/gems/ruby-1.9.2-p180@vmail/gems/sequel-3.24.1/lib/sequel/model/base.rb:982:in `pk'
-      # /home/choi/.rvm/gems/ruby-1.9.2-p180@vmail/gems/sequel-3.24.1/lib/sequel/model/base.rb:991
-
-      message.update(:rfc822 => rfc822, :plaintext => message_text)
+      # 2 calls so we can see more fine grained exceptions
+      message.update(:rfc822 => rfc822)
+      message.update(:plaintext => message_text) 
       @cur_message_id = message.message_id
       message_text
     rescue
