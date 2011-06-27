@@ -247,6 +247,22 @@ module Vmail
                Time.now
              end
 
+      # TEMPORARY
+      # store in sqlite3
+      # TODO cache this and check cache before downloading message body
+      params = {
+        subject: (envelope.subject || ''),
+        flags: flags.join(','),
+        date: date.to_s,
+        size: size,
+        sender: address,
+        uid: uid,
+        mailbox: @mailbox,
+        rfc822: @current_mail.to_s,
+        plaintext: show_message(uid)
+      }
+      DB[:messages].insert params
+  
       date_formatted = if date.year != Time.now.year
                          date.strftime "%b %d %Y" rescue envelope.date.to_s 
                        else 
@@ -423,12 +439,6 @@ module Vmail
         return @current_message 
       end
 
-      #prefetch_adjacent(index) # deprecated
-
-      # TODO keep state in vim buffers, instead of on Vmail Ruby client
-      # envelope_data[:row_text] = envelope_data[:row_text].gsub(/^\+ /, '  ').gsub(/^\*\+/, '* ') # mark as read in cache
-      #seqno = envelope_data[:seqno]
-
       log "Showing message uid: #{uid}"
       data = if x = message_cache[[@mailbox, uid]]
                log "- message cache hit"
@@ -487,15 +497,6 @@ EOF
       log msg
       log message_text
       {:message_text => msg}
-    end
-
-    # deprecated
-    def prefetch_adjacent(index)
-      Thread.new do 
-        [index + 1, index - 1].each do |idx|
-          fetch_and_cache(idx)
-        end
-      end
     end
 
     def format_parts_info(parts)

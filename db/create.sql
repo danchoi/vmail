@@ -1,9 +1,7 @@
-create table if not exists folders (
-  name text
-);
 
 create table if not exists messages (
   uid integer primary key,
+  mailbox text,
   rfc822 text,
   size integer,
   flags text,

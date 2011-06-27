@@ -167,3 +167,6 @@ module Vmail
   end
 end
 
+if __FILE__ == $0
+  Vmail.start
+end
