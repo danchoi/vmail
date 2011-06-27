@@ -35,7 +35,10 @@ module Vmail
       self.max_seqno = @ids[-1]
       log "- search query got #{@ids.size} results; max seqno: #{self.max_seqno}" 
       clear_cached_message
-      res = fetch_row_text(fetch_ids)
+
+      uids = fetch_and_cache_headers(fetch_ids)
+      res = fetch_row_text uids
+
       if STDOUT.tty?
         with_more_message_line(res, fetch_ids[0])
       else

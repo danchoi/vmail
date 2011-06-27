@@ -1,48 +1,50 @@
 module Vmail
   module ShowingHeaders
     # id_set may be a range, array, or string
-    def fetch_row_text(id_set, are_uids=false, is_update=false)
-      log "Fetch_row_text: #{id_set.inspect}"
-      if id_set.is_a?(String)
-        id_set = id_set.split(',')
+    def fetch_row_text(uid_set)
+      log "Fetch_row_text: #{uid_set.inspect}"
+      if uid_set.is_a?(String)
+        uid_set = uid_set.split(',')
       end
-      if id_set.to_a.empty?
+      if uid_set.to_a.empty?
         log "- empty set"
         return ""
       end
-      new_message_rows = fetch_envelopes(id_set, are_uids, is_update)
-      new_message_rows.map {|x| x[:row_text]}.join("\n")
-    rescue # Encoding::CompatibilityError (only in 1.9.2)
-      log "Error in fetch_row_text:\n#{$!}\n#{$!.backtrace}"
-      new_message_rows.map {|x| Iconv.conv('US-ASCII//TRANSLIT//IGNORE', 'UTF-8', x[:row_text])}.join("\n")
+      messages = uid_set.map {|uid| Message[mailbox: @mailbox, uid: uid] }
+      message.map {|m| format_header_for_list(m)}
     end
 
-    def fetch_envelopes(id_set, are_uids, is_update)
+    def fetch_and_cache_headers(id_set)
       results = reconnect_if_necessary do 
-        if are_uids
-          @imap.uid_fetch(id_set, ["FLAGS", "ENVELOPE", "RFC822.SIZE", "UID" ])
-        else
-          @imap.fetch(id_set, ["FLAGS", "ENVELOPE", "RFC822.SIZE", "UID" ])
-        end
+        # TODO check if we've cached it?
+        @imap.fetch(id_set, ["FLAGS", "ENVELOPE", "RFC822.SIZE", "UID" ])
       end
       if results.nil?
         error = "Expected fetch results but got nil"
         log(error) && raise(error)
       end
-      log "- extracting headers"
-      new_message_rows = results.map {|x| extract_row_data(x) }
-      log "- returning #{new_message_rows.size} new rows and caching result"  
-      new_message_rows
+      # TODO see if we can get message_uid (the other uid) ?
+      results.each do |x| 
+        # Store in sqlite3
+        subject = Mail::Encodings.unquote_and_convert_to(envelope.subject, 'UTF-8')
+        params = {
+          subject: (subject || ''),
+          flags: flags.join(','),
+          date: date.to_s,
+          size: size,
+          sender: address,
+          uid: uid,
+          mailbox: @mailbox,
+          # reminder to fetch these later
+          rfc822: nil, 
+          plaintext: nil 
+        }
+        DB[:messages].insert params
+      end
     end
 
-    # TODO extract this to another class or module and write unit tests
-    def extract_row_data(fetch_data)
-      seqno = fetch_data.seqno
-      uid = fetch_data.attr['UID']
-      # log "fetched seqno #{seqno} uid #{uid}"
+    def format_header_for_list(message)
       envelope = fetch_data.attr["ENVELOPE"]
-      size = fetch_data.attr["RFC822.SIZE"]
-      flags = fetch_data.attr["FLAGS"]
       address_struct = if @mailbox == mailbox_aliases['sent'] 
                          structs = envelope.to || envelope.cc
                          structs.nil? ? nil : structs.first 
@@ -60,52 +62,20 @@ module Vmail
         total_recips = (envelope.to + envelope.cc).size
         address += " + #{total_recips - 1}"
       end
-      date = begin 
-               Time.parse(envelope.date).localtime
-             rescue ArgumentError
-               Time.now
-             end
-
-      # TEMPORARY
-      # store in sqlite3
-      # TODO cache this and check cache before downloading message body
-      params = {
-        subject: (envelope.subject || ''),
-        flags: flags.join(','),
-        date: date.to_s,
-        size: size,
-        sender: address,
-        uid: uid,
-        mailbox: @mailbox,
-        rfc822: @current_mail.to_s,
-        plaintext: show_message(uid)
-      }
-      DB[:messages].insert params
-  
-      date_formatted = if date.year != Time.now.year
-                         date.strftime "%b %d %Y" rescue envelope.date.to_s 
+      formatted_date = if message.date.year != Time.now.year
+                         message.date.strftime "%b %d %Y" 
                        else 
-                         date.strftime "%b %d %I:%M%P" rescue envelope.date.to_s 
+                         message.date.strftime "%b %d %I:%M%P"
                        end
-      subject = envelope.subject || ''
-      subject = Mail::Encodings.unquote_and_convert_to(subject, 'UTF-8')
-      flags = format_flags(flags)
       mid_width = @width - 38
       address_col_width = (mid_width * 0.3).ceil
       subject_col_width = (mid_width * 0.7).floor
-      identifier = [seqno.to_i, uid.to_i].join(':')
-      row_text = [ flags.col(2),
-                   (date_formatted || '').col(14),
+      row_text = [ format_flags(message.flags).col(2),
+                   (formatted_date || '').col(14),
                    address.col(address_col_width),
-                   subject.col(subject_col_width), 
-                   number_to_human_size(size).rcol(7), 
-                   identifier.to_s
-      ].join(' | ')
-      {:uid => uid, :seqno => seqno, :row_text => row_text}
-    rescue 
-      log "Error extracting header for uid #{uid} seqno #{seqno}: #$!\n#{$!.backtrace}"
-      row_text = "#{seqno.to_s} : error extracting this header"
-      {:uid => uid, :seqno => seqno, :row_text => row_text}
+                   message.subject.col(subject_col_width), 
+                   number_to_human_size(message.size).rcol(7), 
+                   message.uid ].join(' | ')
     end
 
     def with_more_message_line(res, start_seqno)

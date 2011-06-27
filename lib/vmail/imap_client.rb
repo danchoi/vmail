@@ -6,6 +6,7 @@ require 'mail'
 require 'net/imap'
 require 'time'
 require 'logger'
+require 'vmail/helpers'
 require 'vmail/address_quoter'
 require 'vmail/database'
 require 'vmail/searching'
@@ -15,13 +16,13 @@ require 'vmail/flagging_and_moving'
 
 module Vmail
   class ImapClient
+    include Vmail::Helpers
     include Vmail::AddressQuoter
     include Vmail::Searching
     include Vmail::ShowingHeaders
     include Vmail::ShowingMessage
     include Vmail::FlaggingAndMoving
 
-    DIVIDER_WIDTH = 46
 
     attr_accessor :max_seqno # of current mailbox
 
@@ -187,26 +188,6 @@ module Vmail
       @mailboxes
     end
 
-    UNITS = [:b, :kb, :mb, :gb].freeze
-
-    # borrowed from ActionView/Helpers
-    def number_to_human_size(number)
-      if number.to_i < 1024
-        "<1kb" # round up to 1kh
-      else
-        max_exp = UNITS.size - 1
-        exponent = (Math.log(number) / Math.log(1024)).to_i # Convert to base 1024
-        exponent = max_exp if exponent > max_exp # we need this to avoid overflow for the highest unit
-        number  /= 1024 ** exponent
-        unit = UNITS[exponent]
-        "#{number}#{unit}"
-      end
-    end
-
-    FLAGMAP = {:Flagged => '*'}
-
-
-
     def decrement_max_seqno(num)
       return unless STDIN.tty?
       log "Decremented max seqno from #{self.max_seqno} to #{self.max_seqno - num}"
@@ -342,10 +323,6 @@ module Vmail
       new_message_template(subject, false) + 
         "\n---------- Forwarded message ----------\n" +
         original_body + signature
-    end
-
-    def divider(str)
-      str * DIVIDER_WIDTH
     end
 
     SENT_MESSAGES_FILE = "sent-messages.txt"
