@@ -574,8 +574,9 @@ func! s:open_compose_window(command)
   setlocal modifiable
   " TODO maybe later save backups?
   setlocal buftype=nowrite
+  " 
   if winnr('$') > 1
-    wincmd p 
+    call s:focus_list_window()
     close!
   endif
   silent 1,$delete
