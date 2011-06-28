@@ -44,7 +44,6 @@ module Vmail
         unless message.labels.include?(@label)
           params = {message_id: message.message_id, uid: uid, label_id: @label.label_id}
 
-          log "Creating Labeling: #{params}"
           Labeling.create params
         end
         message_id

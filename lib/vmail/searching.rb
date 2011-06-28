@@ -4,12 +4,12 @@ module Vmail
     def search(query)
       query = Vmail::Query.parse(query)
       @limit = query.shift.to_i
-      # a limit of zero is effectively no limit
-      if @limit == 0
-        @limit = @num_messages
-      end
-      # set the target range to the whole set
-      query.unshift "1:#@num_messages"
+      # @limit is Deprecated
+      @limit = 100
+
+      # set the target range to the whole set, unless it is too big
+      @start_index = [@num_messages - @limit, 0].max
+      query.unshift "#{@start_index}:#@num_messages"
       
       @query = query.map {|x| x.to_s.downcase}
       query_string = Vmail::Query.args2string(@query)
@@ -18,14 +18,12 @@ module Vmail
       @ids = reconnect_if_necessary(180) do # increase timeout to 3 minutes
         @imap.search(query_string)
       end
-      @start_index = [@ids.length - @limit, 0].max
-      fetch_ids = @ids[@start_index..-1]
-      max_seqno = @ids[-1]
+
+      max_seqno = @ids[-1] # this is a instance var
       log "- search query got #{@ids.size} results; max seqno: #{self.max_seqno}" 
       clear_cached_message
 
-      message_ids = fetch_and_cache_headers(fetch_ids)
-      #log "message_ids: #{message_ids}"
+      message_ids = fetch_and_cache_headers @ids
       res = get_message_headers message_ids
 
       if STDOUT.tty?
