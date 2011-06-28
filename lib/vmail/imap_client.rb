@@ -63,7 +63,7 @@ module Vmail
 
     def close
       log "Closing connection"
-      Timeout::timeout(10) do
+      Timeout::timeout(5) do
         @imap.close rescue Net::IMAP::BadResponseError
         @imap.disconnect rescue IOError
       end
@@ -75,7 +75,7 @@ module Vmail
         mailbox = mailbox_aliases[mailbox]
       end
       log "Selecting mailbox #{mailbox.inspect}"
-      reconnect_if_necessary(15) do 
+      reconnect_if_necessary(30) do 
         log @imap.select(mailbox)
       end
       log "Done"
