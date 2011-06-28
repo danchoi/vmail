@@ -21,8 +21,6 @@ Build queue of stuff for Vmail to do
 
 TODO
 
-Version number in data schema
-Don't destroy data between launches
 No number number limit inbox 100. NOTE IN DOCUMENTATION
 
 
