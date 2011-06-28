@@ -570,19 +570,15 @@ func! s:open_compose_window(command)
   redraw
   echo a:command
   let res = system(a:command)
-
   let previous_winnr = winnr()
+  only
   split compose_message.txt
-  if winnr('$') > 1
-    exec previous_winnr . "wincmd w"
-    close!
-  end
-
   setlocal modifiable
-  " TODO maybe later save backups?
-  setlocal buftype=nowrite
-  silent 1,$delete
-  silent put! =res
+  wincmd p
+  close!
+  silent! 1,$delete
+  silent! put! =res
+  redraw
   "call feedkeys("\<cr>")
   call s:compose_window_mappings()
   setlocal completefunc=CompleteContact
