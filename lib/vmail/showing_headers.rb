@@ -95,7 +95,6 @@ module Vmail
     end
 
     def with_more_message_line(res)
-      log "Add_more_message_line for start_seqno #{@start_index}"
       remaining = @start_index 
       if remaining < 1
         return res

@@ -218,11 +218,10 @@ module Vmail
     # gets 100 messages prior to id
     def more_messages
       log "Getting more_messages"
-      log "@start_index #@start_index"
       x = [(@start_index - @limit), 0].max
       y = [@start_index - 1, 0].max
       @start_index = x
-      fetch_ids = (x..y).to_a
+      fetch_ids = search_query? ? @ids[x..y] : (x..y).to_a
       message_ids = fetch_and_cache_headers(fetch_ids)
       res = get_message_headers message_ids
       with_more_message_line(res)
