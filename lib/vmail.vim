@@ -573,8 +573,10 @@ func! s:open_compose_window(command)
 
   let previous_winnr = winnr()
   split compose_message.txt
-  exec previous_winnr . "wincmd w"
-  close!
+  if winnr('$') > 1
+    exec previous_winnr . "wincmd w"
+    close!
+  end
 
   setlocal modifiable
   " TODO maybe later save backups?
