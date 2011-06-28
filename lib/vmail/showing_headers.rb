@@ -9,7 +9,8 @@ module Vmail
         end
         m
       }
-      messages.map {|m| format_header_for_list(m)}.join("\n")
+      res = messages.map {|m| format_header_for_list(m)}.join("\n")
+      res
     end
 
     def fetch_and_cache_headers(id_set)

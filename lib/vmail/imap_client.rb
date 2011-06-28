@@ -216,7 +216,7 @@ module Vmail
         res = get_message_headers(message_ids.reverse)
         res
       else
-        nil
+        ''
       end
     rescue
       log $!

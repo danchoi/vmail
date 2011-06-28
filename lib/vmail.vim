@@ -224,13 +224,14 @@ function! s:update()
   let command = s:update_command
   echo "Checking for new messages. Please wait..."
   let res = system(command)
-  if len(split(res, "\n", '')) > 0
+  let lines = split(res, '\n')
+  if len(lines) > 0
     setlocal modifiable
-    call append(0, res)
+    normal gg
+    call append(0, lines)
     setlocal nomodifiable
     write!
-    let num = len(split(res, '\n', ''))
-    call cursor(0, 0)
+    let num = len(lines)
     redraw
     echom "You have " . num . " new message" . (num == 1 ? '' : 's') . "!" 
   else

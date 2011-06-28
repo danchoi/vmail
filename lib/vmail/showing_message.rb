@@ -18,7 +18,8 @@ module Vmail
     end
 
     def show_message(message_id, raw=false)
-      log "Show message: #{message_id}"
+      message_id = message_id.strip.gsub('\\', '')
+      log "Show message: #{message_id.inspect}"
       return current_message.rfc822 if raw 
       log "Showing message message_id: #{message_id}"
       res = fetch_and_cache(message_id)
