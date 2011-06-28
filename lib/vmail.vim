@@ -134,7 +134,7 @@ function! s:show_previous_message()
     call s:focus_list_window()
   end
   normal k
-  if line('.') != 1
+  if line('.') != line('$')
     call s:show_message(1)
   endif
   normal zz
