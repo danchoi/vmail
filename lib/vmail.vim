@@ -251,7 +251,7 @@ function! s:toggle_star() range
   if (match(getline(a:firstline), flag_symbol) != -1)
     let action = " -FLAGS"
   endif
-  let command = s:flag_command . join(uid_set, ',') . action . " Flagged" 
+  let command = s:flag_command . shellescape(join(uid_set, ',')) . action . " Flagged" 
   if nummsgs == 1
     echom "Toggling flag on message" 
   else
@@ -287,7 +287,7 @@ endfunction
 func! s:delete_messages(flag) range
   let uid_set = s:collect_uids(a:firstline, a:lastline)
   let nummsgs = len(uid_set)
-  let command = s:flag_command . join(uid_set, ',') . " +FLAGS " . a:flag
+  let command = s:flag_command . shellescape(join(uid_set, ',')) . " +FLAGS " . a:flag
   if nummsgs == 1
     echom "Deleting message" 
   else
@@ -305,7 +305,7 @@ endfunc
 func! s:archive_messages() range
   let uid_set = s:collect_uids(a:firstline, a:lastline)
   let nummsgs = len(uid_set)
-  let command = s:move_to_command . join(uid_set, ',') . ' ' . "all"
+  let command = s:move_to_command . shellescape(join(uid_set, ',')) . ' ' . "all"
   echo "Archiving message" . (nummsgs == 1 ? '' : 's')
   let res = system(command)
   setlocal modifiable
@@ -328,7 +328,7 @@ func! s:append_messages_to_file() range
     return
   endif
   let s:append_file = append_file
-  let command = s:append_to_file_command . join(uid_set, ',') . ' ' . s:append_file 
+  let command = s:append_to_file_command . shellescape(join(uid_set, ',')) . ' ' . s:append_file 
   echo "Appending " . nummsgs . " message" . (nummsgs == 1 ? '' : 's') . " to " . s:append_file . ". Please wait..."
   let res = system(command)
   echo res
@@ -341,7 +341,7 @@ function! s:move_to_mailbox(copy) range
   let s:copy_to_mailbox = a:copy
   let uid_set = s:collect_uids(a:firstline, a:lastline)
   let s:nummsgs = len(uid_set)
-  let s:uid_set = join(uid_set, ',')
+  let s:uid_set = shellescape(join(uid_set, ','))
   " now prompt use to select mailbox
   if !exists("s:mailboxes")
     call s:get_mailbox_list()
@@ -737,7 +737,7 @@ function! s:collect_uids(startline, endline)
   let lnum = a:startline
   while lnum <= a:endline
     let uid = matchstr(getline(lnum), '\S\+$')
-    call add(shellescape(uid_set), uid)
+    call add(uid_set, uid)
     let lnum += 1
   endwhile
   return uid_set

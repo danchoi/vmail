@@ -23,7 +23,6 @@ module Vmail
     include Vmail::ShowingMessage
     include Vmail::FlaggingAndMoving
 
-
     attr_accessor :max_seqno # of current mailbox
 
     def initialize(config)

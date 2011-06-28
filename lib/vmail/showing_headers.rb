@@ -1,6 +1,6 @@
 module Vmail
   module ShowingHeaders
-    # id_set may be a range, array, or string
+
     def fetch_row_text(message_ids)
       messages = message_ids.map {|message_id| Message[message_id] }
       messages.map {|m| format_header_for_list(m)}.join("\n")
@@ -26,19 +26,20 @@ module Vmail
           message = Message.new
           message.message_id = message_id
           message.save
-          params = {
-            subject: (subject || ''),
-            flags: x.attr['FLAGS'].join(','),
-            date: DateTime.parse(envelope.date).to_s,
-            size: x.attr['RFC822.SIZE'],
-            sender: sender,
-            recipients: recipients,
-            # reminder to fetch these later
-            rfc822: nil, 
-            plaintext: nil 
-          }
-          message.update params
         end
+        params = {
+          subject: (subject || ''),
+          flags: x.attr['FLAGS'].join(','),
+          date: DateTime.parse(envelope.date).to_s,
+          size: x.attr['RFC822.SIZE'],
+          sender: sender,
+          recipients: recipients,
+          # reminder to fetch these later
+          rfc822: nil, 
+          plaintext: nil 
+        }
+        # We really just need to update the flags, buy let's update everything
+        message.update params
 
         unless message.labels.include?(@label)
           Labeling.create(message_id: message.message_id,
@@ -82,6 +83,18 @@ module Vmail
                    message.subject.col(subject_col_width), 
                    number_to_human_size(message.size).rcol(7), 
                    message.message_id ].join(' | ')
+    end
+
+    FLAGMAP = {'Flagged' => '*'}
+
+    def format_flags(flags)
+      # other flags like "Old" should be hidden here
+      flags = flags.split(',').map {|flag| FLAGMAP[flag] || flag}
+      flags.delete("Old")
+      if flags.delete('Seen').nil?
+        flags << '+' # unread
+      end
+      flags.join('')
     end
 
     def with_more_message_line(res, start_seqno)
