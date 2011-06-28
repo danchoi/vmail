@@ -208,7 +208,7 @@ module Vmail
       log "- update: new uids: #{new_ids.inspect}"
       if !new_ids.empty?
         self.max_seqno = new_ids[-1]
-        res = fetch_row_text(new_ids, false, true)
+        res = get_message_headers(new_ids, false, true)
         res
       else
         ''
@@ -216,23 +216,16 @@ module Vmail
     end
 
     # gets 100 messages prior to id
-    def more_messages(message_id, limit=100)
-      log "More_messages: message_id #{message_id}"
-      message_id = message_id.to_i
-      if @all_search 
-        x = [(message_id - limit), 0].max
-        y = [message_id - 1, 0].max
-
-        res = fetch_row_text((x..y))
-        with_more_message_line(res, x)
-      else # filter search query
-        log "@start_index #@start_index"
-        x = [(@start_index - limit), 0].max
-        y = [@start_index - 1, 0].max
-        @start_index = x
-        res = fetch_row_text(@ids[x..y]) 
-        with_more_message_line(res, @ids[x])
-      end
+    def more_messages(limit=100)
+      log "Getting more_messages"
+      log "@start_index #@start_index"
+      x = [(@start_index - limit), 0].max
+      y = [@start_index - 1, 0].max
+      @start_index = x
+      fetch_ids = @ids[x..y]
+      message_ids = fetch_and_cache_headers(fetch_ids)
+      res = get_message_headers message_ids
+      with_more_message_line(res)
     end
 
     def spawn_thread_if_tty(&block) 

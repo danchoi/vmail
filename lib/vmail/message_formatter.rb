@@ -56,7 +56,7 @@ module Vmail
           format_text_body(part) 
         end
       else 
-        "[NO BODY]" 
+        part.decoded
       end
     rescue
       puts $!

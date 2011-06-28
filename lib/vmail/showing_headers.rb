@@ -1,7 +1,7 @@
 module Vmail
   module ShowingHeaders
 
-    def fetch_row_text(message_ids)
+    def get_message_headers(message_ids)
       messages = message_ids.map {|message_id| Message[message_id] }
       messages.map {|m| format_header_for_list(m)}.join("\n")
     end
@@ -97,19 +97,12 @@ module Vmail
       flags.join('')
     end
 
-    def with_more_message_line(res, start_seqno)
-      log "Add_more_message_line for start_seqno #{start_seqno}"
-      if @all_search
-        return res if start_seqno.nil?
-        remaining = start_seqno - 1
-      else # filter search
-        remaining = (@ids.index(start_seqno) || 1) - 1
-      end
+    def with_more_message_line(res)
+      log "Add_more_message_line for start_seqno #{@start_index}"
+      remaining = @start_index 
       if remaining < 1
-        log "None remaining"
-        return "Showing all matches\n" + res
+        return res
       end
-      log "Remaining messages: #{remaining}"
       ">  Load #{[100, remaining].min} more messages. #{remaining} remaining.\n" + res
     end
 
