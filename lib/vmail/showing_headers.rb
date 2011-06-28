@@ -58,7 +58,10 @@ module Vmail
                 elsif address_struct.name
                   "#{Mail::Encodings.unquote_and_convert_to(address_struct.name, 'UTF-8')} <#{[address_struct.mailbox, address_struct.host].join('@')}>"
                 else
-                  [Mail::Encodings.unquote_and_convert_to(address_struct.mailbox, 'UTF-8'), Mail::Encodings.unquote_and_convert_to(address_struct.host, 'UTF-8')].join('@') 
+                  [ 
+                    (address_struct.mailbox ? Mail::Encodings.unquote_and_convert_to(address_struct.mailbox, 'UTF-8') : ""), 
+                    (address_struct.host ?  Mail::Encodings.unquote_and_convert_to(address_struct.host, 'UTF-8'): "")
+                  ].join('@') 
                 end
 
     end
