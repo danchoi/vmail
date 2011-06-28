@@ -21,13 +21,9 @@ module Vmail
       message_id = message_id.strip.gsub('\\', '')
       log "Show message: #{message_id.inspect}"
       return current_message.rfc822 if raw 
+      res = retry_if_needed { fetch_and_cache(message_id) }
       log "Showing message message_id: #{message_id}"
-      res = fetch_and_cache(message_id)
-      if res.nil?
-        # retry, though this is a hack!
-        log "- data is nil. retrying..."
-        return show_message(message_id, raw)
-      end
+      @cur_message_id = message_id
       res
     end
 
@@ -73,7 +69,6 @@ EOF
         #log message_text
         raise
       end
-      @cur_message_id = message.message_id
       message_text
     rescue
       msg = "Error encountered in fetch_and_cache(), message_id #{message_id} [#{@mailbox}]:\n#{$!}\n#{$!.backtrace.join("\n")}" 
