@@ -18,6 +18,8 @@ create table if not exists labelings (
   message_id text,
   uid integer
 );
+CREATE INDEX idx_labelings ON labelings(message_id, label_id);
+
 create table if not exists labels (
   label_id integer PRIMARY KEY,
   name text UNIQUE
