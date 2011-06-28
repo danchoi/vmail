@@ -536,6 +536,8 @@ function! s:more_messages()
   " execute "normal Gdd\<c-y>" 
   setlocal nomodifiable
   normal j
+  redraw
+  echo "Done"
 endfunction
 
 " --------------------------------------------------------------------------------  
