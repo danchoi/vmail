@@ -2,7 +2,13 @@ module Vmail
   module ShowingHeaders
 
     def get_message_headers(message_ids)
-      messages = message_ids.map {|message_id| Message[message_id] }
+      messages = message_ids.map {|message_id| 
+        m = Message[message_id]
+        if m.nil?
+          raise "Message #{message_id} not found"
+        end
+        m
+      }
       messages.map {|m| format_header_for_list(m)}.join("\n")
     end
 

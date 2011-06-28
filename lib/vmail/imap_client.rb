@@ -212,11 +212,15 @@ module Vmail
       log "- update: new uids: #{new_ids.inspect}"
       if !new_ids.empty?
         self.max_seqno = new_ids[-1]
-        res = get_message_headers(new_ids.reverse)
+        message_ids = fetch_and_cache_headers(new_ids)
+        res = get_message_headers(message_ids.reverse)
         res
       else
-        ''
+        nil
       end
+    rescue
+      log $!
+      log $!.backtrace.join("\n")
     end
 
     # gets 100 messages prior to id
