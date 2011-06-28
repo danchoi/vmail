@@ -307,7 +307,7 @@ at the top of the message window:
     to: Daniel Choi <dhchoi@gmail.com>
     subject: attachment test
 
-    see attached
+    Hi Dan, please see attached
 
 To download these attachments to a local directory, type `,A`. You'll be
 prompted for a directory path.  Then Vmail will save all the attachments in the
@@ -320,18 +320,24 @@ composition window:
     to: barackobama@whitehouse.gov
     subject: look at this!
     
-    attach:
-    - images/middle-east-map.png
-    - images/policypaper.pdf
-    - docs/
+    attach: images/middle-east-map.png
+    attach: images/policypaper.pdf
+    attach: docs/
     
     I think you'll find this stuff interesting.
     
-
-The `attach:` block is a YAML list. The items are paths (either relative to the
+The items following the `attach:` directives are paths (either relative to the
 current directory or absolute) to the files you want to attach to your message.
 Note that you can also specify a directory, in which case Vmail attaches every
-file it finds in that directory.
+file it finds in that directory. Make sure that you 
+
+* keep the `attach:` lines contiguous (no intervening empty lines) if you want to add multiple attachments
+* insert an empty line before the attachments section
+* insert an empty after the attachments section
+
+You don't have to type the `attach:` directives manually. You can use the 
+command `:VMAttach [filename-or-path]` to insert a `attach:` directive with
+the help of file auto-completion.
 
 One thing Vmail doesn't do yet is let you forward a message with all its
 attachments intact.  This feature will be implemented in the near future. 

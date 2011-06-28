@@ -655,6 +655,15 @@ func! s:save_attachments()
   let res = system(command)
   echo res
 endfunc
+
+func! s:attach_file(file)
+  normal gg
+  normal }
+  let attach = "attach: " . a:file
+  put =attach
+endfunc
+
+
 " -------------------------------------------------------------------------------- 
 
 func! s:toggle_maximize_window()
@@ -824,6 +833,7 @@ func! s:compose_window_mappings()
   setlocal ai
   " setlocal textwidth=72
   autocmd CursorMoved <buffer> call <SID>toggle_textwidth()
+  command! -bar -nargs=1 -complete=file VMAttach call s:attach_file(<f-args>)
 endfunc
 
 func! s:global_mappings()

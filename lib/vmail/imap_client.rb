@@ -370,9 +370,9 @@ EOF
       mail.charset = 'UTF-8'
       # attachments are added as a snippet of YAML after a blank line
       # after the headers, and followed by a blank line
-      if (attachments = raw_body.split(/\n\s*\n/, 2)[0]) =~ /^attach(ment|ments)*:/
-        files = YAML::load(attachments).values.flatten
-        log "Attach: #{files}"
+      if (attachments_section = raw_body.split(/\n\s*\n/, 2)[0]) =~ /^attach(ment|ments)*:/
+        files = attachments_section.split(/\n/).map {|line| line[/[-:]\s*(.*)\s*$/, 1]}.compact
+        log "Attach: #{files.inspect}"
         files.each do |file|
           if File.directory?(file)
             Dir.glob("#{file}/*").each {|f| mail.add_file(f) if File.size?(f)}
