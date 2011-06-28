@@ -219,7 +219,6 @@ func! s:close_message_window()
   endif
 endfunc
 
-
 " gets new messages since last update
 function! s:update()
   let command = s:update_command
@@ -474,7 +473,7 @@ function! s:select_mailbox()
     return
   endif
   let s:mailbox = mailbox
-  let s:query = "100 all"
+  let s:query = "all"
   let command = s:select_mailbox_command . shellescape(s:mailbox)
   redraw
   echom "Selecting mailbox: ". s:mailbox . ". Please wait..."
@@ -483,7 +482,7 @@ function! s:select_mailbox()
   " now get latest 100 messages
   call s:focus_list_window()  
   setlocal modifiable
-  let command = s:search_command . shellescape("100 all")
+  let command = s:search_command . shellescape("all")
   echo "Loading messages..."
   let res = system(command)
   silent 1,$delete
@@ -856,7 +855,7 @@ call system(s:set_window_width_command . winwidth(1))
 autocmd VimResized <buffer> call system(s:set_window_width_command . winwidth(1))
 
 autocmd bufreadpost *.txt call <SID>turn_into_compose_window()
-
+normal G
 call system(s:select_mailbox_command . shellescape(s:mailbox))
 call s:do_search()
 
