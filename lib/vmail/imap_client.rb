@@ -30,6 +30,7 @@ module Vmail
       @name = config['name']
       @signature = config['signature']
       @always_cc = config['always_cc']
+      @always_bcc = config['always_bcc']
       @mailbox = nil
       @logger = Logger.new(config['logfile'] || STDERR)
       @logger.level = Logger::DEBUG
@@ -268,7 +269,8 @@ module Vmail
       headers = {'from' => "#{@name} <#{@username}>",
         'to' => nil,
         'subject' => subject,
-        'cc' => @always_cc 
+        'cc' => @always_cc,
+        'bcc' => @always_bcc
       }
       format_headers(headers) + (append_signature ? ("\n\n" + signature) : "\n\n")
     end
