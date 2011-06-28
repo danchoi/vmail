@@ -285,7 +285,7 @@ module Vmail
     def format_headers(hash)
       lines = []
       hash.each_pair do |key, value|
-        if value.nil?
+        if value.nil? && key != 'to' && key != 'subject'
           next
         end
         if value.is_a?(Array)
