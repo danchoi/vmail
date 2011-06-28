@@ -339,7 +339,7 @@ file it finds in that directory. Make sure that you
 * insert an empty after the attachments section
 
 You don't have to type the `attach:` directives manually. You can use the 
-command `:VMAttach [filename-or-path]` to insert a `attach:` directive with
+command `:VMAttach [filename-or-path]` to insert an `attach:` directive with
 the help of file auto-completion.
 
 One thing Vmail doesn't do yet is let you forward a message with all its
