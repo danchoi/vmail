@@ -12,8 +12,12 @@ module Vmail
 
     def cached_full_message?(message_id)
       m = Message[message_id]
-      log "- found message #{message_id}"
-      log "- message has plaintext? #{!m.plaintext.nil?}"
+      if m
+        log "- found message #{message_id}"
+        log "- message has plaintext? #{!m.plaintext.nil?}"
+      else
+        log "- could not found message #{message_id.inspect}"
+      end
       m && !m.plaintext.nil? && m
     end
 
