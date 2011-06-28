@@ -25,7 +25,7 @@ module Vmail
       clear_cached_message
 
       message_ids = fetch_and_cache_headers(fetch_ids)
-      log "message_ids: #{message_ids}"
+      #log "message_ids: #{message_ids}"
       res = get_message_headers message_ids
 
       if STDOUT.tty?

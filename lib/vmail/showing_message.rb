@@ -34,11 +34,12 @@ module Vmail
         return message.plaintext
       end
       log "- full message cache miss"        
-      labeling = Labeling[message_id: message_id, label_id: @label.id]
+      labeling = Labeling[message_id: message_id, label_id: @label.label_id]
       uid = labeling.uid
 
+      log "- fetching message uid #{uid}"        
       fetch_data = reconnect_if_necessary do 
-        res = retry_once do
+        res = retry_if_needed do
           @imap.uid_fetch(uid, ["FLAGS", "RFC822", "RFC822.SIZE"])
         end
         res[0] 

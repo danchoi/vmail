@@ -489,10 +489,9 @@ function! s:select_mailbox()
   silent 1,$delete
   silent! put! =res
   execute "normal Gdd\<c-y>" 
-  normal G
   setlocal nomodifiable
   write
-  normal z.
+  normal gg
   redraw
   echom "Current mailbox: ". s:mailbox 
 endfunction
@@ -524,7 +523,7 @@ function! s:do_search()
   execute "silent normal Gdd\<c-y>" 
   setlocal nomodifiable
   write
-  normal z.
+  normal gg
 endfunction
 
 function! s:more_messages()
@@ -533,9 +532,10 @@ function! s:more_messages()
   let res = system(command)
   setlocal modifiable
   let lines =  split(res, "\n")
-  call append(0, lines)
+  call append(line('$'), lines)
   " execute "normal Gdd\<c-y>" 
   setlocal nomodifiable
+  normal j
 endfunction
 
 " --------------------------------------------------------------------------------  

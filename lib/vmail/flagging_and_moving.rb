@@ -3,7 +3,7 @@ module Vmail
 
     def convert_to_message_ids(message_ids)
       message_ids.split(',').map {|message_id|
-        labeling = Labeling[message_id: message_id, label_id: @label.id]
+        labeling = Labeling[message_id: message_id, label_id: @label.label_id]
         labeling.uid
       }
     end

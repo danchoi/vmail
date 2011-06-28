@@ -14,7 +14,7 @@ module Vmail
         error = "Expected fetch results but got nil"
         log(error) && raise(error)
       end
-      results.map do |x| 
+      results.reverse.map do |x| 
         envelope = x.attr["ENVELOPE"]
         message_id = envelope.message_id
         subject = Mail::Encodings.unquote_and_convert_to(envelope.subject, 'UTF-8')
@@ -42,9 +42,10 @@ module Vmail
         message.update params
 
         unless message.labels.include?(@label)
-          Labeling.create(message_id: message.message_id,
-                         uid: uid,
-                         label_id: @label.id)
+          params = {message_id: message.message_id, uid: uid, label_id: @label.label_id}
+
+          log "Creating Labeling: #{params}"
+          Labeling.create params
         end
         message_id
       end
@@ -103,7 +104,7 @@ module Vmail
       if remaining < 1
         return res
       end
-      ">  Load #{[100, remaining].min} more messages. #{remaining} remaining.\n" + res
+      res + "\n>  Load #{[100, remaining].min} more messages. #{remaining} remaining." 
     end
 
   end
