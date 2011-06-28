@@ -6,6 +6,10 @@ module Vmail
       Message[@cur_message_id]
     end
 
+    def current_mail
+      (c = current_message) && Mail.new(c.rfc822)
+    end
+
     def cached_full_message?(message_id)
       m = Message[message_id]
       m && !m.plaintext.nil? && m

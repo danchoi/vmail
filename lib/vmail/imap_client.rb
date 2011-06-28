@@ -302,7 +302,7 @@ module Vmail
 
     def forward_template
       original_body = current_message.split(/\n-{20,}\n/, 2)[1]
-      formatter = Vmail::MessageFormatter.new(@current_mail)
+      formatter = Vmail::MessageFormatter.new(current_mail)
       headers = formatter.extract_headers
       subject = headers['subject']
       if subject !~ /Fwd: /
@@ -391,11 +391,11 @@ EOF
 
     def save_attachments(dir)
       log "Save_attachments #{dir}"
-      if !@current_mail
+      if !current_mail
         log "Missing a current message"
       end
-      return unless dir && @current_mail
-      attachments = @current_mail.attachments
+      return unless dir && current_mail
+      attachments = current_mail.attachments
       `mkdir -p #{dir}`
       saved = attachments.map do |x|
         path = File.join(dir, x.filename)
@@ -408,14 +408,14 @@ EOF
 
     def open_html_part
       log "Open_html_part"
-      log @current_mail.parts.inspect
-      multipart = @current_mail.parts.detect {|part| part.multipart?}
+      log current_mail.parts.inspect
+      multipart = current_mail.parts.detect {|part| part.multipart?}
       html_part = if multipart 
                     multipart.parts.detect {|part| part.header["Content-Type"].to_s =~ /text\/html/}
-                  elsif ! @current_mail.parts.empty?
-                    @current_mail.parts.detect {|part| part.header["Content-Type"].to_s =~ /text\/html/}
+                  elsif ! current_mail.parts.empty?
+                    current_mail.parts.detect {|part| part.header["Content-Type"].to_s =~ /text\/html/}
                   else
-                    @current_mail.body
+                    current_mail.body
                   end
       return if html_part.nil?
       outfile = 'part.html'
