@@ -359,6 +359,7 @@ EOF
       mail.bcc = headers['bcc'] #&& headers['cc'].split(/,\s+/)
       mail.subject = headers['subject']
       mail.from ||= @username
+      mail.charset = 'UTF-8'
       # attachments are added as a snippet of YAML after a blank line
       # after the headers, and followed by a blank line
       if (attachments = raw_body.split(/\n\s*\n/, 2)[0]) =~ /^attach(ment|ments)*:/
