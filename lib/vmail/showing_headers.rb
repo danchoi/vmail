@@ -1,3 +1,4 @@
+require 'iconv'
 module Vmail
   module ShowingHeaders
 

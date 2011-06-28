@@ -13,6 +13,7 @@ require 'vmail/searching'
 require 'vmail/showing_headers'
 require 'vmail/showing_message'
 require 'vmail/flagging_and_moving'
+require 'vmail/reply_templating'
 
 module Vmail
   class ImapClient
@@ -22,6 +23,7 @@ module Vmail
     include Vmail::ShowingHeaders
     include Vmail::ShowingMessage
     include Vmail::FlaggingAndMoving
+    include Vmail::ReplyTemplating
 
     attr_accessor :max_seqno # of current mailbox
 
@@ -34,6 +36,7 @@ module Vmail
       @mailbox = nil
       @logger = Logger.new(config['logfile'] || STDERR)
       @logger.level = Logger::DEBUG
+      $logger = @logger
       @imap_server = config['server'] || 'imap.gmail.com'
       @imap_port = config['port'] || 993
       current_message = nil
@@ -286,12 +289,6 @@ module Vmail
       lines.join("\n")
     end
 
-    def reply_template(replyall=false)
-      log "Sending reply template"
-      reply_headers = Vmail::ReplyTemplate.new(current_message.rfc822, @username, @name, replyall, @always_cc).reply_headers
-      body = reply_headers.delete(:body)
-      format_headers(reply_headers) + "\n\n\n" + body + signature
-    end
 
     def signature
       return '' unless @signature
@@ -348,11 +345,16 @@ EOF
       headers = {}
       raw_headers.split("\n").each do |line|
         key, value = *line.split(/:\s*/, 2)
-        log [key, value].join(':')
-        if %w(from to cc bcc).include?(key)
-          value = quote_addresses(value)
+        if key == 'message-id'
+          mail.references = value
+        else
+          next if (value.nil? || value.strip == '')
+          log [key, value].join(':')
+          if %w(from to cc bcc).include?(key)
+            value = quote_addresses(value)
+          end
+          headers[key] = value
         end
-        headers[key] = value
       end
       log "Delivering message with headers: #{headers.to_yaml}"
       mail.from = headers['from'] || @username
@@ -384,6 +386,9 @@ EOF
         end
       end
       mail
+    rescue
+      $logger.debug $!
+      raise
     end
 
     def save_attachments(dir)
@@ -486,7 +491,8 @@ trap("INT") {
   puts "Closing imap connection"  
   begin
     Timeout::timeout(2) do 
-      $gmail.close
+      # just try to quit
+      # $gmail.close
     end
   rescue Timeout::Error
     puts "Close connection attempt timed out"

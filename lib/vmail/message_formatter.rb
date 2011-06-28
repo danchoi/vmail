@@ -96,6 +96,9 @@ module Vmail
       if !mail.reply_to.nil?
         headers['reply_to'] = utf8(mail['reply_to'].decoded)
       end
+      if mail['message-id'] 
+        headers['references'] = mail['message-id']
+      end
       headers
     rescue
       {'error' => $!}
@@ -117,6 +120,7 @@ module Vmail
             end
       out
     rescue
+      $logger.debug $!
       "[error: #$!]"
     end
   end
