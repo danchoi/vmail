@@ -27,7 +27,7 @@ module Vmail
       if part.nil?
         raise "Can't find plain text part"
       end
-      format_part part
+      x = format_part part
     end
 
     # helper method
@@ -40,7 +40,6 @@ module Vmail
         part
       end
     end
-
 
     def format_part(part)
       if part && part.respond_to?(:header)
@@ -56,13 +55,12 @@ module Vmail
           format_text_body(part) 
         end
       else 
-        part.decoded
+        part.decoded.gsub("\r", '')
       end
     rescue
       puts $!
       "[error:] #{$!}"
     end
-
 
     def format_text_body(part)
       part.body.decoded.gsub("\r", '')

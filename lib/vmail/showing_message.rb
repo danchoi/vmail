@@ -57,11 +57,22 @@ module Vmail
 EOF
       # 2 calls so we can see more fine grained exceptions
       message.update(:rfc822 => rfc822)
-      message.update(:plaintext => message_text) 
+      if !message_text.valid_encoding?
+        ic = Iconv.new('UTF-8//IGNORE', 'UTF-8')
+        message_text = ic.iconv(message_text)
+      end
+
+      begin
+        message.update(:plaintext => message_text) 
+      rescue
+        log message_text.encoding
+        #log message_text
+        raise
+      end
       @cur_message_id = message.message_id
       message_text
     rescue
-      msg = "Error encountered parsing message message_id #{message_id} [#{@mailbox}]:\n#{$!}\n#{$!.backtrace.join("\n")}" 
+      msg = "Error encountered in fetch_and_cache(), message_id #{message_id} [#{@mailbox}]:\n#{$!}\n#{$!.backtrace.join("\n")}" 
       log msg
       msg
     end
