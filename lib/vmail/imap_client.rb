@@ -212,7 +212,7 @@ module Vmail
       log "- update: new uids: #{new_ids.inspect}"
       if !new_ids.empty?
         self.max_seqno = new_ids[-1]
-        res = get_message_headers(new_ids.reverse, false, true)
+        res = get_message_headers(new_ids.reverse)
         res
       else
         ''
