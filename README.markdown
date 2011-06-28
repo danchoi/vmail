@@ -297,7 +297,7 @@ The current version of Vmail can handle attachments to a certain extent.
 When you're viewing a message with attachments, you'll see something like this
 at the top of the message window:
 
-    4 kb
+    <4vlj45.29529.zoe2@instantwatcher.com> 1kb Seen
     - image/png; name=canada.png
     - image/gif; name=arrow_right.gif
     ---------------------------------------
@@ -458,11 +458,11 @@ in the original terminal window to stop the Vmail process.
 
 Vmail generates a few files in the current directory when it is running: 
 
+* `vmail.db` is a sqlite3 database. Vmail uses this to cache messages it has seen..
+
 * `vmailbuffer` holds the message list. This file should get deleted automatically when Vmail quits.
 
 * `current_message.txt` holds the current message being shown. Not deleted on quit.
-
-* `sent-messages.txt` will contain copies of any messages you send from Vmail
 
 * `part.html` is created if you open an HTML mail part from Vmail. 
 
