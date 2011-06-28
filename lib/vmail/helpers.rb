@@ -1,6 +1,6 @@
 module Vmail
   DIVIDER_WIDTH = 46
-  UNITS = [:b, :kb, :mb, :gb].freeze
+  UNITS = [:b, :k, :M, :G].freeze
 
   module Helpers
 

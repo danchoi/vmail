@@ -227,11 +227,11 @@ function! s:update()
   let lines = split(res, '\n')
   if len(lines) > 0
     setlocal modifiable
-    normal gg
     call append(0, lines)
     setlocal nomodifiable
     write!
     let num = len(lines)
+    call cursor(num, 0)
     redraw
     echom "You have " . num . " new message" . (num == 1 ? '' : 's') . "!" 
   else
