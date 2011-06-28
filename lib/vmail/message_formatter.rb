@@ -25,9 +25,10 @@ module Vmail
     def plaintext_part(mail=@mail)
       part = find_text_part2(mail.body, mail.content_type)
       if part.nil?
-        raise "Can't find plain text part"
+        "[No message body]"
+      else
+        format_part part
       end
-      x = format_part part
     end
 
     # helper method
