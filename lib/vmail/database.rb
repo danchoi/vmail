@@ -2,9 +2,9 @@ require 'sequel'
 
 DB = Sequel.connect 'sqlite://vmail.db'
 
-create_table_script = File.expand_path("../db/create.sql", __FILE__)
 
 if !File.exists?("vmail.db")
+  create_table_script = File.expand_path("../db/create.sql", __FILE__)
   DB.run create_table_script 
 end
 

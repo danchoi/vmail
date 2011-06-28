@@ -30,10 +30,7 @@ module Vmail
           date: DateTime.parse(envelope.date).to_s,
           size: x.attr['RFC822.SIZE'],
           sender: sender,
-          recipients: recipients,
-          # reminder to fetch these later
-          rfc822: nil, 
-          plaintext: nil 
+          recipients: recipients
         }
         # We really just need to update the flags, buy let's update everything
         message.update params
