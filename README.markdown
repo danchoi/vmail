@@ -124,16 +124,6 @@ You can also pass in search parameters after specifying the mailbox:
 
     vmail important from barackobama@whitehouse.gov
 
-On startup, Vmail loads 100 messages by default. You can increase or decrease
-this number by passing in a number after the mailbox name:
-
-    vmail inbox 700 subject unix
-
-Passing in 0 as the number of messages returns all messages that match
-the query:
-
-    vmail inbox 0 subject unix # => returns all matching messages
-
 ## Viewing messages
 
 The first screen Vmail shows you is a list of messages. You can view a message
@@ -161,13 +151,13 @@ You can use `<C-k>` or `,k` to show the previous message.
 
 Vmail loads a certain number messages at a time, starting with the most recent.
 If there are more messages that Vmail hasn't loaded, you'll see a line at the
-top of the list that looks something like this:
+bottom of the list that looks something like this:
 
     > Load 100 more messages. 156 remaining.
 
 Put the cursor on this line and press ENTER to load more of these messages.
 
-Tip: To go straight to the top line and load more messages, type `gg<ENTER>`.
+Tip: To go straight to the bottom line and load more messages, type `G<ENTER>`.
 
 Unread messages are marked with a `+` symbol.
 
@@ -307,7 +297,7 @@ The current version of Vmail can handle attachments to a certain extent.
 When you're viewing a message with attachments, you'll see something like this
 at the top of the message window:
 
-    INBOX 2113 4 kb
+    4 kb
     - image/png; name=canada.png
     - image/gif; name=arrow_right.gif
     ---------------------------------------
@@ -378,13 +368,12 @@ split window.
 
 Vmail can generate a message list by performing an IMAP search on the current mailbox.
 From the message list window, type `,s`. This will prompt you for a search query. 
-The search query is an optional number specifying the number of messages to return, 
-followed by a valid IMAP search query.
+The search query should be a valid IMAP search query.
 
 Here are some example search queries.
 
     # the default 
-    100 all  
+    all  
 
     # all messages from thematrix.com domain
     from thematrix.com  
@@ -428,7 +417,7 @@ automated scripts.
 If you redirect Vmail's output from STDOUT to a file or a program, Vmail will
 output the message list resulting from a search query to a file.
 
-    vmail inbox 100 from monit > message-list.txt 
+    vmail inbox from monit > message-list.txt 
 
 You can open this file in any text editor to make sure that the search
 query produced the expected result. Then you can perform the following
