@@ -1,12 +1,11 @@
 require 'sequel'
 
-DB = Sequel.connect 'sqlite://vmail.db'
-
-
-if !File.exists?("vmail.db")
-  create_table_script = File.expand_path("../db/create.sql", __FILE__)
-  DB.run create_table_script 
+if !File.size?('vmail.db')
+  create_table_script = File.expand_path("../../../db/create.sql", __FILE__)
+  puts `sqlite3 vmail.db < #{create_table_script}`
 end
+
+DB = Sequel.connect 'sqlite://vmail.db'
 
 if DB[:version].count == 0
   DB[:version].insert(:vmail_version => Vmail::VERSION)
