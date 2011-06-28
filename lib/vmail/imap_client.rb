@@ -213,7 +213,7 @@ module Vmail
       if !new_ids.empty?
         self.max_seqno = new_ids[-1]
         message_ids = fetch_and_cache_headers(new_ids)
-        res = get_message_headers(message_ids.reverse)
+        res = get_message_headers(message_ids)
         res
       else
         ''
