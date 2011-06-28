@@ -79,10 +79,6 @@ module Vmail
       get_mailbox_status
       log "Getting highest message id"
       get_highest_message_id
-      if @next_window_width
-        @width = @next_window_width
-      end
-
       return "OK"
     end
 
@@ -423,11 +419,8 @@ EOF
     end
 
     def window_width=(width)
-      @next_window_width = width.to_i
-      if @width.nil?
-        @width = @next_window_width
-      end
-      log "Setting next window width to #{width}"
+      @width = width.to_i
+      log "Setting window width to #{width}"
     end
    
     def smtp_settings
