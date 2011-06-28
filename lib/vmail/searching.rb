@@ -2,23 +2,22 @@ module Vmail
   module Searching
     # The main function called by the client to retrieve messages
     def search(query)
-      query = Vmail::Query.parse(query)
-      @limit = query.shift.to_i
-      # @limit is Deprecated
+      log "Search query raw: #{query.inspect}"
+      @query = Vmail::Query.parse(query) 
+      log "Search query parsed: #{@query.inspect}"
+      # customizable @limit is Deprecated
       @limit = 100
-
       # set the target range to the whole set, unless it is too big
-      @start_index = [@num_messages - @limit, 0].max
-      query.unshift "#{@start_index}:#@num_messages"
-      
-      @query = query.map {|x| x.to_s.downcase}
+      @start_index = [@num_messages - @limit, 0].max + 1
+      @query.unshift "#{@start_index}:#@num_messages"
       query_string = Vmail::Query.args2string(@query)
-      log "Search query: #{@query} > #{query_string.inspect}"
-      @query = query
+      log "Search query: #{query_string.inspect}"
       @ids = reconnect_if_necessary(180) do # increase timeout to 3 minutes
         @imap.search(query_string)
       end
-
+      if @ids.empty?
+        return "No messages"
+      end
       max_seqno = @ids[-1] # this is a instance var
       log "- search query got #{@ids.size} results; max seqno: #{self.max_seqno}" 
       clear_cached_message

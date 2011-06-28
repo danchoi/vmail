@@ -58,12 +58,13 @@ module Vmail
     server.select_mailbox mailbox
 
     STDERR.puts "Mailbox: #{mailbox}"
-    STDERR.puts "Query: #{query.inspect} => #{query_string}"
+    STDERR.puts "Query: #{query.inspect}" 
+    STDERR.puts "Query String: #{String.shellescape(query_string)}"
     
     buffer_file = "vmailbuffer"
     # invoke vim
     vimscript = File.expand_path("../vmail.vim", __FILE__)
-    vim_command = "DRB_URI=#{drb_uri} VMAIL_CONTACTS_FILE=#{contacts_file} VMAIL_MAILBOX=#{String.shellescape(mailbox)} VMAIL_QUERY=#{String.shellescape(query_string)} #{vim} -S #{vimscript} #{buffer_file}"
+    vim_command = "DRB_URI=#{drb_uri} VMAIL_CONTACTS_FILE=#{contacts_file} VMAIL_MAILBOX=#{String.shellescape(mailbox)} VMAIL_QUERY=\"#{query_string}\" #{vim} -S #{vimscript} #{buffer_file}"
     STDERR.puts vim_command
     STDERR.puts "Using buffer file: #{buffer_file}"
     File.open(buffer_file, "w") do |file|
@@ -157,11 +158,10 @@ module Vmail
   end
 
   def parse_query
-    mailbox = if ARGV[0] =~ /^\d+/ 
-                "INBOX"
-              else 
-                ARGV.shift || 'INBOX' 
-              end
+    if ARGV[0] =~ /^\d+/ 
+      ARGV.shift
+    end
+    mailbox = ARGV.shift || 'INBOX' 
     query = Vmail::Query.parse(ARGV)
     [mailbox, query]
   end

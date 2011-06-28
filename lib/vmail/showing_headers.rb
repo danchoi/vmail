@@ -7,12 +7,9 @@ module Vmail
     end
 
     def fetch_and_cache_headers(id_set)
+      log "fetching headers for #{id_set.inspect}"
       results = reconnect_if_necessary do 
         @imap.fetch(id_set, ["FLAGS", "ENVELOPE", "RFC822.SIZE", "UID"])
-      end
-      if results.nil?
-        error = "Expected fetch results but got nil"
-        log(error) && raise(error)
       end
       results.reverse.map do |x| 
         envelope = x.attr["ENVELOPE"]

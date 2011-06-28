@@ -3,19 +3,19 @@ module Vmail
   class Query
     # args is an array like ARGV
     def self.parse(args)
+      args = args.dup
       if args.is_a?(String)
         args = Shellwords.shellwords args
       end
+      if args.size > 0 && args.first =~ /^\d+/
+        args.shift
+      end
       query = if args.empty? 
-                [100, 'ALL']
-              elsif args.size == 1 && args[0] =~ /^\d+/ 
-                [args.shift, "ALL"] 
-              elsif args[0] =~ /^\d+/
-                args
+                ['ALL']
               else
-                [100] + args
+                args
               end
-      query
+      query.map {|x| x.to_s.downcase}
     end
 
     def self.args2string(array)
