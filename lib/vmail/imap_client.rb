@@ -297,7 +297,7 @@ module Vmail
     end
 
     def forward_template
-      original_body = current_message.split(/\n-{20,}\n/, 2)[1]
+      original_body = current_message.plaintext.split(/\n-{20,}\n/, 2)[1]
       formatter = Vmail::MessageFormatter.new(current_mail)
       headers = formatter.extract_headers
       subject = headers['subject']
