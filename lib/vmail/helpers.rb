@@ -16,7 +16,7 @@ module Vmail
     # borrowed from ActionView/Helpers
     def number_to_human_size(number)
       if number.to_i < 1024
-        "<1kb" # round up to 1kh
+        "< 1k" # round up to 1kh
       else
         max_exp = UNITS.size - 1
         exponent = (Math.log(number) / Math.log(1024)).to_i # Convert to base 1024
