@@ -68,11 +68,8 @@ module Vmail
     STDERR.puts vim_command
     STDERR.puts "Using buffer file: #{buffer_file}"
     File.open(buffer_file, "w") do |file|
-      file.puts "Vmail starting with values:\n"
-      file.puts "- drb uri: #{drb_uri}"
-      file.puts "- mailbox: #{mailbox}"
-      file.puts "- query: #{query_string}\n"
-      file.puts "Fetching messages. please wait..."  
+      file.puts "\n\nVmail #{Vmail::VERSION}\n\n"
+      file.puts "Please wait while I fetch your messages.\n\n\n"
     end
 
     system(vim_command)
