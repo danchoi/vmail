@@ -1,0 +1,30 @@
+
+------------------------------------------------------------------------
+Sun Jun 26 18:07:59 EDT 2011
+
+Sqlite3 branch
+
+Use sqlite3 as a cache.
+fetch UIDS, and then check and cache.
+
+Also, log output to primary thread and let Vmail echo via Vim. Change vmail.vim
+How do make this output progressive?
+
+What if there is a queue for IMAP tasks instead of multiple untracked threads?
+
+Check for new messages can just reload the current mailbox
+  => simplify the code
+
+Build queue of stuff for Vmail to do
+ => this may lead to fewer errors than multithreaded delete (maybe too many
+ threads are spawned)
+
+TODO
+
+Version number in data schema
+Don't destroy data between launches
+
+No number number limit inbox 100. NOTE IN DOCUMENTATION
+
+
+
