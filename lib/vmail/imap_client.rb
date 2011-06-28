@@ -189,6 +189,10 @@ module Vmail
 
     # TODO why not just reload the current page?
     def update
+      if search_query?
+        log "Update aborted because query is search query: #{@query.inspect}"
+        return ""
+      end
       prime_connection
       old_num_messages = @num_messages
       # we need to re-select the mailbox to get the new highest id
@@ -208,7 +212,7 @@ module Vmail
       log "- update: new uids: #{new_ids.inspect}"
       if !new_ids.empty?
         self.max_seqno = new_ids[-1]
-        res = get_message_headers(new_ids, false, true)
+        res = get_message_headers(new_ids.reverse, false, true)
         res
       else
         ''
@@ -306,8 +310,6 @@ module Vmail
         original_body + signature
     end
 
-    SENT_MESSAGES_FILE = "sent-messages.txt"
-
     def format_sent_message(mail)
       formatter = Vmail::MessageFormatter.new(mail)
       message_text = <<-EOF
@@ -329,7 +331,7 @@ EOF
       log res.inspect
       log "\n"
       msg = if res.is_a?(Mail::Message)
-        "Message '#{mail.subject}' sent and saved to #{SENT_MESSAGES_FILE}"
+        "Message '#{mail.subject}' sent"
       else
         "Failed to deliver message '#{mail.subject}'!"
       end

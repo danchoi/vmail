@@ -226,13 +226,11 @@ function! s:update()
   let res = system(command)
   if len(split(res, "\n", '')) > 0
     setlocal modifiable
-    let line = line('$')
-    silent $put =res
+    call append(0, res)
     setlocal nomodifiable
     write!
     let num = len(split(res, '\n', ''))
-    call cursor(line + 1, 0)
-    normal z.
+    call cursor(0, 0)
     redraw
     echom "You have " . num . " new message" . (num == 1 ? '' : 's') . "!" 
   else
