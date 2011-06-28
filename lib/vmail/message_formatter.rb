@@ -85,20 +85,14 @@ module Vmail
     end
 
     def extract_headers(mail = @mail)
-      headers = {'from' => utf8(mail['from'].decoded),
+      headers = {
+        'from' => utf8(mail['from'].decoded),
         'date' => (mail.date.strftime('%a, %b %d %I:%M %p %Z %Y') rescue mail.date),
         'to' => mail['to'].nil? ? nil : utf8(mail['to'].decoded),
+        'cc' => (mail.cc && utf8(mail['cc'].decoded.to_s)),
+        'reply_to' => (mail.reply_to && utf8(mail['reply_to'].decoded)),
         'subject' => utf8(mail.subject)
       }
-      if !mail.cc.nil?
-        headers['cc'] = utf8(mail['cc'].decoded.to_s)
-      end
-      if !mail.reply_to.nil?
-        headers['reply_to'] = utf8(mail['reply_to'].decoded)
-      end
-      if mail['message-id'] 
-        headers['references'] = mail['message-id']
-      end
       headers
     rescue
       {'error' => $!}

@@ -25,7 +25,7 @@ module Vmail
       reply_body = reply_quote_header + divider('-') +
         (current_message.plaintext.split(/^-+$/,2)[1])
       {
-        'message-id' => current_message.message_id,
+        'references' => current_message.message_id,
         'from' => "#@name <#@username>", 
         'to' => reply_recipient, 
         'cc' => reply_cc, 

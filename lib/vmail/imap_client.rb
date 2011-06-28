@@ -285,6 +285,9 @@ module Vmail
     def format_headers(hash)
       lines = []
       hash.each_pair do |key, value|
+        if value.nil?
+          next
+        end
         if value.is_a?(Array)
           value = value.join(", ")
         end
@@ -347,9 +350,10 @@ EOF
       mail = Mail.new
       raw_headers, raw_body = *text.split(/\n\s*\n/, 2)
       headers = {}
+
       raw_headers.split("\n").each do |line|
         key, value = *line.split(/:\s*/, 2)
-        if key == 'message-id'
+        if key == 'references'
           mail.references = value
         else
           next if (value.nil? || value.strip == '')
