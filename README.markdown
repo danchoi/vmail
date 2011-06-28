@@ -84,6 +84,9 @@ You can also add an `always_cc:` key-value pair. This will pre-insert
 whatever email address you specify in the `cc:` line of any email you
 start composing in Vmail.
 
+The same applies to `always_bcc:`.
+
+
 If you want to configure Vmail with multiple Gmail accounts, [here's how][multiaccount].
 
 [multiaccount]:https://github.com/danchoi/vmail/wiki/How-can-i-quickly-switch-between-multiple-accounts%3F
