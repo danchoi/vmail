@@ -43,7 +43,7 @@ module Vmail
         # We really just need to update the flags, buy let's update everything
         message.update params
 
-        unless message.labels.include?(@label)
+        unless Vmail::Labeling[message_id: message_id, label_id: @label.label_id]
           params = {message_id: message.message_id, uid: uid, label_id: @label.label_id}
 
           Labeling.create params

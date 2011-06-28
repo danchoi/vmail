@@ -16,7 +16,7 @@ module Vmail
         log "- found message #{message_id}"
         log "- message has plaintext? #{!m.plaintext.nil?}"
       else
-        log "- could not found message #{message_id.inspect}"
+        log "- could not find message #{message_id.inspect}"
       end
       m && !m.plaintext.nil? && m
     end
