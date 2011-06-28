@@ -36,7 +36,6 @@ module Vmail
       @imap_server = config['server'] || 'imap.gmail.com'
       @imap_port = config['port'] || 993
       current_message = nil
-      @width = 140
     end
 
 
@@ -67,9 +66,6 @@ module Vmail
       if mailbox_aliases[mailbox]
         mailbox = mailbox_aliases[mailbox]
       end
-      if mailbox == @mailbox && !force
-        return
-      end
       log "Selecting mailbox #{mailbox.inspect}"
       reconnect_if_necessary(15) do 
         log @imap.select(mailbox)
@@ -83,6 +79,10 @@ module Vmail
       get_mailbox_status
       log "Getting highest message id"
       get_highest_message_id
+      if @next_window_width
+        @width = @next_window_width
+      end
+
       return "OK"
     end
 
@@ -95,7 +95,7 @@ module Vmail
     # and keyed by UID.
     def clear_cached_message
       return unless STDIN.tty?
-      log "CLEARING CACHED MESSAGE"
+      log "Clearing cached message"
       current_message = nil
     end
 
@@ -104,7 +104,7 @@ module Vmail
       res = @imap.fetch([1,"*"], ["ENVELOPE"])
       if res 
         @num_messages = res[-1].seqno
-        log "HIGHEST ID: #@num_messages"
+        log "Highest seqno: #@num_messages"
       else
         @num_messages = 1
         log "NO HIGHEST ID: setting @num_messages to 1"
@@ -417,8 +417,11 @@ EOF
     end
 
     def window_width=(width)
-      log "Setting window width to #{width}"
-      @width = width.to_i
+      @next_window_width = width.to_i
+      if @width.nil?
+        @width = @next_window_width
+      end
+      log "Setting next window width to #{width}"
     end
    
     def smtp_settings

@@ -7,7 +7,7 @@ module Vmail
     end
 
     def fetch_and_cache_headers(id_set)
-      log "fetching headers for #{id_set.inspect}"
+      log "Fetching headers for #{id_set.size} messages"
       results = reconnect_if_necessary do 
         @imap.fetch(id_set, ["FLAGS", "ENVELOPE", "RFC822.SIZE", "UID"])
       end
