@@ -482,7 +482,7 @@ trap("INT") {
   require 'timeout'
   puts "Closing imap connection"  
   begin
-    Timeout::timeout(10) do 
+    Timeout::timeout(2) do 
       $gmail.close
     end
   rescue Timeout::Error
