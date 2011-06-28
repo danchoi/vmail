@@ -2,8 +2,15 @@ require 'sequel'
 
 DB = Sequel.connect 'sqlite://vmail.db'
 
-create_table_script = File.read("db/create.sql")
-DB.run create_table_script 
+create_table_script = File.expand_path("../db/create.sql", __FILE__)
+
+if !File.exists?("vmail.db")
+  DB.run create_table_script 
+end
+
+if DB[:version].count == 0
+  DB[:version].insert(:vmail_version => Vmail::VERSION)
+end
 
 class Vmail::Message < Sequel::Model
   set_primary_key :message_id
@@ -18,8 +25,6 @@ class Vmail::Label < Sequel::Model
 end
 
 class Vmail::Labeling < Sequel::Model
-
-
 end
 
 

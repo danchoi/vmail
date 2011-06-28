@@ -1,3 +1,7 @@
+drop table if exists version;
+create table version (
+  vmail_version text
+);
 create table if not exists messages (
   message_id text PRIMARY KEY,
   size integer,
