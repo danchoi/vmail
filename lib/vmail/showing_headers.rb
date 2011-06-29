@@ -106,7 +106,7 @@ module Vmail
 
     def with_more_message_line(res)
       remaining = @start_index 
-      if remaining < 1
+      if remaining <= 1
         return res
       end
       res + "\n>  Load #{[100, remaining].min} more messages. #{remaining} remaining." 
