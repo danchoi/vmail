@@ -22,7 +22,7 @@ module Vmail
       results.reverse.map do |x| 
         envelope = x.attr["ENVELOPE"]
         message_id = envelope.message_id
-        subject = Mail::Encodings.unquote_and_convert_to(envelope.subject, 'UTF-8')
+        subject = Mail::Encodings.unquote_and_convert_to((envelope.subject || ''), 'UTF-8')
         recipients = ((envelope.to || []) + (envelope.cc || [])).map {|a| extract_address(a)}.join(', ')
         sender = extract_address envelope.from.first
         uid = x.attr["UID"]
@@ -55,13 +55,15 @@ module Vmail
     def extract_address(address_struct)
       address = if address_struct.nil?
                   "Unknown"
-                elsif address_struct.name
-                  "#{Mail::Encodings.unquote_and_convert_to(address_struct.name, 'UTF-8')} <#{[address_struct.mailbox, address_struct.host].join('@')}>"
-                else
-                  [ 
-                    (address_struct.mailbox ? Mail::Encodings.unquote_and_convert_to(address_struct.mailbox, 'UTF-8') : ""), 
-                    (address_struct.host ?  Mail::Encodings.unquote_and_convert_to(address_struct.host, 'UTF-8'): "")
-                  ].join('@') 
+                else 
+                  email = [ (address_struct.mailbox ? Mail::Encodings.unquote_and_convert_to(address_struct.mailbox, 'UTF-8') : ""), 
+                      (address_struct.host ?  Mail::Encodings.unquote_and_convert_to(address_struct.host, 'UTF-8'): "")
+                    ].join('@') 
+                  if address_struct.name
+                   "#{Mail::Encodings.unquote_and_convert_to((address_struct.name || ''), 'UTF-8')} <#{email}>"
+                  else
+                    email
+                  end
                 end
 
     end
