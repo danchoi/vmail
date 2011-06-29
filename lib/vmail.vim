@@ -828,6 +828,7 @@ func! s:message_list_window_mappings()
   noremap <silent> <buffer> <c-j> :call <SID>show_next_message_in_list()<cr>
   noremap <silent> <buffer> <c-k> :call <SID>show_previous_message_in_list()<cr>
   nnoremap <silent> <buffer> <Space> :call <SID>toggle_maximize_window()<cr>
+  autocmd CursorMoved <buffer> :redraw
 endfunc
 
 func! s:compose_window_mappings()
