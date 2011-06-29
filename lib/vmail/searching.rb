@@ -53,7 +53,7 @@ module Vmail
 
     def search_query?
       x = @query[-1] != 'all'
-      log "Search query? #{x} #{@query.inspect}"
+      #log "Search query? #{x}"
       x
     end
   end
