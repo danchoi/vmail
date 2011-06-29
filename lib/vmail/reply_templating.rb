@@ -45,11 +45,15 @@ module Vmail
     def reply_cc
       return nil unless (@replyall || @always_cc)
       xs = if @replyall
-             ((current_mail['cc'] && current_mail['cc'].decoded) || "") .split(/,\s*/)
+             ((current_mail['cc'] && current_mail['cc'].decoded) || "") .split(/,\s*/)  + ((current_mail['to'] && current_mail['to'].decoded) || "") .split(/,\s*/)
            else
              []
            end
-      if @always_cc && xs.none? {|x| x =~ %r{#{@always_cc}}}
+      xs = xs.select {|x|
+        email = (x[/<([^>]+)>/, 1] || x) 
+        email !~ /#{reply_recipient}/ && email !~ /#{@always_cc}/ 
+      }
+      if @always_cc 
         xs << @always_cc
       end
       xs.uniq.select {|x| x != reply_recipient }.join(', ')
