@@ -32,7 +32,7 @@ module Vmail
       log "- Query got #{@ids.size} results; max seqno: #{self.max_seqno}" 
       clear_cached_message
 
-      select_ids = search_query? ? @ids[-@limit,@limit] : @ids
+      select_ids = (search_query? ? @ids[[-@limit, 0].max, @limit] : @ids)
 
       if select_ids.size > @limit
         raise "Too many messages to fetch headers for"
@@ -49,6 +49,7 @@ module Vmail
       end
     rescue
       log "ERROR:\n#{$!.inspect}\n#{$!.backtrace.join("\n")}"
+      "Sorry there was an error. Please check vmail.log."
     end  
 
     def search_query?
