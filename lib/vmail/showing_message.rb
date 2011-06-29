@@ -55,9 +55,10 @@ module Vmail
 
       message = Message[message_id]
       parts_list = format_parts_info(formatter.list_parts)
-      headers = format_headers(formatter.extract_headers) 
+      headers_hash = formatter.extract_headers
+      headers_hash['date'] 
+      headers = format_headers headers_hash
       # replace the date value with the one derived from the envelope
-      headers['date'] = message.date
       body = formatter.plaintext_part
       body.force_encoding("UTF-8")
       body = Iconv.conv('UTF-8//IGNORE', 'UTF-8', body)
