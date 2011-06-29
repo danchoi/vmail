@@ -514,10 +514,7 @@ Vmail users, please add them to the [vmail wiki][wiki].
 
 My name is Daniel Choi. I am based in Cambridge, Massachusetts, USA, and you
 can email me at dhchoi@gmail.com.  You can [follow me on Twitter][twitter] too.
-A big shout out goes to my funny, smart, and supportive fellow hacker alums of
-[Betahouse][betahouse].
 
-[betahouse]:http://betahouse.org/
 
 [twitter]:http://twitter.com/#!/danchoi
 
