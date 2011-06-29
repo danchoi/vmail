@@ -92,58 +92,6 @@ module Vmail
     exit
   end
 
-  # non-interactive mode
-  def noninteractive_list_messages
-    check_lynx
-    opts = Vmail::Options.new(ARGV)
-    opts.config
-    config = opts.config.merge 'logfile' => 'vmail.log'
-    mailbox, query = parse_query
-    query_string = Vmail::Query.args2string query
-    imap_client  = Vmail::ImapClient.new config
-    imap_client.with_open do |vmail| 
-      vmail.select_mailbox mailbox
-      vmail.search query_string
-    end 
-  end
-
-  # batch processing mode
-  def batch_run
-    check_lynx
-    opts = Vmail::Options.new(ARGV)
-    opts.config
-    config = opts.config.merge 'logfile' => 'vmail.log'
-    # no search query args, but command args
-    imap_client  = Vmail::ImapClient.new config
-    lines = STDIN.readlines# .reverse
-    mailbox = lines.shift.chomp
-    puts "mailbox: #{mailbox}"
-    uid_set = lines.map do |line| 
-      line[/(\d+)\s*$/,1].to_i
-    end
-    commands = {
-      'rm' => ["flag", "+FLAGS", "Deleted"],
-      'spam' => ["flag", "+FLAGS", "spam"],
-      'mv' => ["move_to"],
-      'cp' => ["copy_to"],
-      'print' => ["append_to_file"]
-    }
-    args = commands[ARGV.first]
-    if args.nil?
-      abort "Command '#{args.inspect}' not recognized"
-    end
-    command = args.shift
-    imap_client.with_open do |vmail| 
-      puts "Selecting mailbox: #{mailbox}"
-      vmail.select_mailbox mailbox
-      uid_set.each_slice(5) do |uid_set|
-        params = [uid_set.join(',')] + args + ARGV[1..-1]
-        puts "Executing: #{command} #{params.join(' ')}"
-        vmail.send command, *params
-      end
-    end
-  end
-
   private
 
   def check_lynx

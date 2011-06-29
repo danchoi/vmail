@@ -7,11 +7,9 @@ rescue LoadError
   require 'vmail'
 end
 
-if !STDOUT.tty?
-  Vmail.noninteractive_list_messages
-elsif !STDIN.tty?
-  Vmail.batch_run
-else
-  Vmail.start
+if !STDOUT.tty? || !STDIN.tty?
+  abort "Vmail non-interactive mode has been removed"
 end
+
+Vmail.start
 
