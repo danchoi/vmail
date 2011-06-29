@@ -420,35 +420,8 @@ any line in this mini-editor and press ENTER to perform the query on that line.
 
 ## Command-line mode and batch processing
 
-You can invoke Vmail in non-interactive command-line mode. This is very
-useful for batch processing and for using Vmail in Unix pipelines and
-automated scripts.
+Note: These features have been deprecated and will be migrated to a separate tool.
 
-If you redirect Vmail's output from STDOUT to a file or a program, Vmail will
-output the message list resulting from a search query to a file.
-
-    vmail inbox from monit > message-list.txt 
-
-You can open this file in any text editor to make sure that the search
-query produced the expected result. Then you can perform the following
-batch operations on the message list:
-
-    # deletes all the messages in the message list
-    vmail rm < message-list.txt
-
-    # marks all the messages in the message list as spam
-    vmail spam < message-list.txt
-
-    # moves all the messages in the message list to the 'monit' mailbox
-    vmail mv monit < message-list.txt
-
-    # copies all the messages in the message list to the 'monit' mailbox
-    vmail cp monit < message-list.txt
-
-    # appends the text content of all the messages in the message list to messages.txt
-    vmail print messages.txt < message-list.txt
-
-Non-interactive mode assumes that `.vmailrc` contains your Gmail password.
 
 ## Getting help
 

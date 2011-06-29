@@ -43,6 +43,7 @@ module Vmail
       @smtp_server = config['smtp_server'] || 'smtp.gmail.com'
       @smtp_port = config['smtp_port'] || 587
       @smtp_domain = config['smtp_domain'] || 'gmail.com'
+      @width = 100
       current_message = nil
     end
 
