@@ -390,12 +390,12 @@ EOF
         mail.text_part do
           body raw_body.split(/\n\s*\n/, 2)[1]
         end
-
       else
         mail.text_part do
           body raw_body
         end
       end
+      mail.text_part.charset = 'UTF-8'
       mail
     rescue
       $logger.debug $!
