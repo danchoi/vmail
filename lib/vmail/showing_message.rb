@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 module Vmail
   module ShowingMessage
 
@@ -52,12 +54,17 @@ module Vmail
       formatter = Vmail::MessageFormatter.new rfc822
 
       message = Message[message_id]
+      parts_list = format_parts_info(formatter.list_parts)
+      headers = format_headers(formatter.extract_headers) 
+      body = formatter.plaintext_part
+      body.force_encoding("UTF-8")
+      body = Iconv.conv('UTF-8//IGNORE', 'UTF-8', body)
       message_text = <<-EOF
-#{message_id} #{number_to_human_size message.size} #{message.flags} #{format_parts_info(formatter.list_parts)}
+#{message_id} #{number_to_human_size message.size} #{message.flags} #{parts_list}
 #{divider '-'}
-#{format_headers(formatter.extract_headers)}
+#{headers}
 
-#{formatter.plaintext_part}
+#{body}
 EOF
       # 2 calls so we can see more fine grained exceptions
       message.update(:rfc822 => rfc822)

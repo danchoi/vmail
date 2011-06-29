@@ -3,6 +3,7 @@ require 'vmail/options'
 require 'vmail/imap_client'
 require 'vmail/query'
 require 'vmail/message_formatter'
+require 'iconv'
 
 module Vmail
   extend self
