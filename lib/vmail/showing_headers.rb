@@ -35,7 +35,7 @@ module Vmail
         params = {
           subject: (subject || ''),
           flags: x.attr['FLAGS'].join(','),
-          date: DateTime.parse(envelope.date).to_s,
+          date: Time.parse(envelope.date).localtime.to_s,
           size: x.attr['RFC822.SIZE'],
           sender: sender,
           recipients: recipients
