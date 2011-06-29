@@ -453,6 +453,9 @@ EOF
     end
 
     def log(string)
+      if string.is_a?(::Net::IMAP::TaggedResponse)
+        string = string.raw_data
+      end
       @logger.debug string
     end
 
