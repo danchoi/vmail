@@ -232,6 +232,7 @@ function! s:update()
     write!
     let num = len(lines)
     call cursor(num, 0)
+    normal z.
     redraw
     echom "You have " . num . " new message" . (num == 1 ? '' : 's') . "!" 
   else
