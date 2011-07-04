@@ -16,7 +16,7 @@ module Vmail
           list_parts(part.parts)
         else
           # part.charset could be used
-          "- #{part.content_type}"
+          "- #{part.content_type} #{part.attachment? ? part.filename : ''}"
         end
       end
       lines.flatten

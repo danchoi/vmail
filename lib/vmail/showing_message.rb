@@ -91,7 +91,7 @@ EOF
     end
 
     def format_parts_info(parts)
-      lines = parts.select {|part| part !~ %r{text/plain}}
+      lines = parts #.select {|part| part !~ %r{text/plain}}
       if lines.size > 0
         "\n#{lines.join("\n")}"
       end
