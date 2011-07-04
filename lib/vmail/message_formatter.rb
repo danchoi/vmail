@@ -34,7 +34,11 @@ module Vmail
     # helper method
     def find_text_part2(part, content_type)
       if part.multipart?  
-        part.parts.map {|p| find_text_part2(p, p.content_type)}.compact.first
+        part.parts.
+          map {|p| find_text_part2(p, p.content_type)}.
+          compact.
+          select {|p| !p.attachment?}.
+          first
       elsif content_type =~ %r[^text/plain] || 
         content_type =~ %r[text/plain] ||
         content_type =~ %r[message/rfc]
