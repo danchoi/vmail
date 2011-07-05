@@ -55,6 +55,7 @@ function! s:create_list_window()
   let s:listbufname = bufname('%')
   setlocal statusline=%!VmailStatusLine()
   call s:message_list_window_mappings()
+  autocmd BufNewFile,BufRead *.txt setlocal modifiable
 endfunction
 
 " the message display buffer window
