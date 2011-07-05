@@ -22,8 +22,9 @@ module Vmail
       sender = current_message.sender
       reply_quote_header = date ? "On #{date.strftime('%a, %b %d, %Y at %I:%M %p')}, #{sender} wrote:\n\n" : "#{sender} wrote:\n"
 
-      reply_body = reply_quote_header + divider('-') +
-        (current_message.plaintext.split(/^-+$/,2)[1])
+      reply_body = reply_quote_header + 
+        ( current_message.plaintext.split(/^-+$/,2)[1].strip.gsub(/^(?=>)/, ">").gsub(/^(?!>)/, "> ") )
+
       {
         'references' => current_message.message_id,
         'from' => "#@name <#@username>", 
