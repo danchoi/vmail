@@ -39,6 +39,7 @@ end
 desc "build webpage"
 task :build_webpage do
   `cp README.markdown ../project-webpages/src/vmail.README.markdown`
+  `cp coverage.markdown ../project-webpages/src/vmail.coverage.markdown`
   Dir.chdir "../project-webpages" do
     puts `ruby gen.rb vmail #{Vmail::VERSION}`
     #`open out/vmail.html`
