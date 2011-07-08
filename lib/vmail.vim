@@ -693,7 +693,7 @@ func! s:open_href(all) range
     while lnum <= a:lastline
       let href = matchstr(getline(lnum), pattern)
       if href != ""
-        let command = s:browser_command . " '" . href . "' &"
+        let command = s:browser_command ." ".shellescape(href)." &"
         call system(command)
         let n += 1
       endif
@@ -706,7 +706,7 @@ func! s:open_href(all) range
   if line && a:all
     while line
       let href = matchstr(getline(line('.')), pattern)
-      let command = s:browser_command . " '" . href . "' &"
+      let command = s:browser_command ." ".shellescape(href)." &"
       call system(command)
       let n += 1
       let line = search('https\?:', 'W')
@@ -714,7 +714,7 @@ func! s:open_href(all) range
     echom 'opened '.n.' links' 
   else
     let href = matchstr(getline(line('.')), pattern)
-    let command = s:browser_command . " '" . href . "' &"
+    let command = s:browser_command ." ".shellescape(href)." &"
     call system(command)
     echom 'opened '.href
   endif
