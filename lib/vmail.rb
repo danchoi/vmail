@@ -39,7 +39,7 @@ module Vmail
 
     contacts_file = opts.contacts_file
 
-    logfile = (vim == 'mvim' || vim = 'gvim') ? STDERR : 'vmail.log'
+    logfile = (vim == 'mvim' || vim == 'gvim') ? STDERR : 'vmail.log'
     config.merge! 'logfile' => logfile
 
     puts "Starting vmail imap client for #{config['username']}"
