@@ -24,4 +24,9 @@ TODO
 No number number limit inbox 100. NOTE IN DOCUMENTATION
 
 
+------------------------------------------------------------------------
+Fri Jul  8 08:32:29 EDT 2011
+
+I think I can fetch back emails while use is waiting via a background thread
+
 
