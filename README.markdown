@@ -427,15 +427,16 @@ Note: These features have been deprecated and will be migrated to a separate too
 
 Typing `,?` will open this webpage in a browser.
 
-## Using Vmail with MacVim
+## Using Vmail with MacVim or gvim
 
-To use MacVim as your Vmail Vim engine, `export VMAIL_VIM=mvim` before starting
-Vmail or put this command in your `~/.bash_profile`.
+To use MacVim as your Vmail Vim engine, run `export VMAIL_VIM=mvim` or `export
+VMAIL_VIM=gvim` before starting Vmail.  Or put this command in your
+`~/.bash_profile`.
 
-Note that when Vmail uses MacVim, the terminal window in which you invoke Vmail
-will show Vmail's logging output while MacVim is running. To quit Vmail in
-MacVim mode, first quit the MacVim window running Vmail, and then press CTRL-c
-in the original terminal window to stop the Vmail process.
+Note that when Vmail uses MacVim or gvim, the terminal window in which you
+invoke Vmail will show Vmail's logging output while MacVim is running. To quit
+Vmail in MacVim mode, first quit the MacVim window running Vmail, and then
+press CTRL-c in the original terminal window to stop the Vmail process.
 
 ## Vmail file byproducts
 
