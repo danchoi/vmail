@@ -769,8 +769,7 @@ func! s:message_window_mappings()
   nmap <silent> <buffer> <leader>k <c-k>
   noremap <silent> <buffer> <Leader>c :call <SID>compose_message()<CR>
   noremap <silent> <buffer> <Leader>h :call <SID>open_html_part()<CR><cr>
-  nnoremap <silent> <buffer> q :call <SID>close_message_window()<cr> 
-  nmap <silent> <buffer> <leader>q q
+  nmap <silent> <buffer> <leader>:call <SID>close_message_window()<cr> 
 
   nnoremap <silent> <buffer> <leader>#  :close<cr>:call <SID>focus_list_window()<cr>:call <SID>delete_messages("Deleted")<cr>
   nnoremap <silent> <buffer> <leader>*  :call <SID>focus_list_window()<cr>:call <SID>toggle_star()<cr>
@@ -799,8 +798,7 @@ func! s:message_list_window_mappings()
   noremap <silent> <buffer> <cr> :call <SID>show_message(0)<CR>
   noremap <silent> <buffer> <LeftMouse> :call <SID>show_message(0)<CR>
   nnoremap <silent> <buffer> l :call <SID>show_message(1)<CR>
-  noremap <silent> <buffer> q :qal!<cr>
-  nmap <silent> <buffer> <leader>q q
+  noremap <silent> <buffer> <leader>q :qal!<cr>
 
   noremap <silent> <buffer> <leader>* :call <SID>toggle_star()<CR>
   noremap <silent> <buffer> <leader># :call <SID>delete_messages("Deleted")<CR>
