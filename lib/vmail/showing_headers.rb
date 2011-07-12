@@ -92,12 +92,10 @@ module Vmail
                    message.message_id ].join(' | ')
     end
 
-    FLAGMAP = {'Flagged' => '*'} 
+    FLAGMAP = {'Flagged' => '*'}
 
     def format_flags(flags)
-      # other flags like "Old" should be hidden here
-      flags = flags.split(',').map {|flag| FLAGMAP[flag]}
-      flags.delete("Old")
+      flags = flags.split(',').map {|flag| FLAGMAP[flag]}.compact
       if flags.delete('Seen').nil?
         flags << '+' # unread
       end
