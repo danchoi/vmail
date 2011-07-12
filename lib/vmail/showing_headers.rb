@@ -92,7 +92,7 @@ module Vmail
                    message.message_id ].join(' | ')
     end
 
-    FLAGMAP = {'Flagged' => '*'}
+    FLAGMAP = {'Flagged' => '*', 'Seen' => 'Seen'}
 
     def format_flags(flags)
       flags = flags.split(',').map {|flag| FLAGMAP[flag]}.compact
