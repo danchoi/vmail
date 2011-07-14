@@ -769,7 +769,7 @@ func! s:message_window_mappings()
   nmap <silent> <buffer> <leader>k <c-k>
   noremap <silent> <buffer> <Leader>c :call <SID>compose_message()<CR>
   noremap <silent> <buffer> <Leader>h :call <SID>open_html_part()<CR><cr>
-  nmap <silent> <buffer> <leader>:call <SID>close_message_window()<cr> 
+  noremap <silent> <buffer> <leader>q :call <SID>alose_message_window()<cr> 
 
   nnoremap <silent> <buffer> <leader>#  :close<cr>:call <SID>focus_list_window()<cr>:call <SID>delete_messages("Deleted")<cr>
   nnoremap <silent> <buffer> <leader>*  :call <SID>focus_list_window()<cr>:call <SID>toggle_star()<cr>
