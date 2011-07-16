@@ -25,7 +25,7 @@ module Vmail
     def plaintext_part(mail=@mail)
       part = find_text_part2(mail.body, mail.content_type)
       if part.nil?
-        format_part(@mail.body || '')
+        format_part(@mail || '')
       else
         format_part part
       end
