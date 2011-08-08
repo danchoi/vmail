@@ -633,6 +633,7 @@ function! s:send_message()
   echo "Sending message"
   let res = system(s:deliver_command, mail)
   if match(res, '^Failed') == -1
+    write!
     call s:close_and_focus_list_window()
   endif
   echom substitute(res, '[\s\r\n]\+$', '', '')
