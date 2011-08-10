@@ -6,7 +6,6 @@ if !File.size?('vmail.db')
   puts `sqlite3 vmail.db < #{CREATE_TABLE_SCRIPT}`
 end
 
-
 DB = Sequel.connect 'sqlite://vmail.db'
 
 if DB[:version].count == 0
@@ -19,7 +18,6 @@ module Vmail
     one_to_many :labelings
     many_to_many :labels, :join_table => 'labelings'
   end
-
 end
 
 if DB[:version].count == 0
