@@ -6,12 +6,6 @@ if !File.size?('vmail.db')
   puts `sqlite3 vmail.db < #{CREATE_TABLE_SCRIPT}`
 end
 
-db = Sequel.connect 'sqlite://vmail.db'
-if (r = db[:version].first) && r[:vmail_version] != Vmail::VERSION
-  puts "Vmail database version is outdated. Recreating."
-  `rm vmail.db`
-  puts `sqlite3 vmail.db < #{CREATE_TABLE_SCRIPT}`
-end
 
 DB = Sequel.connect 'sqlite://vmail.db'
 
