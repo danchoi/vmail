@@ -17,7 +17,7 @@ module Vmail
     def fetch_and_cache_headers(id_set)
       log "Fetching headers for #{id_set.size} messages"
       results = reconnect_if_necessary do 
-        @imap.fetch(id_set, ["FLAGS", "ENVELOPE", "RFC822.SIZE", "UID"])
+        @imap.fetch(id_set, ["FLAGS", "ENVELOPE", "RFC822.SIZE", "UID", "RFC822"])
       end
       results.reverse.map do |x| 
         envelope = x.attr["ENVELOPE"]
@@ -27,6 +27,8 @@ module Vmail
         sender = extract_address envelope.from.first
         uid = x.attr["UID"]
         message = Message[message_id]
+        rfc822 = x.attr["RFC822"]
+        rfc822 = Mail::Encodings.unquote_and_convert_to(rfc822, 'UTF-8')
         unless message
           message = Message.new
           message.message_id = message_id
@@ -38,7 +40,8 @@ module Vmail
           date: Time.parse(envelope.date).localtime.to_s,
           size: x.attr['RFC822.SIZE'],
           sender: sender,
-          recipients: recipients
+          recipients: recipients,
+          rfc822: rfc822
         }
         # We really just need to update the flags, buy let's update everything
         message.update params
@@ -84,10 +87,19 @@ module Vmail
       mid_width = @width - 38
       address_col_width = (mid_width * 0.3).ceil
       subject_col_width = (mid_width * 0.7).floor
+      preview_max_width = subject_col_width - message.subject.length
+      rfc822 = Mail.new(message.rfc822) 
+      formatter = Vmail::MessageFormatter.new rfc822
+      #preview = message.rfc822  
+      body = formatter.plaintext_part
+      body.force_encoding("UTF-8")
+      body = Iconv.conv('UTF-8//IGNORE', 'UTF-8', body)
+      preview = body.slice(0,preview_max_width-5).gsub(/\r/, " ").gsub(/\n/, " ")
+      subject_line = message.subject + ' ... ' + preview
       row_text = [ format_flags(message.flags).col(2),
                    (formatted_date || '').col(14),
                    address.col(address_col_width),
-                   message.subject.col(subject_col_width), 
+                   subject_line.col(subject_col_width), 
                    number_to_human_size(message.size).rcol(7), 
                    message.message_id ].join(' | ')
     end
