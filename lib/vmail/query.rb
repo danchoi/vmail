@@ -10,7 +10,7 @@ module Vmail
       if args.size > 0 && args.first =~ /^\d+/
         args.shift
       end
-      query = if args.empty? 
+      query = if args.empty?
                 ['ALL']
               else
                 args

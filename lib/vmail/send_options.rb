@@ -5,7 +5,7 @@ module Vmail
 
     def parse(argv)
       OptionParser.new do |opts|
-        opts.banner = "Usage:  vmailsend" 
+        opts.banner = "Usage:  vmailsend"
         opts.separator ""
         opts.separator "Specific options:"
         opts.on("-c", "--config path", String, "Path to config file") do |config_file|
@@ -30,7 +30,7 @@ module Vmail
           else
             puts <<EOF
 
-Missing config file! 
+Missing config file!
 
 #{INSTRUCTIONS}
 EOF

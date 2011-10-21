@@ -11,7 +11,7 @@ class ContactsExtractor
     @imap = Net::IMAP.new('imap.gmail.com', 993, true, nil, false)
     puts @imap.login(@username, @password)
     yield @imap
-    @imap.close 
+    @imap.close
     @imap.disconnect
   end
 
@@ -31,10 +31,10 @@ class ContactsExtractor
         recipients = fetch_data.attr["ENVELOPE"].to
         next unless recipients
         recipients.each do |address_struct|
-          email = [address_struct.mailbox, address_struct.host].join('@') 
+          email = [address_struct.mailbox, address_struct.host].join('@')
           name = address_struct.name
-          if name 
-            name = Mail::Encodings.unquote_and_convert_to(name, 'UTF-8') 
+          if name
+            name = Mail::Encodings.unquote_and_convert_to(name, 'UTF-8')
             yield %Q("#{name}" <#{email}>)
           else
             yield email
@@ -46,7 +46,7 @@ class ContactsExtractor
 
   def set_mailbox_prefix
     mailboxes = ((@imap.list("[#@prefix]/", "%") || []) + (@imap.list("", "*")) || []).map {|struct| struct.name}
-    @prefix = mailboxes.detect {|m| m =~ /^\[Google Mail\]/}  ?  "Google Mail" : "Gmail" 
+    @prefix = mailboxes.detect {|m| m =~ /^\[Google Mail\]/}  ?  "Google Mail" : "Gmail"
   end
 end
 end

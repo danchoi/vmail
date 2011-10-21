@@ -16,17 +16,17 @@ module Vmail
           savebin = part + ", "
         end
       end
-      
+
       #Quote the names
-      addrs.map { |addr| 
+      addrs.map { |addr|
         # a little hackish
         if addr =~ /"/
           addr
         else
-          addr.gsub(/^(.*) (<.*)/, '"\1" \2') 
+          addr.gsub(/^(.*) (<.*)/, '"\1" \2')
         end
       }.join(', ')
     end
-    
+
   end
 end

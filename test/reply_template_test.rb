@@ -20,7 +20,7 @@ describe Vmail::ReplyTemplate do
       expected = "Draculette Ko <violinist.ko@gmail.com>, Cookiemonster Youn <cookiemonster@gmail.com>, Racoon <raycoon@gmail.com>"
       assert_equal expected, @rt.cc
     end
-    
+
     def test_sender
       assert_equal "Chappy Youn <chappy1@gmail.com>", @rt.sender
     end

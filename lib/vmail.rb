@@ -27,7 +27,7 @@ module Vmail
     end
 
     vim = ENV['VMAIL_VIM'] || 'vim'
-    ENV['VMAIL_BROWSER'] ||= if RUBY_PLATFORM.downcase.include?('linux') 
+    ENV['VMAIL_BROWSER'] ||= if RUBY_PLATFORM.downcase.include?('linux')
                                tools = ['gnome-open', 'kfmclient-exec', 'konqueror']
                                tool = tools.detect { |tool|
                                  `which #{tool}`.size > 0
@@ -55,9 +55,9 @@ module Vmail
 
     puts "Starting vmail imap client for #{config['username']}"
 
-    drb_uri = begin 
+    drb_uri = begin
                 Vmail::ImapClient.daemon config
-              rescue 
+              rescue
                 puts "Failure:", $!
                 exit(1)
               end
@@ -69,9 +69,9 @@ module Vmail
     server.select_mailbox mailbox
 
     STDERR.puts "Mailbox: #{mailbox}"
-    STDERR.puts "Query: #{query.inspect}" 
+    STDERR.puts "Query: #{query.inspect}"
     STDERR.puts "Query String: #{String.shellescape(query_string)}"
-    
+
     buffer_file = "vmailbuffer"
     # invoke vim
     vimscript = File.expand_path("../vmail.vim", __FILE__)
@@ -91,9 +91,9 @@ module Vmail
 
     File.delete(buffer_file)
 
-    STDERR.puts "Closing imap connection"  
+    STDERR.puts "Closing imap connection"
     begin
-      Timeout::timeout(10) do 
+      Timeout::timeout(10) do
         $gmail.close
       end
     rescue Timeout::Error
@@ -114,10 +114,10 @@ module Vmail
   end
 
   def parse_query
-    if ARGV[0] =~ /^\d+/ 
+    if ARGV[0] =~ /^\d+/
       ARGV.shift
     end
-    mailbox = ARGV.shift || 'INBOX' 
+    mailbox = ARGV.shift || 'INBOX'
     query = Vmail::Query.parse(ARGV)
     [mailbox, query]
   end

@@ -3,7 +3,7 @@ module Vmail
   module ShowingHeaders
 
     def get_message_headers(message_ids)
-      messages = message_ids.map {|message_id| 
+      messages = message_ids.map {|message_id|
         m = Message[message_id]
         if m.nil?
           raise "Message #{message_id} not found"
@@ -16,10 +16,10 @@ module Vmail
 
     def fetch_and_cache_headers(id_set)
       log "Fetching headers for #{id_set.size} messages"
-      results = reconnect_if_necessary do 
+      results = reconnect_if_necessary do
         @imap.fetch(id_set, ["FLAGS", "ENVELOPE", "RFC822.SIZE", "UID"])
       end
-      results.reverse.map do |x| 
+      results.reverse.map do |x|
         envelope = x.attr["ENVELOPE"]
         message_id = envelope.message_id
         subject = Mail::Encodings.unquote_and_convert_to((envelope.subject || ''), 'UTF-8')
@@ -55,10 +55,10 @@ module Vmail
     def extract_address(address_struct)
       address = if address_struct.nil?
                   "Unknown"
-                else 
-                  email = [ (address_struct.mailbox ? Mail::Encodings.unquote_and_convert_to(address_struct.mailbox, 'UTF-8') : ""), 
+                else
+                  email = [ (address_struct.mailbox ? Mail::Encodings.unquote_and_convert_to(address_struct.mailbox, 'UTF-8') : ""),
                       (address_struct.host ?  Mail::Encodings.unquote_and_convert_to(address_struct.host, 'UTF-8'): "")
-                    ].join('@') 
+                    ].join('@')
                   if address_struct.name
                    "#{Mail::Encodings.unquote_and_convert_to((address_struct.name || ''), 'UTF-8')} <#{email}>"
                   else
@@ -71,8 +71,8 @@ module Vmail
     def format_header_for_list(message)
       date = DateTime.parse(message.date)
       formatted_date = if date.year != Time.now.year
-                         date.strftime "%b %d %Y" 
-                       else 
+                         date.strftime "%b %d %Y"
+                       else
                          date.strftime "%b %d %I:%M%P"
                        end
       address = if @mailbox == mailbox_aliases['sent']
@@ -87,8 +87,8 @@ module Vmail
       row_text = [ format_flags(message.flags).col(2),
                    (formatted_date || '').col(14),
                    address.col(address_col_width),
-                   message.subject.col(subject_col_width), 
-                   number_to_human_size(message.size).rcol(7), 
+                   message.subject.col(subject_col_width),
+                   number_to_human_size(message.size).rcol(7),
                    message.message_id ].join(' | ')
     end
 
@@ -103,11 +103,11 @@ module Vmail
     end
 
     def with_more_message_line(res)
-      remaining = @start_index 
+      remaining = @start_index
       if remaining <= 1
         return res
       end
-      res + "\n>  Load #{[100, remaining].min} more messages. #{remaining} remaining." 
+      res + "\n>  Load #{[100, remaining].min} more messages. #{remaining} remaining."
     end
 
   end

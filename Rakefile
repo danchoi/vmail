@@ -18,7 +18,7 @@ task :bump do
   puts oldver
   puts newver
   puts "Bumping version: #{oldver} => #{newver}"
-  newfile = file.gsub("VERSION = '#{oldver}'", "VERSION = '#{newver}'") 
+  newfile = file.gsub("VERSION = '#{oldver}'", "VERSION = '#{newver}'")
   File.open(basefile, 'w') {|f| f.write newfile}
   `git commit -am 'Bump'`
 end
@@ -54,10 +54,10 @@ task :bumped do
 end
 
 desc "Run tests"
-task :test do 
+task :test do
   $:.unshift File.expand_path("test")
   require 'test_helper'
-  Dir.chdir("test") do 
+  Dir.chdir("test") do
     Dir['*_test.rb'].each do |x|
       puts "requiring #{x}"
       require x
