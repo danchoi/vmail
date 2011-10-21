@@ -2,7 +2,7 @@
 Thu Dec 16 20:33:46 EST 2010
 
 - when an action is taken on a message or range, double check to see
-  that internal message list is in sync with the one user is seeing. 
+  that internal message list is in sync with the one user is seeing.
   maybe send over the subject line or something and make sure they
   match.
 

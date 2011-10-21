@@ -48,7 +48,7 @@ function! s:create_list_window()
   " setlocal nobuflisted
   setlocal textwidth=0
   setlocal noreadonly
-  " hi CursorLine cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white 
+  " hi CursorLine cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white
   setlocal cursorline
   " we need the bufnr to find the window later
   let s:listbufnr = bufnr('%')
@@ -59,9 +59,9 @@ function! s:create_list_window()
 endfunction
 
 " the message display buffer window
-function! s:create_message_window() 
+function! s:create_message_window()
   exec "split " . s:message_bufname
-  setlocal modifiable 
+  setlocal modifiable
   setlocal buftype=nofile
   let s:message_window_bufnr = bufnr('%')
   call s:message_window_mappings()
@@ -89,7 +89,7 @@ function! s:show_message(stay_in_message_list)
   write
   " this just clears the command line and prevents the screen from
   " moving up when the next echo statement executes:
-  " call feedkeys(":\<cr>") 
+  " call feedkeys(":\<cr>")
   " redraw
   let command = s:show_message_command . s:uid
   echom "Loading message ". s:uid .". Please wait..."
@@ -100,7 +100,7 @@ function! s:show_message(stay_in_message_list)
   1,$delete
   put =res
   " critical: don't call execute 'normal \<cr>'
-  " call feedkeys("<cr>") 
+  " call feedkeys("<cr>")
   1delete
   normal 1Gjk
   set nomodifiable
@@ -129,7 +129,7 @@ endfunction
 function! s:show_previous_message()
   let fullscreen = (bufwinnr(s:listbufnr) == -1) " we're in full screen message mode
   if fullscreen
-    3split 
+    3split
     exec 'b'. s:listbufnr
   else
     call s:focus_list_window()
@@ -177,7 +177,7 @@ function! s:focus_list_window()
   if bufwinnr(s:listbufnr) == winnr() && exists("s:syntax_coloring_set")
     return
   end
-  let winnr = bufwinnr(s:listbufnr) 
+  let winnr = bufwinnr(s:listbufnr)
   if winnr == -1
     " create window
     split
@@ -235,7 +235,7 @@ function! s:update()
     call cursor(num, 0)
     normal z.
     redraw
-    echom "You have " . num . " new message" . (num == 1 ? '' : 's') . "!" 
+    echom "You have " . num . " new message" . (num == 1 ? '' : 's') . "!"
   else
     redraw
     echom "No new messages"
@@ -251,9 +251,9 @@ function! s:toggle_star() range
   if (match(getline(a:firstline), flag_symbol) != -1)
     let action = " -FLAGS"
   endif
-  let command = s:flag_command . shellescape(join(uid_set, ',')) . action . " Flagged" 
+  let command = s:flag_command . shellescape(join(uid_set, ',')) . action . " Flagged"
   if nummsgs == 1
-    echom "Toggling flag on message" 
+    echom "Toggling flag on message"
   else
     echom "Toggling flags on " . nummsgs . " messages"
   endif
@@ -277,7 +277,7 @@ function! s:toggle_star() range
   write
   redraw
   if nummsgs == 1
-    echom "Toggled flag on message" 
+    echom "Toggled flag on message"
   else
     echom "Toggled flags on " . nummsgs . " messages"
   endif
@@ -289,7 +289,7 @@ func! s:delete_messages(flag) range
   let nummsgs = len(uid_set)
   let command = s:flag_command . shellescape(join(uid_set, ',')) . " +FLAGS " . a:flag
   if nummsgs == 1
-    echom "Deleting message" 
+    echom "Deleting message"
   else
     echom "Deleting " . nummsgs . " messages"
   endif
@@ -328,7 +328,7 @@ func! s:append_messages_to_file() range
     return
   endif
   let s:append_file = append_file
-  let command = s:append_to_file_command . shellescape(join(uid_set, ',')) . ' ' . s:append_file 
+  let command = s:append_to_file_command . shellescape(join(uid_set, ',')) . ' ' . s:append_file
   echo "Appending " . nummsgs . " message" . (nummsgs == 1 ? '' : 's') . " to " . s:append_file . ". Please wait..."
   let res = system(command)
   echo res
@@ -354,11 +354,11 @@ function! s:move_to_mailbox(copy) range
   let prompt = "select mailbox to " . (a:copy ? 'copy' : 'move') . " to: "
   call setline(1, prompt)
   normal $
-  inoremap <silent> <buffer> <cr> <Esc>:call <SID>complete_move_to_mailbox()<CR> 
+  inoremap <silent> <buffer> <cr> <Esc>:call <SID>complete_move_to_mailbox()<CR>
   inoremap <silent> <buffer> <esc> <Esc>:q<cr>
   setlocal completefunc=CompleteMoveMailbox
   " c-p clears the line
-  let s:firstline = a:firstline 
+  let s:firstline = a:firstline
   let s:lastline = a:lastline
   call feedkeys("a\<c-x>\<c-u>\<c-p>", 't')
   " save these in script scope to delete the lines when move completes
@@ -367,13 +367,13 @@ endfunction
 function! s:complete_move_to_mailbox()
   let mailbox = get(split(getline(line('.')), ": "), 1)
   close
-  if s:copy_to_mailbox 
+  if s:copy_to_mailbox
     let command = s:copy_to_command . s:uid_set . ' ' . shellescape(mailbox)
   else
     let command = s:move_to_command . s:uid_set . ' ' . shellescape(mailbox)
   endif
   redraw
-  echo "Moving uids ". s:uid_set . " to mailbox " . mailbox 
+  echo "Moving uids ". s:uid_set . " to mailbox " . mailbox
   let res = system(command)
   setlocal modifiable
   if !s:copy_to_mailbox
@@ -382,7 +382,7 @@ function! s:complete_move_to_mailbox()
   setlocal nomodifiable
   write
   redraw
-  echo s:nummsgs .  " message" . (s:nummsgs == 1 ? '' : 's') . ' ' . (s:copy_to_mailbox ? 'copied' : 'moved') . ' to ' . mailbox 
+  echo s:nummsgs .  " message" . (s:nummsgs == 1 ? '' : 's') . ' ' . (s:copy_to_mailbox ? 'copied' : 'moved') . ' to ' . mailbox
 endfunction
 
 function! CompleteMoveMailbox(findstart, base)
@@ -431,7 +431,7 @@ function! s:mailbox_window()
   setlocal noswapfile
   setlocal modifiable
   resize 1
-  inoremap <silent> <buffer> <cr> <Esc>:call <SID>select_mailbox()<CR> 
+  inoremap <silent> <buffer> <cr> <Esc>:call <SID>select_mailbox()<CR>
   inoremap <silent> <buffer> <esc> <Esc>:q<cr>
   setlocal completefunc=CompleteMailbox
   " c-p clears the line
@@ -483,19 +483,19 @@ function! s:select_mailbox()
   " reset window width now
   call system(s:set_window_width_command . winwidth(1))
   " now get latest 100 messages
-  call s:focus_list_window()  
+  call s:focus_list_window()
   setlocal modifiable
   let command = s:search_command . shellescape("all")
   echo "Loading messages..."
   let res = system(command)
   silent 1,$delete
   silent! put! =res
-  execute "normal Gdd\<c-y>" 
+  execute "normal Gdd\<c-y>"
   setlocal nomodifiable
   write
   normal gg
   redraw
-  echom "Current mailbox: ". s:mailbox 
+  echom "Current mailbox: ". s:mailbox
 endfunction
 
 func! s:search_query()
@@ -516,37 +516,37 @@ function! s:do_search()
   close
   let command = s:search_command . shellescape(s:query)
   redraw
-  call s:focus_list_window()  
+  call s:focus_list_window()
   setlocal modifiable
   echo "Running query on " . s:mailbox . ": " . s:query . ". Please wait..."
   let res = system(command)
   silent! 1,$delete
   silent! put! =res
-  execute "silent normal Gdd\<c-y>" 
+  execute "silent normal Gdd\<c-y>"
   setlocal nomodifiable
   write
   normal gg
 endfunction
 
 function! s:more_messages()
-  let command = s:more_messages_command 
+  let command = s:more_messages_command
   echo "Fetching more messages. Please wait..."
   let res = system(command)
   setlocal modifiable
   let lines =  split(res, "\n")
   call append(line('$'), lines)
-  " execute "normal Gdd\<c-y>" 
+  " execute "normal Gdd\<c-y>"
   setlocal nomodifiable
   normal j
   redraw
   echo "Done"
 endfunction
 
-" --------------------------------------------------------------------------------  
+" --------------------------------------------------------------------------------
 "  compose reply, compose, forward, save draft
 
 function! s:compose_reply(all)
-  let command = s:reply_template_command 
+  let command = s:reply_template_command
   if a:all
     let command = command . ' 1'
   endif
@@ -559,14 +559,14 @@ function! s:compose_message()
   let command = s:new_message_template_command
   call s:open_compose_window(command)
   " position cursor after to:
-"  call search("^to:") 
+"  call search("^to:")
 "  normal A
 endfunction
 
 function! s:compose_forward()
-  let command = s:forward_template_command 
+  let command = s:forward_template_command
   call s:open_compose_window(command)
-"  call search("^to:") 
+"  call search("^to:")
 "  normal A
 endfunction
 
@@ -594,7 +594,7 @@ func! s:turn_into_compose_window()
   setlocal completefunc=CompleteContact
 endfunc
 
-" contacts.txt file should be generated. 
+" contacts.txt file should be generated.
 " grep works well, does partial matches
 function! CompleteContact(findstart, base)
   if !exists("s:mailboxes")
@@ -609,7 +609,7 @@ function! CompleteContact(findstart, base)
     endwhile
     return start
   else
-    " find contacts 
+    " find contacts
     " model regex: match at beginning of line, or inside < > wrapping
     " email addr
     "  '\(^ho\|<ho\)'
@@ -640,11 +640,11 @@ function! s:send_message()
   redraw
 endfunction
 
-" -------------------------------------------------------------------------------- 
+" --------------------------------------------------------------------------------
 
 " call from inside message window with <Leader>h
 func! s:open_html_part()
-  let command = s:open_html_part_command 
+  let command = s:open_html_part_command
   " the command saves the html part to a local file
   let outfile = system(command)
   " todo: allow user to change open in browser command?
@@ -669,7 +669,7 @@ func! s:attach_file(file)
 endfunc
 
 
-" -------------------------------------------------------------------------------- 
+" --------------------------------------------------------------------------------
 
 func! s:toggle_maximize_window()
   if winnr('$') > 1
@@ -700,7 +700,7 @@ func! s:open_href(all) range
       endif
       let lnum += 1
     endwhile
-    echom 'opened '.n.' links' 
+    echom 'opened '.n.' links'
     return
   end
   let line = search(pattern, 'cw')
@@ -712,7 +712,7 @@ func! s:open_href(all) range
       let n += 1
       let line = search('https\?:', 'W')
     endwhile
-    echom 'opened '.n.' links' 
+    echom 'opened '.n.' links'
   else
     let href = matchstr(getline(line('.')), pattern)
     let command = s:browser_command ." ".shellescape(href)." &"
@@ -731,7 +731,7 @@ func! s:toggle_textwidth()
   "echo &textwidth
 endfunc
 
-" -------------------------------------------------------------------------------- 
+" --------------------------------------------------------------------------------
 "  HELP
 func! s:show_help()
   let command = s:browser_command . ' ' . shellescape('http://danielchoi.com/software/vmail.html')
@@ -740,7 +740,7 @@ func! s:show_help()
   "exec "split " . helpfile
 endfunc
 
-" -------------------------------------------------------------------------------- 
+" --------------------------------------------------------------------------------
 " CONVENIENCE FUNCS
 
 function! s:collect_uids(startline, endline)
@@ -754,23 +754,23 @@ function! s:collect_uids(startline, endline)
   return uid_set
 endfunc
 
-" -------------------------------------------------------------------------------- 
+" --------------------------------------------------------------------------------
 " MAPPINGS
 
 func! s:message_window_mappings()
-  noremap <silent> <buffer> <cr> <C-W>=:call <SID>focus_list_window()<CR> 
+  noremap <silent> <buffer> <cr> <C-W>=:call <SID>focus_list_window()<CR>
   noremap <silent> <buffer> <Leader>r :call <SID>compose_reply(0)<CR>
   noremap <silent> <buffer> <Leader>a :call <SID>compose_reply(1)<CR>
   noremap <silent> <buffer> <Leader>R :call <SID>show_raw()<cr>
   noremap <silent> <buffer> <Leader>R :call <SID>show_raw()<cr>
   noremap <silent> <buffer> <Leader>f :call <SID>compose_forward()<CR><cr>
-  noremap <silent> <buffer> <c-j> :call <SID>show_next_message()<CR> 
-  noremap <silent> <buffer> <c-k> :call <SID>show_previous_message()<CR> 
+  noremap <silent> <buffer> <c-j> :call <SID>show_next_message()<CR>
+  noremap <silent> <buffer> <c-k> :call <SID>show_previous_message()<CR>
   nmap <silent> <buffer> <leader>j <c-j>
   nmap <silent> <buffer> <leader>k <c-k>
   noremap <silent> <buffer> <Leader>c :call <SID>compose_message()<CR>
   noremap <silent> <buffer> <Leader>h :call <SID>open_html_part()<CR><cr>
-  noremap <silent> <buffer> <leader>q :call <SID>close_message_window()<cr> 
+  noremap <silent> <buffer> <leader>q :call <SID>close_message_window()<cr>
 
   nnoremap <silent> <buffer> <leader>#  :close<cr>:call <SID>focus_list_window()<cr>:call <SID>delete_messages("Deleted")<cr>
   nnoremap <silent> <buffer> <leader>*  :call <SID>focus_list_window()<cr>:call <SID>toggle_star()<cr>
@@ -844,8 +844,8 @@ func! s:global_mappings()
   " NOTE send_message is a global mapping, so user can load a saved
   " message from a file and send it
   nnoremap <silent> <leader>vs :call <SID>send_message()<CR>
-  noremap <silent> <leader>o :call <SID>open_href(0)<cr> 
-  noremap <silent> <leader>O :call <SID>open_href(1)<cr> 
+  noremap <silent> <leader>o :call <SID>open_href(0)<cr>
+  noremap <silent> <leader>O :call <SID>open_href(1)<cr>
   noremap <silent> <leader>? :call <SID>show_help()<cr>
   noremap <silent> <leader>qq :qal!<cr>
 endfunc

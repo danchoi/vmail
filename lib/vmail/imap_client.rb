@@ -76,7 +76,7 @@ module Vmail
         mailbox = mailbox_aliases[mailbox]
       end
       log "Selecting mailbox #{mailbox.inspect}"
-      reconnect_if_necessary(30) do 
+      reconnect_if_necessary(30) do
         log @imap.select(mailbox)
       end
       log "Done"
@@ -96,7 +96,7 @@ module Vmail
       select_mailbox(@mailbox, true)
     end
 
-    # TODO no need for this if all shown messages are stored in SQLITE3 
+    # TODO no need for this if all shown messages are stored in SQLITE3
     # and keyed by UID.
     def clear_cached_message
       return unless STDIN.tty?
@@ -107,7 +107,7 @@ module Vmail
     def get_highest_message_id
       # get highest message ID
       res = @imap.fetch([1,"*"], ["ENVELOPE"])
-      if res 
+      if res
         @num_messages = res[-1].seqno
         log "Highest seqno: #@num_messages"
       else
@@ -132,16 +132,16 @@ module Vmail
 
     def prime_connection
       return if @ids.nil? || @ids.empty?
-      reconnect_if_necessary(4) do 
+      reconnect_if_necessary(4) do
         # this is just to prime the IMAP connection
-        # It's necessary for some reason before update and deliver. 
+        # It's necessary for some reason before update and deliver.
         log "Priming connection"
         res = @imap.fetch(@ids[-1], ["ENVELOPE"])
         if res.nil?
           # just go ahead, just log
           log "Priming connection didn't work, connection seems broken, but still going ahead..."
         end
-      end 
+      end
     end
 
     def list_mailboxes
@@ -206,7 +206,7 @@ module Vmail
       # set a new range filter
       # this may generate a negative rane, e.g., "19893:19992" but that seems harmless
       update_query[0] = "#{old_num_messages}:#{@num_messages}"
-      ids = reconnect_if_necessary { 
+      ids = reconnect_if_necessary {
         log "Search #update_query"
         @imap.search(Vmail::Query.args2string(update_query))
       }
@@ -242,9 +242,9 @@ module Vmail
       with_more_message_line(res)
     end
 
-    def spawn_thread_if_tty(&block) 
+    def spawn_thread_if_tty(&block)
       if STDIN.tty?
-        Thread.new do 
+        Thread.new do
           reconnect_if_necessary(10, &block)
         end
       else
@@ -257,7 +257,7 @@ module Vmail
       if !current_mailboxes.include?(mailbox)
         log "Current mailboxes: #{current_mailboxes.inspect}"
         log "Creating mailbox #{mailbox}"
-        log @imap.create(mailbox) 
+        log @imap.create(mailbox)
         @mailboxes = nil # force reload ...
         list_mailboxes
       end
@@ -314,7 +314,7 @@ module Vmail
         subject = "Fwd: #{subject}"
       end
 
-      new_message_template(subject, false) + 
+      new_message_template(subject, false) +
         "\n---------- Forwarded message ----------\n" +
         original_body + signature
     end
@@ -423,7 +423,7 @@ EOF
       log "Open_html_part"
       log current_mail.parts.inspect
       multipart = current_mail.parts.detect {|part| part.multipart?}
-      html_part = if multipart 
+      html_part = if multipart
                     multipart.parts.detect {|part| part.header["Content-Type"].to_s =~ /text\/html/}
                   elsif ! current_mail.parts.empty?
                     current_mail.parts.detect {|part| part.header["Content-Type"].to_s =~ /text\/html/}
@@ -441,7 +441,7 @@ EOF
       @width = width.to_i
       log "Setting window width to #{width}"
     end
-   
+
     def smtp_settings
       [:smtp, {:address => @smtp_server,
       :port => @smtp_port,
@@ -475,7 +475,7 @@ EOF
       close
       log(revive_connection)
       # hope this isn't an endless loop
-      reconnect_if_necessary do 
+      reconnect_if_necessary do
         block.call
       end
     rescue
@@ -500,11 +500,11 @@ EOF
   end
 end
 
-trap("INT") { 
+trap("INT") {
   require 'timeout'
-  puts "Closing imap connection"  
+  puts "Closing imap connection"
   begin
-    Timeout::timeout(2) do 
+    Timeout::timeout(2) do
       # just try to quit
       # $gmail.close
     end

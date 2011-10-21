@@ -19,7 +19,7 @@ describe Vmail::MessageFormatter do
   end
 
   describe "message has a text body but no Content-Type" do
-    before do 
+    before do
       @raw = File.read(File.expand_path('../fixtures/textbody-nocontenttype.eml', __FILE__))
       @mail = Mail.new(@raw)
       @formatter = Vmail::MessageFormatter.new(@mail)
@@ -52,12 +52,12 @@ describe Vmail::MessageFormatter do
     end
     it "should format the subject line in UTF-8" do
       match = "독특닷컴과"
-      assert_match match, @formatter.extract_headers['subject'] 
+      assert_match match, @formatter.extract_headers['subject']
     end
   end
 
   describe "when message has only an HTML body and no encoding info" do
-    before do 
+    before do
       @raw = File.read(File.expand_path('../fixtures/moleskine-html.eml', __FILE__))
       @mail = Mail.new(@raw)
       @formatter = Vmail::MessageFormatter.new(@mail)
@@ -69,12 +69,12 @@ describe Vmail::MessageFormatter do
 
   describe "when message has two attachments" do
     before do
-      @raw  = read_fixture('with-attachments.eml') 
+      @raw  = read_fixture('with-attachments.eml')
       @mail = Mail.new(@raw)
     end
 
     it "should extract two attachments" do
-      attachments = @mail.attachments 
+      attachments = @mail.attachments
       assert_equal 2, attachments.size
       assert_equal ['image/png', 'image/gif'], attachments.map(&:mime_type)
     end
@@ -88,7 +88,7 @@ describe Vmail::MessageFormatter do
     end
 
     it 'should extract the message/rfc822 part' do
-      assert_match /I hope everyone is having a great holiday season/, 
+      assert_match /I hope everyone is having a great holiday season/,
         @formatter.process_body
     end
   end

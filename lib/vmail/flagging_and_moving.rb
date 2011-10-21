@@ -17,7 +17,7 @@ module Vmail
         log "Deleting uid_set: #{uid_set.inspect}"
         decrement_max_seqno(uid_set.size)
         # for delete, do in a separate thread because deletions are slow
-        spawn_thread_if_tty do 
+        spawn_thread_if_tty do
           unless @mailbox == mailbox_aliases['trash']
             log "imap.uid_copy #{uid_set.inspect} to #{mailbox_aliases['trash']}"
             log @imap.uid_copy(uid_set, mailbox_aliases['trash'])
@@ -27,12 +27,12 @@ module Vmail
           reload_mailbox
           clear_cached_message
         end
-      elsif flg == 'spam' || flg == mailbox_aliases['spam'] 
+      elsif flg == 'spam' || flg == mailbox_aliases['spam']
         log "Marking as spam uid_set: #{uid_set.inspect}"
         decrement_max_seqno(uid_set.size)
-        spawn_thread_if_tty do 
+        spawn_thread_if_tty do
           log "imap.uid_copy #{uid_set.inspect} to #{mailbox_aliases['spam']}"
-          log @imap.uid_copy(uid_set, mailbox_aliases['spam']) 
+          log @imap.uid_copy(uid_set, mailbox_aliases['spam'])
           log "imap.uid_store #{uid_set.inspect} #{action} [:Deleted]"
           log @imap.uid_store(uid_set, action, [:Deleted])
           reload_mailbox
@@ -61,7 +61,7 @@ module Vmail
       end
       create_if_necessary mailbox
       log "Moving uid_set: #{uid_set.inspect} to #{mailbox}"
-      spawn_thread_if_tty do 
+      spawn_thread_if_tty do
         log @imap.uid_copy(uid_set, mailbox)
         log @imap.uid_store(uid_set, '+FLAGS', [:Deleted])
         reload_mailbox
@@ -79,7 +79,7 @@ module Vmail
       end
       create_if_necessary mailbox
       log "Copying #{uid_set.inspect} to #{mailbox}"
-      spawn_thread_if_tty do 
+      spawn_thread_if_tty do
         log @imap.uid_copy(uid_set, mailbox)
         log "Copied uid_set #{uid_set.inspect} to #{mailbox}"
       end
