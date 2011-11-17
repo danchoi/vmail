@@ -511,7 +511,12 @@ Vmail users, please add them to the [vmail wiki][wiki].
 
 [wiki]:https://github.com/danchoi/vmail/wiki
 
-## How to contact the developer
+## Contributors
+
+* [gregsexton](https://github.com/gregsexton) added pretty colors to the message list
+  starting in Vmail 2.3.4
+
+## How to contact the main developer
 
 My name is Daniel Choi. I am based in Cambridge, Massachusetts, USA, and you
 can email me at dhchoi@gmail.com.  You can [follow me on Twitter][twitter] too.
