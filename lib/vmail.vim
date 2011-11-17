@@ -174,7 +174,7 @@ function! s:show_raw()
 endfunction
 
 function! s:focus_list_window()
-  if bufwinnr(s:listbufnr) == winnr() && exists("s:syntax_coloring_set")
+  if bufwinnr(s:listbufnr) == winnr() 
     return
   end
   let winnr = bufwinnr(s:listbufnr) 
@@ -185,16 +185,6 @@ function! s:focus_list_window()
   else
     exec winnr . "wincmd w"
   endif
-  " set up syntax highlighting
-  if has("syntax")
-    syn clear
-    " colorize whole line
-    syn match VmailBufferFlagged /^*.*/hs=s
-    exec "hi def VmailBufferFlagged " . g:vmail_flagged_color
-    call s:set_syntax_colors()
-    let s:syntax_coloring_set = 1
-  endif
-  "
   " call feedkeys("\<c-l>") " prevents screen artifacts when user presses return too fast
   " turn this off though, because it causes an annoying flash
 endfunction
@@ -831,6 +821,7 @@ func! s:message_list_window_mappings()
   noremap <silent> <buffer> <c-k> :call <SID>show_previous_message_in_list()<cr>
   nnoremap <silent> <buffer> <Space> :call <SID>toggle_maximize_window()<cr>
   autocmd CursorMoved <buffer> :redraw
+  autocmd BufEnter,BufWinEnter <buffer> :call <SID>set_list_colors()
 endfunc
 
 func! s:compose_window_mappings()
@@ -851,7 +842,8 @@ func! s:global_mappings()
   noremap <silent> <leader>qq :qal!<cr>
 endfunc
 
-func! s:set_syntax_colors()
+func! s:set_list_colors()
+  syn clear
   syn match vmailSizeCol /|\s\+\(< 1k\|\d*\(b\|k\|M\|G\)\)\s\+|/ contains=vmailSeperator contained
   syn match vmailFirstCol /^.\{-}|/ nextgroup=vmailDateCol
   syn match vmailFirstColAnswered /An/ contained containedin=vmailFirstCol
