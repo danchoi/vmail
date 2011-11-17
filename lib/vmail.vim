@@ -873,6 +873,8 @@ func! s:set_list_colors()
   hi def link vmailSpecialMsg       Special
   hi def link vmailNewMessage       vmailSpecialMsg
   hi def link vmailStarredMessage   vmailSpecialMsg
+  syn match VmailBufferFlagged /^*.*/hs=s
+  exec "hi def VmailBufferFlagged " . g:vmail_flagged_color
 endfunc
 
 "TODO see if using LocalLeader and maplocalleader makes more sense
