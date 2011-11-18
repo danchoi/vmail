@@ -207,8 +207,9 @@ message window. Watch the status line.
 If you have `notify-send` (Linux) or `growlnotify` (OS X) installed on
 your system, Vmail will also poll your INBOX every 30 seconds for new
 messages. If it detects a new message, it will alert you through your
-notification program. **NOTE**: You will still have to press `u` in the
-Vmail interface to force the new messages to display.
+notification program. **NOTE**: This is an alert mechanism only;
+you will still have to manually check for new messages in the Vmail
+interface to force the new messages to display.
  
 ## Switching mailboxes, moving messages, copying messages to another mailbox
 
