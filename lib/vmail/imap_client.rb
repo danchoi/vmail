@@ -195,11 +195,11 @@ module Vmail
     end
 
     def check_for_new_messages
+      log "Checking for new messages"
       if search_query?
         log "Update aborted because query is search query: #{@query.inspect}"
         return ""
       end
-      prime_connection
       old_num_messages = @num_messages
       # we need to re-select the mailbox to get the new highest id
       reload_mailbox
@@ -218,8 +218,8 @@ module Vmail
       new_ids
     end
 
-    # TODO why not just reload the current page?
     def update
+      prime_connection
       new_ids = check_for_new_messages 
       if !new_ids.empty?
         self.max_seqno = new_ids[-1]
@@ -490,7 +490,7 @@ EOF
     end
 
     def self.start(config)
-      imap_client  = Vmail::ImapClient.new config
+      imap_client  = self.new config
       imap_client.open
       imap_client
     end

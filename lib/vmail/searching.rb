@@ -2,6 +2,7 @@ module Vmail
   module Searching
     # The main function called by the client to retrieve messages
     def search(query)
+      log "#search: #{query.inspect}"
       @query = Vmail::Query.parse(query) 
       # customizable @limit is Deprecated
       @limit = 100
