@@ -226,8 +226,7 @@ module Vmail
         ''
       end
     rescue
-      log $!
-      log $!.backtrace.join("\n")
+      puts "VMAIL_ERROR: #{[$!.message, $!.backtrace].join("\n")}"
     end
 
     # gets 100 messages prior to id
