@@ -194,8 +194,7 @@ module Vmail
       self.max_seqno -= num
     end
 
-    # TODO why not just reload the current page?
-    def update
+    def check_for_new_messages
       if search_query?
         log "Update aborted because query is search query: #{@query.inspect}"
         return ""
@@ -215,10 +214,16 @@ module Vmail
       log "- got seqnos: #{ids.inspect}"
       log "- getting seqnos > #{self.max_seqno}"
       new_ids = ids.select {|seqno| seqno > self.max_seqno}
-      @ids = @ids + new_ids
-      log "- update: new uids: #{new_ids.inspect}"
+      log "- new uids found: #{new_ids.inspect}"
+      new_ids
+    end
+
+    # TODO why not just reload the current page?
+    def update
+      new_ids = check_for_new_messages 
       if !new_ids.empty?
         self.max_seqno = new_ids[-1]
+        @ids = @ids + new_ids
         message_ids = fetch_and_cache_headers(new_ids)
         res = get_message_headers(message_ids)
         res
