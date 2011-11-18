@@ -52,6 +52,9 @@ module Vmail
       @imap = Net::IMAP.new(@imap_server, @imap_port, true, nil, false)
       log @imap.login(@username, @password)
       list_mailboxes # prefetch mailbox list
+    raise
+    rescue 
+      puts "VMAIL_ERROR: #{[$!.message, $!.backtrace].join("\n")}"
     end
 
     # expects a block, closes on finish

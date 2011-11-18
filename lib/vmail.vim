@@ -68,6 +68,16 @@ function! s:create_message_window()
   close
 endfunction
 
+function! s:system_with_error_handling(command)
+  let res = system(a:command)
+  if res =~ 'VMAIL_ERROR'
+    echoe "ERROR" res
+    return ""
+  else
+    return res
+  end
+endfunction
+
 function! s:show_message(stay_in_message_list)
   let line = getline(line("."))
   if match(line, '^>  Load') != -1
@@ -94,7 +104,7 @@ function! s:show_message(stay_in_message_list)
   let command = s:show_message_command . s:uid
   echom "Loading message ". s:uid .". Please wait..."
   redrawstatus
-  let res = system(command)
+  let res = s:system_with_error_handling(command)
   call s:focus_message_window()
   set modifiable
   1,$delete
@@ -166,7 +176,7 @@ function! s:show_raw()
   echo command
   setlocal modifiable
   1,$delete
-  let res = system(command)
+  let res = s:system_with_error_handling(command)
   put =res
   1delete
   normal 1G
@@ -215,7 +225,7 @@ endfunc
 function! s:update()
   let command = s:update_command
   echo "Checking for new messages. Please wait..."
-  let res = system(command)
+  let res = s:system_with_error_handling(command)
   let lines = split(res, '\n')
   if len(lines) > 0
     setlocal modifiable
@@ -249,7 +259,7 @@ function! s:toggle_star() range
     echom "Toggling flags on " . nummsgs . " messages"
   endif
   " toggle * on lines
-  let res = system(command)
+  let res = s:system_with_error_handling(command)
   setlocal modifiable
   let lnum = a:firstline
   while lnum <= a:lastline
@@ -284,7 +294,7 @@ func! s:delete_messages(flag) range
   else
     echom "Deleting " . nummsgs . " messages"
   endif
-  let res = system(command)
+  let res = s:system_with_error_handling(command)
   setlocal modifiable
   exec "silent " . a:firstline . "," . a:lastline . "delete"
   setlocal nomodifiable
@@ -298,7 +308,7 @@ func! s:archive_messages() range
   let nummsgs = len(uid_set)
   let command = s:move_to_command . shellescape(join(uid_set, ',')) . ' ' . "all"
   echo "Archiving message" . (nummsgs == 1 ? '' : 's')
-  let res = system(command)
+  let res = s:system_with_error_handling(command)
   setlocal modifiable
   exec "silent " . a:firstline . "," . a:lastline . "delete"
   setlocal nomodifiable
@@ -321,7 +331,7 @@ func! s:append_messages_to_file() range
   let s:append_file = append_file
   let command = s:append_to_file_command . shellescape(join(uid_set, ',')) . ' ' . s:append_file 
   echo "Appending " . nummsgs . " message" . (nummsgs == 1 ? '' : 's') . " to " . s:append_file . ". Please wait..."
-  let res = system(command)
+  let res = s:system_with_error_handling(command)
   echo res
   redraw
 endfunc
@@ -365,7 +375,7 @@ function! s:complete_move_to_mailbox()
   endif
   redraw
   echo "Moving uids ". s:uid_set . " to mailbox " . mailbox 
-  let res = system(command)
+  let res = s:system_with_error_handling(command)
   setlocal modifiable
   if !s:copy_to_mailbox
     exec "silent " . s:firstline . "," . s:lastline . "delete"
@@ -408,7 +418,7 @@ function! s:get_mailbox_list()
   let command = s:list_mailboxes_command
   redraw
   echo command
-  let res = system(command)
+  let res = s:system_with_error_handling(command)
   let s:mailboxes = split(res, "\n", '')
 endfunction
 
@@ -469,16 +479,16 @@ function! s:select_mailbox()
   let command = s:select_mailbox_command . shellescape(s:mailbox)
   redraw
   echom "Selecting mailbox: ". s:mailbox . ". Please wait..."
-  call system(command)
+  call s:system_with_error_handling(command)
   redraw
   " reset window width now
-  call system(s:set_window_width_command . winwidth(1))
+  call s:system_with_error_handling(s:set_window_width_command . winwidth(1))
   " now get latest 100 messages
   call s:focus_list_window()  
   setlocal modifiable
   let command = s:search_command . shellescape("all")
   echo "Loading messages..."
-  let res = system(command)
+  let res = s:system_with_error_handling(command)
   silent 1,$delete
   silent! put! =res
   execute "normal Gdd\<c-y>" 
@@ -510,7 +520,7 @@ function! s:do_search()
   call s:focus_list_window()  
   setlocal modifiable
   echo "Running query on " . s:mailbox . ": " . s:query . ". Please wait..."
-  let res = system(command)
+  let res = s:system_with_error_handling(command)
   silent! 1,$delete
   silent! put! =res
   execute "silent normal Gdd\<c-y>" 
@@ -522,7 +532,7 @@ endfunction
 function! s:more_messages()
   let command = s:more_messages_command 
   echo "Fetching more messages. Please wait..."
-  let res = system(command)
+  let res = s:system_with_error_handling(command)
   setlocal modifiable
   let lines =  split(res, "\n")
   call append(line('$'), lines)
@@ -564,7 +574,7 @@ endfunction
 func! s:open_compose_window(command)
   redraw
   echo a:command
-  let res = system(a:command)
+  let res = s:system_with_error_handling(a:command)
   let previous_winnr = winnr()
   only
   split compose_message.txt
@@ -606,7 +616,7 @@ function! CompleteContact(findstart, base)
     "  '\(^ho\|<ho\)'
     " let regex = shellescape('\(^' . a:base . '\|<' . a:base . '\)')
     let regex = shellescape(a:base)
-    let matches = system("grep -i " . regex  . " " . $VMAIL_CONTACTS_FILE)
+    let matches = s:system_with_error_handling("grep -i " . regex  . " " . $VMAIL_CONTACTS_FILE)
     return split(matches, "\n")
   endif
 endfun
@@ -622,7 +632,7 @@ endfunc
 function! s:send_message()
   let mail = join(getline(1,'$'), "\n")
   echo "Sending message"
-  let res = system(s:deliver_command, mail)
+  let res = s:system_with_error_handling(s:deliver_command, mail)
   if match(res, '^Failed') == -1
     write!
     call s:close_and_focus_list_window()
@@ -637,7 +647,7 @@ endfunction
 func! s:open_html_part()
   let command = s:open_html_part_command 
   " the command saves the html part to a local file
-  let outfile = system(command)
+  let outfile = s:system_with_error_handling(command)
   " todo: allow user to change open in browser command?
   exec "!" . s:browser_command . ' ' . outfile
 endfunc
@@ -648,7 +658,7 @@ func! s:save_attachments()
   end
   let s:savedir = input("save attachments to directory: ", s:savedir, "dir")
   let command = s:save_attachments_command . s:savedir
-  let res = system(command)
+  let res = s:system_with_error_handling(command)
   echo res
 endfunc
 
@@ -686,7 +696,7 @@ func! s:open_href(all) range
       let href = matchstr(getline(lnum), pattern)
       if href != ""
         let command = s:browser_command ." ".shellescape(href)." &"
-        call system(command)
+        call s:system_with_error_handling(command)
         let n += 1
       endif
       let lnum += 1
@@ -699,7 +709,7 @@ func! s:open_href(all) range
     while line
       let href = matchstr(getline(line('.')), pattern)
       let command = s:browser_command ." ".shellescape(href)." &"
-      call system(command)
+      call s:system_with_error_handling(command)
       let n += 1
       let line = search('https\?:', 'W')
     endwhile
@@ -707,7 +717,7 @@ func! s:open_href(all) range
   else
     let href = matchstr(getline(line('.')), pattern)
     let command = s:browser_command ." ".shellescape(href)." &"
-    call system(command)
+    call s:system_with_error_handling(command)
     echom 'opened '.href
   endif
 endfunc
@@ -726,8 +736,8 @@ endfunc
 "  HELP
 func! s:show_help()
   let command = s:browser_command . ' ' . shellescape('http://danielchoi.com/software/vmail.html')
-  call system(command)
-  "let helpfile = system(s:show_help_command)
+  call s:system_with_error_handling(command)
+  "let helpfile = s:system_with_error_handling(s:show_help_command)
   "exec "split " . helpfile
 endfunc
 
@@ -889,12 +899,12 @@ call s:create_message_window()
 call s:focus_list_window() " to go list window
 
 " send window width
-call system(s:set_window_width_command . winwidth(1))
+call s:system_with_error_handling(s:set_window_width_command . winwidth(1))
 
-"autocmd VimResized <buffer> call system(s:set_window_width_command . winwidth(1))
+"autocmd VimResized <buffer> call s:system_with_error_handling(s:set_window_width_command . winwidth(1))
 
 autocmd bufreadpost *.txt call <SID>turn_into_compose_window()
 normal G
-call system(s:select_mailbox_command . shellescape(s:mailbox))
+call s:system_with_error_handling(s:select_mailbox_command . shellescape(s:mailbox))
 call s:do_search()
 
