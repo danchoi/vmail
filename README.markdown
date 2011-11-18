@@ -198,11 +198,17 @@ To save you keystrokes, Vmail provides alternative key mappings for
 
 These save you from having to press the SHIFT key in each case. 
 
-## Checking for new messages
+## Checking for new messages, INBOX polling
 
 To check for new messages in the current mailbox, press `u` in normal
 mode if you're in the message list window or `,u` if you are in the
 message window. Watch the status line.
+
+If you have `notify-send` (Linux) or `growlnotify` (OS X) installed on
+your system, Vmail will also poll your INBOX every 30 seconds for new
+messages. If it detects a new message, it will alert you through your
+notification program. **NOTE**: You will still have to press `u` in the
+Vmail interface to force the new messages to display.
  
 ## Switching mailboxes, moving messages, copying messages to another mailbox
 
