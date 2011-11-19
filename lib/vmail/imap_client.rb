@@ -214,6 +214,9 @@ module Vmail
       log "- got seqnos: #{ids.inspect}"
       log "- getting seqnos > #{self.max_seqno}"
       new_ids = ids.select {|seqno| seqno > self.max_seqno}
+      # reset the max_seqno
+      self.max_seqno = ids.max
+      log "- setting max_seqno to #{self.max_seqno}"
       log "- new uids found: #{new_ids.inspect}"
       new_ids
     end
@@ -222,7 +225,6 @@ module Vmail
       prime_connection
       new_ids = check_for_new_messages 
       if !new_ids.empty?
-        self.max_seqno = new_ids[-1]
         @ids = @ids + new_ids
         message_ids = fetch_and_cache_headers(new_ids)
         res = get_message_headers(message_ids)

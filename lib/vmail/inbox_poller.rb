@@ -1,6 +1,7 @@
 module Vmail
   class InboxPoller < ImapClient
 
+
     # This is a second IMAP client operating in a separate process
  
     def start_polling
@@ -32,26 +33,36 @@ module Vmail
     def update
       new_ids = check_for_new_messages 
       if !new_ids.empty?
-        self.max_seqno = new_ids[-1]
         @ids = @ids + new_ids
-        message_ids = fetch_and_cache_headers(new_ids)
-        res = get_message_headers(message_ids)
+        res = uncached_headers(new_ids).map {|m| m[:sender] }.join(", ")
         @notifier.call "Vmail: new email", "from #{res}"
       end
     rescue
       log "VMAIL_ERROR: #{[$!.message, $!.backtrace].join("\n")}"
     end
 
-    def get_message_headers(message_ids)
-      messages = message_ids.map {|message_id| 
-        m = Message[message_id]
-        if m.nil?
-          raise "Message #{message_id} not found"
-        end
-        m
-      }
-      res = messages.map {|m| m.sender }.join(", ")
-      res
+    # doesn't try to access Sequel / sqlite3
+    def uncached_headers(id_set)
+      log "Fetching headers for #{id_set.size} messages"
+      results = reconnect_if_necessary do 
+        @imap.fetch(id_set, ["FLAGS", "ENVELOPE", "RFC822.SIZE", "UID"])
+      end
+      results.reverse.map do |x| 
+        envelope = x.attr["ENVELOPE"]
+        message_id = envelope.message_id
+        subject = Mail::Encodings.unquote_and_convert_to((envelope.subject || ''), 'UTF-8')
+        recipients = ((envelope.to || []) + (envelope.cc || [])).map {|a| extract_address(a)}.join(', ')
+        sender = extract_address envelope.from.first
+        uid = x.attr["UID"]
+        params = {
+          subject: (subject || ''),
+          flags: x.attr['FLAGS'].join(','),
+          date: Time.parse(envelope.date).localtime.to_s,
+          size: x.attr['RFC822.SIZE'],
+          sender: sender,
+          recipients: recipients
+        }
+      end
     end
 
     def log(string)
