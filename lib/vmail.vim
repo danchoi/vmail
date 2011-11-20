@@ -853,6 +853,9 @@ func! s:global_mappings()
 endfunc
 
 func! s:set_list_colors()
+  if !exists("g:syntax_on")
+    return
+  endif
   syn clear
   syn match vmailSizeCol /|\s\+\(< 1k\|\d*\(b\|k\|M\|G\)\)\s\+|/ contains=vmailSeperator contained
   syn match vmailFirstCol /^.\{-}|/ nextgroup=vmailDateCol
