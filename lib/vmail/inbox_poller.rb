@@ -19,6 +19,7 @@ module Vmail
         return
       end
      
+      sleep 30
       log "INBOX POLLER: started polling"
       @mailboxes.unshift "INBOX"
       select_mailbox "INBOX"
