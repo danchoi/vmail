@@ -3,7 +3,7 @@ require 'vmail/options'
 require 'vmail/imap_client'
 require 'vmail/query'
 require 'vmail/message_formatter'
-require 'vmail/inbox_poller'
+
 require 'iconv'
 
 module Vmail
@@ -56,10 +56,15 @@ module Vmail
 
     puts "Starting vmail imap client for #{config['username']}"
 
-    # start inbox poller
-    inbox_poller = Vmail::InboxPoller.start config
-    Thread.new do
-      inbox_poller.start_polling
+    # inbox poller
+    if config['polling'] == false
+      puts "INBOX polling disabled."
+    else
+      require 'vmail/inbox_poller'
+      inbox_poller = Vmail::InboxPoller.start config
+      Thread.new do
+        inbox_poller.start_polling
+      end
     end
 
     drb_uri = begin 

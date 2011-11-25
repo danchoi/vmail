@@ -210,6 +210,9 @@ messages. If it detects a new message, it will alert you through your
 notification program. **NOTE**: This is an alert mechanism only;
 you will still have to manually check for new messages in the Vmail
 interface to force the new messages to display.
+
+To disable inbox polling put the line `polling: false` in your
+`.vmailrc`.
  
 ## Switching mailboxes, moving messages, copying messages to another mailbox
 
