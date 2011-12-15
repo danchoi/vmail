@@ -271,16 +271,16 @@ module Vmail
       end
     end
 
-    def append_to_file(uid_set, file)
-      uid_set = uid_set.split(',').map(&:to_i)
-      log "Append to file uid set #{uid_set.inspect} to file: #{file}"
-      uid_set.each do |uid|
-        message = show_message(uid)
+    def append_to_file(message_ids, file)
+      message_ids = message_ids.split(',')
+      log "Append to file uid set #{message_ids.inspect} to file: #{file}"
+      message_ids.each do |message_id|
+        message = show_message(message_id)
         File.open(file, 'a') {|f| f.puts(divider('=') + "\n" + message + "\n\n")}
         subject = (message[/^subject:(.*)/,1] || '').strip
         log "Appended message '#{subject}'"
       end
-      "Printed #{uid_set.size} message#{uid_set.size == 1 ? '' : 's'} to #{file.strip}"
+      "Printed #{message_ids.size} message#{message_ids.size == 1 ? '' : 's'} to #{file.strip}"
     end
 
     def new_message_template(subject = nil, append_signature = true)
