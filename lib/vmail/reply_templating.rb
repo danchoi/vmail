@@ -52,7 +52,9 @@ module Vmail
            end
       xs = xs.select {|x|
         email = (x[/<([^>]+)>/, 1] || x) 
-        email !~ /#{reply_recipient}/ && (@always_cc ? (email !~ /#{@always_cc}/) : true) 
+        email !~ /#{reply_recipient}/ \
+          && email !~ /#@username/ \
+          && (@always_cc ? (email !~ /#{@always_cc}/) : true) 
       }
       if @always_cc 
         xs << @always_cc
