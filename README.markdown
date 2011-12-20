@@ -89,7 +89,7 @@ The same applies to `always_bcc:`.
 
 If you want to configure Vmail with multiple Gmail accounts, [here's how][multiaccount].
 
-[multiaccount]:https://github.com/danchoi/vmail/wiki/How-can-i-quickly-switch-between-multiple-accounts%3F
+[multiaccount]:https://github.com/danchoi/vmail/wiki/How-to-use-vmail-with-multiple-Gmail-accounts
 
 If you are behind a firewall that blocks IMAP, see these [additional
 configuration options][firewall] that you can use.
