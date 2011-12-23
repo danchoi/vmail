@@ -47,6 +47,7 @@ module Vmail
         res = retry_if_needed do
           @imap.uid_fetch(uid, ["FLAGS", "RFC822", "RFC822.SIZE"])
         end
+        raise "Message uid #{uid} could not be fetched from server" if res.nil?
         res[0] 
       end
       seqno = fetch_data.seqno
