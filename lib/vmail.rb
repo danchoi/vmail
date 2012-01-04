@@ -9,6 +9,9 @@ require 'iconv'
 module Vmail
   extend self
 
+  VMAIL_DIRECTORY = File.join(ENV['home'], ".vmail")
+  FileUtils.mkdir(VMAIL_DIRECTORY) unless File.directory?(VMAIL_DIRECTORY)
+
   def start
     puts "Starting vmail #{Vmail::VERSION}"
     if  "1.9.0" > RUBY_VERSION

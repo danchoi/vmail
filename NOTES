@@ -30,3 +30,9 @@ Fri Jul  8 08:32:29 EDT 2011
 I think I can fetch back emails while use is waiting via a background thread
 
 
+------------------------------------------------------------------------
+Wed Jan  4 11:50:16 EST 2012
+
+Finally moving vmail log artifacts to ~/.vmail/accountname
+https://github.com/Oshuma/vmail/commit/63a8e19e998f0cf393e2572bea393e0aa417b302
+

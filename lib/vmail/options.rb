@@ -1,19 +1,21 @@
 require 'optparse'
 require 'highline/import'
+require 'fileutils'
 
 module Vmail
   class Options
+
     DEFAULT_CONTACTS_FILENAME = "vmail-contacts.txt"
+
     attr_accessor :config
     attr_accessor :contacts_file
+    attr_accessor :vmail_directory
+
     def initialize(argv)
-      config_file_locations = ['.vmailrc', "#{ENV['HOME']}/.vmailrc"]
-      @config_file = config_file_locations.detect do |path|
-        File.exists?(File.expand_path(path))
-      end
-      @contacts_file = [DEFAULT_CONTACTS_FILENAME, "#{ENV['HOME']}/#{DEFAULT_CONTACTS_FILENAME}"].detect  do |path|
-        File.exists?(File.expand_path(path))
-      end
+      @config_file = ['.vmailrc', "#{ENV['HOME']}/.vmailrc"].
+        detect { |path| File.exists?(File.expand_path(path)) }
+      @contacts_file = [DEFAULT_CONTACTS_FILENAME, "#{ENV['HOME']}/#{DEFAULT_CONTACTS_FILENAME}"].
+        detect { |path| File.exists?(File.expand_path(path)) }
       @config = {}
       parse argv
     end
