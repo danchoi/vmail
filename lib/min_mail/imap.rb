@@ -1,22 +1,24 @@
 # encoding: UTF-8
-require 'drb'
-require 'vmail/string_ext'
 require 'yaml'
 require 'mail'
 require 'net/imap'
+=begin
+require 'min_mail/string_ext'
 require 'time'
-require 'logger'
-require 'vmail/helpers'
-require 'vmail/address_quoter'
-require 'vmail/database'
-require 'vmail/searching'
-require 'vmail/showing_headers'
-require 'vmail/showing_message'
-require 'vmail/flagging_and_moving'
-require 'vmail/reply_templating'
+require 'min_mail/helpers'
+require 'min_mail/address_quoter'
+require 'min_mail/database'
+require 'min_mail/searching'
+require 'min_mail/showing_headers'
+require 'min_mail/showing_message'
+require 'min_mail/flagging_and_moving'
+require 'min_mail/reply_templating'
+=end
 
-module Vmail
-  class ImapClient
+module MinMail
+  class Imap
+
+=begin
     include Vmail::Helpers
     include Vmail::AddressQuoter
     include Vmail::Searching
@@ -24,8 +26,13 @@ module Vmail
     include Vmail::ShowingMessage
     include Vmail::FlaggingAndMoving
     include Vmail::ReplyTemplating
+=end
 
     attr_accessor :max_seqno # of current mailbox
+
+    def log s
+      puts s
+    end
 
     def initialize(config)
       @username, @password = config['username'], config['password']
@@ -33,77 +40,27 @@ module Vmail
       @signature = config['signature']
       @always_cc = config['always_cc']
       @always_bcc = config['always_bcc']
-      @mailbox = nil
-      @logger = Logger.new(config['logfile'] || STDERR)
-      @logger.level = Logger::DEBUG
-      $logger = @logger
+      @mailbox = "INBOX"
       @imap_server = config['server'] || 'imap.gmail.com'
       @imap_port = config['port'] || 993
       # generic smtp settings
       @smtp_server = config['smtp_server'] || 'smtp.gmail.com'
       @smtp_port = config['smtp_port'] || 587
       @smtp_domain = config['smtp_domain'] || 'gmail.com'
-      @width = 100
-      current_message = nil
     end
 
-
-    def open
-      @imap = Net::IMAP.new(@imap_server, @imap_port, true, nil, false)
-      log @imap.login(@username, @password)
-      list_mailboxes # prefetch mailbox list
-    rescue 
-      puts "VMAIL_ERROR: #{[$!.message, $!.backtrace].join("\n")}"
-    end
-
-    # expects a block, closes on finish
     def with_open
       @imap = Net::IMAP.new(@imap_server, @imap_port, true, nil, false)
-      log @imap.login(@username, @password)
-      yield self
-      close
+      @imap.login(@username, @password)
+      yield @imap
+      @imap.close
     end
 
-    def close
-      log "Closing connection"
-      Timeout::timeout(5) do
-        @imap.close rescue Net::IMAP::BadResponseError
-        @imap.disconnect rescue IOError
-      end
-    rescue Timeout::Error
-    end
-
-    def select_mailbox(mailbox, force=false)
-      if mailbox_aliases[mailbox]
-        mailbox = mailbox_aliases[mailbox]
-      end
-      log "Selecting mailbox #{mailbox.inspect}"
-      reconnect_if_necessary(30) do 
-        log @imap.select(mailbox)
-      end
-      log "Done"
-
+    def mailbox=(mailbox)
       @mailbox = mailbox
-      @label = Label[name: @mailbox] || Label.create(name: @mailbox)
-
-      log "Getting mailbox status"
+      @imap.select @mailbox
       get_mailbox_status
-      log "Getting highest message id"
       get_highest_message_id
-      return "OK"
-    end
-
-    def reload_mailbox
-      return unless STDIN.tty?
-      select_mailbox(@mailbox, true)
-    end
-
-    # TODO no need for this if all shown messages are stored in SQLITE3 
-    # and keyed by UID.
-    def clear_cached_message
-      return unless STDIN.tty?
-      log "Clearing cached message"
-      current_message = nil
     end
 
     def get_highest_message_id
@@ -118,80 +75,9 @@ module Vmail
       end
     end
 
-    # not used for anything
     def get_mailbox_status
-      return
       @status = @imap.status(@mailbox,  ["MESSAGES", "RECENT", "UNSEEN"])
       log "Mailbox status: #{@status.inspect}"
-    end
-
-    def revive_connection
-      log "Reviving connection"
-      open
-      log "Reselecting mailbox #@mailbox"
-      @imap.select(@mailbox)
-    end
-
-    def prime_connection
-      return if @ids.nil? || @ids.empty?
-      reconnect_if_necessary(4) do 
-        # this is just to prime the IMAP connection
-        # It's necessary for some reason before update and deliver. 
-        log "Priming connection"
-        res = @imap.fetch(@ids[-1], ["ENVELOPE"])
-        if res.nil?
-          # just go ahead, just log
-          log "Priming connection didn't work, connection seems broken, but still going ahead..."
-        end
-      end 
-    end
-
-    def list_mailboxes
-      log 'loading mailboxes...'
-      @mailboxes ||= (@imap.list("", "*") || []).
-        select {|struct| struct.attr.none? {|a| a == :Noselect} }.
-        map {|struct| struct.name}.uniq
-      @mailboxes.delete("INBOX")
-      @mailboxes.unshift("INBOX")
-      log "Loaded mailboxes: #{@mailboxes.inspect}"
-      @mailboxes = @mailboxes.map {|name| mailbox_aliases.invert[name] || name}
-      @mailboxes.join("\n")
-    end
-
-    # do this just once
-    def mailbox_aliases
-      return @mailbox_aliases if @mailbox_aliases
-      aliases = {"sent" => "Sent Mail",
-                 "all" => "All Mail",
-                 "starred" => "Starred",
-                 "important" => "Important",
-                 "drafts" => "Drafts",
-                 "spam" => "Spam",
-                 "trash" => "Trash"}
-      @mailbox_aliases = {}
-      aliases.each do |shortname, fullname|
-        [ "[Gmail]", "[Google Mail" ].each do |prefix|
-          if self.mailboxes.include?( "#{prefix}/#{fullname}" )
-            @mailbox_aliases[shortname] =  "#{prefix}/#{fullname}"
-          end
-        end
-      end
-      log "Setting aliases to #{@mailbox_aliases.inspect}"
-      @mailbox_aliases
-    end
-
-    # called internally, not by vim client
-    def mailboxes
-      if @mailboxes.nil?
-        list_mailboxes
-      end
-      @mailboxes
-    end
-
-    def decrement_max_seqno(num)
-      return unless STDIN.tty?
-      log "Decremented max seqno from #{self.max_seqno} to #{self.max_seqno - num}"
-      self.max_seqno -= num
     end
 
     def check_for_new_messages
@@ -460,12 +346,6 @@ EOF
       :enable_starttls_auto => true}]
     end
 
-    def log(string)
-      if string.is_a?(::Net::IMAP::TaggedResponse)
-        string = string.raw_data
-      end
-      @logger.debug string
-    end
 
     def handle_error(error)
       log error

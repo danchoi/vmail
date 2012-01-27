@@ -1,5 +1,4 @@
-require 'iconv'
-module Vmail
+module MinMail
   module ShowingHeaders
 
     def get_message_headers(message_ids)

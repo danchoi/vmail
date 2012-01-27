@@ -1,3 +1,3 @@
-module Vmail
-  VERSION = '2.4.5'
+module MinMail
+  VERSION = '0.0.1'
 end
