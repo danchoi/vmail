@@ -1,47 +1,10 @@
-require 'vmail/version'
-require 'vmail/options'
-require 'vmail/imap_client'
-require 'vmail/query'
-require 'vmail/message_formatter'
 
-require 'iconv'
+module MinMail
+  VERSION = '0.0.1'
 
-module Vmail
-  extend self
+  def self.start
 
-  def start
-    puts "Starting vmail #{Vmail::VERSION}"
-    if  "1.9.0" > RUBY_VERSION
-      puts "This version of vmail requires Ruby version 1.9.0 or higher (1.9.2 is recommended)"
-      exit
-    end
-
-    # check database version
-    print "Checking vmail.db version... "
-    db = Sequel.connect 'sqlite://vmail.db'
-    if (r = db[:version].first) && r[:vmail_version] != Vmail::VERSION
-      print "Vmail database version is outdated. Recreating.\n"
-      `rm vmail.db`
-      `sqlite3 vmail.db < #{CREATE_TABLE_SCRIPT}`
-    else
-      print "OK\n"
-    end
-
-    vim = ENV['VMAIL_VIM'] || 'vim'
-    ENV['VMAIL_BROWSER'] ||= if RUBY_PLATFORM.downcase.include?('linux') 
-                               tools = ['gnome-open', 'kfmclient-exec', 'konqueror']
-                               tool = tools.detect { |tool|
-                                 `which #{tool}`.size > 0
-                               }
-                               if tool.nil?
-                                 puts "Can't find a VMAIL_BROWSER tool on your system. Please report this issue."
-                               else
-                                 tool
-                               end
-                             else
-                               'open'
-                             end
-
+    puts "Starting min_mail #{MinMail::VERSION}"
     puts "Setting VMAIL_BROWSER to '#{ENV['VMAIL_BROWSER']}'"
     check_lynx
 
