@@ -108,9 +108,9 @@ module Vmail
 
     def get_highest_message_id
       # get highest message ID
-      res = @imap.fetch([1,"*"], ["ENVELOPE"])
+      res = @imap.search(['ALL'])
       if res 
-        @num_messages = res[-1].seqno
+        @num_messages = res[-1]
         log "Highest seqno: #@num_messages"
       else
         @num_messages = 1
