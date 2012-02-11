@@ -722,16 +722,6 @@ func! s:open_href(all) range
   endif
 endfunc
 
-" linenum < 5, turn off line wrapping
-func! s:toggle_textwidth()
-  if line('.') > 4 && &textwidth == 0
-    setlocal textwidth=72
-  elseif line('.') <= 4 && &textwidth != 0
-    setlocal textwidth=0
-  endif
-  "echo &textwidth
-endfunc
-
 " -------------------------------------------------------------------------------- 
 "  HELP
 func! s:show_help()
@@ -837,8 +827,6 @@ endfunc
 func! s:compose_window_mappings()
   noremap <silent> <buffer> <leader>q :call <SID>close_and_focus_list_window()<cr>
   setlocal ai
-  " setlocal textwidth=72
-  autocmd CursorMoved <buffer> call <SID>toggle_textwidth()
   command! -bar -nargs=1 -complete=file VMAttach call s:attach_file(<f-args>)
 endfunc
 
