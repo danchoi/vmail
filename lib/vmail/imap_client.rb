@@ -43,6 +43,7 @@ module Vmail
       @smtp_server = config['smtp_server'] || 'smtp.gmail.com'
       @smtp_port = config['smtp_port'] || 587
       @smtp_domain = config['smtp_domain'] || 'gmail.com'
+      @authentication = config['authentication'] || 'plain'
       @width = 100
       current_message = nil
     end
@@ -456,7 +457,7 @@ EOF
       :domain => @smtp_domain,
       :user_name => @username,
       :password => @password,
-      :authentication => 'plain',
+      :authentication => @authentication,
       :enable_starttls_auto => true}]
     end
 
