@@ -49,7 +49,9 @@ function! s:create_list_window()
   setlocal textwidth=0
   setlocal noreadonly
   " hi CursorLine cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white 
-  setlocal cursorline
+
+  " let user set this
+  " setlocal cursorline
   " we need the bufnr to find the window later
   let s:listbufnr = bufnr('%')
   let s:listbufname = bufname('%')
