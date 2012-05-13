@@ -513,10 +513,10 @@ trap("INT") {
   require 'timeout'
   puts "Closing imap connection"  
   begin
-    Timeout::timeout(2) do 
+    #Timeout::timeout(2) do 
       # just try to quit
       # $gmail.close
-    end
+    #end
   rescue Timeout::Error
     puts "Close connection attempt timed out"
   end
