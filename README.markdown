@@ -80,12 +80,14 @@ You can omit the password key-value pair if you'd rather not have the password
 saved in the file. In that case, you'll prompted for the password each time you
 start Vmail.
 
-You can also add an `always_cc:` key-value pair. This will pre-insert
-whatever email address you specify in the `cc:` line of any email you
-start composing in Vmail.
+You can also add an `always_cc:` key-value pair. This will pre-insert whatever
+email address you specify in the `cc:` line of any email you start composing in
+Vmail.  You can also add an `always_bcc:` option that works in the same way.
 
-The same applies to `always_bcc:`.
+You can add a `vim_opts:` key-value pair to run arbitrary Vim commands when Vmail starts up.
+For example, to turn on the cursorline, add this to `.vmailrc`:
 
+    vim_opts: set cursorline
 
 If you want to configure Vmail with multiple Gmail accounts, [here's how][multiaccount].
 
