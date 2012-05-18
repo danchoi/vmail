@@ -1,0 +1,76 @@
+
+The multi branch reorganizes Vmail to use Unix multiprogramming
+
+Instead of one monolithic Ruby server process, there will be cooperating smaller processes
+
+
+At the center will be a thin Imap client daemon accepts TCP and is a thin
+wrapper on the Net::IMAP instance.
+
+These are the calls made directly on this object
+
+      log @imap.login(@username, @password)
+        @imap.close rescue Net::IMAP::BadResponseError
+        @imap.disconnect rescue IOError
+      @mailboxes ||= (@imap.list("", "*") || []).
+      res = @imap.search(['ALL'])
+      @imap.select(@mailbox)
+      res = @imap.fetch(@ids[-1], ["ENVELOPE"])
+      @imap.create(mailbox) 
+            @imap.uid_copy(uid_set, mailbox_aliases['trash'])
+          @imap.uid_store(uid_set, action, [flg.to_sym])
+          @imap.uid_copy(uid_set, mailbox_aliases['spam']) 
+          @imap.uid_store(uid_set, action, [:Deleted])
+          @imap.uid_store(uid_set, action, [flg.to_sym])
+        @imap.uid_copy(uid_set, mailbox)
+        @imap.uid_store(uid_set, '+FLAGS', [:Deleted])
+        @imap.uid_copy(uid_set, mailbox)
+
+Other programs will convert human-friendly queries into lower level IMAP commands,
+or translate IMAP raw output into message headers, etc.
+
+server = DRbObject.new_with_uri ARGV.shift
+method = ARGV.shift
+
+
+Sample interactive DRb session
+  irb -rdrb
+  imap = DRbObject.new_with_uri 'druby://localhost:3030'
+  => #<Net::IMAP:0x007fd6b289a450>
+  require 'net/imap' # so responses can be mapped to classes
+  irb(main):031:0> imap.fetch(33150, ["ENVELOPE"])[0].attr['ENVELOPE'].keys
+  NoMethodError: undefined method `keys' for #<Net::IMAP::Envelope:0x007fbadc10cce8>
+    from (irb):31
+    from /Users/choi/.rbenv/versions/1.9.3-p194/bin/irb:12:in `<main>'
+  irb(main):032:0> imap.fetch(33150, ["ENVELOPE"])[0].attr['ENVELOPE'].values
+  => ["Thu, 17 May 2012 22:37:19 -0400", "API Error message", [#<struct Net::IMAP::Address name=nil, route=nil, mailbox="error", host="instantwatcher.com">], [#<struct Net::IMAP::Address name=nil, route=nil, mailbox="error", host="instantwatcher.com">], [#<struct Net::IMAP::Address name=nil, route=nil, mailbox="error", host="instantwatcher.com">], [#<struct Net::IMAP::Address name=nil, route=nil, mailbox="dhchoi", host="gmail.com">], nil, nil, nil, "<4fb5b5df40918_350840e109c24a@ubuntu.tmail>"]
+  irb(main):033:0> imap.fetch(33150, ["ENVELOPE"])[0].attr['ENVELOPE'].from
+  => [#<struct Net::IMAP::Address name=nil, route=nil, mailbox="error", host="instantwatcher.com">]
+  irb(main):034:0> imap.fetch(33150, ["ENVELOPE"])[0].attr['ENVELOPE'].from.name
+  NoMethodError: undefined method `name' for #<Array:0x007fbadc0c5b40>
+    from (irb):34
+    from /Users/choi/.rbenv/versions/1.9.3-p194/bin/irb:12:in `<main>'
+  irb(main):035:0> imap.fetch(33150, ["ENVELOPE"])[0].attr['ENVELOPE'].from
+  => [#<struct Net::IMAP::Address name=nil, route=nil, mailbox="error", host="instantwatcher.com">]
+  irb(main):036:0> imap.fetch(33150, ["ENVELOPE"])[0].attr['ENVELOPE'].from[0]
+  => #<struct Net::IMAP::Address name=nil, route=nil, mailbox="error", host="instantwatcher.com">
+  irb(main):037:0> imap.fetch(33150, ["ENVELOPE"])[0].attr['ENVELOPE'].from[0].host
+  => "instantwatcher.com"
+  irb(main):038:0> imap.fetch(33150, ["ENVELOPE"])[0].attr['ENVELOPE'].to
+  => [#<struct Net::IMAP::Address name=nil, route=nil, mailbox="dhchoi", host="gmail.com">]
+  irb(main):039:0> imap.fetch(33150, ["ENVELOPE"])[0].attr['ENVELOPE'].to[0]
+  => #<struct Net::IMAP::Address name=nil, route=nil, mailbox="dhchoi", host="gmail.com">
+  irb(main):040:0> imap.fetch(33150, ["ENVELOPE"])[0].attr['ENVELOPE'].to[0].name
+  => nil
+  irb(main):041:0> imap.fetch(33150, ["ENVELOPE"])[0].attr['ENVELOPE'].to[0].mailbox
+  => "dhchoi"
+  irb(main):042:0> imap.fetch(33150, ["ENVELOPE"])[0].attr['ENVELOPE'].subject
+  => "API Error message"
+  irb(main):043:0> imap.fetch(33150, ["ENVELOPE"])[0].attr['ENVELOPE']
+  => #<struct Net::IMAP::Envelope date="Thu, 17 May 2012 22:37:19 -0400", subject="API Error message", from=[#<struct Net::IMAP::Address name=nil, route=nil, mailbox="error", host="instantwatcher.com">], sender=[#<struct Net::IMAP::Address name=nil, route=nil, mailbox="error", host="instantwatcher.com">], reply_to=[#<struct Net::IMAP::Address name=nil, route=nil, mailbox="error", host="instantwatcher.com">], to=[#<struct Net::IMAP::Address name=nil, route=nil, mailbox="dhchoi", host="gmail.com">], cc=nil, bcc=nil, in_reply_to=nil, message_id="<4fb5b5df40918_350840e109c24a@ubuntu.tmail>">
+  irb(main):044:0> imap.fetch(33150, ["ENVELOPE"])[0].attr['ENVELOPE'].cc
+  => nil
+
+Need to wrap this stuff in functions that format the envelopes better, also methods for traversing the mailbox, selecting mailboxes more easily.
+
+
