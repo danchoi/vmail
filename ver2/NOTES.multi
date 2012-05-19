@@ -1,7 +1,13 @@
 
 The multi branch reorganizes Vmail to use Unix multiprogramming
+and also TCPSocket.
 
 Instead of one monolithic Ruby server process, there will be cooperating smaller processes
+
+The protocol should be switched from DRb to TCPSocket with plain text commands and responses.
+
+This will make the tools here much reusable and versatile.
+
 
 
 At the center will be a thin Imap client daemon accepts TCP and is a thin
