@@ -69,7 +69,7 @@ The `.vmailrc` file should look something like this. Substitute your own values.
     password: password
     name: Daniel Choi
     signature: |
-      --
+      -- 
       Sent from Vmail. http://danielchoi.com/software/vmail.html
 
 This file should be formatted in [YAML syntax][1].
