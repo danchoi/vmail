@@ -91,7 +91,7 @@ For example, to turn on the cursorline, add this to `.vmailrc`:
 
 If you want to configure Vmail with multiple Gmail accounts, [here's how][multiaccount].
 
-[multiaccount]:https://github.com/danchoi/vmail/wiki
+[multiaccount]:https://github.com/danchoi/vmail/wiki/How-to-use-vmail-with-multiple-Gmail-accounts
 
 If you are behind a firewall that blocks IMAP, see these [additional
 configuration options][firewall] that you can use.
