@@ -57,6 +57,7 @@ function! s:create_list_window()
   let s:listbufname = bufname('%')
   setlocal statusline=%!VmailStatusLine()
   call s:message_list_window_mappings()
+  setlocal filetype=vmail
   autocmd BufNewFile,BufRead *.txt setlocal modifiable
 endfunction
 
@@ -823,7 +824,7 @@ func! s:message_list_window_mappings()
   noremap <silent> <buffer> <c-k> :call <SID>show_previous_message_in_list()<cr>
   nnoremap <silent> <buffer> <Space> :call <SID>toggle_maximize_window()<cr>
   autocmd CursorMoved <buffer> :redraw
-  autocmd BufEnter,BufWinEnter <buffer> :call <SID>set_list_colors()
+  autocmd FileType vmail :call <SID>set_list_colors()
 endfunc
 
 func! s:compose_window_mappings()
