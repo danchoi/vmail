@@ -1,3 +1,8 @@
+if exists("g:loaded_vmail") || &cp
+    finish
+endif
+let g:loaded_vmail = 1
+
 if !exists("g:vmail_flagged_color")
   let g:vmail_flagged_color = "ctermfg=green guifg=green guibg=grey"
 endif
