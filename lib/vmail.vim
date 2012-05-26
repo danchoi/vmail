@@ -47,20 +47,15 @@ function! VmailStatusLine()
 endfunction
 
 function! s:create_list_window()
-  "setlocal bufhidden=delete
-  "setlocal buftype=nofile
   setlocal nomodifiable
   setlocal noswapfile
-  "setlocal nomodifiable
   setlocal nowrap
   setlocal nonumber
   setlocal foldcolumn=0
   setlocal nospell
-  " setlocal nobuflisted
   setlocal textwidth=0
   setlocal noreadonly
   setl ft=mail
-  " hi CursorLine cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white 
 
   " let user set this
   " setlocal cursorline
@@ -905,8 +900,6 @@ call s:focus_list_window() " to go list window
 
 " send window width
 call s:system_with_error_handling(s:set_window_width_command . winwidth(1))
-
-"autocmd VimResized <buffer> call s:system_with_error_handling(s:set_window_width_command . winwidth(1))
 
 autocmd bufreadpost *.txt call <SID>turn_into_compose_window()
 normal G
