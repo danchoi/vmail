@@ -43,7 +43,7 @@ let s:show_help_command = s:client_script . "show_help"
 let s:message_bufname = "current_message.txt"
 
 function! VmailStatusLine()
-  return "%<%f\ " . s:mailbox . " " . s:query . "%r%=%-14.(%l,%c%V%)\ %P"
+  return "%<%f\ " . s:mailbox . " " . s:query . "%r%=%-14.(%l,%c%V%)\ %Y %P"
 endfunction
 
 function! s:create_list_window()
