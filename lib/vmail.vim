@@ -1,3 +1,9 @@
+"=================================================
+" File: vmail.vim
+" Description: Vmail is a Vim interface to Gmail.
+" Author: Daniel Choi
+" ================================================
+
 if exists("g:loaded_vmail") || &cp
     finish
 endif
