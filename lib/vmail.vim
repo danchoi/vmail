@@ -59,6 +59,7 @@ function! s:create_list_window()
   " setlocal nobuflisted
   setlocal textwidth=0
   setlocal noreadonly
+  setl ft=mail
   " hi CursorLine cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white 
 
   " let user set this
