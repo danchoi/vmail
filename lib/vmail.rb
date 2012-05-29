@@ -29,7 +29,7 @@ module Vmail
 
     vim = ENV['VMAIL_VIM'] || 'vim'
     ENV['VMAIL_BROWSER'] ||= if RUBY_PLATFORM.downcase.include?('linux') 
-                               tools = ['gnome-open', 'kfmclient-exec', 'konqueror']
+                               tools = ['gnome-open', 'kfmclient-exec', 'xdg-open', 'konqueror']
                                tool = tools.detect { |tool|
                                  `which #{tool}`.size > 0
                                }
