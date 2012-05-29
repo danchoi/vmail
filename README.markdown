@@ -1,11 +1,11 @@
 # Vmail
 
-Vmail is a Vim interface to Gmail. 
+Vmail is a Vim interface to Gmail.
 
 [screenshots]
 
 Why Vmail? Because some people are 1000 times more productive and happy in [Vim][vim]
-than in any web browser or GUI program. 
+than in any web browser or GUI program.
 
 [vim]:http://www.vim.org/
 
@@ -21,9 +21,9 @@ To install Ruby 1.9.2, I recommend using the [RVM Version Manager][rvm].
 
 [rvm]:http://rvm.beginrescueend.com
 
-The current version of Vmail assumes a Unix environment. 
+The current version of Vmail assumes a Unix environment.
 
-Your Gmail account should be [IMAP-enabled][gmailimap]. 
+Your Gmail account should be [IMAP-enabled][gmailimap].
 
 [gmailimap]:http://mail.google.com/support/bin/answer.py?hl=en&answer=77695
 
@@ -61,7 +61,7 @@ during execution (see below).
 
 To run Vmail, create a yaml file called `.vmailrc` and save it either in the
 current directory (the directory from which you launch Vmail) or in your home
-directory. 
+directory.
 
 The `.vmailrc` file should look something like this. Substitute your own values.
 
@@ -69,7 +69,7 @@ The `.vmailrc` file should look something like this. Substitute your own values.
     password: password
     name: Daniel Choi
     signature: |
-      --
+      -- 
       Sent from Vmail. http://danielchoi.com/software/vmail.html
 
 This file should be formatted in [YAML syntax][1].
@@ -153,7 +153,7 @@ from either window.
 You can also use the standard Vim key sequence `C-w C-w`.
 
 You can use `<C-j>` or `,j` from either split window to show the next message.
-You can use `<C-k>` or `,k` to show the previous message. 
+You can use `<C-k>` or `,k` to show the previous message.
 
 Vmail loads a certain number messages at a time, starting with the most recent.
 If there are more messages that Vmail hasn't loaded, you'll see a line at the
@@ -169,7 +169,7 @@ Unread messages are marked with a `+` symbol.
 
 To view the raw RFC822 version of a message, type `,R` while viewing the message.
 
-## Starring, deleting, archiving, marking spam
+## Starring, deleting, archiving, marking spam, marking read/unread
 
 To star a message, put the cursor on it and type `,*`.  (Note that the comma
 before the * is part of the key sequence.) Starring a message copies it to the
@@ -186,10 +186,15 @@ moves it to the `all` mailbox.
 To mark a message spam, put the cursor on it and type `,!`. This moves the
 message to to the `spam` mailbox.
 
-You can use range selections in the message list when you star, delete, mark as
-spam, or archive. Use `v` to start marking a range of lines (the vertical
-position of the cursor doesn't matter).  Then type any of the above commands to
-perform an action on all the messages you selected.
+To mark a message as unread, put the cursor on it and type `U`.
+
+To mark a message as read, put the curson on it and type `I`.
+
+You can use visual selections in the message list when you star, delete, mark
+as spam, mark as read, mark as unread or archive. Use `v` to start marking a
+range of lines (the horizontal position of the cursor doesn't matter).  Then
+type any of the above commands to perform an action on all the messages you
+selected.
 
 To save you keystrokes, Vmail provides alternative key mappings for
 `,*`, `,#`, and `,!`:
@@ -246,13 +251,13 @@ create it for you before performing a move or copy.
 To start writing a new a email message, type `,c`. That's a comma followed by
 the character 'c'.
 
-To reply to a message, type `,r`. 
+To reply to a message, type `,r`.
 
-To reply-all to a message, type `,a`. 
+To reply-all to a message, type `,a`.
 
 To forward a message, type `,f`.
 
-All these commands open a message composition window. At the top, you will see 
+All these commands open a message composition window. At the top, you will see
 mail headers like this:
 
     from: Daniel Choi <dhchoi@gmail.com>
