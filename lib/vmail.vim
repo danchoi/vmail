@@ -1,3 +1,14 @@
+"=================================================
+" File: vmail.vim
+" Description: Vmail is a Vim interface to Gmail.
+" Author: Daniel Choi
+" ================================================
+
+if exists("g:loaded_vmail") || &cp
+    finish
+endif
+let g:loaded_vmail = 1
+
 if !exists("g:vmail_flagged_color")
   let g:vmail_flagged_color = "ctermfg=green guifg=green guibg=grey"
 endif
@@ -32,23 +43,19 @@ let s:show_help_command = s:client_script . "show_help"
 let s:message_bufname = "current_message.txt"
 
 function! VmailStatusLine()
-  return "%<%f\ " . s:mailbox . " " . s:query . "%r%=%-14.(%l,%c%V%)\ %P"
+  return "%<%f\ " . s:mailbox . " " . s:query . "%r%=%-14.(%l,%c%V%)\ %Y %P"
 endfunction
 
 function! s:create_list_window()
-  "setlocal bufhidden=delete
-  "setlocal buftype=nofile
   setlocal nomodifiable
   setlocal noswapfile
-  "setlocal nomodifiable
   setlocal nowrap
   setlocal nonumber
   setlocal foldcolumn=0
   setlocal nospell
-  " setlocal nobuflisted
   setlocal textwidth=0
   setlocal noreadonly
-  " hi CursorLine cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white 
+  setl ft=mail
 
   " let user set this
   " setlocal cursorline
@@ -894,8 +901,6 @@ call s:focus_list_window() " to go list window
 
 " send window width
 call s:system_with_error_handling(s:set_window_width_command . winwidth(1))
-
-"autocmd VimResized <buffer> call s:system_with_error_handling(s:set_window_width_command . winwidth(1))
 
 autocmd bufreadpost *.txt call <SID>turn_into_compose_window()
 normal G
