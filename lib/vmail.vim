@@ -862,7 +862,7 @@ func! s:message_window_mappings()
   if !hasmapto('<Plug>VmailMessageWindow_MarkAsUnread')
     nmap <buffer> U <Plug>VmailMessageWindow_MarkAsUnread
   endif
-  nnoremap <buffer> <unique> <script> <Plug>VmailMessageWindow_MarkAsUnread :call <SID>focus_list_window()<cr>:call <SID>mark_as_read_unread(1)<CR>
+  nnoremap <buffer> <unique> <script> <Plug>VmailMessageWindow_MarkAsUnread :call <SID>focus_list_window()<cr>:call <SID>mark_as_read_unread(0)<CR>
 
   if !hasmapto('<Plug>VmailMessageWindow_MarkAsSpam')
     nmap <buffer> <leader>! <Plug>VmailMessageWindow_MarkAsSpam
@@ -942,12 +942,19 @@ func! s:message_list_window_mappings()
   nnoremap <buffer> <unique> <script> <Plug>VmailToggleStar :call <SID>toggle_star()<CR>
   xnoremap <buffer> <unique> <script> <Plug>VmailToggleStar :call <SID>toggle_star()<CR>
 
-  if !hasmapto('<Plug>VmailToggleRead')
-    nmap <buffer> <leader>U <Plug>VmailToggleRead
-    xmap <buffer> <leader>U <Plug>VmailToggleRead
+  if !hasmapto('<Plug>VmailMarkAsUnread')
+    nmap <buffer> U <Plug>VmailMarkAsUnread
+    xmap <buffer> U <Plug>VmailMarkAsUnread
   endif
-  nnoremap <buffer> <unique> <script> <Plug>VmailToggleRead :call <SID>toggle_flag('SEEN')<CR>
-  xnoremap <buffer> <unique> <script> <Plug>VmailToggleRead :call <SID>toggle_flag('SEEN')<CR>
+  nnoremap <buffer> <unique> <script> <Plug>VmailMarkAsUnread :call <SID>mark_as_read_unread(0)<CR>
+  xnoremap <buffer> <unique> <script> <Plug>VmailMarkAsUnread :call <SID>mark_as_read_unread(0)<CR>
+
+  if !hasmapto('<Plug>VmailMarkAsRead')
+    nmap <buffer> I <Plug>VmailMarkAsRead
+    xmap <buffer> I <Plug>VmailMarkAsRead
+  endif
+  nnoremap <buffer> <unique> <script> <Plug>VmailMarkAsRead :call <SID>mark_as_read_unread(1)<CR>
+  xnoremap <buffer> <unique> <script> <Plug>VmailMarkAsRead :call <SID>mark_as_read_unread(1)<CR>
 
   if !hasmapto('<Plug>VmailDelete')
     nmap <buffer> <leader># <Plug>VmailDelete
