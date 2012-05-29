@@ -253,6 +253,37 @@ function! s:update()
   endif
 endfunction
 
+" function argument a:read: Represents the next state
+" 0 means unread, 1 means read.
+function! s:mark_as_read_unread(read) range
+  let uid_set = s:collect_uids(a:firstline, a:lastline)
+  let nummsgs = len(uid_set)
+  " decide whether to set messages to SEEN or UNSEEN
+  let action = (a:read ? " +" : " -") . "FLAGS"
+  " construct the imap command
+  let command = s:flag_command . shellescape(join(uid_set, ',')) . action . " SEEN"
+  " do the real imap flagging
+  let res = s:system_with_error_handling(command)
+  setlocal modifiable
+  let lnum = a:firstline
+  while lnum <= a:lastline
+    let line = getline(lnum)
+    if action ==# " +FLAGS"
+      let newline = substitute(line, '^*+', '* ', '')
+      let newline = substitute(newline, '^+ ', '  ', '')
+    else
+      let newline = substitute(line, '^ ', '+', '')
+      let newline = substitute(newline, '^\* ', '*+', '')
+    endif
+    call setline(lnum, newline)
+    let lnum += 1
+  endwhile
+  setlocal nomodifiable
+  write
+  redraw
+  echom nummsgs  ." conversation(s) have been marked as unread."
+endfunction
+
 function! s:toggle_star() range
   let uid_set = s:collect_uids(a:firstline, a:lastline)
   let nummsgs = len(uid_set)
@@ -774,6 +805,8 @@ func! s:message_window_mappings()
   noremap <silent> <buffer> <leader>q :call <SID>close_message_window()<cr> 
 
   nnoremap <silent> <buffer> <leader>#  :close<cr>:call <SID>focus_list_window()<cr>:call <SID>delete_messages("Deleted")<cr>
+  nnoremap <silent> <buffer> U :call <SID>focus_list_window()<cr>:call <SID>mark_as_read_unread(0)<cr>
+  nnoremap <silent> <buffer> I :call <SID>focus_list_window()<cr>:call <SID>mark_as_read_unread(1)<cr>
   nnoremap <silent> <buffer> <leader>*  :call <SID>focus_list_window()<cr>:call <SID>toggle_star()<cr>
   noremap <silent> <buffer> <leader>! :close<cr>:call <SID>focus_list_window()<cr>:call <SID>delete_messages("spam")<CR>
   noremap <silent> <buffer> <leader>e :call <SID>focus_list_window()<cr>:call <SID>archive_messages()<CR>
@@ -803,6 +836,8 @@ func! s:message_list_window_mappings()
   noremap <silent> <buffer> <leader>q :qal!<cr>
 
   noremap <silent> <buffer> <leader>* :call <SID>toggle_star()<CR>
+  noremap <silent> <buffer> U :call <SID>mark_as_read_unread(0)<cr>
+  noremap <silent> <buffer> I :call <SID>mark_as_read_unread(1)<cr>
   noremap <silent> <buffer> <leader># :call <SID>delete_messages("Deleted")<CR>
   noremap <silent> <buffer> <leader>! :call <SID>delete_messages("spam")<CR>
   noremap <silent> <buffer> <leader>e :call <SID>archive_messages()<CR>
