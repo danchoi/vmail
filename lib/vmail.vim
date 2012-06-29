@@ -1060,7 +1060,7 @@ func! s:compose_window_mappings()
   if !hasmapto('<Plug>VmailComposeWinClose')
     nmap <buffer> <leader>q <Plug>VmailComposeWinClose
   endif
-  nnoremap <buffer> <unique> <script> <Plug>VmailComposeWinClose :call <SID>close_and_focus_list_window()<CR>
+  nnoremap <buffer>  <script> <Plug>VmailComposeWinClose :call <SID>close_and_focus_list_window()<CR>
   setlocal ai
   command! -bar -nargs=1 -complete=file VMAttach call s:attach_file(<f-args>)
 endfunc
