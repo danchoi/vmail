@@ -990,6 +990,7 @@ func! s:message_list_window_mappings()
 
   if !hasmapto('<Plug>VmailUpdate')
     nmap <buffer> u <Plug>VmailUpdate
+    nmap <buffer> <leader>u <Plug>VmailUpdate
   endif
   nnoremap <buffer> <unique> <script> <Plug>VmailUpdate :call <SID>update()<CR>
 
