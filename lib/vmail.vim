@@ -205,6 +205,7 @@ function! s:focus_list_window()
   else
     exec winnr . "wincmd w"
   endif
+  call s:set_list_colors()
   " call feedkeys("\<c-l>") " prevents screen artifacts when user presses return too fast
   " turn this off though, because it causes an annoying flash
 endfunction
@@ -1054,7 +1055,7 @@ func! s:message_list_window_mappings()
   nnoremap <buffer> <unique> <script> <Plug>VmailToggleWindow :call <SID>toggle_maximize_window()<cr>
 
   autocmd CursorMoved <buffer> :redraw
-  autocmd FileType vmail :call <SID>set_list_colors()
+  autocmd BufEnter,BufWinEnter <buffer> :call <SID>set_list_colors()
 endfunc
 
 func! s:compose_window_mappings()
