@@ -84,6 +84,14 @@ You can also add an `always_cc:` key-value pair. This will pre-insert whatever
 email address you specify in the `cc:` line of any email you start composing in
 Vmail.  You can also add an `always_bcc:` option that works in the same way.
 
+If you want to use a shell script to print the signature, use the
+`signature_script:` option instead; e.g.,
+
+    username: dhchoi@gmail.com
+    password: password
+    name: Daniel Choi
+    signature_script: /home/choi/bin/vmail_signature.sh
+
 You can add a `vim_opts:` key-value pair to run arbitrary Vim commands when Vmail starts up.
 For example, to turn on the cursorline, add this to `.vmailrc`:
 
