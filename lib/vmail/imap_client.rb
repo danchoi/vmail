@@ -312,11 +312,7 @@ module Vmail
 
     def signature
       return signature_script if @signature_script
-      if (script = @signature[/\$\(([^)]+)\)/, 1])
-        %x{script}
-      else
-        "\n\n#@signature"
-      end
+      "\n\n#@signature"
     end
 
     def signature_script
