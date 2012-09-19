@@ -30,7 +30,8 @@ module Vmail
     def initialize(config)
       @username, @password = config['username'], config['password']
       @name = config['name']
-      @signature = config['signature']
+      @signature = config['signature'] 
+      @signature_script = config['signature_script'] 
       @always_cc = config['always_cc']
       @always_bcc = config['always_bcc']
       @mailbox = nil
@@ -310,8 +311,13 @@ module Vmail
 
 
     def signature
-      return '' unless @signature
+      return signature_script if @signature_script
       "\n\n#@signature"
+    end
+
+    def signature_script
+      return unless @signature_script
+      %x{ #{@signature_script.strip} }
     end
 
     def forward_template
