@@ -293,7 +293,7 @@ Make sure you append *.txt to the filename, or else Vmail won't recognize it as
 a potential email when you reload it.
 
 Make sure you don't use `:wq` unless you mean to quit Vmail immediately. After
-you save the draft to a file, you can go back to the message list by typing `q`
+you save the draft to a file, you can go back to the message list by typing `,q`
 in normal mode.
 
 To resume writing the draft later, just type `:e my_draft_filename.txt` to load
