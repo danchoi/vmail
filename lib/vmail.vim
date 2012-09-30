@@ -30,6 +30,7 @@ let s:search_command = s:client_script . "search "
 let s:more_messages_command = s:client_script . "more_messages "
 let s:flag_command = s:client_script . "flag "
 let s:append_to_file_command = s:client_script . "append_to_file "
+let s:save_to_file_command = s:client_script . "save_to_file "
 let s:move_to_command = s:client_script . "move_to "
 let s:copy_to_command = s:client_script . "copy_to "
 let s:new_message_template_command = s:client_script . "new_message_template "
@@ -360,6 +361,18 @@ func! s:archive_messages() range
 endfunc
 
 " --------------------------------------------------------------------------------
+
+" save text bodies of a set of messages, message subject is used as filename
+func! s:save_messages_to_file() range
+  let uid_set = s:collect_uids(a:firstline, a:lastline)
+  let nummsgs = len(uid_set)
+  " TODO: Perhaps, ask for confirmation here? Or ask for directory for files?
+  let command = s:save_to_file_command . shellescape(join(uid_set, ','))
+  echo "Saving " . nummsgs . " messages" . (nummsgs == 1 ? '' : 's') . ". Please wait..."
+  let res = s:system_with_error_handling(command)
+  echo res
+  redraw
+endfunc
 
 " append text bodies of a set of messages to a file
 func! s:append_messages_to_file() range
@@ -911,6 +924,11 @@ func! s:message_window_mappings()
   endif
   nnoremap <buffer> <unique> <script> <Plug>VmailMessageWindow_AppendMessagesToFile :call <SID>focus_list_window()<cr>:call <SID>append_messages_to_file()<CR>
 
+  if !hasmapto('<Plug>VmailMessageWindow_SaveMessagesToFile')
+    nmap <buffer> <leader>vf <Plug>VmailMessageWindow_SaveMessagesToFile
+  endif
+  nnoremap <buffer> <unique> <script> <Plug>VmailMessageWindow_SaveMessagesToFile :call <SID>focus_list_window()<cr>:call <SID>save_messages_to_file()<CR>
+
   if !hasmapto('<Plug>VmailMessageWindow_Search')
     nmap <buffer> <leader>s <Plug>VmailMessageWindow_Search
   endif
@@ -988,6 +1006,13 @@ func! s:message_list_window_mappings()
   endif
   nnoremap <buffer> <unique> <script> <Plug>VmailAppendMessagesToFile :call <SID>append_messages_to_file()<CR>
   xnoremap <buffer> <unique> <script> <Plug>VmailAppendMessagesToFile :call <SID>append_messages_to_file()<CR>
+
+  if !hasmapto('<Plug>VmailSaveMessagesToFile')
+    nmap <buffer> <leader>vf <Plug>VmailSaveMessagesToFile
+    xmap <buffer> <leader>vf <Plug>VmailSaveMessagesToFile
+  endif
+  nnoremap <buffer> <unique> <script> <Plug>VmailSaveMessagesToFile :call <SID>save_messages_to_file()<CR>
+  xnoremap <buffer> <unique> <script> <Plug>VmailSaveMessagesToFile :call <SID>save_messages_to_file()<CR>
 
   if !hasmapto('<Plug>VmailUpdate')
     nmap <buffer> u <Plug>VmailUpdate

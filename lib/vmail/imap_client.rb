@@ -285,6 +285,19 @@ module Vmail
       "Printed #{message_ids.size} message#{message_ids.size == 1 ? '' : 's'} to #{file.strip}"
     end
 
+    def save_to_file(message_ids)
+      message_ids = message_ids.split(',')
+      message_ids.each do |message_id|
+        message = show_message(message_id)
+        subject = (message[/^subject:(.*)/,1] || '').strip
+        file = "#{subject.gsub( /[^a-zA-Z0-9_\.]/, '_')}"
+        log "Save to file uid set #{message_ids.inspect} to file: '#{file}'"
+        File.open(file, 'a') {|f| f.puts(divider('=') + "\n" + message + "\n\n")}
+        log "Saved message '#{subject}'"
+      end
+      "Saved #{message_ids.size} message#{message_ids.size == 1 ? '' : 's'}"
+    end
+
     def new_message_template(subject = nil, append_signature = true)
       headers = {'from' => "#{@name} <#{@username}>",
         'to' => nil,
