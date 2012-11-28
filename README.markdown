@@ -43,7 +43,10 @@ problem, and mention what system you're using. You might want to try
 
     sudo gem install vmail
 
-to see if that puts `vmail` on your PATH.
+to see if that puts `vmail` on your PATH. (If you're using [rbenv], running
+`rbenv rehash` should do the trick.)
+
+[rbenv]: https://github.com/sstephenson/rbenv
 
 Vmail is evolving rapidly. To update to the latest version, simply run the
 installation command again.
