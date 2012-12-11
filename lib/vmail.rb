@@ -1,6 +1,5 @@
 require 'vmail/version'
 require 'vmail/options'
-require 'vmail/imap_client'
 require 'vmail/query'
 require 'vmail/message_formatter'
 
@@ -57,17 +56,6 @@ module Vmail
 
     puts "Starting vmail imap client for #{config['username']}"
 
-    # check database version
-    print "Checking vmail.db version... "
-    db = Sequel.connect 'sqlite://vmail.db'
-    if (r = db[:version].first) && r[:vmail_version] != Vmail::VERSION
-      print "Vmail database version is outdated. Recreating.\n"
-      `rm vmail.db`
-      `sqlite3 vmail.db < #{CREATE_TABLE_SCRIPT}`
-    else
-      print "OK\n"
-    end
-
 
     # inbox poller
     if config['polling'] == false
@@ -81,6 +69,9 @@ module Vmail
     end
 
     puts "WORKING DIR: #{Dir.pwd}"
+
+    # require after the working dir is set
+    require 'vmail/imap_client'
 
     drb_uri = begin 
                 Vmail::ImapClient.daemon config
