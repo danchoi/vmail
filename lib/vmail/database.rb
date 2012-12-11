@@ -7,6 +7,8 @@ if !File.size?('vmail.db')
 end
 
 DB = Sequel.connect 'sqlite://vmail.db'
+puts "Connecting to database"
+puts "Tables: #{DB.tables}"
 
 if DB[:version].count == 0
   DB[:version].insert(:vmail_version => Vmail::VERSION)

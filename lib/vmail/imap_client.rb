@@ -505,6 +505,7 @@ EOF
     end
 
     def self.daemon(config)
+      puts "STARTING Vmail::ImapClient in dir #{Dir.pwd}"
       $gmail = self.start(config)
       use_uri = config['drb_uri'] || nil # redundant but explicit
       DRb.start_service(use_uri, $gmail)

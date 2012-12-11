@@ -16,17 +16,6 @@ module Vmail
       exit
     end
 
-    # check database version
-    print "Checking vmail.db version... "
-    db = Sequel.connect 'sqlite://vmail.db'
-    if (r = db[:version].first) && r[:vmail_version] != Vmail::VERSION
-      print "Vmail database version is outdated. Recreating.\n"
-      `rm vmail.db`
-      `sqlite3 vmail.db < #{CREATE_TABLE_SCRIPT}`
-    else
-      print "OK\n"
-    end
-
     vim = ENV['VMAIL_VIM'] || 'vim'
     ENV['VMAIL_BROWSER'] ||= if RUBY_PLATFORM.downcase.include?('linux') 
                                tools = ['gnome-open', 'kfmclient-exec', 'xdg-open', 'konqueror']
@@ -45,6 +34,18 @@ module Vmail
     puts "Setting VMAIL_BROWSER to '#{ENV['VMAIL_BROWSER']}'"
     check_lynx
 
+    working_dir = ENV['VMAIL_HOME'] || "#{ENV['HOME']}/.vmail/default"
+    `mkdir -p #{working_dir}`
+    # legacy migration: move files into VMAIL_HOME
+    ['.vmailrc', 'vmail.log', 'vmail.db', 'vmail-contacts.txt', 'compose_message.txt', 'attachments'].each do |x|
+      if File.size?(x)
+        c = "mv #{x} #{working_dir}"
+        puts c
+        %x{#{c}}
+      end
+    end
+    puts "Changing working directory to #{working_dir}"
+    Dir.chdir(working_dir)
     opts = Vmail::Options.new(ARGV)
     opts.config
     config = opts.config
@@ -56,6 +57,18 @@ module Vmail
 
     puts "Starting vmail imap client for #{config['username']}"
 
+    # check database version
+    print "Checking vmail.db version... "
+    db = Sequel.connect 'sqlite://vmail.db'
+    if (r = db[:version].first) && r[:vmail_version] != Vmail::VERSION
+      print "Vmail database version is outdated. Recreating.\n"
+      `rm vmail.db`
+      `sqlite3 vmail.db < #{CREATE_TABLE_SCRIPT}`
+    else
+      print "OK\n"
+    end
+
+
     # inbox poller
     if config['polling'] == false
       puts "INBOX polling disabled."
@@ -66,6 +79,8 @@ module Vmail
         inbox_poller.start_polling
       end
     end
+
+    puts "WORKING DIR: #{Dir.pwd}"
 
     drb_uri = begin 
                 Vmail::ImapClient.daemon config
