@@ -62,9 +62,8 @@ during execution (see below).
 
 ## Configuration file
 
-To run Vmail, create a yaml file called `.vmailrc` and save it either in the
-current directory (the directory from which you launch Vmail) or in your home
-directory.
+To run Vmail, create a yaml file called `.vmailrc` and save it either in
+~/.vmail/defaults/ or in your home directory.
 
 The `.vmailrc` file should look something like this. Substitute your own values.
 
@@ -113,11 +112,11 @@ configuration options][firewall] that you can use.
 ## Contacts autocompletion
 
 Vmail uses Vim autocompletion to help you auto-complete email addresses.
-To use this feature, generate a `vmail-contacts.txt` file in the current or
-home directory. This is a simple list of your email contacts.
-Invoking Vmail with the `-g` option generates this file for you by
-collecting all the recipients and cc's from your last 500 sent
-emails. You can adjust this number by using `-g` with a number argument. 
+To use this feature, generate a `vmail-contacts.txt` file.  This is a
+simple list of your email contacts.  Invoking Vmail with the `-g` option
+generates this file for you by collecting all the recipients and cc's
+from your last 500 sent emails. You can adjust this number by using `-g`
+with a number argument. 
 
 After Vmail generates this file for you, you can edit it however and whenever
 you want, as long as there is one address per line.
@@ -466,9 +465,10 @@ invoke Vmail will show Vmail's logging output while MacVim is running. To quit
 Vmail, first quit the MacVim window running Vmail, and then press CTRL-c in the
 original terminal window to stop the Vmail process.
 
-## Vmail file byproducts
+## Alternate VMAIL_HOME working directories
 
-Vmail generates a few files in the current directory when it is running: 
+Vmail generates a directory called ~/.vmail/defaults and uses this as
+the default `VMAIL_HOME`. Vmail places these files in it:
 
 * `vmail.db` is a sqlite3 database. Vmail uses this to cache messages it has seen..
 
@@ -481,6 +481,10 @@ Vmail generates a few files in the current directory when it is running:
 Finally, Vmail logs output to a `vmail.log` file which it creates in the
 current directory. You can tail this file in a separate terminal window to see
 what's going on behind the scenes as you use Vmail.
+
+You can use up other working directories by setting the `VMAIL_HOME`
+environment variable before or when you launch Vmail.  Make sure you
+place a `.vmailrc` configuration in that directory.
 
 ## Is my Gmail password secure?
 
