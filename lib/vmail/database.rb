@@ -10,6 +10,7 @@ if (r = db[:version].first) && r[:vmail_version] != Vmail::VERSION
 else
   print "OK\n"
 end
+db.disconnect
 
 
 CREATE_TABLE_SCRIPT = File.expand_path("../../../db/create.sql", __FILE__)
@@ -20,7 +21,6 @@ end
 
 DB = Sequel.connect 'sqlite://vmail.db'
 puts "Connecting to database"
-puts "Tables: #{DB.tables}"
 
 if DB[:version].count == 0
   DB[:version].insert(:vmail_version => Vmail::VERSION)

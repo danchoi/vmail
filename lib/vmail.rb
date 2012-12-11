@@ -56,7 +56,6 @@ module Vmail
 
     puts "Starting vmail imap client for #{config['username']}"
 
-
     # inbox poller
     if config['polling'] == false
       puts "INBOX polling disabled."
