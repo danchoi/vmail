@@ -1,9 +1,14 @@
 require 'sequel'
 
 # check database version
+
+CREATE_TABLE_SCRIPT = File.expand_path("../../../db/create.sql", __FILE__)
 print "Checking vmail.db version... "
 db = Sequel.connect 'sqlite://vmail.db'
-if (r = db[:version].first) && r[:vmail_version] != Vmail::VERSION
+if db.tables.include?(:version) && 
+    (r = db[:version].first) && 
+    r[:vmail_version] != Vmail::VERSION
+
   print "Vmail database version is outdated. Recreating.\n"
   `rm vmail.db`
   `sqlite3 vmail.db < #{CREATE_TABLE_SCRIPT}`
@@ -11,9 +16,6 @@ else
   print "OK\n"
 end
 db.disconnect
-
-
-CREATE_TABLE_SCRIPT = File.expand_path("../../../db/create.sql", __FILE__)
 
 if !File.size?('vmail.db')
   puts `sqlite3 vmail.db < #{CREATE_TABLE_SCRIPT}`

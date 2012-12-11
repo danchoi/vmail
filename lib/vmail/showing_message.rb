@@ -61,8 +61,9 @@ module Vmail
       headers = format_headers headers_hash
       # replace the date value with the one derived from the envelope
       body = formatter.plaintext_part
-      conv_from = /charset=(.*)\s/.match(parts_list)[1]
-      body = Iconv.conv('UTF-8//IGNORE', conv_from, body)
+      conv_from = /charset=(.*)\s/.match(parts_list)[1].strip
+      body.force_encoding conv_from
+      body = body.encode!('utf-8', undef: :replace, invalid: :replace)
       message_text = <<-EOF
 #{message_id} #{number_to_human_size message.size} #{message.flags} #{parts_list}
 #{divider '-'}
