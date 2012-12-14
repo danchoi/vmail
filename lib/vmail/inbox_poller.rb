@@ -1,4 +1,5 @@
 module Vmail
+  require "vmail/imap_client"
   class InboxPoller < ImapClient
 
 
