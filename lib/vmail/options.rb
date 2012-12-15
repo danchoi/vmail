@@ -70,7 +70,11 @@ EOF
 
           @config = YAML::load(File.read(@config_file))
           if @config['password'].nil?
-            @config['password'] = ask("Enter gmail password (won't be visible & won't be persisted):") {|q| q.echo = false}
+            if @config['password_script'].nil?
+              @config['password'] = ask("Enter gmail password (won't be visible & won't be persisted):") {|q| q.echo = false}
+            else
+              @config['password'] = %x{ #{@config['password_script'].strip} }.strip
+            end
           end
 
           if @get_contacts
