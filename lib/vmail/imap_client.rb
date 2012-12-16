@@ -46,6 +46,20 @@ module Vmail
       @smtp_domain = config['smtp_domain'] || 'gmail.com'
       @authentication = config['authentication'] || 'plain'
       @width = 100
+      @date_format = config['date_format'] || 'wordy'
+      if @date_format == 'numerical'
+         @date_formatter_this_year = '%d.%m %H:%M'
+         @date_formatter_prev_years = '%d.%m %Y'
+         @formatted_date_with = 11
+      else
+         if @date_format != 'wordy'
+            @logger.warn "Unknown date_format: #{@date_format}; Using default value: wordy"
+            @date_format = 'wordy'
+         end
+         @date_formatter_this_year = '%b %d %I:%M%P'
+         @date_formatter_prev_years = '%b %d %Y'
+         @formatted_date_with = 14
+      end
       current_message = nil
     end
 

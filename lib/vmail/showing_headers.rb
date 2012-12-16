@@ -1,5 +1,7 @@
 require 'iconv'
+
 module Vmail
+
   module ShowingHeaders
 
     def get_message_headers(message_ids)
@@ -76,9 +78,9 @@ module Vmail
     def format_header_for_list(message)
       date = DateTime.parse(message.date)
       formatted_date = if date.year != Time.now.year
-                         date.strftime "%b %d %Y" 
+                         date.strftime @date_formatter_prev_years
                        else 
-                         date.strftime "%b %d %I:%M%P"
+                         date.strftime @date_formatter_this_year
                        end
       address = if @mailbox == mailbox_aliases['sent']
                   message.recipients
@@ -90,7 +92,7 @@ module Vmail
       address_col_width = (mid_width * 0.3).ceil
       subject_col_width = (mid_width * 0.7).floor
       row_text = [ format_flags(message.flags).col(2),
-                   (formatted_date || '').col(14),
+                   (formatted_date || '').col(@formatted_date_with),
                    address.col(address_col_width),
                    message.subject.col(subject_col_width), 
                    number_to_human_size(message.size).rcol(7), 
