@@ -24,7 +24,12 @@ module Vmail
       results.reverse.map do |x| 
         envelope = x.attr["ENVELOPE"]
         message_id = envelope.message_id
-        subject = Mail::Encodings.unquote_and_convert_to((envelope.subject || ''), 'UTF-8')
+        begin
+          subject = Mail::Encodings.unquote_and_convert_to((envelope.subject || ''), 'UTF-8')
+        rescue Encoding::UndefinedConversionError
+          log "Encoding::UndefinedConversionError:\n#{[$!.message, $!.backtrace].join("\n")}"
+          subject = "[encoding could not be converted to UTF-8]"
+        end
         recipients = ((envelope.to || []) + (envelope.cc || [])).map {|a| extract_address(a)}.join(', ')
         sender = extract_address envelope.from.first
         uid = x.attr["UID"]
