@@ -41,10 +41,10 @@ module Vmail
       log "- full message cache miss"        
       params = {message_id: message_id, label_id: @label.label_id}
       labeling = Labeling[params] || Labeling.create(params)
-      if labeling
-        log "- found Labeling #{params.inspect}"
-      else
-        log "- creating Labeling #{params.inspect}"
+      unless (labeling && labeling.uid)
+        log "- Labeling not found for #{params.inspect}"
+        # break out early
+        return "\nUnable to get message for #{labeling.values}"
       end
       uid = labeling.uid
 
