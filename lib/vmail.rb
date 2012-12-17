@@ -4,13 +4,16 @@ require 'vmail/query'
 require 'vmail/message_formatter'
 
 require 'iconv'
+require 'versionomy'
 
 module Vmail
   extend self
 
   def start
     puts "Starting vmail #{Vmail::VERSION}"
-    if  "1.9.0" > RUBY_VERSION
+    required_version = Versionomy::create(:major => 1, :minor => 9, :tiny => 0)
+    ruby_version = Versionomy::parse(RUBY_VERSION)
+    if required_version > ruby_version
       puts "This version of vmail requires Ruby version 1.9.0 or higher (1.9.2 is recommended)"
       exit
     end
