@@ -25,4 +25,5 @@ Gem::Specification.new do |s|
   s.add_dependency 'highline', '>= 1.6.1'
   s.add_dependency 'sequel', '>= 3.24.1'
   s.add_dependency 'sqlite3', '>= 1.3.3'
+  s.add_dependency 'versionomy', '>= 0.4.4'
 end
