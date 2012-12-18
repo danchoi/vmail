@@ -114,7 +114,7 @@ Another optional parameter is `date_format`, which controls the appearance of
 the dates in the message list. Here you can use a strptime-compatible date
 format string. Make sure you enclose these in quotes:
 
-    date_format_: '%b %d %I:%M%P'
+    date_format: '%b %d %I:%M%P'
     date_format_previous_years: '%b %d %Y'
 
 ## Contacts autocompletion
