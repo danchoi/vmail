@@ -75,7 +75,8 @@ The `.vmailrc` file should look something like this. Substitute your own values.
       -- 
       Sent from Vmail. http://danielchoi.com/software/vmail.html
 
-This file should be formatted in [YAML syntax][1].
+This file should be formatted in [YAML syntax][1]. If you have any unsual
+characters in a string value, try putting quotes around that value.
 
 [1]:http://www.yaml.org/spec/1.2/spec.html
 
