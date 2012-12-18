@@ -1,6 +1,5 @@
 require 'mail'
 require 'open3'
-require 'iconv'
 
 module Vmail
   class MessageFormatter
@@ -82,7 +81,7 @@ module Vmail
       output = "[vmail: html part translated into plaintext by '#{html_tool}']\n\n" + stdout.read
       charset = part.content_type_parameters && part.content_type_parameters['charset']
       if charset && charset != 'UTF-8'
-        Iconv.conv('UTF-8//TRANSLIT//IGNORE', charset, output) 
+        output.encode!('utf-8', charset, undef: :replace, invalid: :replace)
       else
         output
       end
@@ -109,12 +108,12 @@ module Vmail
     def utf8(string, this_encoding = encoding)
       return '' unless string
       out = if this_encoding && this_encoding.upcase != 'UTF-8' 
-              Iconv.conv('UTF-8//TRANSLIT/IGNORE', this_encoding, string)
+              string.encode!('utf-8', this_encoding, undef: :replace, invalid: :replace)
             elsif this_encoding.upcase == 'UTF-8' 
               string 
             else
-              # assume UTF-8
-              Iconv.conv('US-ASCII//TRANSLIT/IGNORE', 'UTF-8', string)
+              # assume UTF-8 and convert to ascii
+              string.encode!('us-ascii', 'utf-8', undef: :replace, invalid: :replace)
             end
       out
     rescue

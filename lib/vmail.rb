@@ -2,8 +2,6 @@ require 'vmail/version'
 require 'vmail/options'
 require 'vmail/query'
 require 'vmail/message_formatter'
-
-require 'iconv'
 require 'versionomy'
 
 module Vmail

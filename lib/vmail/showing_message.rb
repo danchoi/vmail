@@ -70,11 +70,9 @@ module Vmail
       # [\w-]+ matches charsets like ISO-8851
       if /charset=([\w-]+)/.match(parts_list)
         conv_from = /charset=([\w-]+)/.match(parts_list)[1].strip
-        body.force_encoding conv_from
-        body = body.encode!('utf-8', undef: :replace, invalid: :replace)
+        body = body.encode!('utf-8', conv_from, undef: :replace, invalid: :replace)
       else
-        body.force_encoding "utf-8"
-        body = body.encode!('us-ascii', undef: :replace, invalid: :replace)
+        body = body.encode!('us-ascii', 'utf-8', undef: :replace, invalid: :replace)
       end
       message_text = <<-EOF
 #{message_id} #{number_to_human_size message.size} #{message.flags} #{parts_list}
@@ -86,8 +84,7 @@ EOF
       # 2 calls so we can see more fine grained exceptions
       message.update(:rfc822 => rfc822)
       if !message_text.valid_encoding?
-        ic = Iconv.new('UTF-8//IGNORE', 'UTF-8')
-        message_text = ic.iconv(message_text)
+        message_text.encode!('utf-8', undef: :replace, invalid: :replace)
       end
 
       begin
