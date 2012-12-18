@@ -229,14 +229,13 @@ mode if you're in the message list window or `,u` if you are in the
 message window. Watch the status line.
 
 If you have `notify-send` (Linux) or `growlnotify` (OS X) installed on
-your system, Vmail will also poll your INBOX every 30 seconds for new
+your system, Vmail can also poll your INBOX every 30 seconds for new
 messages. If it detects a new message, it will alert you through your
 notification program. **NOTE**: This is an alert mechanism only;
 you will still have to manually check for new messages in the Vmail
 interface to force the new messages to display.
 
-To disable inbox polling put the line `polling: false` in your
-`.vmailrc`.
+To enable automatic inbox polling put the line `polling: true` in your `.vmailrc`.
  
 ## Switching mailboxes, moving messages, copying messages to another mailbox
 

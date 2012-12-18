@@ -62,14 +62,14 @@ module Vmail
     puts "Starting vmail imap client for #{config['username']}"
 
     # inbox poller
-    if config['polling'] == false
-      puts "INBOX polling disabled."
-    else
+    if config['polling'] == true
       require 'vmail/inbox_poller'
       inbox_poller = Vmail::InboxPoller.start config
       Thread.new do
         inbox_poller.start_polling
       end
+    else
+      puts "INBOX polling disabled."
     end
 
     puts "WORKING DIR: #{Dir.pwd}"
