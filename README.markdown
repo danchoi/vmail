@@ -78,13 +78,6 @@ The `.vmailrc` file should look something like this. Substitute your own values.
 
 
 ### Configuration file - optional parameters
-`date_format: wordy | numerical`
-
-`wordy`: The email arrival date is shown as for example 'Dec 15 11:59pm' or 'Dec 15 2008'.
-This is the default value of the date_format parameter.
-
-`numerical`: The email arrival date is shown as for example '15.12 23:59' or '15.12 2008'.
-It saves two characters - useful on devices with really small displays.
 
 This file should be formatted in [YAML syntax][1].
 
@@ -120,6 +113,14 @@ If you are behind a firewall that blocks IMAP, see these [additional
 configuration options][firewall] that you can use.
 
 [firewall]:https://github.com/danchoi/vmail/wiki/How-to-use-vmail-behind-a-firewall-that-blocks-IMAP
+
+Another optional parameter is `date_format`:
+
+    date_format: [wordy | numerical]
+
+* `wordy`: The email arrival date is shown as for example 'Dec 15 11:59pm' or 'Dec 15 2008'.  This is the default. 
+* `numerical`: The email arrival date is shown as for example '15.12 23:59' or '15.12 2008'.
+  It saves two characters - useful on devices with really small displays.
 
 
 ## Contacts autocompletion
