@@ -76,9 +76,6 @@ The `.vmailrc` file should look something like this. Substitute your own values.
       -- 
       Sent from Vmail. http://danielchoi.com/software/vmail.html
 
-
-### Configuration file - optional parameters
-
 This file should be formatted in [YAML syntax][1].
 
 [1]:http://www.yaml.org/spec/1.2/spec.html
