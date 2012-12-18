@@ -92,7 +92,7 @@ module Vmail
       address_col_width = (mid_width * 0.3).ceil
       subject_col_width = (mid_width * 0.7).floor
       row_text = [ format_flags(message.flags).col(2),
-                   (formatted_date || '').col(@formatted_date_with),
+                   (formatted_date || '').col(@date_width),
                    address.col(address_col_width),
                    message.subject.col(subject_col_width), 
                    number_to_human_size(message.size).rcol(7), 
