@@ -75,6 +75,7 @@ function! s:create_message_window()
   setlocal buftype=nofile
   let s:message_window_bufnr = bufnr('%')
   call s:message_window_mappings()
+  setlocal ft=mail
   close
 endfunction
 
@@ -629,6 +630,7 @@ func! s:open_compose_window(command)
   "call feedkeys("\<cr>")
   call s:compose_window_mappings()
   setlocal completefunc=CompleteContact
+  setlocal ft=mail
   normal 1G
 endfunc
 
