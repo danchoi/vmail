@@ -47,15 +47,8 @@ module Vmail
       @authentication = config['authentication'] || 'plain'
       @width = 100
 
-      if config['date_format'] =~ /numerical/
-        config['date_format'] = '%d.%m %H:%M'
-        config['date_format_prev_years'] = '%d.%m %Y'
-      elsif config['date_format'] =~ /wordy/
-        config['date_format'] = '%b %d %I:%M%P' 
-        config['date_format_prev_years'] = '%b %d %Y'
-      end
       @date_formatter_this_year = config['date_format'] || '%b %d %I:%M%P' 
-      @date_formatter_prev_years = config['date_format_previous_years'] || '%b %d %Y'
+      @date_formatter_prev_years = config['date_format_prevous_years'] || '%b %d %Y'
       @date_width = DateTime.parse("12/12/2012 12:12:12").strftime(@date_formatter_this_year).length
       current_message = nil
     end
