@@ -48,7 +48,7 @@ module Vmail
       @width = 100
 
       @date_formatter_this_year = config['date_format'] || '%b %d %I:%M%P' 
-      @date_formatter_prev_years = config['date_format_prevous_years'] || '%b %d %Y'
+      @date_formatter_prev_years = config['date_format_previous_years'] || '%b %d %Y'
       @date_width = DateTime.parse("12/12/2012 12:12:12").strftime(@date_formatter_this_year).length
       current_message = nil
     end
