@@ -85,7 +85,7 @@ module Vmail
       end
       log "Selecting mailbox #{mailbox.inspect}"
       reconnect_if_necessary(30) do 
-        log @imap.select(mailbox)
+        log @imap.select(Net::IMAP.encode_utf7(mailbox))
       end
       log "Done"
 
@@ -156,7 +156,9 @@ module Vmail
       log 'loading mailboxes...'
       @mailboxes ||= (@imap.list("", "*") || []).
         select {|struct| struct.attr.none? {|a| a == :Noselect} }.
-        map {|struct| struct.name}.uniq
+        map {|struct| 
+          Net::IMAP.decode_utf7(struct.name)
+        }.uniq
       @mailboxes.delete("INBOX")
       @mailboxes.unshift("INBOX")
       log "Loaded mailboxes: #{@mailboxes.inspect}"
