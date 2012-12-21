@@ -127,7 +127,7 @@ module Vmail
   private
 
   def check_html_reader
-    # TODO check for elinks, or firefox (how do we parse VMAIL_HTML_PART_REDAER to determine?)
+    return if ENV['VMAIL_HTML_PART_READER']
     html_reader = %w( w3m elinks lynx ).detect {|x| `which #{x}` != ''}
     if html_reader
       cmd = ['w3m -dump -T text/html', 'lynx -stdin -dump', 'elinks -dump'].detect {|s| s.index(html_reader)}
