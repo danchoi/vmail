@@ -32,7 +32,7 @@ module Vmail
                              end
 
     puts "Setting VMAIL_BROWSER to '#{ENV['VMAIL_BROWSER']}'"
-    check_lynx
+    check_html_reader
 
     working_dir = ENV['VMAIL_HOME'] || "#{ENV['HOME']}/.vmail/default"
     `mkdir -p #{working_dir}`
@@ -70,7 +70,7 @@ module Vmail
       puts "INBOX polling disabled."
     end
 
-    puts "WORKING DIR: #{Dir.pwd}"
+    puts "Working directory: #{Dir.pwd}"
 
     # require after the working dir is set
     require 'vmail/imap_client'
@@ -126,11 +126,15 @@ module Vmail
 
   private
 
-  def check_lynx
+  def check_html_reader
     # TODO check for elinks, or firefox (how do we parse VMAIL_HTML_PART_REDAER to determine?)
-    if `which lynx` == ''
-      STDERR.puts "You need to install lynx on your system in order to see html-only messages"
-      sleep 3
+    html_reader = %w( w3m elinks lynx ).detect {|x| `which #{x}` != ''}
+    if html_reader
+      cmd = ['w3m -dump -T text/html', 'lynx -stdin -dump', 'elinks -dump'].detect {|s| s.index(html_reader)}
+      STDERR.puts "Setting VMAIL_HTML_PART_READER to '#{cmd}'"
+      ENV['VMAIL_HTML_PART_READER'] = cmd
+    else
+      abort "You need to install w3m, elinks, or lynx on your system in order to see html-only messages"
     end
   end
 

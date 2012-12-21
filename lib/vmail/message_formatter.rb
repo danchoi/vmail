@@ -70,10 +70,10 @@ module Vmail
       part.body.decoded.gsub("\r", '')
     end
 
-    # depend on lynx or whatever is set by the VMAIL_HTML_PART_READER
+    # depend on VMAIL_HTML_PART_READER
     # variable
     def format_html_body(part)
-      html_tool = ENV['VMAIL_HTML_PART_READER'] || 'lynx -stdin -dump'
+      html_tool = ENV['VMAIL_HTML_PART_READER'] 
       html = part.body.decoded.gsub("\r", '')
       stdin, stdout, stderr = Open3.popen3(html_tool)
       stdin.puts html

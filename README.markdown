@@ -15,7 +15,7 @@ than in any web browser or GUI program.
 * a relatively recent version of Vim (Vmail is developed against Vim 7.3)
 * Ruby 1.9.0 or higher with SSL support compiled in (Vmail is developed using Ruby 1.9.2)
 * `libsqlite3-dev` and `sqlite3` (try installing with `apt-get`, `brew`, `yum`, `emerge`, etc.)
-* the `lynx` text-only-mode web browser is required to view HTML mail parts in Vmail
+* text-only-mode web browser (w3m, elinks, or lynx) should be available to view HTML mail parts in Vmail
 
 To install Ruby 1.9.2, I recommend using the [RVM Version Manager][rvm].
 
