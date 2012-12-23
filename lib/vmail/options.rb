@@ -73,9 +73,13 @@ EOF
             @config['password'] = ask("Enter gmail password (won't be visible & won't be persisted):") {|q| q.echo = false}
           end
 
+          if @config['sent_box'].nil?
+            @config['sent_box'] = 'Sent Mail'
+          end
+
           if @get_contacts
             require 'vmail/contacts_extractor'
-            extractor = ContactsExtractor.new(@config['username'], @config['password'])
+            extractor = ContactsExtractor.new(@config['username'], @config['password'], @config['sent_box'])
             File.open(DEFAULT_CONTACTS_FILENAME, 'w') do |file|
               extractor.extract(@max_messages_to_scan) do |address| 
                 STDERR.print '.'
