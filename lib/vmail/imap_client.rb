@@ -178,7 +178,7 @@ module Vmail
                  "trash" => "Trash"}
       @mailbox_aliases = {}
       aliases.each do |shortname, fullname|
-        [ "[Gmail]", "[Google Mail" ].each do |prefix|
+        [ "[Gmail]", "[Google Mail]" ].each do |prefix|
           if self.mailboxes.include?( "#{prefix}/#{fullname}" )
             @mailbox_aliases[shortname] =  "#{prefix}/#{fullname}"
           end
