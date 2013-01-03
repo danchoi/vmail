@@ -130,7 +130,7 @@ module Vmail
     return if ENV['VMAIL_HTML_PART_READER']
     html_reader = %w( w3m elinks lynx ).detect {|x| `which #{x}` != ''}
     if html_reader
-      cmd = ['w3m -dump -T text/html', 'lynx -stdin -dump', 'elinks -dump'].detect {|s| s.index(html_reader)}
+      cmd = ['w3m -dump -T text/html -I utf-8 -O utf-8', 'lynx -stdin -dump', 'elinks -dump'].detect {|s| s.index(html_reader)}
       STDERR.puts "Setting VMAIL_HTML_PART_READER to '#{cmd}'"
       ENV['VMAIL_HTML_PART_READER'] = cmd
     else
