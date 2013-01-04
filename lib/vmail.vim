@@ -55,7 +55,7 @@ function! s:create_list_window()
   setlocal nospell
   setlocal textwidth=0
   setlocal noreadonly
-  setl ft=mail
+  setlocal ft=vmailMessageList
 
   " let user set this
   " setlocal cursorline
@@ -64,7 +64,6 @@ function! s:create_list_window()
   let s:listbufname = bufname('%')
   setlocal statusline=%!VmailStatusLine()
   call s:message_list_window_mappings()
-  setlocal filetype=vmail
   autocmd BufNewFile,BufRead *.txt setlocal modifiable
 endfunction
 
