@@ -63,8 +63,8 @@ during execution (see below).
 ## Configuration file
 
 To run Vmail, create a yaml file called `.vmailrc` and save it either in
-~/.vmail/defaults/ or in your home directory. If you do the latter,
-Vmail will move the file to ~/.vmail/defaults/ when it starts up.
+~/.vmail/default/ or in your home directory. If you do the latter,
+Vmail will move the file to ~/.vmail/default/ when it starts up.
 
 The `.vmailrc` file should look something like this. Substitute your own values.
 
