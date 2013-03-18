@@ -37,8 +37,9 @@ module Vmail
       new_ids = check_for_new_messages 
       if !new_ids.empty?
         @ids = @ids + new_ids
-        res = uncached_headers(new_ids).map {|m| m[:sender] }.join(", ")
-        @notifier.call "Vmail: new email", "from #{res}"
+	# remove '<>' from email. libnotify can't print '<' 
+        res = uncached_headers(new_ids).map {|m| m[:sender] }.join(", ").tr('<>','')
+        @notifier.call "Vmail: new email", "from " + res
       end
     rescue
       log "VMAIL_ERROR: #{[$!.message, $!.backtrace].join("\n")}"
