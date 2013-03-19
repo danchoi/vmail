@@ -241,7 +241,7 @@ module Vmail
         ''
       end
     rescue
-      puts "VMAIL_ERROR: #{[$!.message, $!.backtrace].join("\n")}"
+      puts "VMAIL_ERROR: #{$!.class}\n#{[$!.message, $!.backtrace].join("\n")}"
     end
 
     # gets 100 messages prior to id
