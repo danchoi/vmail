@@ -1141,7 +1141,4 @@ autocmd bufreadpost *.txt call <SID>turn_into_compose_window()
 normal G
 call s:system_with_error_handling(s:select_mailbox_command . shellescape(s:mailbox))
 call s:do_search()
-set cursorline
-cnoreabbrev wq :call <SNR>93_send_message()<CR>
-cnoreabbrev q! bd!<CR>:buffer 1<CR>
 
