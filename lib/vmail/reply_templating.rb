@@ -27,7 +27,8 @@ module Vmail
 
       {
         'references' => current_message.message_id,
-        'from' => "#@name <#@username>", 
+	# set 'from' to user-specified value
+        'from' => "#@name <#@from>", 
         'to' => reply_recipient, 
         'cc' => reply_cc, 
         'bcc' => @always_bcc,

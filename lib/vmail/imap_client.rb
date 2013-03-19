@@ -29,6 +29,8 @@ module Vmail
 
     def initialize(config)
       @username, @password = config['username'], config['password']
+      #load user-specified value for from field
+      @from = config['from'] || config['username']
       @name = config['name']
       @signature = config['signature'] 
       @signature_script = config['signature_script'] 
@@ -292,7 +294,8 @@ module Vmail
     end
 
     def new_message_template(subject = nil, append_signature = true)
-      headers = {'from' => "#{@name} <#{@username}>",
+      #set from field to user-specified value
+      headers = {'from' => "#{@name} <#{@from}>",
         'to' => nil,
         'subject' => subject,
         'cc' => @always_cc,
