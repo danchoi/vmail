@@ -12,7 +12,7 @@ module Vmail
         log "Using notify tool: #{n}"
         @notifier = case n
           when /notify-send/
-            Proc.new {|t, m| `#{n} '#{t}' '#{m}'` }
+            Proc.new {|t, m| `#{n} -t 6000000 '#{t}' '#{m}'` }
           when /growlnotify/
             Proc.new {|t, m| `#{n} -t '#{t}' -m '#{m}'` }
           end
@@ -37,8 +37,9 @@ module Vmail
       new_ids = check_for_new_messages 
       if !new_ids.empty?
         @ids = @ids + new_ids
-        res = uncached_headers(new_ids).map {|m| m[:sender] }.join(", ")
-        @notifier.call "Vmail: new email", "from #{res}"
+	# remove '<>' from email. libnotify can't print '<' 
+        res = uncached_headers(new_ids).map {|m| m[:sender] }.join(", ").tr('<>','')
+        @notifier.call "Vmail: new email", "from " + res
       end
     rescue
       log "VMAIL_ERROR: #{[$!.message, $!.backtrace].join("\n")}"
