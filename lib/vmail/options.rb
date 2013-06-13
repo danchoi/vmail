@@ -27,7 +27,7 @@ module Vmail
           @config_file = config_file
         end
         opts.on("-t", "--contacts path", String, "Path to contacts file") do |file|
-          @contacts_file = file
+          @contacts_file = File.expand_path(file, Dir.pwd)
         end
         opts.on("-g[n]", "--getcontacts[n]", Integer, "Generate contacts file. n is number of emails to scan (default 500).") do |n| 
           @get_contacts = true
