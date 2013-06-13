@@ -24,7 +24,7 @@ module Vmail
         opts.separator ""
         opts.separator "Specific options:"
         opts.on("-c", "--config path", String, "Path to config file") do |config_file|
-          @config_file = config_file
+          @config_file = File.expand_path(config_file)
         end
         opts.on("-t", "--contacts path", String, "Path to contacts file") do |file|
           @contacts_file = File.expand_path(file, Dir.pwd)

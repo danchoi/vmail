@@ -36,19 +36,9 @@ module Vmail
 
     working_dir = ENV['VMAIL_HOME'] || "#{ENV['HOME']}/.vmail/default"
     `mkdir -p #{working_dir}`
-    # legacy migration: move files into VMAIL_HOME
-    if Dir.pwd != working_dir
-      ['.vmailrc', 'vmail.log', 'vmail.db', 'vmail-contacts.txt', 'compose_message.txt', 'attachments'].each do |x|
-        if File.size?(x)
-          c = "mv #{x} #{working_dir}"
-          puts c
-          %x{#{c}}
-        end
-      end
-    end
     puts "Changing working directory to #{working_dir}"
-    Dir.chdir(working_dir)
     opts = Vmail::Options.new(ARGV)
+    Dir.chdir(working_dir)
     opts.config
     config = opts.config
 
