@@ -37,8 +37,8 @@ module Vmail
     working_dir = ENV['VMAIL_HOME'] || "#{ENV['HOME']}/.vmail/default"
     `mkdir -p #{working_dir}`
     puts "Changing working directory to #{working_dir}"
-    opts = Vmail::Options.new(ARGV)
     Dir.chdir(working_dir)
+    opts = Vmail::Options.new(ARGV)
     opts.config
     config = opts.config
 

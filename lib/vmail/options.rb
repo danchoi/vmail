@@ -23,12 +23,6 @@ module Vmail
         opts.banner = "Usage:  vmail [ options ] [ limit ] [ imap search query ]" 
         opts.separator ""
         opts.separator "Specific options:"
-        opts.on("-c", "--config path", String, "Path to config file") do |config_file|
-          @config_file = File.expand_path(config_file)
-        end
-        opts.on("-t", "--contacts path", String, "Path to contacts file") do |file|
-          @contacts_file = File.expand_path(file, Dir.pwd)
-        end
         opts.on("-g[n]", "--getcontacts[n]", Integer, "Generate contacts file. n is number of emails to scan (default 500).") do |n| 
           @get_contacts = true
           @max_messages_to_scan = n || 500
