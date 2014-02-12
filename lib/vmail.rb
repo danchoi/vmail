@@ -39,13 +39,11 @@ module Vmail
     puts "Changing working directory to #{working_dir}"
     Dir.chdir(working_dir)
     opts = Vmail::Options.new(ARGV)
-    opts.config
     config = opts.config
-
     contacts_file = opts.contacts_file
 
     logfile = (vim == 'mvim' || vim == 'gvim') ? STDERR : 'vmail.log'
-    config.merge! 'logfile' => logfile
+    config.merge!({'logfile' => logfile})
 
     puts "Starting vmail imap client for #{config['username']}"
 
