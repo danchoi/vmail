@@ -164,7 +164,11 @@ module Vmail
       @mailboxes.delete("INBOX")
       @mailboxes.unshift("INBOX")
       log "Loaded mailboxes: #{@mailboxes.inspect}"
-      @mailboxes = @mailboxes.map {|name| mailbox_aliases.invert[name] || name}
+      @mailboxes = @mailboxes.map {|name| 
+        n = mailbox_aliases.invert[name] || name
+        log "Mapping mailbox name #{name} -> #{n}"
+        n
+      }
       @mailboxes.join("\n")
     end
 
