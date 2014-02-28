@@ -102,7 +102,27 @@ Sat Dec 25 09:07:28 EST 2010
   send them. This will let the user enter password on invocation.
 
 ------------------------------------------------------------------------
-Thu Dec 30 11:28:05 EST 2010
+Thu Feb 27 23:55:48 EST 2014
 
-1/6 deadline for doing How I Work Screencast
+TODO
+- make ,h which opens HTML body in browser handle 
+  Content-Disposition: inline
+  Content-ID images
 
+  e.g.
+
+  <img id=3D"_x0000_i1025" src=3D"cid:1.2050029806@web181305.mail.ne1.yahoo.com" width=3D"361" height=3D"480">
+
+  Content-Type: image/jpeg;^M
+   charset=UTF-8;^M
+   name=rodentweather112.JPG^M
+  Content-Transfer-Encoding: base64^M
+  Content-Disposition: inline;^M
+   creation-date="Sat, 08 Feb 2014 07:26:28 GMT";^M
+   filename=rodentweather112.JPG;^M
+   modification-date="Sat, 08 Feb 2014 07:26:28 GMT";^M
+   size=57896^M
+  Content-Description: rodentweather112.JPG^M
+  Content-ID: <1.2050029806@web181305.mail.ne1.yahoo.com>^M
+  
+  /9j/4AAQSkZJRgABAQEASABIAAD/4REyRXhpZgAATU0AKgAAAAgADAEOAAIA^M
