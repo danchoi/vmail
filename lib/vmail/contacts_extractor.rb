@@ -4,14 +4,14 @@ module Vmail
 class ContactsExtractor
 
   def initialize(config)
-    @config = config
-    @host = @config['server'] || 'imap.gmail.com'
-    @port = @config['port'] || 993
-    @sent_folder = @config['folder_sent'] || 'Sent Mail'
-    @username = @config['username']
-    @password = @config['password']
+    @host = config['server'] || 'imap.gmail.com'
+    @port = config['port'] || 993
+    @sent_folder = config['folder_sent'] || 'Sent Mail'
+    @username = config['username']
+    @password = config['password']
+    @server = config['server']
     @prefix = ''
-    puts "Logging as #@username at #@host"
+    puts "Logging as #@username at #@host scanning the \"#@sent_folder\" folder"
   end
 
   def open
@@ -53,7 +53,7 @@ class ContactsExtractor
 
   def set_mailbox_prefix
     mailboxes = ((@imap.list("[#@prefix]/", "%") || []) + (@imap.list("", "*")) || []).map {|struct| struct.name}
-    if !@config['server']
+    if !@server
       @prefix = mailboxes.detect {|m| m =~ /^\[Google Mail\]/}  ?  "[Google Mail]/" : "[Gmail]/"
     end
   end
