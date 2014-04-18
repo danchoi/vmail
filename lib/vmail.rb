@@ -4,6 +4,8 @@ require 'vmail/query'
 require 'vmail/message_formatter'
 require 'versionomy'
 
+$LOAD_PATH.unshift File.join(File.dirname(__FILE__))
+
 module Vmail
   extend self
 
