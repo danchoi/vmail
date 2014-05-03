@@ -228,7 +228,16 @@ module Vmail
       self.max_seqno = ids.max
       log "- setting max_seqno to #{self.max_seqno}"
       log "- new uids found: #{new_ids.inspect}"
+      update_message_list(new_ids) unless new_ids.empty?
       new_ids
+    end
+
+    def update_message_list(new_ids)
+      new_emails = DRbObject.new_with_uri($drb_uri).update
+      return if new_emails.empty?
+
+      server_name = "VMAIL:#{ @username }"
+      system(%[vim --servername #{ server_name } --remote-expr 'UPDATE_MESSAGE_LIST("#{ new_emails }")'])
     end
 
     def update
