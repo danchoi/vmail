@@ -6,6 +6,7 @@ require 'mail'
 require 'net/imap'
 require 'time'
 require 'logger'
+require 'tempfile'
 require 'vmail/helpers'
 require 'vmail/address_quoter'
 require 'vmail/database'
@@ -236,8 +237,11 @@ module Vmail
       new_emails = DRbObject.new_with_uri($drb_uri).update
       return if new_emails.empty?
 
+      tempfile_path = Tempfile.new('vmail-').path
+      File.open(tempfile_path, 'w') { |file| file.write(new_emails) }
       server_name = "VMAIL:#{ @username }"
-      system(%[vim --servername #{ server_name } --remote-expr 'UPDATE_MESSAGE_LIST("#{ new_emails }")'])
+
+      system(%[vim --servername #{ server_name } --remote-expr 'UPDATE_MESSAGE_LIST("#{ tempfile_path }")'])
     end
 
     def update

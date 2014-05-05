@@ -687,10 +687,10 @@ endfunction
 " --------------------------------------------------------------------------------
 " Update message list with new emails.
 
-func! UPDATE_MESSAGE_LIST(emails)
+func! UPDATE_MESSAGE_LIST(filename)
   if s:mailbox == 'INBOX'
     if bufnr('%') == s:listbufnr
-      call s:update_and_redraw_message_list(a:emails)
+      call s:update_and_redraw_message_list(a:filename)
 
     " If current_message is open with message list in another split.
     elseif bufname('%') == s:message_bufname && index(tabpagebuflist(), s:listbufnr) >= 0
@@ -698,23 +698,23 @@ func! UPDATE_MESSAGE_LIST(emails)
 
       " Switch to message list window and update it.
       while bufnr('%') != s:listbufnr | wincmd w | endwhile
-      call s:update_and_redraw_message_list(a:emails)
+      call s:update_and_redraw_message_list(a:filename)
 
       while bufnr('%') != message_bufnr | wincmd w | endwhile
     else
-      call s:update_message_list(a:emails)
+      call s:update_message_list(a:filename)
     endif
   endif
 endfunc
 
-func! s:update_and_redraw_message_list(emails)
-  call s:update_message_list(a:emails)
+func! s:update_and_redraw_message_list(filename)
+  call s:update_message_list(a:filename)
   edit!
   redraw!
 endfunc
 
-func! s:update_message_list(emails)
-  let newer_contents = split(a:emails, "\n")
+func! s:update_message_list(filename)
+  let newer_contents = readfile(a:filename)
   let older_contents = readfile(s:listbufname)
   let updated_contents = extend(newer_contents, older_contents)
   call writefile(updated_contents, s:listbufname)
