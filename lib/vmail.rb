@@ -86,7 +86,9 @@ module Vmail
     # invoke vim
     vimscript = File.expand_path("../vmail.vim", __FILE__)
     vimopts = config['vim_opts']
-    vim_command = "DRB_URI=#{drb_uri} VMAIL_CONTACTS_FILE=#{contacts_file} VMAIL_MAILBOX=#{String.shellescape(mailbox)} VMAIL_QUERY=\"#{query_string}\" #{vim} -S #{vimscript} -c '#{vimopts}' #{buffer_file}"
+    $drb_uri = drb_uri
+    server_name = "VMAIL:#{ config['username'] }"
+    vim_command = "DRB_URI=#{drb_uri} VMAIL_CONTACTS_FILE=#{contacts_file} VMAIL_MAILBOX=#{String.shellescape(mailbox)} VMAIL_QUERY=\"#{query_string}\" #{vim} --servername #{ server_name } -S #{vimscript} -c '#{vimopts}' #{buffer_file}"
     STDERR.puts vim_command
     STDERR.puts "Using buffer file: #{buffer_file}"
     File.open(buffer_file, "w") do |file|
