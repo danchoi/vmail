@@ -282,7 +282,7 @@ function! s:mark_as_read_unread(read) range
   setlocal nomodifiable
   write
   redraw
-  echom nummsgs  ." conversation(s) have been marked as unread."
+  echom nummsgs  ." conversation(s) have been marked as " . (a:read ? "read" : "unread") . "."
 endfunction
 
 function! s:toggle_star() range
