@@ -22,17 +22,17 @@ module Vmail
       sender = current_message.sender
       reply_quote_header = date ? "On #{date.strftime('%a, %b %d, %Y at %I:%M %p')}, #{sender} wrote:\n\n" : "#{sender} wrote:\n"
 
-      reply_body = reply_quote_header + 
+      reply_body = reply_quote_header +
         ( current_message.plaintext.split(/^-+$/,2)[1].strip.gsub(/^(?=>)/, ">").gsub(/^(?!>)/, "> ") )
 
       {
         'references' => current_message.message_id,
 	# set 'from' to user-specified value
-        'from' => "#@name <#@from>", 
-        'to' => reply_recipient, 
-        'cc' => reply_cc, 
+        'from' => "#@name <#@from>",
+        'to' => reply_recipient,
+        'cc' => reply_cc,
         'bcc' => @always_bcc,
-        'subject' => reply_subject, 
+        'subject' => reply_subject,
         'body' => reply_body
       }
     rescue
@@ -52,12 +52,12 @@ module Vmail
              []
            end
       xs = xs.select {|x|
-        email = (x[/<([^>]+)>/, 1] || x) 
+        email = (x[/<([^>]+)>/, 1] || x)
         email !~ /#{reply_recipient}/ \
           && email !~ /#@username/ \
-          && (@always_cc ? (email !~ /#{@always_cc}/) : true) 
+          && (@always_cc ? (email !~ /#{@always_cc}/) : true)
       }
-      if @always_cc 
+      if @always_cc
         xs << @always_cc
       end
       xs.uniq.select {|x| x != reply_recipient }.join(', ')

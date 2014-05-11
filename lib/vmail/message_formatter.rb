@@ -32,13 +32,13 @@ module Vmail
 
     # helper method
     def find_text_part2(part, content_type)
-      if part.multipart?  
+      if part.multipart?
         part.parts.
           map {|p| find_text_part2(p, p.content_type)}.
           compact.
           select {|p| !p.attachment?}.
           first
-      elsif content_type =~ %r[^text/plain] || 
+      elsif content_type =~ %r[^text/plain] ||
         content_type =~ %r[text/plain] ||
         content_type =~ %r[message/rfc]
         part
@@ -47,18 +47,18 @@ module Vmail
 
     def format_part(part)
       if part && part.respond_to?(:header)
-        case part.header["Content-Type"].to_s 
+        case part.header["Content-Type"].to_s
         when /text\/html/
-          format_html_body(part) 
+          format_html_body(part)
         when /text\/plain/
-          format_text_body(part) 
+          format_text_body(part)
         when /message\/rfc/
           m = Mail.new(part.body.decoded)
           plaintext_part(m)
         else # just format_text on it anyway
-          format_text_body(part) 
+          format_text_body(part)
         end
-      else 
+      else
         part.decoded.gsub("\r", '')
       end
     rescue
@@ -73,7 +73,7 @@ module Vmail
     # depend on VMAIL_HTML_PART_READER
     # variable
     def format_html_body(part)
-      html_tool = ENV['VMAIL_HTML_PART_READER'] 
+      html_tool = ENV['VMAIL_HTML_PART_READER']
       html = part.body.decoded.gsub("\r", '')
       stdin, stdout, stderr = Open3.popen3(html_tool)
       stdin.puts html
@@ -107,10 +107,10 @@ module Vmail
 
     def utf8(string, this_encoding = encoding)
       return '' unless string
-      out = if this_encoding && this_encoding.upcase != 'UTF-8' 
+      out = if this_encoding && this_encoding.upcase != 'UTF-8'
               string.encode!('utf-8', this_encoding, undef: :replace, invalid: :replace)
-            elsif this_encoding.upcase == 'UTF-8' 
-              string 
+            elsif this_encoding.upcase == 'UTF-8'
+              string
             else
               # assume UTF-8 and convert to ascii
               string.encode!('us-ascii', 'utf-8', undef: :replace, invalid: :replace)

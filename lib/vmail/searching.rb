@@ -3,7 +3,7 @@ module Vmail
     # The main function called by the client to retrieve messages
     def search(query)
       log "#search: #{query.inspect}"
-      @query = Vmail::Query.parse(query) 
+      @query = Vmail::Query.parse(query)
       # customizable @limit is Deprecated
       @limit = 100
 
@@ -13,10 +13,10 @@ module Vmail
         @ids = reconnect_if_necessary(180) do # timeout of 3 minutes
           @imap.search(query_string)
         end
-        @start_index = [@ids.size - @limit, 0].max 
+        @start_index = [@ids.size - @limit, 0].max
       else
         # set the target range to the whole set, unless it is too big
-        @start_index = [@num_messages - @limit, 0].max 
+        @start_index = [@num_messages - @limit, 0].max
         @query.unshift "#{@start_index + 1}:#{@num_messages}"
         query_string = Vmail::Query.args2string(@query)
         log "Query: #{query_string.inspect}"
@@ -30,7 +30,7 @@ module Vmail
       end
 
       self.max_seqno = @ids[-1] # this is a instance var
-      log "- Query got #{@ids.size} results; max seqno: #{self.max_seqno}" 
+      log "- Query got #{@ids.size} results; max seqno: #{self.max_seqno}"
       clear_cached_message
 
       select_ids = (search_query? ? @ids[[-@limit, 0].max, @limit] : @ids)
@@ -51,7 +51,7 @@ module Vmail
     rescue
       log "ERROR:\n#{$!.inspect}\n#{$!.backtrace.join("\n")}"
       "Sorry there was an error. Please check vmail.log."
-    end  
+    end
 
     def search_query?
       x = @query[-1] != 'all'

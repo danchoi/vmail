@@ -33,8 +33,8 @@ module Vmail
       #load user-specified value for from field
       @from = config['from'] || config['username']
       @name = config['name']
-      @signature = config['signature'] 
-      @signature_script = config['signature_script'] 
+      @signature = config['signature']
+      @signature_script = config['signature_script']
       @always_cc = config['always_cc']
       @always_bcc = config['always_bcc']
       @mailbox = nil
@@ -50,7 +50,7 @@ module Vmail
       @authentication = config['authentication'] || 'plain'
       @width = 100
 
-      @date_formatter_this_year = config['date_format'] || '%b %d %I:%M%P' 
+      @date_formatter_this_year = config['date_format'] || '%b %d %I:%M%P'
       @date_formatter_prev_years = config['date_format_previous_years'] || '%b %d %Y'
       @date_width = DateTime.parse("12/12/2012 12:12:12").strftime(@date_formatter_this_year).length
       current_message = nil
@@ -61,7 +61,7 @@ module Vmail
       @imap = Net::IMAP.new(@imap_server, @imap_port, true, nil, false)
       log @imap.login(@username, @password)
       list_mailboxes # prefetch mailbox list
-    rescue 
+    rescue
       puts "VMAIL_ERROR: #{[$!.message, $!.backtrace].join("\n")}"
     end
 
@@ -87,7 +87,7 @@ module Vmail
         mailbox = mailbox_aliases[mailbox]
       end
       log "Selecting mailbox #{mailbox.inspect}"
-      reconnect_if_necessary(30) do 
+      reconnect_if_necessary(30) do
         log @imap.select(Net::IMAP.encode_utf7(mailbox))
       end
       log "Done"
@@ -107,7 +107,7 @@ module Vmail
       select_mailbox(@mailbox, true)
     end
 
-    # TODO no need for this if all shown messages are stored in SQLITE3 
+    # TODO no need for this if all shown messages are stored in SQLITE3
     # and keyed by UID.
     def clear_cached_message
       return unless STDIN.tty?
@@ -143,23 +143,23 @@ module Vmail
 
     def prime_connection
       return if @ids.nil? || @ids.empty?
-      reconnect_if_necessary(4) do 
+      reconnect_if_necessary(4) do
         # this is just to prime the IMAP connection
-        # It's necessary for some reason before update and deliver. 
+        # It's necessary for some reason before update and deliver.
         log "Priming connection"
         res = @imap.fetch(@ids[-1], ["ENVELOPE"])
         if res.nil?
           # just go ahead, just log
           log "Priming connection didn't work, connection seems broken, but still going ahead..."
         end
-      end 
+      end
     end
 
     def list_mailboxes
       log 'loading mailboxes...'
       @mailboxes ||= (@imap.list("", "*") || []).
         select {|struct| struct.attr.none? {|a| a == :Noselect} }.
-        map {|struct| 
+        map {|struct|
           Net::IMAP.decode_utf7(struct.name)
         }.uniq
       @mailboxes.delete("INBOX")
@@ -218,7 +218,7 @@ module Vmail
       # set a new range filter
       # this may generate a negative rane, e.g., "19893:19992" but that seems harmless
       update_query[0] = "#{old_num_messages}:#{@num_messages}"
-      ids = reconnect_if_necessary { 
+      ids = reconnect_if_necessary {
         log "Search #update_query"
         @imap.search(Vmail::Query.args2string(update_query))
       }
@@ -246,7 +246,7 @@ module Vmail
 
     def update
       prime_connection
-      new_ids = check_for_new_messages 
+      new_ids = check_for_new_messages
       if !new_ids.empty?
         @ids = @ids + new_ids
         message_ids = fetch_and_cache_headers(new_ids)
@@ -273,9 +273,9 @@ module Vmail
       with_more_message_line(res)
     end
 
-    def spawn_thread_if_tty(&block) 
+    def spawn_thread_if_tty(&block)
       if STDIN.tty?
-        Thread.new do 
+        Thread.new do
           reconnect_if_necessary(10, &block)
         end
       else
@@ -288,7 +288,7 @@ module Vmail
       if !current_mailboxes.include?(mailbox)
         log "Current mailboxes: #{current_mailboxes.inspect}"
         log "Creating mailbox #{mailbox}"
-        log @imap.create(mailbox) 
+        log @imap.create(mailbox)
         @mailboxes = nil # force reload ...
         list_mailboxes
       end
@@ -351,7 +351,7 @@ module Vmail
         subject = "Fwd: #{subject}"
       end
 
-      new_message_template(subject, false) + 
+      new_message_template(subject, false) +
         "\n---------- Forwarded message ----------\n" +
         original_body + signature
     end
@@ -460,7 +460,7 @@ EOF
       log "Open_html_part"
       log current_mail.parts.inspect
       multipart = current_mail.parts.detect {|part| part.multipart?}
-      html_part = if multipart 
+      html_part = if multipart
                     multipart.parts.detect {|part| part.header["Content-Type"].to_s =~ /text\/html/}
                   elsif ! current_mail.parts.empty?
                     current_mail.parts.detect {|part| part.header["Content-Type"].to_s =~ /text\/html/}
@@ -478,7 +478,7 @@ EOF
       @width = width.to_i
       log "Setting window width to #{width}"
     end
-   
+
     def smtp_settings
       [:smtp, {:address => @smtp_server,
       :port => @smtp_port,
@@ -512,7 +512,7 @@ EOF
       close
       log(revive_connection)
       # hope this isn't an endless loop
-      reconnect_if_necessary do 
+      reconnect_if_necessary do
         block.call
       end
     rescue
@@ -538,11 +538,11 @@ EOF
   end
 end
 
-trap("INT") { 
+trap("INT") {
   require 'timeout'
-  puts "Closing imap connection"  
+  puts "Closing imap connection"
   begin
-    #Timeout::timeout(2) do 
+    #Timeout::timeout(2) do
       # just try to quit
       # $gmail.close
     #end

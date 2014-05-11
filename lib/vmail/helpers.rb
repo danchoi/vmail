@@ -26,7 +26,7 @@ module Vmail
         "#{number}#{unit}"
       end
     end
-    
+
 
     def divider(str)
       str * DIVIDER_WIDTH

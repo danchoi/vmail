@@ -26,7 +26,7 @@ module Vmail
     def show_message(message_id, raw=false)
       message_id = message_id.strip.gsub('\\', '')
       log "Show message: #{message_id.inspect}"
-      return current_message.rfc822 if raw 
+      return current_message.rfc822 if raw
       res = retry_if_needed { fetch_and_cache(message_id) }
       log "Showing message message_id: #{message_id}"
       @cur_message_id = message_id
@@ -35,10 +35,10 @@ module Vmail
 
     def fetch_and_cache(message_id)
       if message = cached_full_message?(message_id)
-        log "- full message cache hit"        
+        log "- full message cache hit"
         return message.plaintext
       end
-      log "- full message cache miss"        
+      log "- full message cache miss"
       params = {message_id: message_id, label_id: @label.label_id}
       labeling = Labeling[params] || Labeling.create(params)
       unless (labeling && labeling.uid)
@@ -48,13 +48,13 @@ module Vmail
       end
       uid = labeling.uid
 
-      log "- fetching message uid #{uid}"        
-      fetch_data = reconnect_if_necessary do 
+      log "- fetching message uid #{uid}"
+      fetch_data = reconnect_if_necessary do
         res = retry_if_needed do
           @imap.uid_fetch(uid, ["FLAGS", "RFC822", "RFC822.SIZE"])
         end
         raise "Message uid #{uid} could not be fetched from server" if res.nil?
-        res[0] 
+        res[0]
       end
       seqno = fetch_data.seqno
       rfc822 = Mail.new(fetch_data.attr['RFC822'])
@@ -63,7 +63,7 @@ module Vmail
       message = Message[message_id]
       parts_list = format_parts_info(formatter.list_parts)
       headers_hash = formatter.extract_headers
-      headers_hash['date'] 
+      headers_hash['date']
       headers = format_headers headers_hash
       # replace the date value with the one derived from the envelope
       body = formatter.plaintext_part
@@ -88,7 +88,7 @@ EOF
       end
 
       begin
-        message.update(:plaintext => message_text) 
+        message.update(:plaintext => message_text)
       rescue
         log message_text.encoding
         #log message_text
@@ -96,7 +96,7 @@ EOF
       end
       message_text
     rescue
-      msg = "Error encountered in fetch_and_cache(), message_id #{message_id} [#{@mailbox}]:\n#{$!}\n#{$!.backtrace.join("\n")}" 
+      msg = "Error encountered in fetch_and_cache(), message_id #{message_id} [#{@mailbox}]:\n#{$!}\n#{$!.backtrace.join("\n")}"
       log msg
       msg
     end
