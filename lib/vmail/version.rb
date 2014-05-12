@@ -1,3 +1,3 @@
 module Vmail
-  VERSION = '2.8.7'
+  VERSION = '2.8.9'
 end
