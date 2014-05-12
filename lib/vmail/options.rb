@@ -73,7 +73,8 @@ EOF
 
           if @get_contacts
             require 'vmail/contacts_extractor'
-            extractor = ContactsExtractor.new(@config['username'], @config['password'])
+            extractor = ContactsExtractor.new(@config['username'],
+              @config['password'], @config['mailbox_aliases'])
             File.open(DEFAULT_CONTACTS_FILENAME, 'w') do |file|
               extractor.extract(@max_messages_to_scan) do |address|
                 STDERR.print '.'

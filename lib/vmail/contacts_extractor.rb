@@ -1,10 +1,14 @@
 require 'net/imap'
+require 'vmail/defaults'
 
 module Vmail
 class ContactsExtractor
-  def initialize(username, password)
+  def initialize(username, password, mailbox_config)
     puts "Logging as #{username}"
     @username, @password = username, password
+
+    @sent_mailbox = mailbox_config && mailbox_config['sent']
+    @sent_mailbox ||= Vmail::Defaults::MAILBOX_ALIASES['sent']
   end
 
   def open
@@ -18,7 +22,7 @@ class ContactsExtractor
   def extract(limit = 500)
     open do |imap|
       set_mailbox_prefix
-      mailbox = "[#@prefix]/Sent Mail"
+      mailbox = "[#@prefix]/#@sent_mailbox"
       STDERR.puts "Selecting #{mailbox}"
       imap.select(mailbox)
       STDERR.puts "Fetching last #{limit} sent messages"
