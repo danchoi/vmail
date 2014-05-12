@@ -28,6 +28,16 @@ module Vmail
 
     attr_accessor :max_seqno # of current mailbox
 
+    DEFAULT_MAILBOX_ALIASES = {
+      'sent' => 'Sent Mail',
+      'all' => 'All Mail',
+      'starred' => 'Starred',
+      'important' => 'Important',
+      'drafts' => 'Drafts',
+      'spam' => 'Spam',
+      'trash' => 'Trash'
+    }
+
     def initialize(config)
       @username, @password = config['username'], config['password']
       #load user-specified value for from field
@@ -53,6 +63,11 @@ module Vmail
       @date_formatter_this_year = config['date_format'] || '%b %d %I:%M%P'
       @date_formatter_prev_years = config['date_format_previous_years'] || '%b %d %Y'
       @date_width = DateTime.parse("12/12/2012 12:12:12").strftime(@date_formatter_this_year).length
+
+      mailbox_aliases_config = config['mailbox_aliases'] || {}
+      @default_mailbox_aliases = DEFAULT_MAILBOX_ALIASES.merge(
+        mailbox_aliases_config)
+
       current_message = nil
     end
 
@@ -172,15 +187,8 @@ module Vmail
     # do this just once
     def mailbox_aliases
       return @mailbox_aliases if @mailbox_aliases
-      aliases = {"sent" => "Sent Mail",
-                 "all" => "All Mail",
-                 "starred" => "Starred",
-                 "important" => "Important",
-                 "drafts" => "Drafts",
-                 "spam" => "Spam",
-                 "trash" => "Trash"}
       @mailbox_aliases = {}
-      aliases.each do |shortname, fullname|
+      @default_mailbox_aliases.each do |shortname, fullname|
         [ "[Gmail]", "[Google Mail]" ].each do |prefix|
           if self.mailboxes.include?( "#{prefix}/#{fullname}" )
             @mailbox_aliases[shortname] =  "#{prefix}/#{fullname}"
