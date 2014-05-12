@@ -7,6 +7,7 @@ require 'net/imap'
 require 'time'
 require 'logger'
 require 'tempfile'
+require 'vmail/defaults'
 require 'vmail/helpers'
 require 'vmail/address_quoter'
 require 'vmail/database'
@@ -27,16 +28,6 @@ module Vmail
     include Vmail::ReplyTemplating
 
     attr_accessor :max_seqno # of current mailbox
-
-    DEFAULT_MAILBOX_ALIASES = {
-      'sent' => 'Sent Mail',
-      'all' => 'All Mail',
-      'starred' => 'Starred',
-      'important' => 'Important',
-      'drafts' => 'Drafts',
-      'spam' => 'Spam',
-      'trash' => 'Trash'
-    }
 
     def initialize(config)
       @username, @password = config['username'], config['password']
@@ -65,7 +56,7 @@ module Vmail
       @date_width = DateTime.parse("12/12/2012 12:12:12").strftime(@date_formatter_this_year).length
 
       mailbox_aliases_config = config['mailbox_aliases'] || {}
-      @default_mailbox_aliases = DEFAULT_MAILBOX_ALIASES.merge(
+      @default_mailbox_aliases = Vmail::Defaults::MAILBOX_ALIASES.merge(
         mailbox_aliases_config)
 
       current_message = nil
