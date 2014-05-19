@@ -110,6 +110,11 @@ configuration options][firewall] that you can use.
 
 [firewall]:https://github.com/danchoi/vmail/wiki/How-to-use-vmail-behind-a-firewall-that-blocks-IMAP
 
+If you have a non English Gmail account, you would need a little
+[extra configuration][non_english] to make Vmail work.
+
+[non_english]:https://github.com/danchoi/vmail/wiki/Non-English-Gmail-accounts
+
 Another optional parameter is `date_format`, which controls the appearance of
 the dates in the message list. Here you can use a strptime-compatible date
 format string. Make sure you enclose these in quotes:
