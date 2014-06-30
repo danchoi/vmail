@@ -96,7 +96,11 @@ module Vmail
       file.puts "Please wait while I fetch your messages.\n\n\n"
     end
 
-    system(vim_command)
+    system({"DRB_URI" => drb_uri,
+            "VMAIL_CONTACTS_FILE" => contacts_file,
+            "VMAIL_MAILBOX" => String.shellescape(mailbox),
+            "VMAIL_QUERY" => "\"#{query_string}\""},
+            "#{vim} --servername #{ server_name } -S #{vimscript} -c '#{vimopts}' #{buffer_file}")
 
     if vim == 'mvim' || vim == 'gvim'
       DRb.thread.join
