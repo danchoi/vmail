@@ -88,7 +88,17 @@ module Vmail
     vimopts = config['vim_opts']
     $drb_uri = drb_uri
     server_name = "VMAIL:#{ config['username'] }"
-    vim_command = "DRB_URI=#{drb_uri} VMAIL_CONTACTS_FILE=#{contacts_file} VMAIL_MAILBOX=#{String.shellescape(mailbox)} VMAIL_QUERY=\"#{query_string}\" #{vim} --servername #{ server_name } -S #{vimscript} -c '#{vimopts}' #{buffer_file}"
+
+    vim_options = {
+      'DRB_URI' => drb_uri,
+      'VMAIL_CONTACTS_FILE' => contacts_file,
+      'VMAIL_MAILBOX' => String.shellescape(mailbox),
+      'VMAIL_QUERY' => %("#{ query_string }")
+    }
+
+    vim_command = "#{vim} --servername #{ server_name } -S #{vimscript} -c '#{vimopts}' #{buffer_file}"
+
+    STDERR.puts vim_options
     STDERR.puts vim_command
     STDERR.puts "Using buffer file: #{buffer_file}"
     File.open(buffer_file, "w") do |file|
@@ -96,11 +106,7 @@ module Vmail
       file.puts "Please wait while I fetch your messages.\n\n\n"
     end
 
-    system({"DRB_URI" => drb_uri,
-            "VMAIL_CONTACTS_FILE" => contacts_file,
-            "VMAIL_MAILBOX" => String.shellescape(mailbox),
-            "VMAIL_QUERY" => "\"#{query_string}\""},
-            "#{vim} --servername #{ server_name } -S #{vimscript} -c '#{vimopts}' #{buffer_file}")
+    system(vim_options, vim_command)
 
     if vim == 'mvim' || vim == 'gvim'
       DRb.thread.join
