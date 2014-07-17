@@ -223,7 +223,7 @@ module Vmail
       }
       log "- got seqnos: #{ids.inspect}"
       log "- getting seqnos > #{self.max_seqno}"
-      new_ids = ids.select {|seqno| seqno > self.max_seqno}
+      new_ids = ids.select {|seqno| seqno.to_i > self.max_seqno}
       # reset the max_seqno
       self.max_seqno = ids.max
       log "- setting max_seqno to #{self.max_seqno}"
