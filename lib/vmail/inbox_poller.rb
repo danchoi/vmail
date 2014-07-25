@@ -6,7 +6,7 @@ module Vmail
     # This is a second IMAP client operating in a separate process
 
     def start_polling
-      n = [`which notify-send`.chomp, `which growlnotify`.chomp].detect {|c| c != ''}
+      n = [which('notify-send'), which('growlnotify')].detect {|c| ! c.nil?}
       if n
         log "Using notify tool: #{n}"
         @notifier = case n
