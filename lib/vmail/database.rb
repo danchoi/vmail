@@ -15,6 +15,7 @@ if db.tables.include?(:version) &&
 else
   print "OK\n"
 end
+db.fetch('PRAGMA synchronous=OFF')
 db.disconnect
 
 if !File.size?('vmail.db')
