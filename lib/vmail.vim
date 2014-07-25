@@ -877,6 +877,7 @@ func! s:message_window_mappings()
 
   if !hasmapto('<Plug>VmailMessageWindow_CloseWindow')
     nmap <buffer> <leader>q <Plug>VmailMessageWindow_CloseWindow
+    nmap <buffer> o <Plug>VmailMessageWindow_CloseWindow
   endif
   nnoremap <buffer> <unique> <script> <Plug>VmailMessageWindow_CloseWindow :call <SID>close_message_window()<CR>
 
@@ -957,6 +958,7 @@ endfunc
 func! s:message_list_window_mappings()
   if !hasmapto('<Plug>VmailOpenMessage')
     nmap <buffer> <CR> <Plug>VmailOpenMessage
+    nmap <buffer> o <Plug>VmailOpenMessage
     nmap <buffer> <LeftMouse> <Plug>VmailOpenMessage
   endif
   nnoremap <buffer> <unique> <script> <Plug>VmailOpenMessage :call <SID>show_message(0)<CR>
