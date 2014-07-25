@@ -16,7 +16,7 @@ module Vmail
       exit
     end
 
-    vim = ENV['VMAIL_VIM'] || 'vim'
+    vim = ENV['VMAIL_VIM'] || RUBY_PLATFORM.downcase.include?('linux') ? 'vimx' : 'vim'
     ENV['VMAIL_BROWSER'] ||= if RUBY_PLATFORM.downcase.include?('linux')
                                tools = ['gnome-open', 'kfmclient-exec', 'xdg-open', 'konqueror']
                                tool = tools.detect { |tool|
