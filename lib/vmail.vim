@@ -353,6 +353,38 @@ func! s:delete_messages(flag) range
   echo nummsgs .  " message" . (nummsgs == 1 ? '' : 's') . " marked " . a:flag
 endfunc
 
+function! s:show_previous_message_and_delete_current()
+  call <SID>focus_list_window()
+  let deletable_line_number = line('.')
+  let has_more_messages = strlen(getline(2))
+
+  wincmd p
+
+  if has_more_messages
+    if deletable_line_number == 1
+      " Show next message only when at top of the list.
+      call <SID>show_next_message()
+    else
+      call <SID>show_previous_message()
+    endif
+  else
+    close
+  endif
+
+  call <SID>focus_list_window()
+  let new_line_number = line('.')
+  execute deletable_line_number . ',' . deletable_line_number . 'call <SID>delete_messages("Deleted")'
+
+  " When on top of list, next message will have moved to line 1.
+  if deletable_line_number != 1
+    execute 'normal ' . new_line_number . 'G'
+  endif
+
+  normal zz
+  wincmd p
+  redraw!
+endfunction
+
 func! s:archive_messages() range
   let uid_set = s:collect_uids(a:firstline, a:lastline)
   let nummsgs = len(uid_set)
@@ -894,6 +926,11 @@ func! s:message_window_mappings()
     nmap <buffer> <leader>3 <Plug>VmailMessageWindow_DeleteMessage
   endif
   nnoremap <buffer> <unique> <script> <Plug>VmailMessageWindow_DeleteMessage :close<cr>:call <SID>focus_list_window()<CR>:call <SID>delete_messages("Deleted")<CR>
+
+  if !hasmapto('<Plug>VmailMessageWindow_ShowPreviousAndDeleteCurrent')
+    nmap <buffer> <leader>dp <Plug>VmailMessageWindow_ShowPreviousAndDeleteCurrent
+  endif
+  nnoremap <buffer> <unique> <script> <Plug>VmailMessageWindow_ShowPreviousAndDeleteCurrent :call <SID>show_previous_message_and_delete_current()<CR>
 
   if !hasmapto('<Plug>VmailMessageWindow_ToggleStar')
     nmap <buffer> <leader>* <Plug>VmailMessageWindow_ToggleStar
