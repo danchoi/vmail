@@ -179,10 +179,12 @@ module Vmail
     def mailbox_aliases
       return @mailbox_aliases if @mailbox_aliases
       @mailbox_aliases = {}
-      @default_mailbox_aliases.each do |shortname, fullname|
-        [ "[Gmail]", "[Google Mail]" ].each do |prefix|
-          if self.mailboxes.include?( "#{prefix}/#{fullname}" )
-            @mailbox_aliases[shortname] =  "#{prefix}/#{fullname}"
+      @default_mailbox_aliases.each do |shortname, fullname_list|
+        fullname_list.each do |fullname|
+          [ "[Gmail]", "[Google Mail]" ].each do |prefix|
+            if self.mailboxes.include?( "#{prefix}/#{fullname}" )
+              @mailbox_aliases[shortname] =  "#{prefix}/#{fullname}"
+            end
           end
         end
       end
