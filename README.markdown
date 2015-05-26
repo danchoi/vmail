@@ -19,7 +19,7 @@ than in any web browser or GUI program.
 
 To install Ruby 1.9.2, I recommend using the [RVM Version Manager][rvm].
 
-[rvm]:http://rvm.beginrescueend.com
+[rvm]:https://rvm.io
 
 The current version of Vmail assumes a Unix environment.
 
