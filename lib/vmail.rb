@@ -2,10 +2,12 @@ require 'vmail/version'
 require 'vmail/options'
 require 'vmail/query'
 require 'vmail/message_formatter'
+require 'vmail/helpers'
 require 'versionomy'
 
 module Vmail
   extend self
+  extend Vmail::Helpers
 
   def start
     puts "Starting vmail #{Vmail::VERSION}"
@@ -18,9 +20,8 @@ module Vmail
 
     vim = ENV['VMAIL_VIM'] || 'vim'
     ENV['VMAIL_BROWSER'] ||= if RUBY_PLATFORM.downcase.include?('linux')
-                               tools = ['gnome-open', 'kfmclient-exec', 'xdg-open', 'konqueror']
-                               tool = tools.detect { |tool|
-                                 `which #{tool}`.size > 0
+                               tool = ['gnome-open', 'kfmclient-exec', 'xdg-open', 'konqueror'].detect { |tool|
+                                 which tool
                                }
                                if tool.nil?
                                  puts "Can't find a VMAIL_BROWSER tool on your system. Please report this issue."
@@ -130,7 +131,7 @@ module Vmail
 
   def check_html_reader
     return if ENV['VMAIL_HTML_PART_READER']
-    html_reader = %w( w3m elinks lynx ).detect {|x| `which #{x}` != ''}
+    html_reader = %w( w3m elinks lynx ).detect {|x| ! which(x).nil?}
     if html_reader
       cmd = ['w3m -dump -T text/html -I utf-8 -O utf-8', 'lynx -stdin -dump', 'elinks -dump'].detect {|s| s.index(html_reader)}
       STDERR.puts "Setting VMAIL_HTML_PART_READER to '#{cmd}'"

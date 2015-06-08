@@ -27,11 +27,14 @@ module Vmail
       end
     end
 
-
     def divider(str)
       str * DIVIDER_WIDTH
     end
 
+    def which(command)
+      res = `which #{command} 2>/dev/null`.chomp
+      res == '' ? nil : res
+    end
 
   end
 end
