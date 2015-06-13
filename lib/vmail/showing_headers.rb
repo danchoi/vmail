@@ -6,7 +6,7 @@ module Vmail
       messages = message_ids.map {|message_id|
         m = Message[message_id]
         if m.nil?
-          raise "Message #{message_id} not found"
+          raise "Message #{ message_id } not found"
         end
         m
       }
@@ -15,7 +15,7 @@ module Vmail
     end
 
     def fetch_and_cache_headers(id_set)
-      log "Fetching headers for #{id_set.size} messages"
+      log "Fetching headers for #{ id_set.size } messages"
       results = reconnect_if_necessary do
         @imap.fetch(id_set, ["FLAGS", "ENVELOPE", "RFC822.SIZE", "UID"])
       end
@@ -49,7 +49,7 @@ module Vmail
         message.update params
 
         unless Vmail::Labeling[message_id: message_id, label_id: @label.label_id]
-          params = {message_id: message.message_id, uid: uid, label_id: @label.label_id}
+          params = { message_id: message.message_id, uid: uid, label_id: @label.label_id }
 
           Labeling.create params
         end
@@ -65,7 +65,7 @@ module Vmail
                       (address_struct.host ?  Mail::Encodings.unquote_and_convert_to(address_struct.host, 'UTF-8'): "")
                     ].join('@')
                   if address_struct.name
-                   "#{Mail::Encodings.unquote_and_convert_to((address_struct.name || ''), 'UTF-8')} <#{email}>"
+                   "#{ Mail::Encodings.unquote_and_convert_to((address_struct.name || ''), 'UTF-8') } <#{ email }>"
                   else
                     email
                   end
@@ -112,7 +112,7 @@ module Vmail
       if remaining <= 1
         return res
       end
-      res + "\n>  Load #{[100, remaining].min} more messages. #{remaining} remaining."
+      res + "\n>  Load #{[100, remaining].min} more messages. #{ remaining } remaining."
     end
 
   end

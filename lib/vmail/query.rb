@@ -20,7 +20,7 @@ module Vmail
 
     def self.args2string(array)
       array.map {|x|
-        x.to_s.split(/\s+/).size > 1 ? "\"#{x}\"" : x.to_s
+        x.to_s.split(/\s+/).size > 1 ? "\"#{ x }\"" : x.to_s
       }.join(' ')
     end
 

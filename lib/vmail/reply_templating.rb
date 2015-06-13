@@ -16,11 +16,11 @@ module Vmail
     def reply_headers
       reply_subject = current_message.subject
       if reply_subject !~ /Re: /
-        reply_subject = "Re: #{reply_subject}"
+        reply_subject = "Re: #{ reply_subject }"
       end
       date = DateTime.parse(current_message.date)
       sender = current_message.sender
-      reply_quote_header = date ? "On #{date.strftime('%a, %b %d, %Y at %I:%M %p')}, #{sender} wrote:\n\n" : "#{sender} wrote:\n"
+      reply_quote_header = date ? "On #{ date.strftime('%a, %b %d, %Y at %I:%M %p') }, #{ sender } wrote:\n\n" : "#{ sender } wrote:\n"
 
       reply_body = reply_quote_header +
         ( current_message.plaintext.split(/^-+$/,2)[1].strip.gsub(/^(?=>)/, ">").gsub(/^(?!>)/, "> ") )
@@ -53,7 +53,7 @@ module Vmail
            end
       xs = xs.select {|x|
         email = (x[/<([^>]+)>/, 1] || x)
-        email !~ /#{reply_recipient}/ \
+        email !~ /#{ reply_recipient }/ \
           && email !~ /#@username/ \
           && (@always_cc ? (email !~ /#{@always_cc}/) : true)
       }

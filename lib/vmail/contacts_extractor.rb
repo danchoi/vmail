@@ -4,7 +4,7 @@ require 'vmail/defaults'
 module Vmail
 class ContactsExtractor
   def initialize(username, password, mailbox_config)
-    puts "Logging as #{username}"
+    puts "Logging as #{ username }"
     @username, @password = username, password
 
     @sent_mailbox = mailbox_config && mailbox_config['sent']
@@ -23,13 +23,13 @@ class ContactsExtractor
     open do |imap|
       set_mailbox_prefix
       mailbox = "[#@prefix]/#@sent_mailbox"
-      STDERR.puts "Selecting #{mailbox}"
+      STDERR.puts "Selecting #{ mailbox }"
       imap.select(mailbox)
-      STDERR.puts "Fetching last #{limit} sent messages"
+      STDERR.puts "Fetching last #{ limit } sent messages"
       all_uids = imap.uid_search('ALL')
-      STDERR.puts "Total messages: #{all_uids.size}"
+      STDERR.puts "Total messages: #{ all_uids.size }"
       limit = [limit, all_uids.size].min
-      STDERR.puts "Extracting addresses from #{limit} of them"
+      STDERR.puts "Extracting addresses from #{ limit } of them"
       uids = all_uids[-limit ,limit]
       imap.uid_fetch(uids, ["FLAGS", "ENVELOPE"]).each do |fetch_data|
         recipients = fetch_data.attr["ENVELOPE"].to
@@ -39,7 +39,7 @@ class ContactsExtractor
           name = address_struct.name
           if name
             name = Mail::Encodings.unquote_and_convert_to(name, 'UTF-8')
-            yield %Q("#{name}" <#{email}>)
+            yield %Q("#{ name }" <#{ email }>)
           else
             yield email
           end

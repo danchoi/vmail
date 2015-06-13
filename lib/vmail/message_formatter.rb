@@ -15,7 +15,7 @@ module Vmail
           list_parts(part.parts)
         else
           # part.charset could be used
-          "- #{part.content_type} #{part.attachment? ? part.filename : ''}"
+          "- #{ part.content_type } #{ part.attachment? ? part.filename : '' }"
         end
       end
       lines.flatten
@@ -78,7 +78,7 @@ module Vmail
       stdin, stdout, stderr = Open3.popen3(html_tool)
       stdin.puts html
       stdin.close
-      output = "[vmail: html part translated into plaintext by '#{html_tool}']\n\n" + stdout.read
+      output = "[vmail: html part translated into plaintext by '#{ html_tool }']\n\n" + stdout.read
       charset = part.content_type_parameters && part.content_type_parameters['charset']
       if charset && charset != 'UTF-8'
         output.encode!('utf-8', charset, undef: :replace, invalid: :replace)

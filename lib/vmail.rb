@@ -25,11 +25,11 @@ module Vmail
     logfile = (vim == 'mvim' || vim == 'gvim') ? STDERR : 'vmail.log'
     config.merge! 'logfile' => logfile
 
-    puts "Starting vmail imap client for #{config['username']}"
+    puts "Starting vmail imap client for #{ config['username'] }"
 
     set_inbox_poller(config)
 
-    puts "Working directory: #{Dir.pwd}"
+    puts "Working directory: #{ Dir.pwd }"
 
     server = start_imap_daemon
     mailbox, query_string = select_mailbox(server)
@@ -46,18 +46,18 @@ module Vmail
   private
 
   def change_directory_to_vmail_home
-    working_dir = ENV['VMAIL_HOME'] || "#{ENV['HOME']}/.vmail/default"
-    `mkdir -p #{working_dir}`
-    puts "Changing working directory to #{working_dir}"
+    working_dir = ENV['VMAIL_HOME'] || "#{ ENV['HOME'] }/.vmail/default"
+    `mkdir -p #{ working_dir }`
+    puts "Changing working directory to #{ working_dir }"
     Dir.chdir(working_dir)
   end
 
   def check_html_reader
     return if ENV['VMAIL_HTML_PART_READER']
-    html_reader = %w( w3m elinks lynx ).detect {|x| `which #{x}` != ''}
+    html_reader = %w( w3m elinks lynx ).detect {|x| `which #{ x }` != ''}
     if html_reader
       cmd = ['w3m -dump -T text/html -I utf-8 -O utf-8', 'lynx -stdin -dump', 'elinks -dump'].detect {|s| s.index(html_reader)}
-      STDERR.puts "Setting VMAIL_HTML_PART_READER to '#{cmd}'"
+      STDERR.puts "Setting VMAIL_HTML_PART_READER to '#{ cmd }'"
       ENV['VMAIL_HTML_PART_READER'] = cmd
     else
       abort "You need to install w3m, elinks, or lynx on your system in order to see html-only messages"
@@ -78,9 +78,9 @@ module Vmail
     query_string = Vmail::Query.args2string query
     server.select_mailbox mailbox
 
-    STDERR.puts "Mailbox: #{mailbox}"
-    STDERR.puts "Query: #{query.inspect}"
-    STDERR.puts "Query String: #{String.shellescape(query_string)}"
+    STDERR.puts "Mailbox: #{ mailbox }"
+    STDERR.puts "Query: #{ query.inspect }"
+    STDERR.puts "Query String: #{ String.shellescape(query_string) }"
 
     [mailbox, query_string]
   end
@@ -99,7 +99,7 @@ module Vmail
     ENV['VMAIL_BROWSER'] ||= if RUBY_PLATFORM.downcase.include?('linux')
                                tools = ['gnome-open', 'kfmclient-exec', 'xdg-open', 'konqueror']
                                tool = tools.detect { |tool|
-                                 `which #{tool}`.size > 0
+                                 `which #{ tool }`.size > 0
                                }
                                if tool.nil?
                                  puts "Can't find a VMAIL_BROWSER tool on your system. Please report this issue."
@@ -110,7 +110,7 @@ module Vmail
                                'open'
                              end
 
-    puts "Setting VMAIL_BROWSER to '#{ENV['VMAIL_BROWSER']}'"
+    puts "Setting VMAIL_BROWSER to '#{ ENV['VMAIL_BROWSER'] }'"
   end
 
   def set_inbox_poller(config)
@@ -152,13 +152,13 @@ module Vmail
       'VMAIL_QUERY' => %("#{ query_string }")
     }
 
-    vim_command = "#{vim} --servername #{ server_name } -S #{vimscript} -c '#{vimopts}' #{ BUFFER_FILE }"
+    vim_command = "#{ vim } --servername #{ server_name } -S #{ vimscript } -c '#{ vimopts }' #{ BUFFER_FILE }"
 
     STDERR.puts vim_options
     STDERR.puts vim_command
     STDERR.puts "Using buffer file: #{ BUFFER_FILE }"
     File.open(BUFFER_FILE, "w") do |file|
-      file.puts "\n\nVmail #{Vmail::VERSION}\n\n"
+      file.puts "\n\nVmail #{ Vmail::VERSION }\n\n"
       file.puts "Please wait while I fetch your messages.\n\n\n"
     end
 

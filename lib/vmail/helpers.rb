@@ -23,7 +23,7 @@ module Vmail
         exponent = max_exp if exponent > max_exp # we need this to avoid overflow for the highest unit
         number  /= 1024 ** exponent
         unit = UNITS[exponent]
-        "#{number}#{unit}"
+        "#{ number }#{ unit }"
       end
     end
 

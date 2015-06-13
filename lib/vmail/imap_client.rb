@@ -92,7 +92,7 @@ module Vmail
       if mailbox_aliases[mailbox]
         mailbox = mailbox_aliases[mailbox]
       end
-      log "Selecting mailbox #{mailbox.inspect}"
+      log "Selecting mailbox #{ mailbox.inspect }"
       reconnect_if_necessary(30) do
         log @imap.select(Net::IMAP.encode_utf7(mailbox))
       end
@@ -182,13 +182,13 @@ module Vmail
       @default_mailbox_aliases.each do |shortname, fullname_list|
         fullname_list.each do |fullname|
           [ "[Gmail]", "[Google Mail]" ].each do |prefix|
-            if self.mailboxes.include?( "#{prefix}/#{fullname}" )
-              @mailbox_aliases[shortname] =  "#{prefix}/#{fullname}"
+            if self.mailboxes.include?( "#{ prefix }/#{ fullname }" )
+              @mailbox_aliases[shortname] =  "#{ prefix }/#{ fullname }"
             end
           end
         end
       end
-      log "Setting aliases to #{@mailbox_aliases.inspect}"
+      log "Setting aliases to #{ @mailbox_aliases.inspect }"
       @mailbox_aliases
     end
 
@@ -202,14 +202,14 @@ module Vmail
 
     def decrement_max_seqno(num)
       return unless STDIN.tty?
-      log "Decremented max seqno from #{self.max_seqno} to #{self.max_seqno - num}"
+      log "Decremented max seqno from #{ self.max_seqno } to #{ self.max_seqno - num }"
       self.max_seqno -= num
     end
 
     def check_for_new_messages
       log "Checking for new messages"
       if search_query?
-        log "Update aborted because query is search query: #{@query.inspect}"
+        log "Update aborted because query is search query: #{ @query.inspect }"
         return ""
       end
       old_num_messages = @num_messages
@@ -218,18 +218,18 @@ module Vmail
       update_query = @query.dup
       # set a new range filter
       # this may generate a negative rane, e.g., "19893:19992" but that seems harmless
-      update_query[0] = "#{old_num_messages}:#{@num_messages}"
+      update_query[0] = "#{ old_num_messages }:#{@num_messages}"
       ids = reconnect_if_necessary {
         log "Search #update_query"
         @imap.search(Vmail::Query.args2string(update_query))
       }
-      log "- got seqnos: #{ids.inspect}"
-      log "- getting seqnos > #{self.max_seqno}"
+      log "- got seqnos: #{ ids.inspect }"
+      log "- getting seqnos > #{ self.max_seqno }"
       new_ids = ids.select {|seqno| seqno.to_i > self.max_seqno}
       # reset the max_seqno
       self.max_seqno = ids.max
-      log "- setting max_seqno to #{self.max_seqno}"
-      log "- new uids found: #{new_ids.inspect}"
+      log "- setting max_seqno to #{ self.max_seqno }"
+      log "- new uids found: #{ new_ids.inspect }"
       update_message_list(new_ids) unless new_ids.empty?
       new_ids
     end
@@ -287,8 +287,8 @@ module Vmail
     def create_if_necessary(mailbox)
       current_mailboxes = mailboxes.map {|m| mailbox_aliases[m] || m}
       if !current_mailboxes.include?(mailbox)
-        log "Current mailboxes: #{current_mailboxes.inspect}"
-        log "Creating mailbox #{mailbox}"
+        log "Current mailboxes: #{ current_mailboxes.inspect }"
+        log "Creating mailbox #{ mailbox }"
         log @imap.create(mailbox)
         @mailboxes = nil # force reload ...
         list_mailboxes
@@ -297,14 +297,14 @@ module Vmail
 
     def append_to_file(message_ids, file)
       message_ids = message_ids.split(',')
-      log "Append to file uid set #{message_ids.inspect} to file: #{file}"
+      log "Append to file uid set #{ message_ids.inspect } to file: #{ file }"
       message_ids.each do |message_id|
         message = show_message(message_id)
         File.open(file, 'a') {|f| f.puts(divider('=') + "\n" + message + "\n\n")}
         subject = (message[/^subject:(.*)/,1] || '').strip
-        log "Appended message '#{subject}'"
+        log "Appended message '#{ subject }'"
       end
-      "Printed #{message_ids.size} message#{message_ids.size == 1 ? '' : 's'} to #{file.strip}"
+      "Printed #{ message_ids.size } message#{ message_ids.size == 1 ? '' : 's' } to #{ file.strip }"
     end
 
     def new_message_template(subject = nil, append_signature = true)
@@ -327,7 +327,7 @@ module Vmail
         if value.is_a?(Array)
           value = value.join(", ")
         end
-        lines << "#{key.gsub("_", '-')}: #{value}"
+        lines << "#{ key.gsub("_", '-') }: #{ value }"
       end
       lines.join("\n")
     end
@@ -340,7 +340,7 @@ module Vmail
 
     def signature_script
       return unless @signature_script
-      %x{ #{@signature_script.strip} }
+      %x{ #{ @signature_script.strip } }
     end
 
     def forward_template
@@ -349,7 +349,7 @@ module Vmail
       headers = formatter.extract_headers
       subject = headers['subject']
       if subject !~ /Fwd: /
-        subject = "Fwd: #{subject}"
+        subject = "Fwd: #{ subject }"
       end
 
       new_message_template(subject, false) +
@@ -360,11 +360,11 @@ module Vmail
     def format_sent_message(mail)
       formatter = Vmail::MessageFormatter.new(mail)
       message_text = <<-EOF
-Sent Message #{self.format_parts_info(formatter.list_parts)}
+Sent Message #{ self.format_parts_info(formatter.list_parts) }
 
-#{format_headers(formatter.extract_headers)}
+#{ format_headers(formatter.extract_headers) }
 
-#{formatter.plaintext_part}
+#{ formatter.plaintext_part }
 EOF
     end
 
@@ -378,9 +378,9 @@ EOF
       log res.inspect
       log "\n"
       msg = if res.is_a?(Mail::Message)
-        "Message '#{mail.subject}' sent"
+        "Message '#{ mail.subject }' sent"
       else
-        "Failed to deliver message '#{mail.subject}'!"
+        "Failed to deliver message '#{ mail.subject }'!"
       end
       log msg
       msg
@@ -405,7 +405,7 @@ EOF
           headers[key] = value
         end
       end
-      log "Delivering message with headers: #{headers.to_yaml}"
+      log "Delivering message with headers: #{ headers.to_yaml }"
       mail.from = headers['from'] || @username
       mail.to = headers['to'] #.split(/,\s+/)
       mail.cc = headers['cc'] #&& headers['cc'].split(/,\s+/)
@@ -417,10 +417,10 @@ EOF
       # after the headers, and followed by a blank line
       if (attachments_section = raw_body.split(/\n\s*\n/, 2)[0]) =~ /^attach(ment|ments)*:/
         files = attachments_section.split(/\n/).map {|line| line[/[-:]\s*(.*)\s*$/, 1]}.compact
-        log "Attach: #{files.inspect}"
+        log "Attach: #{ files.inspect }"
         files.each do |file|
           if File.directory?(file)
-            Dir.glob("#{file}/*").each {|f| mail.add_file(f) if File.size?(f)}
+            Dir.glob("#{ file }/*").each {|f| mail.add_file(f) if File.size?(f)}
           else
             mail.add_file(file) if File.size?(file)
           end
@@ -441,20 +441,20 @@ EOF
     end
 
     def save_attachments(dir)
-      log "Save_attachments #{dir}"
+      log "Save_attachments #{ dir }"
       if !current_mail
         log "Missing a current message"
       end
       return unless dir && current_mail
       attachments = current_mail.attachments
-      `mkdir -p #{dir}`
+      `mkdir -p #{ dir }`
       saved = attachments.map do |x|
         path = File.join(dir, x.filename)
-        log "Saving #{path}"
+        log "Saving #{ path }"
         File.open(path, 'wb') {|f| f.puts x.decoded}
         path
       end
-      "Saved:\n" + saved.map {|x| "- #{x}"}.join("\n")
+      "Saved:\n" + saved.map {|x| "- #{ x }"}.join("\n")
     end
 
     def open_html_part
@@ -477,7 +477,7 @@ EOF
 
     def window_width=(width)
       @width = width.to_i
-      log "Setting window width to #{width}"
+      log "Setting window width to #{ width }"
     end
 
     def smtp_settings
@@ -528,12 +528,12 @@ EOF
     end
 
     def self.daemon(config)
-      puts "Starting Vmail::ImapClient in dir #{Dir.pwd}"
+      puts "Starting Vmail::ImapClient in dir #{ Dir.pwd }"
       $gmail = self.start(config)
       use_uri = config['drb_uri'] || nil # redundant but explicit
       DRb.start_service(use_uri, $gmail)
       uri = DRb.uri
-      puts "Starting gmail service at #{uri}"
+      puts "Starting gmail service at #{ uri }"
       uri
     end
   end

@@ -8,12 +8,12 @@ module Vmail
     def start_polling
       n = [`which notify-send`.chomp, `which growlnotify`.chomp].detect {|c| c != ''}
       if n
-        log "Using notify tool: #{n}"
+        log "Using notify tool: #{ n }"
         @notifier = case n
           when /notify-send/
-            Proc.new {|t, m| `#{n} -t 6000000 '#{t}' '#{m}'` }
+            Proc.new {|t, m| `#{ n } -t 6000000 '#{ t }' '#{ m }'` }
           when /growlnotify/
-            Proc.new {|t, m| `#{n} -t '#{t}' -m '#{m}'` }
+            Proc.new {|t, m| `#{ n } -t '#{ t }' -m '#{ m }'` }
           end
       else
         log "No notification tool detected. INBOX polling aborted."
@@ -122,7 +122,7 @@ module Vmail
 
     # doesn't try to access Sequel / sqlite3
     def uncached_headers(id_set)
-      log "Fetching headers for #{id_set.size} messages"
+      log "Fetching headers for #{ id_set.size } messages"
       results = reconnect_if_necessary do
         @imap.fetch(id_set, ["FLAGS", "ENVELOPE", "RFC822.SIZE", "UID"])
       end
@@ -148,7 +148,7 @@ module Vmail
       if string.is_a?(::Net::IMAP::TaggedResponse)
         string = string.raw_data
       end
-      @logger.debug "[INBOX POLLER]: #{string}"
+      @logger.debug "[INBOX POLLER]: #{ string }"
     end
 
 

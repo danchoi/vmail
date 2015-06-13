@@ -13,7 +13,7 @@ module Vmail
         end
         opts.on("-v", "--version", "Show version (identical to vmail version)") do
           require 'vmail/version'
-          puts "vmail #{Vmail::VERSION}\nCopyright 2010 Daniel Choi under the MIT license"
+          puts "vmail #{ Vmail::VERSION }\nCopyright 2010 Daniel Choi under the MIT license"
           exit
         end
         opts.on("-h", "--help", "Show this message") do
@@ -32,7 +32,7 @@ module Vmail
 
 Missing config file!
 
-#{INSTRUCTIONS}
+#{ INSTRUCTIONS }
 EOF
             exit(1)
           end

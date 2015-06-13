@@ -15,20 +15,20 @@ module Vmail
     def cached_full_message?(message_id)
       m = Message[message_id]
       if m
-        log "- found message #{message_id}"
+        log "- found message #{ message_id }"
         log "- message has plaintext? #{!m.plaintext.nil?}"
       else
-        log "- could not find message #{message_id.inspect}"
+        log "- could not find message #{ message_id.inspect }"
       end
       m && !m.plaintext.nil? && m
     end
 
     def show_message(message_id, raw=false)
       message_id = message_id.strip.gsub('\\', '')
-      log "Show message: #{message_id.inspect}"
+      log "Show message: #{ message_id.inspect }"
       return current_message.rfc822 if raw
       res = retry_if_needed { fetch_and_cache(message_id) }
-      log "Showing message message_id: #{message_id}"
+      log "Showing message message_id: #{ message_id }"
       @cur_message_id = message_id
       res
     end
@@ -39,21 +39,21 @@ module Vmail
         return message.plaintext
       end
       log "- full message cache miss"
-      params = {message_id: message_id, label_id: @label.label_id}
+      params = { message_id: message_id, label_id: @label.label_id }
       labeling = Labeling[params] || Labeling.create(params)
       unless (labeling && labeling.uid)
-        log "- Labeling not found for #{params.inspect}"
+        log "- Labeling not found for #{ params.inspect }"
         # break out early
-        return "\nUnable to get message for #{labeling.values}"
+        return "\nUnable to get message for #{ labeling.values }"
       end
       uid = labeling.uid
 
-      log "- fetching message uid #{uid}"
+      log "- fetching message uid #{ uid }"
       fetch_data = reconnect_if_necessary do
         res = retry_if_needed do
           @imap.uid_fetch(uid, ["FLAGS", "RFC822", "RFC822.SIZE"])
         end
-        raise "Message uid #{uid} could not be fetched from server" if res.nil?
+        raise "Message uid #{ uid } could not be fetched from server" if res.nil?
         res[0]
       end
       seqno = fetch_data.seqno
@@ -75,11 +75,11 @@ module Vmail
         body = body.encode!('us-ascii', 'utf-8', undef: :replace, invalid: :replace)
       end
       message_text = <<-EOF
-#{message_id} #{number_to_human_size message.size} #{message.flags} #{parts_list}
-#{divider '-'}
-#{headers}
+#{ message_id } #{ number_to_human_size message.size } #{ message.flags } #{ parts_list }
+#{ divider '-' }
+#{ headers }
 
-#{body}
+#{ body }
 EOF
       # 2 calls so we can see more fine grained exceptions
       message.update(:rfc822 => rfc822)
@@ -96,7 +96,7 @@ EOF
       end
       message_text
     rescue
-      msg = "Error encountered in fetch_and_cache(), message_id #{message_id} [#{@mailbox}]:\n#{$!}\n#{$!.backtrace.join("\n")}"
+      msg = "Error encountered in fetch_and_cache(), message_id #{ message_id } [#{@mailbox}]:\n#{$!}\n#{$!.backtrace.join("\n")}"
       log msg
       msg
     end
@@ -104,7 +104,7 @@ EOF
     def format_parts_info(parts)
       lines = parts #.select {|part| part !~ %r{text/plain}}
       if lines.size > 0
-        "\n#{lines.join("\n")}"
+        "\n#{ lines.join("\n") }"
       end
     end
 

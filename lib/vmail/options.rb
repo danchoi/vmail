@@ -7,11 +7,11 @@ module Vmail
     attr_accessor :config
     attr_accessor :contacts_file
     def initialize(argv)
-      config_file_locations = ['.vmailrc', "#{ENV['HOME']}/.vmailrc"]
+      config_file_locations = ['.vmailrc', "#{ ENV['HOME'] }/.vmailrc"]
       @config_file = config_file_locations.detect do |path|
         File.exists?(File.expand_path(path))
       end
-      @contacts_file = [DEFAULT_CONTACTS_FILENAME, "#{ENV['HOME']}/#{DEFAULT_CONTACTS_FILENAME}"].detect  do |path|
+      @contacts_file = [DEFAULT_CONTACTS_FILENAME, "#{ ENV['HOME'] }/#{ DEFAULT_CONTACTS_FILENAME }"].detect  do |path|
         File.exists?(File.expand_path(path))
       end
       @config = {}
@@ -29,7 +29,7 @@ module Vmail
         end
         opts.on("-v", "--version", "Show version") do
           require 'vmail/version'
-          puts "vmail #{Vmail::VERSION}\nCopyright 2010 Daniel Choi under the MIT license"
+          puts "vmail #{ Vmail::VERSION }\nCopyright 2010 Daniel Choi under the MIT license"
           exit
         end
         opts.on("-h", "--help", "Show this message") do
@@ -48,7 +48,7 @@ module Vmail
 
 Missing config file!
 
-#{INSTRUCTIONS}
+#{ INSTRUCTIONS }
 EOF
             exit(1)
           end
@@ -83,12 +83,12 @@ EOF
               end
             end
             STDERR.print "\n"
-            puts "Saved file to #{DEFAULT_CONTACTS_FILENAME}"
+            puts "Saved file to #{ DEFAULT_CONTACTS_FILENAME }"
             puts "Sorting address..."
-            cmd = "sort #{DEFAULT_CONTACTS_FILENAME} | uniq > vmail-tmp.txt"
-            cmd2 = "mv vmail-tmp.txt #{DEFAULT_CONTACTS_FILENAME}"
-            `#{cmd}`
-            `#{cmd2}`
+            cmd = "sort #{ DEFAULT_CONTACTS_FILENAME } | uniq > vmail-tmp.txt"
+            cmd2 = "mv vmail-tmp.txt #{ DEFAULT_CONTACTS_FILENAME }"
+            `#{ cmd }`
+            `#{ cmd2 }`
             puts "Done"
             exit
           end
