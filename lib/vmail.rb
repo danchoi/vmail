@@ -20,9 +20,7 @@ module Vmail
     change_directory_to_vmail_home
 
     opts = Vmail::Options.new(ARGV)
-    opts.config
     config = opts.config
-
 
     logfile = (vim == 'mvim' || vim == 'gvim') ? STDERR : 'vmail.log'
     config.merge! 'logfile' => logfile
