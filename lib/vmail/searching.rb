@@ -17,7 +17,7 @@ module Vmail
       else
         # set the target range to the whole set, unless it is too big
         @start_index = [@num_messages - @limit, 0].max
-        @query.unshift "#{ @start_index + 1 }:#{@num_messages}"
+        @query.unshift "#{ @start_index + 1 }:#@num_messages"
         query_string = Vmail::Query.args2string(@query)
         log "Query: #{ query_string.inspect }"
         @ids = reconnect_if_necessary(180) do # timeout of 3 minutes

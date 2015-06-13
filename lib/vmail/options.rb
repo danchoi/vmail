@@ -42,7 +42,7 @@ module Vmail
         begin
           opts.parse!(argv)
           if @config_file && File.exists?(@config_file)
-            STDERR.puts "Using config file: #{@config_file}"
+            STDERR.puts "Using config file: #@config_file"
           else
             STDERR.puts <<EOF
 
@@ -58,7 +58,7 @@ EOF
               STDERR.puts "No contacts file found for auto-completion. See help for how to generate it."
               sleep 0.5
             else
-              STDERR.puts "Using contacts file: #{@contacts_file}"
+              STDERR.puts "Using contacts file: #@contacts_file"
             end
           end
 
@@ -67,7 +67,7 @@ EOF
             if @config['password_script'].nil?
               @config['password'] = ask("Enter gmail password (won't be visible & won't be persisted):") {|q| q.echo = false}
             else
-              @config['password'] = %x{ #{@config['password_script'].strip} }.strip
+              @config['password'] = %x{ #@config['password_script'].strip }.strip
             end
           end
 

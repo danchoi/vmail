@@ -137,7 +137,7 @@ module Vmail
     def get_mailbox_status
       return
       @status = @imap.status(@mailbox,  ["MESSAGES", "RECENT", "UNSEEN"])
-      log "Mailbox status: #{@status.inspect}"
+      log "Mailbox status: #@status.inspect"
     end
 
     def revive_connection
@@ -170,7 +170,7 @@ module Vmail
         }.uniq
       @mailboxes.delete("INBOX")
       @mailboxes.unshift("INBOX")
-      log "Loaded mailboxes: #{@mailboxes.inspect}"
+      log "Loaded mailboxes: #@mailboxes.inspect"
       @mailboxes = @mailboxes.map {|name| mailbox_aliases.invert[name] || name}
       @mailboxes.join("\n")
     end
@@ -218,7 +218,7 @@ module Vmail
       update_query = @query.dup
       # set a new range filter
       # this may generate a negative rane, e.g., "19893:19992" but that seems harmless
-      update_query[0] = "#{ old_num_messages }:#{@num_messages}"
+      update_query[0] = "#{ old_num_messages }:#@num_messages"
       ids = reconnect_if_necessary {
         log "Search #update_query"
         @imap.search(Vmail::Query.args2string(update_query))
@@ -263,10 +263,10 @@ module Vmail
     # gets 100 messages prior to id
     def more_messages
       log "Getting more_messages"
-      log "Old start_index: #{@start_index}"
+      log "Old start_index: #@start_index"
       max = @start_index - 1
       @start_index = [(max + 1 - @limit), 1].max
-      log "New start_index: #{@start_index}"
+      log "New start_index: #@start_index"
       fetch_ids = search_query? ? @ids[@start_index..max] : (@start_index..max).to_a
       log fetch_ids.inspect
       message_ids = fetch_and_cache_headers(fetch_ids)
@@ -309,7 +309,7 @@ module Vmail
 
     def new_message_template(subject = nil, append_signature = true)
       #set from field to user-specified value
-      headers = {'from' => "#{@name} <#{@from}>",
+      headers = {'from' => "#@name <#@from>",
         'to' => nil,
         'subject' => subject,
         'cc' => @always_cc,

@@ -55,7 +55,7 @@ module Vmail
         email = (x[/<([^>]+)>/, 1] || x)
         email !~ /#{ reply_recipient }/ \
           && email !~ /#@username/ \
-          && (@always_cc ? (email !~ /#{@always_cc}/) : true)
+          && (@always_cc ? (email !~ /#@always_cc/) : true)
       }
       if @always_cc
         xs << @always_cc

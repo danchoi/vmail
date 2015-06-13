@@ -26,7 +26,7 @@ module Vmail
         begin
           opts.parse!(argv)
           if @config_file && File.exists?(@config_file)
-            puts "Using config file #{@config_file}"
+            puts "Using config file #@config_file"
           else
             puts <<EOF
 

@@ -96,7 +96,7 @@ EOF
       end
       message_text
     rescue
-      msg = "Error encountered in fetch_and_cache(), message_id #{ message_id } [#{@mailbox}]:\n#{$!}\n#{$!.backtrace.join("\n")}"
+      msg = "Error encountered in fetch_and_cache(), message_id #{ message_id } [#@mailbox]:\n#{$!}\n#{$!.backtrace.join("\n")}"
       log msg
       msg
     end
