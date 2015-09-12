@@ -21,9 +21,9 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
 
-  s.add_dependency 'mail', '>= 2.2.12'
-  s.add_dependency 'highline', '>= 1.6.1'
-  s.add_dependency 'sequel', '>= 3.24.1'
-  s.add_dependency 'sqlite3', '>= 1.3.3'
-  s.add_dependency 'versionomy', '>= 0.4.4'
+  s.add_runtime_dependency 'mail', '~> 2.2', '>= 2.2.12'
+  s.add_runtime_dependency 'highline', '~> 1.6', '>= 1.6.1'
+  s.add_runtime_dependency 'sequel', '~> 3.24', '>= 3.24.1'
+  s.add_runtime_dependency 'sqlite3', '~> 1.3', '>= 1.3.3'
+  s.add_runtime_dependency 'versionomy', '~> 0.4', '>= 0.4.4'
 end
