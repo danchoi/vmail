@@ -13,6 +13,7 @@ Gem::Specification.new do |s|
   s.homepage    = "http://danielchoi.com/software/vmail.html"
   s.summary     = %q{A Vim interface to Gmail}
   s.description = %q{Manage your email with Vim}
+  s.licenses = %w(MIT)
 
   s.rubyforge_project = "vmail"
 
