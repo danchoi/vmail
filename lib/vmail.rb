@@ -13,28 +13,23 @@ module Vmail
     puts "Starting vmail #{ Vmail::VERSION }"
     check_ruby_version
 
-    vim = ENV['VMAIL_VIM'] || 'vim'
-
     set_vmail_browser
     check_html_reader
     change_directory_to_vmail_home
-
-    opts = Vmail::Options.new(ARGV)
-    config = opts.config
 
     logfile = (vim == 'mvim' || vim == 'gvim') ? STDERR : 'vmail.log'
     config.merge! 'logfile' => logfile
 
     puts "Starting vmail imap client for #{ config['username'] }"
 
-    set_inbox_poller(config)
+    set_inbox_poller
 
     puts "Working directory: #{ Dir.pwd }"
 
     server = start_imap_daemon
     mailbox, query_string = select_mailbox(server)
 
-    start_vim(config, mailbox, query_string)
+    start_vim(mailbox, query_string)
 
     if vim == 'mvim' || vim == 'gvim'
       DRb.thread.join
@@ -44,6 +39,14 @@ module Vmail
   end
 
   private
+
+  def options
+    @options ||= Vmail::Options.new(ARGV)
+  end
+
+  def config
+    @config ||= options.config
+  end
 
   def change_directory_to_vmail_home
     working_dir = ENV['VMAIL_HOME'] || "#{ ENV['HOME'] }/.vmail/default"
@@ -113,7 +116,7 @@ module Vmail
     puts "Setting VMAIL_BROWSER to '#{ ENV['VMAIL_BROWSER'] }'"
   end
 
-  def set_inbox_poller(config)
+  def set_inbox_poller
     if config['polling'] == true
       require 'vmail/inbox_poller'
       inbox_poller = Vmail::InboxPoller.start config
@@ -139,11 +142,11 @@ module Vmail
     DRbObject.new_with_uri $drb_uri
   end
 
-  def start_vim(config, mailbox, query_string)
+  def start_vim(mailbox, query_string)
     vimscript = File.expand_path("../vmail.vim", __FILE__)
     vimopts = config['vim_opts']
     server_name = "VMAIL:#{ config['username'] }"
-    contacts_file = opts.contacts_file
+    contacts_file = options.contacts_file
 
     vim_options = {
       'DRB_URI' => $drb_uri,
@@ -178,6 +181,10 @@ module Vmail
     end
     puts "Bye"
     exit
+  end
+
+  def vim
+    ENV['VMAIL_VIM'] || 'vim'
   end
 end
 
