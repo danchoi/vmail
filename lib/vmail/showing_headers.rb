@@ -86,7 +86,7 @@ module Vmail
                   message.sender
                 end
 
-      mid_width = @width - 38
+      mid_width = [@width - 38, 10].max  # force a minimum width of 10
       address_col_width = (mid_width * 0.3).ceil
       subject_col_width = (mid_width * 0.7).floor
       row_text = [ format_flags(message.flags).col(2),
