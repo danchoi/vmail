@@ -127,6 +127,7 @@ module Vmail
       if res && res[-1]
         @num_messages = res[-1]
         log "Highest seqno: #@num_messages"
+        log "DEBUG EXTRA all ids: #{res.inspect}"
       else
         @num_messages = 1
         log "NO HIGHEST ID: setting @num_messages to 1"
