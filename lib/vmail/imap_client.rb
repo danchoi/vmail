@@ -123,11 +123,16 @@ module Vmail
 
     def get_highest_message_id
       # get highest message ID
+      # habpy debug
+      # force close connection
+      close
+      revive_connection
       res = @imap.search(['ALL'])
+
       if res && res[-1]
         @num_messages = res[-1]
         log "Highest seqno: #@num_messages"
-        log "DEBUG EXTRA all ids: #{res.inspect}"
+        log "DEBUG EXTRA all ids: #{res[-10..-1].inspect}"
       else
         @num_messages = 1
         log "NO HIGHEST ID: setting @num_messages to 1"
