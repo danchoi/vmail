@@ -1,6 +1,7 @@
 require "vmail/imap_client"
 
 module Vmail
+  require "vmail/imap_client"
   class InboxPoller < ImapClient
 
     # This is a second IMAP client operating in a separate process
