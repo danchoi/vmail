@@ -230,7 +230,7 @@ module Vmail
       self.max_seqno = ids.max
       log "- setting max_seqno to #{ self.max_seqno }"
       log "- new uids found: #{ new_ids.inspect }"
-      update_message_list(new_ids) unless new_ids.empty?
+      update_message_list(new_ids) if new_ids.any? && has_clientserver?
       new_ids
     end
 

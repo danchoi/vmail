@@ -48,6 +48,10 @@ module Vmail
     @config ||= options.config
   end
 
+  def has_clientserver?
+    @has_clientserver ||= system("#{ vim } --version | grep +clientserver")
+  end
+
   def change_directory_to_vmail_home
     working_dir = ENV['VMAIL_HOME'] || "#{ ENV['HOME'] }/.vmail/default"
     `mkdir -p #{ working_dir }`
@@ -145,7 +149,6 @@ module Vmail
   def start_vim(mailbox, query_string)
     vimscript = File.expand_path("../vmail.vim", __FILE__)
     vimopts = config['vim_opts']
-    server_name = "VMAIL:#{ config['username'] }"
     contacts_file = options.contacts_file
 
     vim_options = {
@@ -155,7 +158,7 @@ module Vmail
       'VMAIL_QUERY' => %("#{ query_string }")
     }
 
-    vim_command = "#{ vim } --servername #{ server_name } -S #{ vimscript } -c '#{ vimopts }' #{ BUFFER_FILE }"
+    vim_command = "#{ vim } #{ server_opts } -S #{ vimscript } -c '#{ vimopts }' #{ BUFFER_FILE }"
 
     STDERR.puts vim_options
     STDERR.puts vim_command
@@ -185,6 +188,12 @@ module Vmail
 
   def vim
     ENV['VMAIL_VIM'] || 'vim'
+  end
+
+  def server_opts
+    return unless has_clientserver?
+    server_name = "VMAIL:#{ config['username'] }"
+    "--servername #{ server_name }"
   end
 end
 
