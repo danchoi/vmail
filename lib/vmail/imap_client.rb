@@ -56,6 +56,7 @@ module Vmail
       @date_width = DateTime.parse("12/12/2012 12:12:12").strftime(@date_formatter_this_year).length
 
       mailbox_aliases_config = config['mailbox_aliases'] || {}
+      STDERR.puts "Debug #{Vmail::Defaults::MAILBOX_ALIASES.inspect}"
       @default_mailbox_aliases = Vmail::Defaults::MAILBOX_ALIASES.merge(
         mailbox_aliases_config)
 
@@ -179,7 +180,11 @@ module Vmail
     def mailbox_aliases
       return @mailbox_aliases if @mailbox_aliases
       @mailbox_aliases = {}
+      STDERR.puts "@default_mailbox_aliases: #{@default_mailbox_aliases.inspect}"
       @default_mailbox_aliases.each do |shortname, fullname_list|
+        if !fullname_list.respond_to?(:each) 
+          fullname_list = [fullname_list]
+        end
         fullname_list.each do |fullname|
           [ "[Gmail]", "[Google Mail]" ].each do |prefix|
             if self.mailboxes.include?( "#{ prefix }/#{ fullname }" )

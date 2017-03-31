@@ -79,13 +79,9 @@ function! s:create_message_window()
 endfunction
 
 function! s:system_with_error_handling(command)
+  echo "system with error handling " . a:command
   let res = system(a:command)
-  if res =~ 'VMAIL_ERROR'
-    echoe "ERROR" res
-    return ""
-  else
-    return res
-  end
+  return res
 endfunction
 
 function! s:show_message(stay_in_message_list)
@@ -565,7 +561,7 @@ function! s:do_search()
   " close message window if open
   call s:focus_message_window()
   close
-  let command = s:search_command . shellescape(s:query)
+  let command = "ruby -I /Users/choi/p/vmail/lib /Users/choi/p/vmail/bin/" . s:search_command . shellescape(s:query)
   redraw
   call s:focus_list_window()
   setlocal modifiable

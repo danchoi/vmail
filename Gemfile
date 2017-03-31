@@ -1,7 +1,7 @@
 
 source 'https://rubygems.org'
 
+gem 'mail', '>=2.2', '<2.2.13'
 gem 'highline'
-gem 'mail', '2.6.0'
 gem 'versionomy'
 gem 'sqlite3'
