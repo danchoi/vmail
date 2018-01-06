@@ -206,6 +206,14 @@ module Vmail
       self.max_seqno -= num
     end
 
+    def has_clientserver?
+      @has_clientserver ||= system("#{ vim } --version | grep +clientserver")
+    end
+
+    def vim
+      ENV['VMAIL_VIM'] || 'vim'
+    end
+
     def check_for_new_messages
       log "Checking for new messages"
       if search_query?
