@@ -243,6 +243,9 @@ new messages(`u`) to get them displayed.
 
 To enable automatic inbox polling put the line `polling: true` in your `.vmailrc`.
 
+You may try this [hack](https://github.com/danchoi/vmail/wiki/Simple-Auto-Update-Without-VIM-Clientserver)
+as a workaround for compiling Vim with `clientserver`.
+
 ## Switching mailboxes, moving messages, copying messages to another mailbox
 
 To switch mailboxes, type `,m`. You'll see an autocomplete window appear at the top.
