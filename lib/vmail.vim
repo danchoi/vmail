@@ -80,7 +80,7 @@ endfunction
 
 function! s:system_with_error_handling(command)
   let res = system(a:command)
-  if res =~ 'VMAIL_ERROR'
+  if res =~ 'VMAIL_ERROR' && res !~ '\| (Re: )? \[\w\+/vmail\] VMAIL_ERROR'
     echoe "ERROR" res
     return ""
   else
