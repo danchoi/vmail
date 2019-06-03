@@ -70,7 +70,7 @@ module Vmail
       # [\w-]+ matches charsets like ISO-8851
       if /charset=([\w-]+)/.match(parts_list)
         conv_from = /charset=([\w-]+)/.match(parts_list)[1].strip
-        unless conv_from = 'utf8' or conv_from = 'UTF-8'
+        unless conv_from == 'utf8' or conv_from == 'UTF-8'
           body = body.encode!('utf-8', conv_from, undef: :replace, invalid: :replace)
         end
       else
