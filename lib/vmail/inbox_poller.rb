@@ -11,7 +11,7 @@ module Vmail
         log "Using notify tool: #{ n }"
         @notifier = case n
           when /notify-send/
-            Proc.new {|t, m| `#{ n } -t 6000000 '#{ t }' '#{ m }'` }
+            Proc.new {|t, m| `#{ n } -t 6000000 -i mail_new '#{ t }' '#{ m }'` }
           when /growlnotify/
             Proc.new {|t, m| `#{ n } -t '#{ t }' -m '#{ m }'` }
           end
